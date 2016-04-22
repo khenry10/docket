@@ -5,6 +5,9 @@ var hbs      = require("express-handlebars")
 var app      = express();
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
+var Dates    = require("./calendar.js")
+
+app.use("/assets", express.static("public"));
 
 
 app.set("view engine", "hbs");
@@ -15,12 +18,18 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
+// app.get('/', function(req, res){
+//   Events.find().then(function(events){
+//     res.render("events-index", {
+//       events
+//     });
+//   });
+// });
+
 app.get('/', function(req, res){
-  Events.find().then(function(events){
     res.render("events-index", {
-      events
+        Dates
     });
-  });
 });
 
 app.listen(3002, function(){
