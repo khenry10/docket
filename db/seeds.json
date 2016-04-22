@@ -1,0 +1,16 @@
+[
+  {
+    "category": "Home",
+    "name": "taxes",
+    "duration": 1,
+    "reoccuring": "weekly",
+    "start_time": "Fri Apr 22 2016 11:00:00"
+  },
+  {
+    "category": "Work",
+    "name": "taxes",
+    "duration": 1,
+    "reoccuring": "daily",
+    "start_time": "Fri Apr 22 2016 13:00:00"
+  }
+]
