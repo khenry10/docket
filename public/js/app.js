@@ -1,5 +1,3 @@
-var document = "events-index.hbs"
-console.log("Im working")
 
 var date = new Date()
 
@@ -20,18 +18,15 @@ var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is
 
 var first_date = month_name[month] + " " + 1 + " " + year; // April 1 2016
 
+console.log(first_date)
+
 var tmp = new Date(first_date).toDateString()
 var first_day = tmp.substr(0, 3) // returns Fri
 
 var day_no = days_of_week.indexOf(first_day)
 
-var calendar = make_calendar(day_no, number_of_days)
-
-// document.getElementById("calendar-month-year").innerHTML = month_name[month]
+document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
 console.log(document.getElementById("calendar-container"))
-
-document.getElementById("calendar-container").appendChild(calendar);
-
 
 // passing in day_no which is the value (0 -6) of the first day of the month and number_of_days which is the number of days in each month
 function make_calendar(day_no, number_of_days){
@@ -89,7 +84,9 @@ function make_calendar(day_no, number_of_days){
         tr.appendChild(td)
       }
       table.appendChild(tr)
-        console.log(table)
+
+      document.getElementById("calendar-dates").appendChild(table);
 }
 
-// make_calendar(first_day_of_month, number_of_days)
+// var calendar = 
+make_calendar(day_no, number_of_days)
