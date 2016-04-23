@@ -22,14 +22,13 @@ var first_day = tmp.substr(0, 3) // returns Fri
 
 var day_no = days_of_week.indexOf(first_day)
 
-console.log(day_no)
+console.log(number_of_days)
 
 
 // passing in day_no which is the value (0 -6) of the first day of the month and number_of_days which is the number of days in each month
 function make_calendar(day_no, number_of_days){
   console.log("make_calendar invoked")
   var table = document.createElement("table");
-  console.log(table)
   var tr    = document.createElement("tr");
   // row for Day names
   for(var i = 0; i < 7 ; i++){
@@ -57,7 +56,33 @@ function make_calendar(day_no, number_of_days){
       tr.appendChild(td);
     }
     table.appendChild(tr)
-    console.log(table)
+
+    // creats 3rd, 4th, and 5th row
+    for(t = 0; t < 3; t++){
+      var tr = document.createElement("tr")
+      for(var i = 0; i < 7; i++){
+        var td = document.createElement("td")
+        td.innerHTML = count
+        count++
+        tr.appendChild(td)
+      }
+      table.appendChild(tr)
+    }
+
+    //creates 6th row
+    var tr = document.createElement("tr")
+    for(var i = 0; i < 7; i++){
+      if(count === number_of_days+1){
+        break;
+      }
+        var td = document.createElement("td")
+        td.innerHTML = count
+        count++
+        tr.appendChild(td)
+        console.log(count)
+      }
+      table.appendChild(tr)
+        console.log(table)
 }
 
 make_calendar(first_day_of_month, number_of_days)
