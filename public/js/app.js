@@ -2,7 +2,7 @@
 var date = new Date()
 
 // var month = date.getMonth() //returns 0-11 (0 is Janauary)
-var month = 6
+var month = 3
 console.log("month = " + month)
 var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"]
 
@@ -89,21 +89,26 @@ function make_calendar(day_no, number_of_days){
     //creates 6th row
     var tr = document.createElement("tr")
     for(var i = 0; i < 7; i++){
+      console.log("6th row loop invoked")
       if(count > number_of_days){
         tr.appendChild(td);
         return table
       }
-      console.log(count)
-      console.log(number_of_days)
         var td = document.createElement("td")
         td.innerHTML = count
         count++
+        console.log(count)
         tr.appendChild(td)
         table.appendChild(tr)
         document.getElementById("calendar-dates").appendChild(table);
       }
       table.appendChild(tr)
       document.getElementById("calendar-dates").appendChild(table);
+
+      console.log(table)
+      console.log("count = " + count)
+      console.log("number of days =" + number_of_days)
+
 }
 
  var calendar = make_calendar(day_no, number_of_days)
