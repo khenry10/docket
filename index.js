@@ -6,9 +6,7 @@ var app      = express();
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
 
-
 app.use("/assets", express.static("public"));
-
 
 app.set("view engine", "hbs");
 app.engine(".hbs", hbs({
@@ -18,19 +16,15 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
-app.get('/', function(req, res){
+app.get('/api', function(req, res){
   Events.find().then(function(events){
-    res.render("events-index", {
-      events
-    });
+    res.json(events)
   });
 });
 
-// app.get('/', function(req, res){
-//     res.render("events-index", {
-//         Dates
-//     });
-// });
+app.get("/", function(req, res){
+  res.render("primary")
+})
 
 app.listen(3002, function(){
   console.log("::::::::::::: You have turned me on.  I am alive... :::::::::::::")
