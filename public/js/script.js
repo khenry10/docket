@@ -1,4 +1,3 @@
-// 
 // var date = new Date()
 //
 // // var month = date.getMonth() //returns 0-11 (0 is Janauary)

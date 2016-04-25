@@ -23,7 +23,7 @@ app.get('/api', function(req, res){
 });
 
 app.get("/", function(req, res){
-  res.render("primary")
+  res.render("event")
 })
 
 app.listen(3002, function(){
