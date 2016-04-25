@@ -17,23 +17,8 @@
   ])
   .controller("indexController", [
     "Events",
-    indexController
+    IndexController
   ])
-  .controller("calendarDirectiveController",[
-    calendarDirectiveController
-  ])
-  .directive("calendarDirective", [
-    calendarDirective
-  ])
-
-  function calendarDirective(){
-    return {
-        templateUrl: "/assets/html/_calendar.html",
-        link: function(){
-          var date = new Date()
-        }
-      }
-  }
 
   function router($stateProvider, $locationProvider){
     $stateProvider
@@ -53,13 +38,10 @@
     return Events
   };
 
-  function indexController(Events, calendarDirectiveController){
-    var indexVM = this
-    indexVM.events = Events.all
+  function IndexController(Events, calendarDirectiveController){
+    var vm = this
+    vm.events = Events.all;
+    vm.date = new Date()
   };
-
-  function calendarDirectiveController(){
-    var date = new Date()
-  }
 
 })();
