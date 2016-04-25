@@ -1,1 +1,5 @@
 <h1> Angular Index Page </h1>
+
+<div data-ng-repeat="event in indexVM.events">
+  {{event.name}} on {{event.start_time}}
+</div>
