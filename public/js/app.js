@@ -32,6 +32,7 @@ var day_no = days_of_week.indexOf(first_day)
 console.log("day_no = " + day_no)
 console.log("number_of_days = " + number_of_days)
 
+
 // starting to move some of the new Date constructor into an object, but not currently using it yet
 function change_month(){
   var first_date = month_name[month] + " " + 1 + " " + year; // April 1 2016
@@ -49,6 +50,7 @@ function make_calendar(day_no, number_of_days){
   console.log("make_calendar function invoked")
   var table = document.createElement("table");
   var tr    = document.createElement("tr");
+
   // row for Day names
   for(var i = 0; i < 7 ; i++){
     var th = document.createElement("th")
@@ -56,12 +58,15 @@ function make_calendar(day_no, number_of_days){
     tr.appendChild(th)
   }
   table.appendChild(tr)
-  // create 2nd row, which is the first row of dates
+  //end of first row
+
+  // create 2nd row, which is the first row of dates.  First loop looks to see which day is the first of the month and then puts a '1'in that td.
   tr = document.createElement("tr");
   for(var i = 0; i < 7; i++){
     if(i === day_no){
       break;
     }
+    // this section creates a td and puts a blank string in until the loop reaches the first day of the month
       var td = document.createElement("td");
       td.innerHTML = "";
       tr.appendChild(td)
@@ -74,9 +79,22 @@ function make_calendar(day_no, number_of_days){
       tr.appendChild(td);
     }
     table.appendChild(tr)
+    // end of 2nd row
 
-    // creats 3rd, 4th, and 5th row
-    for(t = 0; t < 3; t++){
+    // creates 3rd, 4th, and 5th row
+      if(number_of_days === 31 && day_no === 5){
+        for(t = 0; t < 4; t++){
+        var tr = document.createElement("tr")
+        for(var i = 0; i < 7; i++){
+          var td = document.createElement("td")
+          td.innerHTML = count
+          count++
+          tr.appendChild(td)
+        }
+        table.appendChild(tr)
+      }
+    } else {
+      for(t = 0; t < 3; t++){
       var tr = document.createElement("tr")
       for(var i = 0; i < 7; i++){
         var td = document.createElement("td")
@@ -86,6 +104,8 @@ function make_calendar(day_no, number_of_days){
       }
       table.appendChild(tr)
     }
+  }
+
     //creates 6th row
     var tr = document.createElement("tr")
     for(var i = 0; i < 7; i++){
@@ -105,10 +125,9 @@ function make_calendar(day_no, number_of_days){
       table.appendChild(tr)
       document.getElementById("calendar-dates").appendChild(table);
 
-      console.log(table)
-      console.log("count = " + count)
-      console.log("number of days =" + number_of_days)
-
+      // console.log(table)
+      // console.log("count = " + count)
+      // console.log("number of days =" + number_of_days)
 }
 
  var calendar = make_calendar(day_no, number_of_days)
