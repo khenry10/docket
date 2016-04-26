@@ -93,7 +93,7 @@
 //         table.appendChild(tr)
 //       }
 //     } else {
-//       for(t = 0; t < 3; t++){
+//       for(var t = 0; t < 3; t++){
 //       var tr = document.createElement("tr")
 //       for(var i = 0; i < 7; i++){
 //         var td = document.createElement("td")

@@ -3,7 +3,11 @@
 (function(){
   angular
   .module("app")
-  .directive("calendarDirective", function(){
+  .directive("calendarDirective", [
+    calendarDirectiveFunction
+  ])
+
+  function calendarDirectiveFunction(){
     return {
       templateUrl: "/assets/html/_calendar.html",
       link: function(){
@@ -80,10 +84,13 @@
             var count = 1;
             for(; i < 7; i++){
               var td = document.createElement("td");
-              td.setAttribute("id", count)
+              var p = document.createElement("p")
+              p.setAttribute("class",  "a"+count)
+              // p.innerHTML = indexVM.events
               td.innerHTML = count;
               count++;
               tr.appendChild(td);
+              td.appendChild(p)
             }
             table.appendChild(tr)
             // end of 2nd row
@@ -98,6 +105,9 @@
                   td.setAttribute("id", count)
                   count++
                   tr.appendChild(td)
+                  var p = document.createElement("p")
+                  p.setAttribute("class",  "a"+count)
+                  td.appendChild(p)
                 }
                 table.appendChild(tr)
               }
@@ -110,6 +120,9 @@
                 td.innerHTML = count
                 count++
                 tr.appendChild(td)
+                var p = document.createElement("p")
+                p.setAttribute("class",  "a"+count)
+                td.appendChild(p)
               }
               table.appendChild(tr)
             }
@@ -124,21 +137,27 @@
                 return table
               }
                 var td = document.createElement("td")
-                td.setAttribute("id", count)
+
                 td.innerHTML = count
-                count++
                 console.log(count)
                 tr.appendChild(td)
                 table.appendChild(tr)
                 document.getElementById("calendar-dates").appendChild(table);
+                var p = document.createElement("p")
+                p.setAttribute("class",  "a"+count)
+                td.appendChild(p)
+                count++
               }
               table.appendChild(tr)
               document.getElementById("calendar-dates").appendChild(table);
+              var p = document.createElement("p")
+              p.setAttribute("class",  "a"+count)
+              td.appendChild(p)
         }
 
          var calendar = make_calendar(day_no, number_of_days)
       }
     }
-  })
+  }
 
 })();

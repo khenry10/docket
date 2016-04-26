@@ -12,3 +12,9 @@ td {
   height: 100px;
   align-content: center;
 }
+
+.a4 {
+  outline: 1px solid black;
+  width: 100px;
+  height: 20px; 
+}

@@ -15,7 +15,7 @@
     "$resource",
     Events
   ])
-  .controller("indexController", [
+  .controller("IndexController", [
     "Events",
     IndexController
   ])
@@ -25,7 +25,7 @@
     .state("index", {
       url: "/",
       templateUrl: "/assets/html/index.html",
-      controller: "indexController",
+      controller: "IndexController",
       controllerAs: "indexVM"
     })
   }
@@ -38,10 +38,9 @@
     return Events
   };
 
-  function IndexController(Events, calendarDirectiveController){
+  function IndexController(Events){
     var vm = this
     vm.events = Events.all;
     vm.date = new Date()
   };
-
 })();
