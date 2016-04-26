@@ -17,7 +17,7 @@
         var date = new Date()
 
         // var month = date.getMonth() //returns 0-11 (0 is Janauary)
-        var month = 3
+        var month = 6
 
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"]
 
@@ -61,7 +61,7 @@
           var tr    = document.createElement("tr");
           // Table Heading row with names of days
           createFirstRow(table, tr)
-          // create 1nd row of dates.  First loop looks to see which day is the first of the month and then puts a '1'in that td.
+          // create 1st row of dates.  First loop looks to see which day (sunday -friday) is the first of the month and then puts a '1'in that td.
           tr = document.createElement("tr");
           for(var i = 0; i < 7; i++){
             if(i === day_no){
@@ -74,7 +74,7 @@
           }
             var count = 1;
             for(; i < 7; i++){
-              createTableRows(table, td, count, p, tr)
+              createTableRows(table, td, count, p, tr, number_of_days)
               count++
             }
             table.appendChild(tr)
@@ -85,10 +85,10 @@
               if(number_of_days === 31 && day_no === 5){
                 for(var t = 0; t < 4; t++){
                   var tr = document.createElement("tr")
-                for(var i = 0; i < 7; i++){
-                  createTableRows(table, td, count, p, tr)
-
-                }
+                  for(var i = 0; i < 7; i++){
+                    createTableRows(table, td, count, p, tr, number_of_days);
+                    // count++
+                  }
                 table.appendChild(tr)
               }
               // months that have less than 31 days only need 3 additional rows, so it only needs to loop 3 times
@@ -96,9 +96,9 @@
                 for(t = 0; t < 3; t++){
                   var tr = document.createElement("tr")
                     for(var i = 0; i < 7; i++){
-                      // checkCalendarEvents(number_of_days, count, p)
+                      createTableRows(table, td, count, p, tr, number_of_days);
                       count++
-                      createTableRows(table, td, count, p, tr);
+                      // checkCalendarEvents(number_of_days, count, p, number_of_days)
                     }
                   table.appendChild(tr)
                 }
@@ -111,8 +111,8 @@
                 tr.appendChild(td);
                 return table
               }
+                createTableRows(table, td, count, p, tr, number_of_days)
                 count++
-                createTableRows(table, td, count, p, tr)
               }
                 table.appendChild(tr)
                 document.getElementById("calendar-dates").appendChild(table);
@@ -120,32 +120,31 @@
                 p.setAttribute("class",  "a"+count)
                 td.appendChild(p)
         }
-        // end of make_calendar
+
+        // end ---> of make_calendar function <------//
 
         //invokes function to build the calendar
         makeCalendar(day_no, number_of_days)
 
+        function createFirstRow(table, tr){
+          for(var i = 0; i < 7 ; i++){
+            var th = document.createElement("th")
+            th.innerHTML = days_of_week[i]
+            tr.appendChild(th)
+          }
+          table.appendChild(tr)
+        };
 
-          function createFirstRow(table, tr){
-            for(var i = 0; i < 7 ; i++){
-              var th = document.createElement("th")
-              th.innerHTML = days_of_week[i]
-              tr.appendChild(th)
-            }
-            table.appendChild(tr)
-          };
+        function createTableRows(table, td, count, p, tr, number_of_days){
+            var td = document.createElement("td");
+            var p = document.createElement("p")
+            p.setAttribute("class",  "a"+count)
+            td.innerHTML = count;
+            count++;
+            td.appendChild(p);
+            tr.appendChild(td);
 
-          function createTableRows(table, td, count, p, tr){
-              var td = document.createElement("td");
-              var p = document.createElement("p")
-              p.setAttribute("class",  "a"+count)
-              td.innerHTML = count;
-              count++;
-              td.appendChild(p);
-              tr.appendChild(td);
-          };
-
-          function checkCalendarEvents(number_of_days, count, p){
+            // Events.all[1] accesses the object that actually stores the data
             if(Events.all[1].month == month){
               for(var i = 0; i < Events.all.length; i++ ){
                 if(Events.all[i].date === count){
@@ -153,7 +152,9 @@
                 };
               };
             };
-          };
+        };
+
+
 
       }
     }
