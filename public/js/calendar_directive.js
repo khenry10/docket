@@ -4,18 +4,33 @@
   angular
   .module("app")
   .directive("calendarDirective", [
+    "Events",
     calendarDirectiveFunction
   ])
 
-  function calendarDirectiveFunction(){
+  function calendarDirectiveFunction(Events){
     return {
       templateUrl: "/assets/html/_calendar.html",
       link: function(){
+
+        // console.log(Events.all[0].date)
+
+        function getEventData(Events, scope){
+          var  vm = this
+          var events =   Events
+          console.log(this)
+          console.log(scope)
+        }
+
+
+
+
+        // storing the date constructor function in a varialbe named "date"
         var date = new Date()
 
         // var month = date.getMonth() //returns 0-11 (0 is Janauary)
         var month = 4
-        console.log("month = " + month)
+
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"]
 
         var d = date.getDate() // returns day of the month.  Example: returns "22" on April 22nd 2016
@@ -39,10 +54,6 @@
 
         var day_no = days_of_week.indexOf(first_day)
 
-        console.log("day_no = " + day_no)
-        console.log("number_of_days = " + number_of_days)
-
-
         // starting to move some of the new Date constructor into an object, but not currently using it yet
         function change_month(){
           var first_date = month_name[month] + " " + 1 + " " + year; // April 1 2016
@@ -57,9 +68,10 @@
 
         // passing in day_no which is the value (0 -6) of the first day of the month and number_of_days which is the number of days in each month
         function make_calendar(day_no, number_of_days){
-          console.log("make_calendar function invoked")
+
           var table = document.createElement("table");
           var tr    = document.createElement("tr");
+
 
           // row for Day names
           for(var i = 0; i < 7 ; i++){
@@ -102,12 +114,14 @@
                 for(var i = 0; i < 7; i++){
                   var td = document.createElement("td")
                   td.innerHTML = count
+
+
                   td.setAttribute("id", count)
-                  count++
                   tr.appendChild(td)
                   var p = document.createElement("p")
                   p.setAttribute("class",  "a"+count)
                   td.appendChild(p)
+                  count++
                 }
                 table.appendChild(tr)
               }
@@ -118,11 +132,15 @@
                 var td = document.createElement("td")
                 td.setAttribute("id", count)
                 td.innerHTML = count
-                count++
                 tr.appendChild(td)
                 var p = document.createElement("p")
                 p.setAttribute("class",  "a"+count)
                 td.appendChild(p)
+                // if(Events.all[0].date === count){
+                //   p.innerHTML = Events.all[0].name;
+                // }
+                checkCalendarEvents(number_of_days, count, p)
+                count++
               }
               table.appendChild(tr)
             }
@@ -131,7 +149,6 @@
             //creates 6th row
             var tr = document.createElement("tr")
             for(var i = 0; i < 7; i++){
-              console.log("6th row loop invoked")
               if(count > number_of_days){
                 tr.appendChild(td);
                 return table
@@ -139,13 +156,15 @@
                 var td = document.createElement("td")
 
                 td.innerHTML = count
-                console.log(count)
                 tr.appendChild(td)
                 table.appendChild(tr)
                 document.getElementById("calendar-dates").appendChild(table);
                 var p = document.createElement("p")
                 p.setAttribute("class",  "a"+count)
                 td.appendChild(p)
+                if(Events.all[0].date === count){
+                  p.innerHTML = Events.all[0].name
+                }
                 count++
               }
               table.appendChild(tr)
@@ -154,8 +173,18 @@
               p.setAttribute("class",  "a"+count)
               td.appendChild(p)
         }
-
          var calendar = make_calendar(day_no, number_of_days)
+
+          function checkCalendarEvents(number_of_days, count, p){
+            for(var i = 0; i < Events.all.length; i++ ){
+              if(Events.all[i].date === count){
+                p.innerHTML = Events.all[i].name;
+              };
+            };
+          };
+
+
+
       }
     }
   }
