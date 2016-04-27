@@ -17,7 +17,7 @@
         var date = new Date()
 
         // var month = date.getMonth() //returns 0-11 (0 is Janauary)
-        var month = 6
+        var month = 3
 
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -52,7 +52,7 @@
         }
 
         document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
-
+        console.log(document)
 
 
         // passing in day_no which is the value (0 -6) of the first day of the month and number_of_days which is the number of days in each month

@@ -1,11 +1,12 @@
-<div data-ng-repeat="event in indexVM.events">
-  {{event.name}} on {{event.start_time}} on {{event.date}}
-   {{event}}
-</div>
+<div class="workstation">
+  <div class="events-panel">
+    <h2> Events </h2>
+    <div data-ng-repeat="event in indexVM.events">
+      {{event.name}} on {{event.date}}
+    </div>
+  </div>
 
-<div>
-  {{indexVM.date}}
+  <div class="calendar">
+    <calendar-directive></calendar-directive>
+  </div>
 </div>
-
-<calendar-directive>
-</calendar-directive>

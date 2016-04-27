@@ -1,5 +1,10 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+
 body {
   text-align: center;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
 }
 
 table {
@@ -7,8 +12,8 @@ table {
 }
 
 td {
-  outline: 1px solid black;
-  width: 100px;
+  outline: 1px solid white;
+  width: 120px;
   height: 100px;
   align-content: center;
 }
@@ -18,3 +23,25 @@ td {
   width: 100px;
   height: 20px;
 }*/
+
+.workstation {
+  outline: 1px solid black;
+}
+
+.events-panel {
+  background-color: #86E2D5;
+  outline: 1px solid black;
+  color: white;
+  position: fixed;
+  float: left;
+  width: 25%;
+  height: 100%;
+}
+
+.calendar {
+  width: 75%;
+  height: 100%;
+  float: right;
+  background-color: #81CFE0;
+  color: white;
+}
