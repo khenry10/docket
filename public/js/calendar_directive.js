@@ -17,7 +17,7 @@
         var date = new Date()
 
         // var month = date.getMonth() //returns 0-11 (0 is Janauary)
-        var month = 3
+        var month = 4
 
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -42,6 +42,10 @@
 
         var day_no = days_of_week.indexOf(first_day)
 
+        function nextMonth(){
+          console.log("I was clicked")
+        }
+
         // starting to move some of the new Date constructor into an object, but not currently using it yet
         function change_month(){
           var first_date = month_name[month] + " " + 1 + " " + year; // April 1 2016
@@ -56,7 +60,9 @@
 
 
         // passing in day_no which is the value (0 -6) of the first day of the month and number_of_days which is the number of days in each month
-        function makeCalendar(day_no, number_of_days){
+        console.log(day_no)
+        console.log(number_of_days)
+        var makeCalendar = function(day_no, number_of_days){
           var table = document.createElement("table");
           var tr    = document.createElement("tr");
           // Table Heading row with names of days
@@ -114,8 +120,6 @@
             var tr = document.createElement("tr")
                 for(var i = 0; i < 7; i++){
                   if(count <= number_of_days){
-                    console.log("count = " + count)
-                    console.log("number_of_days = " + number_of_days)
                     createTableRows(table, td, count, p, tr, number_of_days, month)
                     count++
                   } else {
@@ -147,11 +151,9 @@
             var p = document.createElement("p")
             p.setAttribute("class",  "a"+count)
             td.innerHTML = count;
-
-            count++;
             td.appendChild(p);
             tr.appendChild(td);
-            console.log(td)
+
 
             // Events.all[1] accesses the part of the object that actually stores the event data, the object had a bunch of other shit too
             if(Events.all[1].month == month){
@@ -161,6 +163,7 @@
                 };
               };
             };
+            count++;
         };
 
 

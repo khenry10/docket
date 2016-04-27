@@ -17,6 +17,8 @@
   ])
   .controller("IndexController", [
     "Events",
+    "$state",
+
     IndexController
   ])
 
@@ -38,9 +40,13 @@
     return Events
   };
 
-  function IndexController(Events){
+  function IndexController(Events, scope){
     var vm = this
     vm.events = Events.all;
-    vm.date = new Date()
+
+    vm.nextMonth = function(){
+      console.log("I was clicked xoxo")
+    }
+
   };
 })();
