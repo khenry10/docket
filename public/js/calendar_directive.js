@@ -17,7 +17,7 @@
         var date = new Date()
 
         // var month = date.getMonth() //returns 0-11 (0 is Janauary)
-        var month = 11
+        var month = 6
 
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -112,21 +112,21 @@
 
             // creates last row (6th row for months that start on Friday and have 31 days & 5th row for all others)
             var tr = document.createElement("tr")
-                for(var i = 0; i <= 7; i++){
+                for(var i = 0; i < 7; i++){
                   if(count <= number_of_days){
                     console.log("count = " + count)
                     console.log("number_of_days = " + number_of_days)
                     createTableRows(table, td, count, p, tr, number_of_days, month)
                     count++
-                  };
+                  } else {
+                      var td = document.createElement("td");
+                      td.innerHTML = "";
+                      tr.appendChild(td)
+                    }
                 };
-                // tr.appendChild(td);
                 table.appendChild(tr)
                 document.getElementById("calendar-dates").appendChild(table);
                 var p = document.createElement("p")
-                // p.setAttribute("class",  "a"+count)
-                // td.appendChild(p)
-
         }
         // end ---> of make_calendar function <------//
 
