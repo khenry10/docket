@@ -17,9 +17,9 @@
         var date = new Date()
 
         // var month = date.getMonth() //returns 0-11 (0 is Janauary)
-        var month = 6
+        var month = 11
 
-        var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"]
+        var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
         var d = date.getDate() // returns day of the month.  Example: returns "22" on April 22nd 2016
 
@@ -64,20 +64,23 @@
           // create 1st row of dates.  First loop looks to see which day (sunday -friday) is the first of the month and then puts a '1'in that td.
           tr = document.createElement("tr");
           for(var i = 0; i < 7; i++){
-            if(i === day_no){
+            if(i > day_no){
               break;
             }
             // this section creates a td and puts a blank string in until the loop reaches the first day of the month
+
               var td = document.createElement("td");
               td.innerHTML = "";
               tr.appendChild(td)
           }
             var count = 1;
-            for(; i < 7; i++){
-              createTableRows(table, td, count, p, tr, number_of_days)
+            for(; i < 8; i++){
+              createTableRows(table, td, count, p, tr, number_of_days, month)
               count++
             }
+
             table.appendChild(tr)
+
             // end of 1st date row
 
             // creates 2nd, 3rd and 4th date rows
@@ -86,9 +89,10 @@
                 for(var t = 0; t < 4; t++){
                   var tr = document.createElement("tr")
                   for(var i = 0; i < 7; i++){
-                    createTableRows(table, td, count, p, tr, number_of_days);
-                    // count++
+                    createTableRows(table, td, count, p, tr, number_of_days, month);
+                    count++
                   }
+
                 table.appendChild(tr)
               }
               // months that have less than 31 days only need 3 additional rows, so it only needs to loop 3 times
@@ -96,31 +100,42 @@
                 for(t = 0; t < 3; t++){
                   var tr = document.createElement("tr")
                     for(var i = 0; i < 7; i++){
-                      createTableRows(table, td, count, p, tr, number_of_days);
+
+                      createTableRows(table, td, count, p, tr, number_of_days, month);
                       count++
-                      // checkCalendarEvents(number_of_days, count, p, number_of_days)
+
                     }
+
                   table.appendChild(tr)
                 }
               }
 
-            //creates 6th row
+
+            // creates last row (6th row for months that start on Friday and have 31 days & 5th row for all others)
             var tr = document.createElement("tr")
-            for(var i = 0; i < 7; i++){
-              if(count > number_of_days){
-                tr.appendChild(td);
-                return table
-              }
-                createTableRows(table, td, count, p, tr, number_of_days)
-                count++
-              }
+            // if(number_of_days === 31 && day_no === 5){
+            //   createTableRows(table, td, count, p, tr, number_of_days)
+            // } else {
+                for(var i = 0; i <= 7; i++){
+                  if(count <= number_of_days){
+                    console.log("count = " + count)
+                    console.log("number_of_days = " + number_of_days)
+                    createTableRows(table, td, count, p, tr, number_of_days, month)
+                    count++
+                  }
+                    // console.log(count)
+                    tr.appendChild(td);
+                    console.log("conditional has been activated")
+                    // return table
+                }
+
                 table.appendChild(tr)
                 document.getElementById("calendar-dates").appendChild(table);
                 var p = document.createElement("p")
-                p.setAttribute("class",  "a"+count)
-                td.appendChild(p)
-        }
+                // p.setAttribute("class",  "a"+count)
+                // td.appendChild(p)
 
+        }
         // end ---> of make_calendar function <------//
 
         //invokes function to build the calendar
@@ -135,16 +150,18 @@
           table.appendChild(tr)
         };
 
-        function createTableRows(table, td, count, p, tr, number_of_days){
+        function createTableRows(table, td, count, p, tr, number_of_days, month){
             var td = document.createElement("td");
             var p = document.createElement("p")
             p.setAttribute("class",  "a"+count)
             td.innerHTML = count;
+
             count++;
             td.appendChild(p);
             tr.appendChild(td);
+            console.log(td)
 
-            // Events.all[1] accesses the object that actually stores the data
+            // Events.all[1] accesses the part of the object that actually stores the event data, the object had a bunch of other shit too
             if(Events.all[1].month == month){
               for(var i = 0; i < Events.all.length; i++ ){
                 if(Events.all[i].date === count){
@@ -153,6 +170,8 @@
               };
             };
         };
+
+
 
 
 
