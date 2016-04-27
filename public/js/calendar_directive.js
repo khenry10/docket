@@ -64,7 +64,7 @@
           // create 1st row of dates.  First loop looks to see which day (sunday -friday) is the first of the month and then puts a '1'in that td.
           tr = document.createElement("tr");
           for(var i = 0; i < 7; i++){
-            if(i > day_no){
+            if(i >= day_no){
               break;
             }
             // this section creates a td and puts a blank string in until the loop reaches the first day of the month
@@ -74,7 +74,7 @@
               tr.appendChild(td)
           }
             var count = 1;
-            for(; i < 8; i++){
+            for(; i < 7; i++){
               createTableRows(table, td, count, p, tr, number_of_days, month)
               count++
             }
@@ -110,25 +110,17 @@
                 }
               }
 
-
             // creates last row (6th row for months that start on Friday and have 31 days & 5th row for all others)
             var tr = document.createElement("tr")
-            // if(number_of_days === 31 && day_no === 5){
-            //   createTableRows(table, td, count, p, tr, number_of_days)
-            // } else {
                 for(var i = 0; i <= 7; i++){
                   if(count <= number_of_days){
                     console.log("count = " + count)
                     console.log("number_of_days = " + number_of_days)
                     createTableRows(table, td, count, p, tr, number_of_days, month)
                     count++
-                  }
-                    // console.log(count)
-                    tr.appendChild(td);
-                    console.log("conditional has been activated")
-                    // return table
-                }
-
+                  };
+                };
+                // tr.appendChild(td);
                 table.appendChild(tr)
                 document.getElementById("calendar-dates").appendChild(table);
                 var p = document.createElement("p")
