@@ -4,10 +4,16 @@
     <div data-ng-repeat="event in indexVM.events">
       {{event.name}} on {{event.date}}
     </div>
+    <div class="add-event">
+      <form action="/" method="POST">
+        
+    </div>
   </div>
 
   <div class="calendar">
-    <button type="button" data-ng-click="indexVM.nextMonth()" class="next-month"> > </button>
+    <!-- working on code to change the button -->
+    <!-- <button data-ng-model="selectMonth.result" -->
+    <!-- <button type="button" data-ng-click="indexVM.nextMonth()" class="next-month"> > </button> -->
     <calendar-directive></calendar-directive>
   </div>
 </div>

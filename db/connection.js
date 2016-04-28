@@ -8,7 +8,9 @@ var EventSchema = new mongoose.Schema(
   name: String,
   duration: Number,
   reoccuring: String,
-  start_time: Date
+  start_time: Date,
+  date: Number,
+  month: Number
   }
 );
 
