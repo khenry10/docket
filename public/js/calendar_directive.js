@@ -21,12 +21,6 @@
         //  }
 
 
-        // ************* Date contstructor funciton anad date logic below *************************
-
-        var monthSelector = function(month){
-
-        }
-
         // array of actual month names since the constructor function returns 0-11
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -39,44 +33,23 @@
         // need to the get the current year, which gets passed into first_day_of_month
         var year = date.getFullYear()  // returns 2016
 
-        // month gets passed into first_day_of_month
-        var month = 4
-
-        // need to determine the first day of the month so we know which day of the week is the first day of the month
-          // need to pass year variable (year varialbe currently returns the current year via date contstructor)
-        var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
-
-        // passing month variable (which uses date contstructor to return an integer 0-11) into the month_name array
-        var first_date = month_name[month] + " " + 1 + " " + year; // April 1 2016
-
-        //pass first_date in to date constructor, convert to a string, and stores in tmp variable
-        var tmp = new Date(first_date).toDateString() // returns Fri Apr 01 2016
-
-        //takes the first 3 characters of the tmp variable
-        var first_day = tmp.substr(0, 3) // returns Fri
-
-        // passes first_day into indexOf method of days_of_week array to return the day of the week that is the first day of the month
-        var day_no = days_of_week.indexOf(first_day)
-
-
-        // passes in year and month variable, along with 0 (which means last day of month) in order to store the number of days in a month into number_of_days varialbe
-        var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
+        // ************* Function the change month  *************************
 
 
         // **************** sandbox below **********
 
 
-        function nextMonth(){
-          console.log("I was clicked")
-        }
+        // function nextMonth(){
+        //   console.log("I was clicked")
+        // }
 
         // ********** end of sandbox *******************
 
-        document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
 
         // passing in first_day_of_month which is the value (0 - 6) of the first day of the month and number_of_days which is the number of days in each month
 
-        var makeCalendar = function(first_day_of_month, number_of_days){
+        var makeCalendar = function(first_day_of_month, number_of_days, month){
+          document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
           var table = document.createElement("table");
           var tr    = document.createElement("tr");
           // Table Heading row with names of days
@@ -148,8 +121,6 @@
         }
         // end ---> of make_calendar function <------//
 
-        //invokes function to build the calendar
-        makeCalendar(first_day_of_month, number_of_days)
 
         function createFirstRow(table, tr){
           for(var i = 0; i < 7 ; i++){
@@ -191,6 +162,21 @@
             };
             count++;
         };
+
+        var monthSelector = function(){
+          var month = date.getMonth()+1
+
+          // need to determine the first day of the month so we know which day of the week is the first day of the month
+            // need to pass year variable (year varialbe currently returns the current year via date contstructor)
+          var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
+
+          // passes in year and month variable, along with 0 (which means last day of month) in order to store the number of days in a month into number_of_days varialbe
+          var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
+
+          makeCalendar(first_day_of_month, number_of_days, month)
+        }
+
+        monthSelector()
 
       }
     }
