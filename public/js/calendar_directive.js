@@ -66,7 +66,7 @@
 
             // creates 2nd, 3rd and 4th date rows
               //conditional to determine if the first day of the month starts on Friday AND has 31 days.  They need an extra row, so we need to loop through 4 times
-              if(number_of_days === 31 && first_day_of_month === 5){
+              if((number_of_days === 31 && first_day_of_month === 5) || (number_of_days === 31 && first_day_of_month === 6)){
                 for(var t = 0; t < 4; t++){
                   var tr = document.createElement("tr")
                   for(var i = 0; i < 7; i++){

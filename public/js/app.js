@@ -68,6 +68,9 @@
       },
       decrement: function(){
         this.count--
+      },
+      current_month: function(){
+      this.count = date.getMonth()
       }
     };
   };
