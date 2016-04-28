@@ -11,76 +11,52 @@
   function calendarDirectiveFunction(Events){
     return {
       templateUrl: "/assets/html/_calendar.html",
-      link: function(){
-
+      scope: {
+        wombat: '=changeMonth'
+      },
+      link: function(scope){
+        console.log(scope.changeMonth)
 
       // code to change the month
-        //  scope.$watch('filterPosition', filterWatch, true);
-         //
-        //  function filterWatch(newValue, oldValue){
-        //
-        //  }
+      scope.$watch('wombat', function(newValue, oldValue){
+        monthSelector(newValue)
+      }, true);
 
-
-        // ************* Date contstructor funciton anad date logic below *************************
-
-        // storing the date constructor function in a varialbe named "date"
-        var date = new Date()
-
-        // var month = date.getMonth() //returns 0-11 (0 is Janauary)
-        var month = 3
-
+        // array of actual month names since the constructor function returns 0-11
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-        var d = date.getDate() // returns day of the month.  Example: returns "22" on April 22nd 2016
-
-        var weekday = date.getDay() // returns 0-6 (0 is sunday)
-
+        //  array of names of the days of the week since the contstructor fucntion return 0-6
         var days_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
+        // storing the date constructor function in a varialbe named "date", which we need in order to determine the year
+        var date = new Date()
+
+        // need to the get the current year, which gets passed into first_day_of_month
         var year = date.getFullYear()  // returns 2016
 
-        var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
-
-        // var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January = 1 here
-
-        var first_date = month_name[month] + " " + 1 + " " + year; // April 1 2016
-
-        var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January = 1 here
-
-        var tmp = new Date(first_date).toDateString()
-        var first_day = tmp.substr(0, 3) // returns Fri
-
-        var day_no = days_of_week.indexOf(first_day)
-
-        function nextMonth(){
-          console.log("I was clicked")
-        }
-
-        // starting to move some of the new Date constructor into an object, but not currently using it yet
-        function change_month(){
-          var first_date = month_name[month] + " " + 1 + " " + year; // April 1 2016
-          var tmp        = new Date(first_date).toDateString()  // returns Fri Apr 01 2016
-          var first_day  = tmp.substr(0, 3) // retruns the first three letters of the day.  ex: Fri
-          var day_no     = days_of_week.indexOf(first_day) //returns the number (0 - 6) of the first day of the month
-          return day_no
-        }
-
-        document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
+        // **************** sandbox below **********
 
 
+        // function nextMonth(){
+        //   console.log("I was clicked")
+        // }
 
-        // passing in day_no which is the value (0 -6) of the first day of the month and number_of_days which is the number of days in each month
+        // ********** end of sandbox *******************
 
-        var makeCalendar = function(day_no, number_of_days){
+
+        // passing in first_day_of_month which is the value (0 - 6) of the first day of the month and number_of_days which is the number of days in each month
+
+        var makeCalendar = function(first_day_of_month, number_of_days, month){
+          document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
           var table = document.createElement("table");
+          table.setAttribute("id", "calendar-table")
           var tr    = document.createElement("tr");
           // Table Heading row with names of days
           createFirstRow(table, tr)
           // create 1st row of dates.  First loop looks to see which day (sunday -friday) is the first of the month and then puts a '1'in that td.
           tr = document.createElement("tr");
           for(var i = 0; i < 7; i++){
-            if(i >= day_no){
+            if(i >= first_day_of_month){
               break;
             }
             // this section creates a td and puts a blank string in until the loop reaches the first day of the month
@@ -101,7 +77,7 @@
 
             // creates 2nd, 3rd and 4th date rows
               //conditional to determine if the first day of the month starts on Friday AND has 31 days.  They need an extra row, so we need to loop through 4 times
-              if(number_of_days === 31 && day_no === 5){
+              if(number_of_days === 31 && first_day_of_month === 5){
                 for(var t = 0; t < 4; t++){
                   var tr = document.createElement("tr")
                   for(var i = 0; i < 7; i++){
@@ -144,8 +120,6 @@
         }
         // end ---> of make_calendar function <------//
 
-        //invokes function to build the calendar
-        makeCalendar(day_no, number_of_days)
 
         function createFirstRow(table, tr){
           for(var i = 0; i < 7 ; i++){
@@ -187,6 +161,40 @@
             };
             count++;
         };
+
+        var monthSelector = function(month){
+
+          console.log(month)
+          // var month = date.getMonth()
+
+          var calendar = document.getElementById("calendar-table")
+            if(calendar){
+              console.log("delete calendar condiational")
+              calendar.remove()
+            }
+          // need to determine the first day of the month so we know which day of the week is the first day of the month
+            // need to pass year variable (year varialbe currently returns the current year via date contstructor)
+          var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
+
+          // passes in year and month variable, along with 0 (which means last day of month) in order to store the number of days in a month into number_of_days varialbe
+          var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
+
+          makeCalendar(first_day_of_month, number_of_days, month)
+        }
+
+
+
+        var monthChange = function(newValue, oldValue){
+          console.log(newValue)
+          console.log(oldValue)
+        };
+
+        // var scope.changeMonth.increment = function(count){
+        //   monthSelector(count)
+        // }
+
+
+
 
       }
     }

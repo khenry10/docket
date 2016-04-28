@@ -17,6 +17,7 @@
     Events
   ])
   .controller("IndexController", [
+    "$scope",
     "Events",
     "$state",
     IndexController
@@ -24,6 +25,7 @@
   .controller("NewEventsController", [
     "Events",
     "$state",
+    "$window",
     NewEventsController
   ])
 
@@ -52,36 +54,41 @@
     return Events
   };
 
-  function IndexController(Events, scope){
+  function IndexController($scope, Events){
     var vm = this
     vm.events = Events.all;
 
-    vm.nextMonth = function(){
-      calendarDirective.makeCalendar(5, 30)
-      console.log("I was clicked xoxo")
+    var date = new Date()
+    // working on code to change the month
+    $scope.changeMonth = {
+      count: 3,
+      increment: function(){
+        this.count++
+      }
     }
+    console.log($scope)
+
+    // vm.countIncrement = function(){
+    //   vm.changeMonth.count++
+    //   console.log(vm.changeMonth.count)
+    //
+    // }
   };
 
-  function NewEventsController(Events, $state){
+  function NewEventsController(Events, $state, $window){
     var newVM = this;
     newVM.new_event = new Events();
     newVM.create = function(){
       console.log(newVM.new_event)
       newVM.new_event.$save().then(function(response){
-        $state.go("index")
+        $window.location.replace("/#/")
       })
     }
 
   }
 
 
-//working on code to change the month
-  // $scope.month = {
-  //   april: 3
-  // }
-  //
-  // $scope.selectMonth = {
-  //   result: $scope.month[0]
-  // }
+
+
 
 })();

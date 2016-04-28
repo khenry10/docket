@@ -6,14 +6,14 @@
     </div>
     <div class="add-event">
       <form action="/" method="POST">
-        
+
     </div>
   </div>
 
   <div class="calendar">
     <!-- working on code to change the button -->
-    <!-- <button data-ng-model="selectMonth.result" -->
+    <button data-ng-model="changeMonth.count" ng-click="changeMonth.increment()"> > </button>
     <!-- <button type="button" data-ng-click="indexVM.nextMonth()" class="next-month"> > </button> -->
-    <calendar-directive></calendar-directive>
+    <calendar-directive change-month="changeMonth.count"></calendar-directive>
   </div>
 </div>
