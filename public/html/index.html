@@ -4,15 +4,14 @@
     <div data-ng-repeat="event in indexVM.events">
       {{event.name}} on {{event.date}}
     </div>
-    <div class="add-event">
-      <form action="/" method="POST">
-
-    </div>
   </div>
 
   <div class="calendar">
-    <button data-ng-model="changeMonth.count" ng-click="changeMonth.decrement()"> < </button>
-    <button data-ng-model="changeMonth.count" ng-click="changeMonth.increment()"> > </button>
+    <div class="calendar-navigation">
+      <button data-ng-model="changeMonth.count" ng-click="changeMonth.decrement()"> < </button>
+        <h2><span id="calendar-month-year"></span></h2>
+      <button data-ng-model="changeMonth.count" ng-click="changeMonth.increment()"> > </button>
+    </div>
     <calendar-directive change-month="changeMonth.count"></calendar-directive>
   </div>
 </div>
