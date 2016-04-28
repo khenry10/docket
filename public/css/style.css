@@ -45,3 +45,12 @@ td {
   background-color: #81CFE0;
   color: white;
 }
+
+ul {
+  list-style: none;
+  font-size: 14px;
+}
+
+li {
+  text-align: left;
+}

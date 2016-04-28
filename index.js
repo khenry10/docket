@@ -9,7 +9,9 @@ var Events   = mongoose.model("Events");
 
 app.use("/assets", express.static("public"));
 
+//boilerplate to use body parser
 app.use(parser.urlencoded({extended: true}));
+// boilerplate for body-parser, need to when submiting data from angular since it utilizes ajax calls
 app.use(parser.json());
 
 //boilerplate to use handlebars
@@ -36,7 +38,7 @@ app.get('/api', function(req, res){
 // creates event
 app.post("/api", function(req, res){
   console.log(req.body)
-  Events.create({name: req.body.name}).then(function(){
+  Events.create(req.body).then(function(){
     res.redirect("/")
 
   })

@@ -28,7 +28,7 @@
         var date = new Date()
 
         // var month = date.getMonth() //returns 0-11 (0 is Janauary)
-        var month = 4
+        var month = 3
 
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -157,28 +157,36 @@
         };
 
         function createTableRows(table, td, count, p, tr, number_of_days, month){
+            //creates a td attribute which is one 1 in the table
             var td = document.createElement("td");
+            //creates a paragraph attribute, which is where the name of the event will render on the calendar
             var p = document.createElement("p")
+            //setting a class attribute in the p tag, with a name of "a" + whatever the count is so we can target with class
             p.setAttribute("class",  "a"+count)
+            // innerHTML of td is what the user sees on teh calendar
             td.innerHTML = count;
+            // in order to handle multiple events on the same day, need to create ul and then have each event name be an li
+            var ul = document.createElement("ul");
+            //then need to append the ul to the p tag, p tag to the td and then the td to the table row
+            p.appendChild(ul)
             td.appendChild(p);
             tr.appendChild(td);
 
 
-            // Events.all[1] accesses the part of the object that actually stores the event data, the object had a bunch of other shit too
+            // Events.all[1] accesses the part of the object that actually stores the event data.
+              //we have a conditional to see if the month of the object is the same month we are currently displaying
             if(Events.all[1].month == month){
+                //loop through all the events to see if the date of the event is the same as the count, if yes, we set the p tag to the name of the event
               for(var i = 0; i < Events.all.length; i++ ){
                 if(Events.all[i].date === count){
-                  p.innerHTML = Events.all[i].name;
+                  var li = document.createElement("li")
+                  li.innerHTML = Events.all[i].name;
+                  ul.appendChild(li)
                 };
               };
             };
             count++;
         };
-
-
-
-
 
       }
     }
