@@ -13,6 +13,17 @@
       templateUrl: "/assets/html/_calendar.html",
       link: function(){
 
+
+      // code to change the month
+        //  scope.$watch('filterPosition', filterWatch, true);
+         //
+        //  function filterWatch(newValue, oldValue){
+        //
+        //  }
+
+
+        // ************* Date contstructor funciton anad date logic below *************************
+
         // storing the date constructor function in a varialbe named "date"
         var date = new Date()
 
@@ -56,12 +67,11 @@
         }
 
         document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
-        console.log(document)
+
 
 
         // passing in day_no which is the value (0 -6) of the first day of the month and number_of_days which is the number of days in each month
-        console.log(day_no)
-        console.log(number_of_days)
+
         var makeCalendar = function(day_no, number_of_days){
           var table = document.createElement("table");
           var tr    = document.createElement("tr");
