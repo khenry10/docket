@@ -81,7 +81,8 @@
     newVM.create = function(){
       console.log(newVM.new_event)
       newVM.new_event.$save().then(function(response){
-        $window.location.replace("/#/")
+        // $window.location.replace("/")
+        $state.go("index")
       })
     }
 

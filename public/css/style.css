@@ -61,10 +61,34 @@ li {
   text-align: left;
 }
 
+.new-event-form ul {
+  /*padding: 20px;*/
+}
+
 .calendar-navigation {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   margin: 0 auto;
-  width: 30%;
+  width: 50%;
+}
+
+input[type=text] {
+  width: 150px;
+  height: 30px;
+  border-radius: 10px;
+}
+
+button {
+  /*padding: 10px;*/
+  margin: 15px;
+  font-size: 12px;
+  border-radius: 10px;
+  background-color: #bdc3c7;
+  color: white;
+  font-weight: bold;
+}
+
+button:hover {
+  box-shadow: 2px 2px 2px white;
 }
