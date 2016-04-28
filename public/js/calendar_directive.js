@@ -12,13 +12,12 @@
     return {
       templateUrl: "/assets/html/_calendar.html",
       scope: {
-        wombat: '=changeMonth'
+        month: '=changeMonth'
       },
       link: function(scope){
-        console.log(scope.changeMonth)
 
-      // code to change the month
-      scope.$watch('wombat', function(newValue, oldValue){
+      // $watch listens for changes that occur in the view/model.  The "<" or ">" buttons are attached to ng-model and a function in that same controller which manipluates the month (count++ or count--).  Data binding allows for this to happen the view, in the model, and passes to "change-month" in the directive, which triggers the anonymous function and passes the newValue from the model into the monthSelector function.  monthSelector deletes the current calendar HTML table and then invokes makeCalendar function with new month parameters.
+      scope.$watch('month', function(newValue, oldValue){
         monthSelector(newValue)
       }, true);
 
@@ -33,16 +32,6 @@
 
         // need to the get the current year, which gets passed into first_day_of_month
         var year = date.getFullYear()  // returns 2016
-
-        // **************** sandbox below **********
-
-
-        // function nextMonth(){
-        //   console.log("I was clicked")
-        // }
-
-        // ********** end of sandbox *******************
-
 
         // passing in first_day_of_month which is the value (0 - 6) of the first day of the month and number_of_days which is the number of days in each month
 
@@ -163,15 +152,12 @@
         };
 
         var monthSelector = function(month){
-
-          console.log(month)
-          // var month = date.getMonth()
-
+          //since this function essentially creates a new calendar with differnt month, we need to delete the original calendar HTML table first
           var calendar = document.getElementById("calendar-table")
             if(calendar){
-              console.log("delete calendar condiational")
               calendar.remove()
             }
+
           // need to determine the first day of the month so we know which day of the week is the first day of the month
             // need to pass year variable (year varialbe currently returns the current year via date contstructor)
           var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
@@ -180,21 +166,7 @@
           var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
 
           makeCalendar(first_day_of_month, number_of_days, month)
-        }
-
-
-
-        var monthChange = function(newValue, oldValue){
-          console.log(newValue)
-          console.log(oldValue)
         };
-
-        // var scope.changeMonth.increment = function(count){
-        //   monthSelector(count)
-        // }
-
-
-
 
       }
     }

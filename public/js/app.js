@@ -62,18 +62,14 @@
     var date = new Date()
     // working on code to change the month
     $scope.changeMonth = {
-      count: 3,
+      count: date.getMonth(),
       increment: function(){
         this.count++
+      },
+      decrement: function(){
+        this.count--
       }
-    }
-    console.log($scope)
-
-    // vm.countIncrement = function(){
-    //   vm.changeMonth.count++
-    //   console.log(vm.changeMonth.count)
-    //
-    // }
+    };
   };
 
   function NewEventsController(Events, $state, $window){
