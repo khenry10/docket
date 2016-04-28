@@ -23,10 +23,6 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
-// route that directs to event.hbs, which is where we bootstrap angular
-app.get("/", function(req, res){
-  res.render("event")
-})
 
 // all events endpoint
 app.get('/api', function(req, res){
@@ -41,6 +37,11 @@ app.post("/api", function(req, res){
     res.redirect("/")
 
   })
+})
+
+// route that directs to event.hbs, which is where we bootstrap angular
+app.get("/*", function(req, res){
+  res.render("event")
 })
 
 app.listen(3002, function(){
