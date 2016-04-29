@@ -38,8 +38,10 @@ td {
   color: white;
   position: fixed;
   float: left;
-  width: 25%;
+  width: 22%;
   height: 100%;
+  text-align: left;
+  padding: 20px;
 }
 
 .calendar {
@@ -51,13 +53,16 @@ td {
   margin-bottom: 0;
 }
 
+
+
 ul {
   list-style: none;
   font-size: 14px;
+  padding: 0;
 }
 
 li {
-  text-align: left;
+  text-align: center;
 }
 
 .new-event-form ul {
@@ -94,4 +99,8 @@ button:hover {
 
 input {
   margin: 3px;
+}
+
+h2 {
+  text-align: center;
 }
