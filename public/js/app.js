@@ -30,7 +30,7 @@
   ])
   .controller("ShowEventsController", [
     "Events",
-    "$window",
+    "$stateParams",
     ShowEventsController
   ])
 
@@ -44,10 +44,16 @@
       controllerAs: "indexVM"
     })
     .state("new", {
-      url:"/new",
+      url: "/new",
       templateUrl: "/assets/html/new.html",
       controller: "NewEventsController",
       controllerAs: "newVM"
+    })
+    .state("show", {
+      url: "/:name",
+      templateUrl: "/assets/html/show.html",
+      controller: "ShowEventsController",
+      controllerAs: "showVM"
     })
   }
 
@@ -100,8 +106,10 @@
     }
   }
 
-  function ShowEventsController(Events, $window){
-      var deleteVM = this;
+  function ShowEventsController(Events, $stateParams){
+      var vm = this;
+      Events.find("name", $statePar)
+
       deleteVM.event = this.Events
       deleteVM.delete = function(){
 
