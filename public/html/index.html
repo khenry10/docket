@@ -13,8 +13,10 @@
         </form>
       </div>
     </div>
-    <div data-ng-repeat="event in indexVM.events">
-      {{event.name}} on {{event.date}} 
+    <div data-ng-repeat="event in indexVM.events"  data-ng-model="changeMonth.count">
+      <div data-ng-if="changeMonth.count == event.month">
+        {{event.name}} on {{event.date}} 
+      </div>
     </div>
   </div>
 

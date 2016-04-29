@@ -90,10 +90,8 @@
       },
       current_month: function(){
       this.count = date.getMonth()
-      },
-      month: this.count
+      }
     }
-      console.log($scope.changeMonth.month)
   };
 
   function NewEventsController(Events, $state, $window){

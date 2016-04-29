@@ -91,3 +91,7 @@ button {
 button:hover {
   box-shadow: 2px 2px 2px white;
 }
+
+input {
+  margin: 3px;
+}
