@@ -135,19 +135,19 @@
             td.appendChild(p);
             tr.appendChild(td);
 
-
             // Events.all[1] accesses the part of the object that actually stores the event data.
               //we have a conditional to see if the month of the object is the same month we are currently displaying
-            if(Events.all[1].month == month){
                 //loop through all the events to see if the date of the event is the same as the count, if yes, we set the p tag to the name of the event
+                  //lastly, we incremnt the count
               for(var i = 0; i < Events.all.length; i++ ){
-                if(Events.all[i].date === count){
-                  var li = document.createElement("li")
-                  li.innerHTML = Events.all[i].name;
-                  ul.appendChild(li)
-                };
+                if(Events.all[i].month === month){
+                  if(Events.all[i].date === count){
+                    var li = document.createElement("li")
+                    li.innerHTML = Events.all[i].name;
+                    ul.appendChild(li)
+                  }
+                }
               };
-            };
             count++;
         };
 
