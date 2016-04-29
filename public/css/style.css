@@ -19,10 +19,11 @@ table {
 }
 
 td {
-  outline: 1px solid white;
-  width: 120px;
+  border: 2px solid white;
+  width: 133px;
   height: 100px;
   align-content: center;
+  border-radius: 4px;
 }
 
 /*.a22 {
@@ -44,11 +45,9 @@ td {
 .calendar {
   top: 0;
   width: 75%;
-  /*height: 100%;*/
   float: right;
   background-color: #81CFE0;
   color: white;
-  /*position: fixed;*/
   margin-bottom: 0;
 }
 

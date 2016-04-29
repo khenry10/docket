@@ -5,7 +5,7 @@
       <div data-ng-controller="NewEventsController as newVM">
         <form>
           <ul>
-            <li><input type="text" data-ng-model="newVM.new_event.name" placeholder="Name"/></li>
+            <li><input type="text" data-ng-model="newVM.new_event.name" placeholder="name of event"/></li>
             <li><input type="text" data-ng-model="newVM.new_event.date" placeholder="date"/></li>
             <li><input type="text" data-ng-model="newVM.new_event.month" placeholder="month"/><li>
             <button ng-click="newVM.create()"> Add Event </button>
@@ -14,7 +14,7 @@
       </div>
     </div>
     <div data-ng-repeat="event in indexVM.events">
-      {{event.name}} on {{event.date}}
+      {{event.name}} on {{event.date}} <button ng-click=""> X </button>
     </div>
   </div>
 

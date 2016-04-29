@@ -28,6 +28,11 @@
     "$window",
     NewEventsController
   ])
+  .controller("ShowEventsController", [
+    "Events",
+    "$window",
+    ShowEventsController
+  ])
 
   function router($stateProvider, $locationProvider){
     $locationProvider.html5Mode(true);
@@ -59,8 +64,16 @@
     var vm = this
     vm.events = Events.all;
 
+    vm.this_months_events = function(){
+      for(var i = 0; i < Events.all.length; i++) {
+        if(Events.all[i].month === changeMonth.count) {
+          return Events.all[i].month
+        }
+      }
+    }
+
     var date = new Date()
-    // working on code to change the month
+
     $scope.changeMonth = {
       count: date.getMonth(),
       increment: function(){
@@ -71,25 +84,28 @@
       },
       current_month: function(){
       this.count = date.getMonth()
-      }
-    };
+      },
+      month: this.count
+    }
+      console.log($scope.changeMonth.month)
   };
 
   function NewEventsController(Events, $state, $window){
     var newVM = this;
     newVM.new_event = new Events();
     newVM.create = function(){
-      // console.log(newVM.new_event)
       newVM.new_event.$save().then(function(response){
-        // $window.location.replace("/")
         $state.go("index")
       })
     }
-
   }
 
+  function ShowEventsController(Events, $window){
+      var deleteVM = this;
+      deleteVM.event = this.Events
+      deleteVM.delete = function(){
 
-
-
+      }
+  }
 
 })();
