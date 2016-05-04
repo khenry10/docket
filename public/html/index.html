@@ -15,13 +15,14 @@
     </div>
     <div data-ng-repeat="event in indexVM.events"  data-ng-model="changeMonth.count">
       <div data-ng-if="changeMonth.count == event.month">
-        {{event.name}} on the {{event.date}} 
+        {{event.name}} on the {{event.date}}
       </div>
     </div>
   </div>
 
   <div class="calendar">
     <div class="calendar-navigation">
+      {{changeMonth.count}}
       <button data-ng-model="changeMonth.count" ng-click="changeMonth.current_month()"> Current Month </button>
       <button data-ng-model="changeMonth.count" ng-click="changeMonth.decrement()"> < </button>
         <h2><span id="calendar-month-year"></span></h2>

@@ -83,10 +83,16 @@
     $scope.changeMonth = {
       count: date.getMonth(),
       increment: function(){
-        this.count++
+        if(this.count > 10){
+          this.count = 0
+        } else
+          this.count++
       },
       decrement: function(){
-        this.count--
+        if(this.count < 1) {
+          this.count = 11
+        } else
+          this.count--
       },
       current_month: function(){
       this.count = date.getMonth()
@@ -99,7 +105,7 @@
     newVM.new_event = new Events();
     newVM.create = function(){
       newVM.new_event.$save().then(function(response){
-        $state.go("index")
+        $state.refresh("index")
       })
     }
   }
