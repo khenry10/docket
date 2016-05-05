@@ -164,21 +164,48 @@
 
         var monthSelector = function(month){
           //since this function essentially creates a new calendar with differnt month, we need to delete the original calendar HTML table first
-          console.log(month)
+          console.log("****************************cal-div month BEFORE condidtional = " + month)
 
           var calendar = document.getElementById("calendar-table")
             if(calendar){
               calendar.remove()
             }
 
-          // need to determine the first day of the month so we know which day of the week is the first day of the month
-            // need to pass year variable (year varialbe currently returns the current year via date contstructor)
-          var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
+            if(month > 11){
+              console.log("*** start of month > 11 ****")
+              console.log("calendar-Directive month = " + month)
+              console.log("before year--; year = " + year)
 
-          // passes in year and month variable, along with 0 (which means last day of month) in order to store the number of days in a month into number_of_days varialbe
-          var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
+              month = 0
+              year++
 
-          makeCalendar(first_day_of_month, number_of_days, month, year)
+
+              console.log("after year++; year = " + year)
+              console.log("****** end of month > 11 ********");
+              // need to determine the first day of the month so we know which day of the week is the first day of the month
+              // need to pass year variable (year varialbe currently returns the current year via date contstructor)
+              var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
+
+              // passes in year and month variable, along with 0 (which means last day of month) in order to store the number of days in a month into number_of_days varialbe
+              var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
+
+              makeCalendar(first_day_of_month, number_of_days, month, year)
+            } else if (month < 0) {
+              console.log("*** start of month < 0 ****")
+              console.log("calendar-Directive month = " + month)
+              console.log("before year--; year = " + year)
+                month = 11
+                year--
+                console.log("after year--; year = " + year)
+                console.log("****** end of month < 0 ***");
+                var first_day_of_month = new Date(year, month, 1).getDay()
+                var number_of_days = new Date(year, month+1, 0).getDate()
+                makeCalendar(first_day_of_month, number_of_days, month, year)
+            }
+            var first_day_of_month = new Date(year, month, 1).getDay()
+            var number_of_days = new Date(year, month+1, 0).getDate()
+            makeCalendar(first_day_of_month, number_of_days, month, year)
+            console.log("****************************cal-div month AFTER condidtional = " + month)
         };
 
       }

@@ -26,6 +26,7 @@
     "Events",
     "$state",
     "$window",
+    "$timeout",
     NewEventsController
   ])
   .controller("ShowEventsController", [
@@ -66,7 +67,7 @@
     return Events
   };
 
-  function IndexController($scope, Events){
+  function IndexController($scope, Events, $timeout){
     var vm = this
     vm.events = Events.all;
 
@@ -83,31 +84,27 @@
     $scope.changeMonth = {
       count: date.getMonth(),
       increment: function(){
-        if(this.count > 10){
-          this.count = 0,
-          $scope.changeYear.increment()
+        if(this.count > 11){
+          this.count = 1
+        
+          console.log("****** controller increment CONDITIONAL count = " + this.count)
         } else
           this.count++
+          console.log("controller increment count = " + this.count)
       },
       decrement: function(){
-        if(this.count < 1) {
-          this.count = 11,
-          $scope.changeYear.decrement()
-        } else
+        if(this.count < 0) {
+          this.count = 10
+          console.log("****** controller decrement CONDITIONAL count = " + this.count)
+        } else if (this.count === -1) {
+          this.count = 10
+        }
+        else
           this.count--
+          console.log("controller decrement count = " + this.count)
       },
       current_month: function(){
       this.count = date.getMonth()
-      }
-    }
-
-    $scope.changeYear = {
-      year: date.getFullYear(),
-      increment: function(){
-        this.year++
-      },
-      decrement: function(){
-        this.year--
       }
     }
   };
