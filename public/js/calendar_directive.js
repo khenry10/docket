@@ -12,14 +12,21 @@
     return {
       templateUrl: "/assets/html/_calendar.html",
       scope: {
-        month: '=changeMonth'
+        month: '=changeMonth',
+        year: '=changeYear'
       },
       link: function(scope){
 
       // $watch listens for changes that occur in the view/model.  The "<" or ">" buttons are attached to ng-model and a function in that same controller which manipluates the month (count++ or count--).  Data binding allows for this to happen the view, in the model, and passes to "change-month" in the directive, which triggers the anonymous function and passes the newValue from the model into the monthSelector function.  monthSelector deletes the current calendar HTML table and then invokes makeCalendar function with new month parameters.
-      scope.$watch('month', function(newValue, oldValue){
-        monthSelector(newValue)
+      scope.$watch('month', function(newMonth, oldValue){
+        monthSelector(newMonth)
       }, true);
+
+      // scope.$watch('year', function(newYear, oldValue){
+      //   year(newYear)
+      //   console.log(newYear)
+      // }, true);
+
 
         // array of actual month names since the constructor function returns 0-11
         var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -31,11 +38,13 @@
         var date = new Date()
 
         // need to the get the current year, which gets passed into first_day_of_month
-        var year = date.getFullYear()  // returns 2016
+        var year = date.getFullYear() // returns 2016
 
         // passing in first_day_of_month which is the value (0 - 6) of the first day of the month and number_of_days which is the number of days in each month
 
-        var makeCalendar = function(first_day_of_month, number_of_days, month){
+
+
+        var makeCalendar = function(first_day_of_month, number_of_days, month, year){
           document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
           var table = document.createElement("table");
           table.setAttribute("id", "calendar-table")
@@ -151,8 +160,12 @@
             count++;
         };
 
+
+
         var monthSelector = function(month){
           //since this function essentially creates a new calendar with differnt month, we need to delete the original calendar HTML table first
+          console.log(month)
+
           var calendar = document.getElementById("calendar-table")
             if(calendar){
               calendar.remove()
@@ -165,7 +178,7 @@
           // passes in year and month variable, along with 0 (which means last day of month) in order to store the number of days in a month into number_of_days varialbe
           var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
 
-          makeCalendar(first_day_of_month, number_of_days, month)
+          makeCalendar(first_day_of_month, number_of_days, month, year)
         };
 
       }

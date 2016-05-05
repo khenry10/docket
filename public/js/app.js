@@ -84,18 +84,30 @@
       count: date.getMonth(),
       increment: function(){
         if(this.count > 10){
-          this.count = 0
+          this.count = 0,
+          $scope.changeYear.increment()
         } else
           this.count++
       },
       decrement: function(){
         if(this.count < 1) {
-          this.count = 11
+          this.count = 11,
+          $scope.changeYear.decrement()
         } else
           this.count--
       },
       current_month: function(){
       this.count = date.getMonth()
+      }
+    }
+
+    $scope.changeYear = {
+      year: date.getFullYear(),
+      increment: function(){
+        this.year++
+      },
+      decrement: function(){
+        this.year--
       }
     }
   };
