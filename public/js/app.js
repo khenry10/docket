@@ -82,39 +82,43 @@
     var date = new Date()
 
     $scope.changeMonth = {
-      count: date.getMonth(),
+      count: date.getMonth()+1,
       increment: function(){
         if(this.count > 11){
           this.count = 1
-        
-          console.log("****** controller increment CONDITIONAL count = " + this.count)
-        } else
+        } else if (this.count === -1){
+          this.count = 11
+        }
+        else
           this.count++
-          console.log("controller increment count = " + this.count)
       },
       decrement: function(){
         if(this.count < 0) {
           this.count = 10
-          console.log("****** controller decrement CONDITIONAL count = " + this.count)
         } else if (this.count === -1) {
           this.count = 10
         }
         else
           this.count--
-          console.log("controller decrement count = " + this.count)
       },
       current_month: function(){
       this.count = date.getMonth()
       }
     }
+
+    $scope.changeYear = {
+      year: date.getFullYear()
+    }
+
   };
+
 
   function NewEventsController(Events, $state, $window){
     var newVM = this;
     newVM.new_event = new Events();
     newVM.create = function(){
       newVM.new_event.$save().then(function(response){
-        $state.refresh("index")
+        $state.go("index")
       })
     }
   }

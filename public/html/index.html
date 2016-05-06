@@ -8,6 +8,7 @@
             <li><input type="text" data-ng-model="newVM.new_event.name" placeholder="name of event"/></li>
             <li><input type="text" data-ng-model="newVM.new_event.date" placeholder="date"/></li>
             <li><input type="text" data-ng-model="newVM.new_event.month" placeholder="month"/><li>
+              <li><input type="date" data-ng-model="newVM.new_event.start_time" placeholder="Date"/><li>
             <button ng-click="newVM.create()"> Add Event </button>
           </ul>
         </form>
@@ -15,7 +16,7 @@
     </div>
     <div data-ng-repeat="event in indexVM.events"  data-ng-model="changeMonth.count">
       <div data-ng-if="changeMonth.count == event.month">
-        {{event.name}} on the {{event.date}}
+        {{event.name}} on the {{event.start_time}}
       </div>
     </div>
   </div>
@@ -28,6 +29,6 @@
         <h2><span id="calendar-month-year"></span></h2>
       <button data-ng-model="changeMonth.count" ng-click="changeMonth.increment()"> > </button>
     </div>
-    <calendar-directive change-month="changeMonth.count"></calendar-directive>
+    <calendar-directive change-month="changeMonth.count" change-year="changeYear.year"></calendar-directive>
   </div>
 </div>

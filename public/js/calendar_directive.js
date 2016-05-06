@@ -22,14 +22,16 @@
         monthSelector(newMonth)
       }, true);
 
-      // scope.$watch('year', function(newYear, oldValue){
-      //   year(newYear)
-      //   console.log(newYear)
-      // }, true);
+      scope.$watch('year', function(newYear, oldValue){
+        yearSelector(newYear)
+      }, true);
 
+      var yearSelector = function(newYear){
+        console.log(newYear)
+      };
 
         // array of actual month names since the constructor function returns 0-11
-        var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
         //  array of names of the days of the week since the contstructor fucntion return 0-6
         var days_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -41,8 +43,6 @@
         var year = date.getFullYear() // returns 2016
 
         // passing in first_day_of_month which is the value (0 - 6) of the first day of the month and number_of_days which is the number of days in each month
-
-
 
         var makeCalendar = function(first_day_of_month, number_of_days, month, year){
           document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
@@ -128,6 +128,10 @@
           table.appendChild(tr)
         };
 
+        var test = Events.all[1].start_time.split("-")
+
+        console.log(test)
+
         function createTableRows(table, td, count, p, tr, number_of_days, month){
             //creates a td attribute which is one 1 in the table
             var td = document.createElement("td");
@@ -148,23 +152,49 @@
               //we have a conditional to see if the month of the object is the same month we are currently displaying
                 //loop through all the events to see if the date of the event is the same as the count, if yes, we set the p tag to the name of the event
                   //lastly, we incremnt the count
+
               for(var i = 0; i < Events.all.length; i++ ){
-                if(Events.all[i].month === month){
-                  if(Events.all[i].date === count){
-                    var li = document.createElement("li")
-                    li.innerHTML = Events.all[i].name;
-                    ul.appendChild(li)
+                var eventDate = Events.all[i].start_time
+                var eventDate = eventDate.split("-")
+
+                console.log(eventDate)
+                var eventYear = parseInt(eventDate[0])
+                var eventMonth = parseInt(eventDate[1])
+                var eventDay = parseInt(eventDate[2].substr(0,2))
+                console.log(eventYear)
+                console.log(eventMonth)
+                console.log(eventDay)
+
+                if(eventYear === year){
+                  if(eventMonth === month){
+                    if(eventDay === count){
+                      console.log("yes 2x")
+                      var li = document.createElement("li")
+                      li.innerHTML = Events.all[i].name;
+                      console.log(li)
+                      ul.appendChild(li)
+                    }
                   }
                 }
-              };
-            count++;
+              }
+              count++
+
+            //   for(var i = 0; i < Events.all.length; i++ ){
+            //     if(Events.all[i].month === month){
+            //       if(Events.all[i].date === count){
+            //         var li = document.createElement("li")
+            //         li.innerHTML = Events.all[i].name;
+            //         ul.appendChild(li)
+            //       }
+            //     }
+            //   };
+            // count++;
         };
 
 
 
         var monthSelector = function(month){
           //since this function essentially creates a new calendar with differnt month, we need to delete the original calendar HTML table first
-          console.log("****************************cal-div month BEFORE condidtional = " + month)
 
           var calendar = document.getElementById("calendar-table")
             if(calendar){
@@ -172,16 +202,9 @@
             }
 
             if(month > 11){
-              console.log("*** start of month > 11 ****")
-              console.log("calendar-Directive month = " + month)
-              console.log("before year--; year = " + year)
-
               month = 0
               year++
 
-
-              console.log("after year++; year = " + year)
-              console.log("****** end of month > 11 ********");
               // need to determine the first day of the month so we know which day of the week is the first day of the month
               // need to pass year variable (year varialbe currently returns the current year via date contstructor)
               var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
@@ -191,21 +214,18 @@
 
               makeCalendar(first_day_of_month, number_of_days, month, year)
             } else if (month < 0) {
-              console.log("*** start of month < 0 ****")
-              console.log("calendar-Directive month = " + month)
-              console.log("before year--; year = " + year)
                 month = 11
                 year--
-                console.log("after year--; year = " + year)
-                console.log("****** end of month < 0 ***");
+
                 var first_day_of_month = new Date(year, month, 1).getDay()
                 var number_of_days = new Date(year, month+1, 0).getDate()
                 makeCalendar(first_day_of_month, number_of_days, month, year)
             }
+
             var first_day_of_month = new Date(year, month, 1).getDay()
             var number_of_days = new Date(year, month+1, 0).getDate()
             makeCalendar(first_day_of_month, number_of_days, month, year)
-            console.log("****************************cal-div month AFTER condidtional = " + month)
+
         };
 
       }
