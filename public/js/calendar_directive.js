@@ -31,7 +31,7 @@
       };
 
         // array of actual month names since the constructor function returns 0-11
-        var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
         //  array of names of the days of the week since the contstructor fucntion return 0-6
         var days_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -166,7 +166,7 @@
                 console.log(eventDay)
 
                 if(eventYear === year){
-                  if(eventMonth === month){
+                  if(eventMonth-1 === month){
                     if(eventDay === count){
                       console.log("yes 2x")
                       var li = document.createElement("li")

@@ -82,7 +82,7 @@
     var date = new Date()
 
     $scope.changeMonth = {
-      count: date.getMonth()+1,
+      count: date.getMonth(),
       increment: function(){
         if(this.count > 11){
           this.count = 1
