@@ -190,48 +190,41 @@
 
           var calendar = document.getElementById("calendar-table")
             if(calendar){
-              "calendar REMOVED"
               calendar.remove()
             }
 
             if(month === 12 && month_history.pop() === 1){
-              console.log("if(month === 12 && month_history.pop() === 1) activated")
               month = 12
               year--
 
-              calendar.remove()
+              // document.getElementById("calendar-table").remove()
               month_history.push(month)
               // need to determine the first day of the month so we know which day of the week is the first day of the month
               // need to pass year variable (year varialbe currently returns the current year via date contstructor)
-              var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
+              var first_day_of_month = new Date(year, month-1, 1).getDay() //returns 5 (which is Friday) for April
 
               // passes in year and month variable, along with 0 (which means last day of month) in order to store the number of days in a month into number_of_days varialbe
               var number_of_days = new Date(year, month, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
 
               makeCalendar(first_day_of_month, number_of_days, month, year)
+
             } else if (month === 1 && month_history.pop() === 12) {
-              console.log("else if (month === 1 && month_history.pop() === 12) ACTIVATED")
                 month = 1
                 year++
 
                 month_history.push(month)
 
-                calendar.remove()
-
-                var first_day_of_month = new Date(year, month, 1).getDay()
+                var first_day_of_month = new Date(year, month-1, 1).getDay()
                 var number_of_days = new Date(year, month, 0).getDate()
                 makeCalendar(first_day_of_month, number_of_days, month, year)
-            } else
-            console.log("else ACTIVATED")
 
-            month_history.push(month)
-            var first_day_of_month = new Date(year, month-1, 1).getDay()
-            var number_of_days = new Date(year, month+1, 0).getDate()
-            makeCalendar(first_day_of_month, number_of_days, month, year)
-            console.log("*******")
-            console.log("month = " + month)
-            console.log("month_history = " + month_history)
-            console.log("*******")
+            } else {
+              month_history.push(month)
+              var first_day_of_month = new Date(year, month-1, 1).getDay()
+              var number_of_days = new Date(year, month, 0).getDate()
+              makeCalendar(first_day_of_month, number_of_days, month, year)
+
+            }
         };
 
       }
