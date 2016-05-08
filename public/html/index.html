@@ -6,20 +6,22 @@
         <form>
           <ul>
             <li><input type="text" data-ng-model="newVM.new_event.name" placeholder="name of event"/></li>
-            <li><input type="text" data-ng-model="newVM.new_event.date" placeholder="date"/></li>
-            <li><input type="text" data-ng-model="newVM.new_event.month" placeholder="month"/><li>
-              <li><input type="date" data-ng-model="newVM.new_event.start_time" placeholder="Date"/><li>
+            <li><input type="date" data-ng-model="newVM.new_event.start_time" placeholder="Date"/><li>
             <button ng-click="newVM.create()"> Add Event </button>
           </ul>
         </form>
       </div>
     </div>
-    <div data-ng-repeat="event in indexVM.events"  data-ng-model="changeMonth.count">
-      <div data-ng-if="changeMonth.count == event.month">
-        {{event.name}} on the {{event.start_time}}
+    <div data-ng-repeat="event in indexVM.events" data-ng-model="changeMonth.count">
+      <div data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1)">
+          count = {{changeMonth.count}} month = {{event.start_time.substr(6,1)}}
+
+          {{event.name}}
+
       </div>
     </div>
   </div>
+</div>
 
   <div class="calendar">
     <div class="calendar-navigation">

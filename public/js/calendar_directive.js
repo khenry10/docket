@@ -27,7 +27,7 @@
       }, true);
 
       var yearSelector = function(newYear){
-        console.log(newYear)
+
       };
 
         // array of actual month names since the constructor function returns 0-11
@@ -130,7 +130,7 @@
 
         var test = Events.all[1].start_time.split("-")
 
-        console.log(test)
+
 
         function createTableRows(table, td, count, p, tr, number_of_days, month){
             //creates a td attribute which is one 1 in the table
@@ -157,21 +157,16 @@
                 var eventDate = Events.all[i].start_time
                 var eventDate = eventDate.split("-")
 
-                console.log(eventDate)
+                
                 var eventYear = parseInt(eventDate[0])
                 var eventMonth = parseInt(eventDate[1])
                 var eventDay = parseInt(eventDate[2].substr(0,2))
-                console.log(eventYear)
-                console.log(eventMonth)
-                console.log(eventDay)
 
                 if(eventYear === year){
                   if(eventMonth-1 === month){
                     if(eventDay === count){
-                      console.log("yes 2x")
                       var li = document.createElement("li")
                       li.innerHTML = Events.all[i].name;
-                      console.log(li)
                       ul.appendChild(li)
                     }
                   }

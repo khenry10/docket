@@ -71,18 +71,32 @@
     var vm = this
     vm.events = Events.all;
 
-    vm.this_months_events = function(){
-      for(var i = 0; i < Events.all.length; i++) {
-        if(Events.all[i].month === changeMonth.count) {
-          return Events.all[i].month
-        }
+  // don't believe this is being used, commenting just in case 5/8/2016
+    // vm.this_months_events = function(){
+    //   for(var i = 0; i < Events.all.length; i++) {
+    //     if(Events.all[i].month === changeMonth.count) {
+    //       return Events.all[i].month
+    //     }
+    //   }
+    // }
+
+    $scope.displayMonthsEvents = {
+      this_month: function(){
+    var events_month = events.start_time.split("-")[1].substr(1,1)
+    console.log(events_month)
+    var events_month_int = parseInt(events_month)
+    console.log(events_month_int)
+      if($scope.changeMonth.count === events_month_int){
+        vm.events.name
+        console.log(vm.events.name)
       }
     }
+  }
 
     var date = new Date()
 
     $scope.changeMonth = {
-      count: date.getMonth(),
+      count: date.getMonth(), 
       increment: function(){
         if(this.count > 11){
           this.count = 1
