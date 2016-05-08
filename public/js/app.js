@@ -96,21 +96,16 @@
     var date = new Date()
 
     $scope.changeMonth = {
-      count: date.getMonth(), 
+      count: date.getMonth()+1,
       increment: function(){
         if(this.count > 11){
           this.count = 1
-        } else if (this.count === -1){
-          this.count = 11
-        }
-        else
+        } else
           this.count++
       },
       decrement: function(){
-        if(this.count < 0) {
-          this.count = 10
-        } else if (this.count === -1) {
-          this.count = 10
+        if(this.count <= 1) {
+          this.count = 12
         }
         else
           this.count--

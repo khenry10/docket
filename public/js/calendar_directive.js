@@ -31,7 +31,7 @@
       };
 
         // array of actual month names since the constructor function returns 0-11
-        var month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
         //  array of names of the days of the week since the contstructor fucntion return 0-6
         var days_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -128,9 +128,6 @@
           table.appendChild(tr)
         };
 
-        var test = Events.all[1].start_time.split("-")
-
-
 
         function createTableRows(table, td, count, p, tr, number_of_days, month){
             //creates a td attribute which is one 1 in the table
@@ -157,13 +154,13 @@
                 var eventDate = Events.all[i].start_time
                 var eventDate = eventDate.split("-")
 
-                
+
                 var eventYear = parseInt(eventDate[0])
                 var eventMonth = parseInt(eventDate[1])
                 var eventDay = parseInt(eventDate[2].substr(0,2))
 
                 if(eventYear === year){
-                  if(eventMonth-1 === month){
+                  if(eventMonth === month){
                     if(eventDay === count){
                       var li = document.createElement("li")
                       li.innerHTML = Events.all[i].name;
@@ -186,41 +183,55 @@
             // count++;
         };
 
-
+        var month_history = []
 
         var monthSelector = function(month){
           //since this function essentially creates a new calendar with differnt month, we need to delete the original calendar HTML table first
 
           var calendar = document.getElementById("calendar-table")
             if(calendar){
+              "calendar REMOVED"
               calendar.remove()
             }
 
-            if(month > 11){
-              month = 0
-              year++
+            if(month === 12 && month_history.pop() === 1){
+              console.log("if(month === 12 && month_history.pop() === 1) activated")
+              month = 12
+              year--
 
+              calendar.remove()
+              month_history.push(month)
               // need to determine the first day of the month so we know which day of the week is the first day of the month
               // need to pass year variable (year varialbe currently returns the current year via date contstructor)
               var first_day_of_month = new Date(year, month, 1).getDay() //returns 5 (which is Friday) for April
 
               // passes in year and month variable, along with 0 (which means last day of month) in order to store the number of days in a month into number_of_days varialbe
-              var number_of_days = new Date(year, month+1, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
+              var number_of_days = new Date(year, month, 0).getDate() //returns 30, which is the number of days in April.  For some reason January is month 1 here
 
               makeCalendar(first_day_of_month, number_of_days, month, year)
-            } else if (month < 0) {
-                month = 11
-                year--
+            } else if (month === 1 && month_history.pop() === 12) {
+              console.log("else if (month === 1 && month_history.pop() === 12) ACTIVATED")
+                month = 1
+                year++
+
+                month_history.push(month)
+
+                calendar.remove()
 
                 var first_day_of_month = new Date(year, month, 1).getDay()
-                var number_of_days = new Date(year, month+1, 0).getDate()
+                var number_of_days = new Date(year, month, 0).getDate()
                 makeCalendar(first_day_of_month, number_of_days, month, year)
-            }
+            } else
+            console.log("else ACTIVATED")
 
-            var first_day_of_month = new Date(year, month, 1).getDay()
+            month_history.push(month)
+            var first_day_of_month = new Date(year, month-1, 1).getDay()
             var number_of_days = new Date(year, month+1, 0).getDate()
             makeCalendar(first_day_of_month, number_of_days, month, year)
-
+            console.log("*******")
+            console.log("month = " + month)
+            console.log("month_history = " + month_history)
+            console.log("*******")
         };
 
       }
