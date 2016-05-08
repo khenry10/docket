@@ -105,14 +105,14 @@
     newVM.new_event = new Events();
     newVM.create = function(){
       newVM.new_event.$save().then(function(response){
-        $state.go("index")
+        $state.go("index",{})
       })
     }
   }
 
   function ShowEventsController(Events, $stateParams){
       var vm = this;
-      Events.find("name", $statePar)
+      Events.find("name", $stateParams)
 
       deleteVM.event = this.Events
       deleteVM.delete = function(){
