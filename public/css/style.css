@@ -104,3 +104,9 @@ input {
 h2 {
   text-align: center;
 }
+
+#calendar-dates li {
+  outline: 1px solid white;
+  background-color: white;
+  color: #81CFE0;
+}

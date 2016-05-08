@@ -13,11 +13,12 @@
       </div>
     </div>
     <div data-ng-repeat="event in indexVM.events" data-ng-model="changeMonth.count">
+      <!-- count = {{changeMonth.count}} month = {{event.start_time.substr(5,2)}} -->
       <div data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1)">
-          <!-- count = {{changeMonth.count}} month = {{event.start_time.substr(6,1)}} -->
-
           {{event.name}}
-
+      </div>
+      <div data-ng-if="changeMonth.count.toString() == event.start_time.substr(5,2)">
+          {{event.name}}
       </div>
     </div>
   </div>
