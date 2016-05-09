@@ -83,6 +83,12 @@ input[type=text] {
   border-radius: 10px;
 }
 
+input[type=date] {
+  width: 150px;
+  height: 30px;
+  border-radius: 10px;
+}
+
 button {
   /*padding: 10px;*/
   margin: 15px;
@@ -106,7 +112,7 @@ h2 {
 }
 
 #calendar-dates li {
-  outline: 1px solid white;
+  outline: 1px solid #81CFE0;
   background-color: white;
   color: #81CFE0;
 }
