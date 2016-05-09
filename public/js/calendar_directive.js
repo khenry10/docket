@@ -27,8 +27,9 @@
       }, true);
 
       var yearSelector = function(newYear){
-
+        var year1 = newYear
       };
+
 
         // array of actual month names since the constructor function returns 0-11
         var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -196,7 +197,7 @@
             if(month === 12 && month_history.pop() === 1){
               month = 12
               year--
-
+              yearSelector(year)
               // document.getElementById("calendar-table").remove()
               month_history.push(month)
               // need to determine the first day of the month so we know which day of the week is the first day of the month
@@ -211,6 +212,7 @@
             } else if (month === 1 && month_history.pop() === 12) {
                 month = 1
                 year++
+                yearSelector(year)
 
                 month_history.push(month)
 

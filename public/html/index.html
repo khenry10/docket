@@ -14,10 +14,10 @@
     </div>
     <div data-ng-repeat="event in indexVM.events" data-ng-model="changeMonth.count">
       <!-- count = {{changeMonth.count}} month = {{event.start_time.substr(5,2)}} -->
-      <div data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1)">
+      <div data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1) && changeYear.year.toString() === event.start_time.substr(0,4)">
           {{event.name}}
       </div>
-      <div data-ng-if="changeMonth.count.toString() == event.start_time.substr(5,2)">
+      <div data-ng-if="changeMonth.count.toString() == event.start_time.substr(5,2) && changeYear.year.toString() === event.start_time.substr(0,4)">
           {{event.name}}
       </div>
     </div>
@@ -26,7 +26,7 @@
 
   <div class="calendar">
     <div class="calendar-navigation">
-      <!-- {{changeMonth.count}} -->
+      {{changeYear.year}}
       <button data-ng-model="changeMonth.count" ng-click="changeMonth.current_month()"> Current Month </button>
       <button data-ng-model="changeMonth.count" ng-click="changeMonth.decrement()"> < </button>
         <h2><span id="calendar-month-year"></span></h2>
