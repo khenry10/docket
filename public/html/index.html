@@ -27,11 +27,11 @@
   <div class="calendar">
     <div class="calendar-navigation">
       {{changeMonth.count}}
-      <button data-ng-model="changeMonth.count" ng-click="changeMonth.current_month()"> Current Month </button>
+      <button data-ng-model="currentMonth.count" ng-click="currentMonth.count()"> Current Month </button>
       <button data-ng-model="changeMonth.count" ng-click="changeMonth.decrement()"> < </button>
         <h2><span id="calendar-month-year"></span></h2>
       <button data-ng-model="changeMonth.count" ng-click="changeMonth.increment()"> > </button>
     </div>
-    <calendar-directive change-month="changeMonth.count" ></calendar-directive>
+    <calendar-directive change-month="changeMonth.count" current-month="currentMonth.count" ></calendar-directive>
   </div>
 </div>

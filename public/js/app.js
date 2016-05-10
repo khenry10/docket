@@ -92,9 +92,16 @@
           this.count--
       },
       current_month: function(){
-      this.count = date
+      this.count = date.getMonth()+1
 
       // console.log(date)
+      }
+    }
+
+    $scope.currentMonth = {
+      count: function(){
+        this.count = date
+        $scope.changeMonth.current_month()
       }
     }
 

@@ -13,23 +13,25 @@
       templateUrl: "/assets/html/_calendar.html",
       scope: {
         month: '=changeMonth',
-        year: '=changeYear'
+        current: '=currentMonth'
       },
       link: function(scope){
 
-      // $watch listens for changes that occur in the view/model.  The "<" or ">" buttons are attached to ng-model and a function in that same controller which manipluates the month (count++ or count--).  Data binding allows for this to happen the view, in the model, and passes to "change-month" in the directive, which triggers the anonymous function and passes the newValue from the model into the monthSelector function.  monthSelector deletes the current calendar HTML table and then invokes makeCalendar function with new month parameters.
+      // $watch listens for changes that occur in the view/model.  The "<" or ">" buttons are attached to ng-model and a function in that controller which manipluates the month (count++ or count--).  Data binding allows for this to happen in both the view and the model, and passes to "change-month" in the directive, which triggers the anonymous function and passes the newValue from the model into the monthSelector function.  monthSelector deletes the current calendar HTML table and then invokes makeCalendar function with new month parameters.
       scope.$watch('month', function(newMonth, oldValue){
         monthSelector(newMonth)
-        console.log(newMonth)
+
       }, true);
 
-      scope.$watch('year', function(newYear, oldValue){
-        yearSelector(newYear)
+      scope.$watch('current', function(newValue, oldValue){
+        if(newValue){
+          // var date = newValue
+          var currentMonth = date.getMonth()+1
+          var currentYear = date.getFullYear()
+          console.log("currentMonth in directive = " + currentMonth)
+          monthSelector(currentMonth, currentYear)
+        }
       }, true);
-
-      var yearSelector = function(newYear){
-        var year1 = newYear
-      };
 
 
         // array of actual month names since the constructor function returns 0-11
@@ -177,7 +179,11 @@
         // month_history is an array that stores the months the user has viewed and acts as a changelog/history.  Need to the month history to determine when to increment and decrement the year.  Every condition of the monthSelector function pushes the month to this array
         var month_history = []
 
-        var monthSelector = function(month){
+        var monthSelector = function(month, year){
+          // year comes from currentDate
+          if(!year){
+            var year = date.getFullYear()
+          }
           //since this function  creates a new calendar with a different month, we need to delete the original calendar HTML table first
 
           var calendar = document.getElementById("calendar-table")
