@@ -67,13 +67,11 @@
     Events.all = Events.query();
     Events.find = function(property, value, callback){
       Events.all.$promise.then(function(){
-        console.log("event in factory = " + event[property])
         Events.all.forEach(function(event){
-          // console.log(event)
           if(event[property] == value) callback(event);
         });
       });
-    }
+    };
     return Events
   };
 
@@ -154,7 +152,8 @@
       }
 
       vm.delete = function(){
-        Events.remove({name: vm.event.name}, function(){
+        console.log("vm.event.name = " + vm.event.name)
+        Events.remove({name: vm.event.name}, function(event){
             $window.location.replace('/')
         })
       }
