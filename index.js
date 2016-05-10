@@ -26,8 +26,10 @@ app.engine(".hbs", hbs({
 
 // all events endpoint
 app.get('/api', function(req, res){
+  console.log(req.body)
   Events.find().then(function(events){
     res.json(events)
+    // console.log(events)
   });
 });
 
@@ -40,7 +42,9 @@ app.post("/api", function(req, res){
 })
 
 app.get('/api/:name', function(req, res){
-  Events.findOne(req.body).then(function(event){
+  console.log(req.params.name)
+  Events.findOne({name: req.params.name}).then(function(event){
+    console.log(event)
     res.json(event)
   })
 })

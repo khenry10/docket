@@ -59,12 +59,20 @@
   }
 
   function Events($resource){
-    var Events = $resource("/api", {}, {
+    var Events = $resource("/api/:name", {}, {
       update: {method: "PUT"}
     })
     // var Events = $resource("/api")
     Events.all = Events.query();
-    Events.one = 
+    Events.find = function(property, value, callback){
+      Events.all.$promise.then(function(){
+        console.log("event in factory = " + event)
+        Events.all.forEach(function(event){
+          callback(event)
+          // console.log(event)
+        });
+      });
+    }
     return Events
   };
 
@@ -131,8 +139,12 @@
   }
 
   function ShowEventsController(Events, $stateParams){
-      var vm = this;
-      Events.findOne("name", $stateParams)
+      var showVM = this;
+      console.log($stateParams.name)
+      Events.find("name", $stateParams.name, function(event){
+        console.log("event in ShowEventsController = " + event[0])
+        showVM.event = event;
+      })
 
       // deleteVM.event = this.Events
       // deleteVM.delete = function(){
