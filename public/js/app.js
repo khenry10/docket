@@ -64,6 +64,7 @@
     })
     // var Events = $resource("/api")
     Events.all = Events.query();
+    Events.one = 
     return Events
   };
 
@@ -131,12 +132,12 @@
 
   function ShowEventsController(Events, $stateParams){
       var vm = this;
-      Events.find("name", $stateParams)
+      Events.findOne("name", $stateParams)
 
-      deleteVM.event = this.Events
-      deleteVM.delete = function(){
-
-      }
+      // deleteVM.event = this.Events
+      // deleteVM.delete = function(){
+      //
+      // }
   }
 
 })();

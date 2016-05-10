@@ -33,10 +33,15 @@ app.get('/api', function(req, res){
 
 // creates event
 app.post("/api", function(req, res){
-  console.log(req.body)
   Events.create(req.body).then(function(){
     res.redirect("/")
 
+  })
+})
+
+app.get('/api/:name', function(req, res){
+  Events.findOne(req.body).then(function(event){
+    res.json(event)
   })
 })
 
