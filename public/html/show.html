@@ -2,12 +2,12 @@
 
 <div data-ng-controller="ShowEventsController as showVM">
 
-  
   <form>
     <ul>
       <li><input type="text" data-ng-model="showVM.event.name" placeholder="name of event"/></li>
-      <li><input type="date" data-ng-model="showVM.event.start_time" placeholder="Date"/><li>
-      <!-- <button ng-click="newVM.create()"> Add Event </button> -->
+      <!-- <li><input type="date" data-ng-model="showVM.event.start_time" placeholder="Date"/><li> -->
+      <button ng-click="showVM.update()"> Update Event </button>
+      <button ng-click="showVM.delete()"> Delete Event </button>
     </ul>
   </form>
 </div>

@@ -32,6 +32,7 @@
   .controller("ShowEventsController", [
     "Events",
     "$stateParams",
+    "$window",
     ShowEventsController
   ])
 
@@ -66,10 +67,10 @@
     Events.all = Events.query();
     Events.find = function(property, value, callback){
       Events.all.$promise.then(function(){
-        console.log("event in factory = " + event)
+        console.log("event in factory = " + event[property])
         Events.all.forEach(function(event){
-          callback(event)
           // console.log(event)
+          if(event[property] == value) callback(event);
         });
       });
     }
@@ -127,7 +128,6 @@
 
   };
 
-
   function NewEventsController(Events, $state, $window){
     var newVM = this;
     newVM.new_event = new Events();
@@ -138,18 +138,26 @@
     }
   }
 
-  function ShowEventsController(Events, $stateParams){
-      var showVM = this;
-      console.log($stateParams.name)
+  function ShowEventsController(Events, $stateParams, $window){
+      var vm = this;
+      console.log("$stateParams.name = " + $stateParams.name)
       Events.find("name", $stateParams.name, function(event){
-        console.log("event in ShowEventsController = " + event[0])
-        showVM.event = event;
+        // console.log("event in ShowEventsController = " + event.name)
+        vm.event = event;
+
       })
 
-      // deleteVM.event = this.Events
-      // deleteVM.delete = function(){
-      //
-      // }
-  }
+      vm.update = function(){
+        Events.update({name: vm.event.name}, {event: event}, function(){
+          console.log("updating...")
+        })
+      }
+
+      vm.delete = function(){
+        Events.remove({name: vm.event.name}, function(){
+            $window.location.replace('/')
+        })
+      }
+  };
 
 })();
