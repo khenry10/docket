@@ -111,7 +111,6 @@
         this.count = date,
         $scope.changeMonth.current_month(),
         $window.location.replace('/')
-        console.log($window)
       }
     }
 
@@ -133,7 +132,7 @@
     newVM.create = function(){
       newVM.new_event.$save().then(function(response){
         console.log(newVM)
-      // $window.location.replace('/')
+      $window.location.replace('/')
       })
     }
   }
@@ -145,6 +144,13 @@
         // console.log("event in ShowEventsController = " + event.name)
         vm.event = event;
       })
+
+      vm.show = function($stateParams){
+        Events.find("name", $stateParams.name, function(event){
+        // console.log("event in ShowEventsController = " + event.name)
+        vm.event = event;
+        })
+      }
 
       vm.update = function(){
         Events.update({name: vm.event.name}, {event: event}, function(){
