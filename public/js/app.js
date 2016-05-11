@@ -19,7 +19,7 @@
   .controller("IndexController", [
     "$scope",
     "Events",
-    "$state",
+    "$window",
     IndexController
   ])
   .controller("NewEventsController", [
@@ -75,7 +75,7 @@
     return Events
   };
 
-  function IndexController($scope, Events, $timeout){
+  function IndexController($scope, Events, $window){
     var vm = this
     vm.events = Events.all;
 
@@ -107,9 +107,11 @@
     }
 
     $scope.currentMonth = {
-      count: function(){
-        this.count = date
-        $scope.changeMonth.current_month()
+      count: function($state){
+        this.count = date,
+        $scope.changeMonth.current_month(),
+        $window.location.replace('/')
+        console.log($window)
       }
     }
 
@@ -123,7 +125,6 @@
         this.year--
       }
     }
-
   };
 
   function NewEventsController(Events, $state, $window){
@@ -131,7 +132,8 @@
     newVM.new_event = new Events();
     newVM.create = function(){
       newVM.new_event.$save().then(function(response){
-        $state.go("index",{})
+        console.log(newVM)
+      // $window.location.replace('/')
       })
     }
   }
@@ -142,7 +144,6 @@
       Events.find("name", $stateParams.name, function(event){
         // console.log("event in ShowEventsController = " + event.name)
         vm.event = event;
-
       })
 
       vm.update = function(){

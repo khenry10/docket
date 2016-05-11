@@ -116,3 +116,8 @@ h2 {
   background-color: white;
   color: #81CFE0;
 }
+
+a {
+  text-decoration: none;
+  color: white;
+}
