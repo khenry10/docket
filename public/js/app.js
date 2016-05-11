@@ -19,7 +19,7 @@
   .controller("IndexController", [
     "$scope",
     "Events",
-    "$state",
+    "$window",
     IndexController
   ])
   .controller("NewEventsController", [
@@ -32,6 +32,7 @@
   .controller("ShowEventsController", [
     "Events",
     "$stateParams",
+    "$window",
     ShowEventsController
   ])
 
@@ -59,15 +60,22 @@
   }
 
   function Events($resource){
-    var Events = $resource("/api", {}, {
+    var Events = $resource("/api/:name", {}, {
       update: {method: "PUT"}
     })
     // var Events = $resource("/api")
     Events.all = Events.query();
+    Events.find = function(property, value, callback){
+      Events.all.$promise.then(function(){
+        Events.all.forEach(function(event){
+          if(event[property] == value) callback(event);
+        });
+      });
+    };
     return Events
   };
 
-  function IndexController($scope, Events, $timeout){
+  function IndexController($scope, Events, $window){
     var vm = this
     vm.events = Events.all;
 
@@ -99,9 +107,11 @@
     }
 
     $scope.currentMonth = {
-      count: function(){
-        this.count = date
-        $scope.changeMonth.current_month()
+      count: function($state){
+        this.count = date,
+        $scope.changeMonth.current_month(),
+        $window.location.replace('/')
+        console.log($window)
       }
     }
 
@@ -115,28 +125,39 @@
         this.year--
       }
     }
-
   };
-
 
   function NewEventsController(Events, $state, $window){
     var newVM = this;
     newVM.new_event = new Events();
     newVM.create = function(){
       newVM.new_event.$save().then(function(response){
-        $state.go("index",{})
+        console.log(newVM)
+      // $window.location.replace('/')
       })
     }
   }
 
-  function ShowEventsController(Events, $stateParams){
+  function ShowEventsController(Events, $stateParams, $window){
       var vm = this;
-      Events.find("name", $stateParams)
+      console.log("$stateParams.name = " + $stateParams.name)
+      Events.find("name", $stateParams.name, function(event){
+        // console.log("event in ShowEventsController = " + event.name)
+        vm.event = event;
+      })
 
-      deleteVM.event = this.Events
-      deleteVM.delete = function(){
-
+      vm.update = function(){
+        Events.update({name: vm.event.name}, {event: event}, function(){
+          console.log("updating...")
+        })
       }
-  }
+
+      vm.delete = function(){
+        console.log("vm.event.name = " + vm.event.name)
+        Events.remove({name: vm.event.name}, function(event){
+            $window.location.replace('/')
+        })
+      }
+  };
 
 })();

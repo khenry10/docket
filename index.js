@@ -23,11 +23,22 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
+// thought I would need the below for show functionality but the below /api is working
+// app.get('/api/:name', function(req, res){
+//   console.log("app.get is being used")
+//   Events.findOne({name: req.params.name}).then(function(event){
+//     console.log(event)
+//     res.json(event)
+//   })
+// })
 
 // all events endpoint
 app.get('/api', function(req, res){
+  console.log('app.get /api is being used')
+  console.log(req.params)
   Events.find().then(function(events){
     res.json(events)
+    // console.log(events)
   });
 });
 
@@ -36,7 +47,20 @@ app.post("/api", function(req, res){
   console.log(req.body)
   Events.create(req.body).then(function(){
     res.redirect("/")
+  })
+})
 
+
+app.put("/api/:name", function(req, res){
+  Events.findOneAndUpdate({name: req.params.name}, req.body.event, {new: true}).then(function(event){
+    res.json(event)
+  })
+})
+
+app.delete("/api/:name",function(req, res){
+  console.log(req.params.name)
+  Events.findOneAndRemove({name: req.params.name}).then(function(){
+    res.json({success: true})
   })
 })
 

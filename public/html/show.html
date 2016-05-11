@@ -1,1 +1,10 @@
 <h1> Angular Show Page </h1>
+
+  <form>
+    <ul>
+      <li><input type="text" data-ng-model="showVM.event.name" placeholder="name of event"/></li>
+      <li><input type="date" data-ng-model="showVM.event.start_time" placeholder="Date"/><li>
+      <button ng-click="showVM.update()"> Update Event </button>
+      <button ng-click="showVM.delete()"> Delete Event </button>
+    </ul>
+  </form>
