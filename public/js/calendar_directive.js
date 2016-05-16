@@ -25,14 +25,11 @@
 
       scope.$watch('current', function(newValue, oldValue){
         if(newValue){
-          // var date = newValue
           var currentMonth = date.getMonth()+1
           var currentYear = date.getFullYear()
-          console.log("currentMonth in directive = " + currentMonth)
-          monthSelector(currentMonth, currentYear)
+          currentMonth(currentMonth, currentYear)
         }
       }, true);
-
 
         // array of actual month names since the constructor function returns 0-11
         var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -179,11 +176,9 @@
         // month_history is an array that stores the months the user has viewed and acts as a changelog/history.  Need to the month history to determine when to increment and decrement the year.  Every condition of the monthSelector function pushes the month to this array
         var month_history = []
 
-        var monthSelector = function(month, year){
-          // year comes from currentDate
-          if(!year){
-            var year = date.getFullYear()
-          }
+        var monthSelector = function(month){
+          // year comes from currentDate varilabe towards the top of the file, which is generated from constructor function
+
           //since this function  creates a new calendar with a different month, we need to delete the original calendar HTML table first
 
           var calendar = document.getElementById("calendar-table")
@@ -225,6 +220,12 @@
 
             }
         };
+
+        var currentMonth = function(month, year){
+          var first_day_of_month = new Date(year, month-1, 1).getDay()
+          var number_of_days = new Date(year, month, 0).getDate()
+          makeCalendar(first_day_of_month, number_of_days, month, year)
+        }
 
       }
     }
