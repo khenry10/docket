@@ -153,8 +153,11 @@
       }
 
       vm.update = function(){
-        Events.update({name: vm.event.name}, {event: event}, function(){
+
+        Events.update({name: vm.event.name}, {event: event}, function(event){
+          console.log(event)
           console.log("updating...")
+          $window.location.replace('/')
         })
       }
 
