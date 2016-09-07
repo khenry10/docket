@@ -27,7 +27,6 @@
         if(newValue){
           var currentMonth = date.getMonth()+1
           var currentYear = date.getFullYear()
-          currentMonth(currentMonth, currentYear)
         }
       }, true);
 
@@ -222,6 +221,7 @@
         };
 
         var currentMonth = function(month, year){
+          console.log("month = " + month + " ; " + "year = " + year)
           var first_day_of_month = new Date(year, month-1, 1).getDay()
           var number_of_days = new Date(year, month, 0).getDate()
           makeCalendar(first_day_of_month, number_of_days, month, year)

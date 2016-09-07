@@ -35,6 +35,10 @@
     "$window",
     ShowEventsController
   ])
+  .controller("listController", [
+    "Events",
+    listController
+  ])
 
   function router($stateProvider, $locationProvider){
     $locationProvider.html5Mode(true);
@@ -51,6 +55,12 @@
       controller: "NewEventsController",
       controllerAs: "newVM"
     })
+    .state("list", {
+      url: "/list",
+      templateUrl: "/assets/html/list.html",
+      controller: "listController",
+      controllerAs: "list"
+    })
     .state("show", {
       url: "/:name",
       templateUrl: "/assets/html/show.html",
@@ -59,6 +69,7 @@
     })
   }
 
+  //factory
   function Events($resource){
     var Events = $resource("/api/:name", {}, {
       update: {method: "PUT"}
@@ -74,6 +85,10 @@
     };
     return Events
   };
+
+  function listController(){
+    var vm = this
+  }
 
   function IndexController($scope, Events, $window){
     var vm = this
@@ -101,11 +116,9 @@
       },
       current_month: function(){
       this.count = date.getMonth()+1
-
       // console.log(date)
       }
     }
-
     $scope.currentMonth = {
       count: function($state){
         this.count = date,
