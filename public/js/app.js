@@ -16,6 +16,10 @@
     "$resource",
     Events
   ])
+  .factory("Lists", [
+    "$resource",
+    Lists
+  ])
   .controller("IndexController", [
     "$scope",
     "Events",
@@ -36,7 +40,8 @@
     ShowEventsController
   ])
   .controller("listController", [
-    "Events",
+    "Lists",
+    "$scope",
     listController
   ])
 
@@ -59,7 +64,7 @@
       url: "/list",
       templateUrl: "/assets/html/list.html",
       controller: "listController",
-      controllerAs: "list"
+      controllerAs: "listsVM"
     })
     .state("show", {
       url: "/:name",
@@ -68,9 +73,18 @@
       controllerAs: "showVM"
     })
   }
+  function Lists($resource){
+    console.log("Lists factory envoked")
+    var Lists = $resource("/expenses", {}, {
+      update: {method: "PUT"}
+    })
+    Lists.all = Lists.query();
+    return Lists
+  };
 
   //factory
   function Events($resource){
+    console.log("events factory envoked")
     var Events = $resource("/api/:name", {}, {
       update: {method: "PUT"}
     })
@@ -86,14 +100,61 @@
     return Events
   };
 
-  function listController(){
+
+  function listController(Lists){
+    var finances = []
+    var variableExpenses = []
+    var fixedExpneses = []
+    Lists.all.$promise.then(function(){
+      Lists.all.forEach(function(list){
+        console.log(list)
+        finances.push(list)
+        if(list.type === 'expense' && list.category === "variable"){
+          variableExpenses.push(list.amount)
+        }
+        if(list.type === 'expense' && list.category === "fixed"){
+          fixedExpneses.push(list.amount)
+        }
+
+        vm.variableExpensesTotal = 0
+        for(var i in variableExpenses){vm.variableExpensesTotal += variableExpenses[i];}
+
+        console.log(vm.variableExpensesTotal)
+      })
+      console.log(finances.length)
+      console.log(variableExpenses)
+      console.log(fixedExpneses)
+    })
+
     var vm = this
+    vm.lists = Lists.all
+
+    console.log(vm.lists)
+
+    var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    var date = new Date()
+    var currentMonth = date.getMonth()+1
+
+    vm.months = []
+    var getRemainingMonths = function(){
+      for(var i = currentMonth; i < month_name.length; i++){
+        console.log(month_name[i])
+        vm.months.push(month_name[i])
+      }
+    }
+    getRemainingMonths()
+
+    vm.year = date.getFullYear()
+
   }
 
   function IndexController($scope, Events, $window){
     var vm = this
     vm.events = Events.all;
-
+    console.log(vm.events[0])
+    for(var i = 0; vm.events.length; i++){
+      console.log(vm.events[i])
+    }
     var date = new Date()
 
     $scope.changeMonth = {

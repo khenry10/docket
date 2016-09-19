@@ -149,7 +149,7 @@
               //we have a conditional to see if the month of the object is the same month we are currently displaying
                 //loop through all the events to see if the date of the event is the same as the count, if yes, we set the p tag to the name of the event
                   //lastly, we incremnt the count
-
+                
               for(var i = 0; i < Events.all.length; i++ ){
                 var eventDate = Events.all[i].start_time
                 var eventDate = eventDate.split("-")

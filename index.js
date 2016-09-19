@@ -7,7 +7,7 @@ var app      = express();
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
 
-// var Expenses = mongoose.model("Expenses")
+var Expenses = mongoose.model("Expenses")
 
 app.use("/assets", express.static("public"));
 
@@ -34,11 +34,12 @@ app.engine(".hbs", hbs({
 //   })
 // })
 
-app.get('/api/expenses', function(req, res){
+app.get('/expenses', function(req, res){
+  console.log("expenses api called. 1")
   Expenses.find().then(function(expenses){
     res.json(expenses)
-  })
-})
+  });
+});
 
 // all events endpoint
 app.get('/api', function(req, res){
