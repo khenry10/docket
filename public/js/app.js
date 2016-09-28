@@ -102,34 +102,40 @@
 
 
   function listController(Lists){
-    var finances = []
-    var variableExpenses = []
-    var fixedExpneses = []
+    var finances = [];
+    var variableExpenses = [];
+    var fixedExpenses = [];
+    var revenue = [];
     Lists.all.$promise.then(function(){
       Lists.all.forEach(function(list){
-        console.log(list)
         finances.push(list)
+
         if(list.type === 'expense' && list.category === "variable"){
           variableExpenses.push(list.amount)
         }
         if(list.type === 'expense' && list.category === "fixed"){
-          fixedExpneses.push(list.amount)
+          fixedExpenses.push(list.amount)
+        }
+        if(list.type === 'revenue'){
+          revenue.push(list.amount)
         }
 
-        vm.variableExpensesTotal = 0
+        vm.variableExpensesTotal = 0;
         for(var i in variableExpenses){vm.variableExpensesTotal += variableExpenses[i];}
 
-        console.log(vm.variableExpensesTotal)
+        vm.fixedExpensesTotal = 0;
+        for(var i in fixedExpenses){vm.fixedExpensesTotal += fixedExpenses[i];}
+
+        vm.revenue = 0;
+        for(var i in revenue){vm.revenue += revenue[i];}
+
+        vm.expensesTotal = vm.fixedExpensesTotal + vm.variableExpensesTotal;
+        vm.revenueMinusExpenses = vm.revenue - vm.expensesTotal;
       })
-      console.log(finances.length)
-      console.log(variableExpenses)
-      console.log(fixedExpneses)
-    })
+    });
 
     var vm = this
     vm.lists = Lists.all
-
-    console.log(vm.lists)
 
     var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     var date = new Date()
@@ -138,15 +144,13 @@
     vm.months = []
     var getRemainingMonths = function(){
       for(var i = currentMonth; i < month_name.length; i++){
-        console.log(month_name[i])
         vm.months.push(month_name[i])
       }
-    }
+    };
     getRemainingMonths()
 
     vm.year = date.getFullYear()
-
-  }
+  };
 
   function IndexController($scope, Events, $window){
     var vm = this

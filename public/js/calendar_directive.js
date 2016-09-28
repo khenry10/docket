@@ -47,7 +47,8 @@
         var makeCalendar = function(first_day_of_month, number_of_days, month, year){
           document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
           var table = document.createElement("table");
-          table.setAttribute("id", "calendar-table")
+          table.className = 'calendar';
+          table.setAttribute("id", "calendar-table");
           var tr    = document.createElement("tr");
           // Table Heading row with names of days
           createFirstRow(table, tr)
@@ -149,7 +150,7 @@
               //we have a conditional to see if the month of the object is the same month we are currently displaying
                 //loop through all the events to see if the date of the event is the same as the count, if yes, we set the p tag to the name of the event
                   //lastly, we incremnt the count
-                
+
               for(var i = 0; i < Events.all.length; i++ ){
                 var eventDate = Events.all[i].start_time
                 var eventDate = eventDate.split("-")
