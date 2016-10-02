@@ -56,6 +56,9 @@ body {
   margin-bottom: 0;
 }
 
+.protocol-table {
+  margin: 0 auto; 
+}
 
 
 ul {
