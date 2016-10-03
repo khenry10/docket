@@ -16,6 +16,10 @@
     "$resource",
     Events
   ])
+  .factory("Lists", [
+    "$resource",
+    Lists
+  ])
   .controller("IndexController", [
     "$scope",
     "Events",
@@ -35,6 +39,15 @@
     "$window",
     ShowEventsController
   ])
+  .controller("listController", [
+    "Lists",
+    "$scope",
+    listController
+  ])
+  .controller("protocolController", [
+    "$scope",
+    protocolController
+  ])
 
   function router($stateProvider, $locationProvider){
     $locationProvider.html5Mode(true);
@@ -51,6 +64,18 @@
       controller: "NewEventsController",
       controllerAs: "newVM"
     })
+    .state("list", {
+      url: "/list",
+      templateUrl: "/assets/html/list.html",
+      controller: "listController",
+      controllerAs: "listsVM"
+    })
+    .state("protocol", {
+      url: "/protocol-planning",
+      templateUrl: "/assets/html/protocol-planning.html",
+      controller: "protocolController",
+      controllerAs: "protocolVM"
+    })
     .state("show", {
       url: "/:name",
       templateUrl: "/assets/html/show.html",
@@ -59,7 +84,18 @@
     })
   }
 
+  function Lists($resource){
+    console.log("Lists factory envoked")
+    var Lists = $resource("/expenses", {}, {
+      update: {method: "PUT"}
+    })
+    Lists.all = Lists.query();
+    return Lists
+  };
+
+  //factory
   function Events($resource){
+    console.log("events factory envoked")
     var Events = $resource("/api/:name", {}, {
       update: {method: "PUT"}
     })
@@ -75,10 +111,102 @@
     return Events
   };
 
+  function protocolController(){
+    var vm = this;
+
+    vm.protocols = ["Antagonist", "Lupron Trigger", "Clomid IUI"]
+
+    vm.enter = function (protocol){
+      console.log("protocol = " + protocol)
+      var protocol = protocol
+      vm.datesEntered = true
+      var numberOfBCDays = vm.birthControl;
+      var firstDayOfBCDate = vm.firstDayOfBC;
+      var firstDayofBCMonth = firstDayOfBCDate.getMonth();
+      var firstDayofBCYear = firstDayOfBCDate.getFullYear();
+      var bcDay = firstDayOfBCDate.getDate();
+
+      vm.dayAfterBC = bcDay + numberOfBCDays;
+      vm.dateAfterBC = new Date(firstDayofBCYear,firstDayofBCMonth, vm.dayAfterBC);
+
+      vm.stimDays = []
+      for(var i = 3; i < 15; i++){
+          vm.stimDays.push(new Date(firstDayofBCYear, firstDayofBCMonth, vm.dayAfterBC + i))
+      };
+      vm.triggerDay = vm.stimDays[11];
+      var triggerDate = vm.triggerDay.getDate();
+      var triggerMonth = vm.triggerDay.getMonth();
+      var triggerYear = vm.triggerDay.getFullYear();
+
+      if(protocol === "Lupron Trigger"){
+        vm.lupronTrigger = new Date(triggerYear, triggerMonth, triggerDate+1);
+      }
+
+      vm.eggRetrieval = new Date(triggerYear, triggerMonth, triggerDate+2);
+      vm.embryoTransfer = new Date(triggerYear, triggerMonth, triggerDate+7);
+      vm.pregnancyTest = new Date(triggerYear, triggerMonth, triggerDate+20);
+    }
+
+  };
+
+  function listController(Lists){
+    var finances = [];
+    var variableExpenses = [];
+    var fixedExpenses = [];
+    var revenue = [];
+    Lists.all.$promise.then(function(){
+      Lists.all.forEach(function(list){
+        finances.push(list)
+
+        if(list.type === 'expense' && list.category === "variable"){
+          variableExpenses.push(list.amount)
+        }
+        if(list.type === 'expense' && list.category === "fixed"){
+          fixedExpenses.push(list.amount)
+        }
+        if(list.type === 'revenue'){
+          revenue.push(list.amount)
+        }
+
+        vm.variableExpensesTotal = 0;
+        for(var i in variableExpenses){vm.variableExpensesTotal += variableExpenses[i];}
+
+        vm.fixedExpensesTotal = 0;
+        for(var i in fixedExpenses){vm.fixedExpensesTotal += fixedExpenses[i];}
+
+        vm.revenue = 0;
+        for(var i in revenue){vm.revenue += revenue[i];}
+
+        vm.expensesTotal = vm.fixedExpensesTotal + vm.variableExpensesTotal;
+        vm.revenueMinusExpenses = vm.revenue - vm.expensesTotal;
+      })
+    });
+
+    var vm = this
+    vm.lists = Lists.all
+
+    var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    var date = new Date()
+    var currentMonth = date.getMonth()+1
+
+    vm.months = []
+    var getRemainingMonths = function(){
+      for(var i = currentMonth; i < month_name.length; i++){
+        vm.months.push(month_name[i])
+      }
+    };
+    getRemainingMonths()
+
+    vm.year = date.getFullYear()
+  };
+
   function IndexController($scope, Events, $window){
     var vm = this
     vm.events = Events.all;
-
+    console.log(vm.events[0])
+    for(var i = 0; vm.events.length; i++){
+      console.log(vm.events[i])
+    }
     var date = new Date()
 
     $scope.changeMonth = {
@@ -101,11 +229,9 @@
       },
       current_month: function(){
       this.count = date.getMonth()+1
-
       // console.log(date)
       }
     }
-
     $scope.currentMonth = {
       count: function($state){
         this.count = date,

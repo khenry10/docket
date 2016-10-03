@@ -7,6 +7,8 @@ var app      = express();
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
 
+var Expenses = mongoose.model("Expenses")
+
 app.use("/assets", express.static("public"));
 
 //boilerplate to use body parser
@@ -32,6 +34,13 @@ app.engine(".hbs", hbs({
 //   })
 // })
 
+app.get('/expenses', function(req, res){
+  console.log("expenses api called. 1")
+  Expenses.find().then(function(expenses){
+    res.json(expenses)
+  });
+});
+
 // all events endpoint
 app.get('/api', function(req, res){
   console.log('app.get /api is being used')
@@ -49,7 +58,6 @@ app.post("/api", function(req, res){
     res.redirect("/")
   })
 })
-
 
 app.put("/api/:name", function(req, res){
   Events.findOneAndUpdate({name: req.params.name}, req.body.event, {new: true}).then(function(event){

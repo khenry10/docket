@@ -27,7 +27,6 @@
         if(newValue){
           var currentMonth = date.getMonth()+1
           var currentYear = date.getFullYear()
-          currentMonth(currentMonth, currentYear)
         }
       }, true);
 
@@ -48,7 +47,8 @@
         var makeCalendar = function(first_day_of_month, number_of_days, month, year){
           document.getElementById("calendar-month-year").innerHTML = month_name[month] + " " + year
           var table = document.createElement("table");
-          table.setAttribute("id", "calendar-table")
+          table.className = 'calendar';
+          table.setAttribute("id", "calendar-table");
           var tr    = document.createElement("tr");
           // Table Heading row with names of days
           createFirstRow(table, tr)
@@ -222,6 +222,7 @@
         };
 
         var currentMonth = function(month, year){
+          console.log("month = " + month + " ; " + "year = " + year)
           var first_day_of_month = new Date(year, month-1, 1).getDay()
           var number_of_days = new Date(year, month, 0).getDate()
           makeCalendar(first_day_of_month, number_of_days, month, year)
