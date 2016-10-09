@@ -41,6 +41,13 @@ app.get('/expenses', function(req, res){
   });
 });
 
+app.post('/expenses', function(req, res){
+  console.log("expenses post call = " + JSON.stringify(req.body))
+  Expenses.create(req.body).then(function(){
+    res.redirect("/")
+  })
+})
+
 // all events endpoint
 app.get('/api', function(req, res){
   console.log('app.get /api is being used')
@@ -53,7 +60,7 @@ app.get('/api', function(req, res){
 
 // creates event
 app.post("/api", function(req, res){
-  console.log(req.body)
+  console.log("api POST " + JSON.stringify(req.body))
   Events.create(req.body).then(function(){
     res.redirect("/")
   })
