@@ -16,7 +16,6 @@ body {
   background-color: #81CFE0;
 }
 
-
 .calendar table {
   margin: 0 auto;
 }
@@ -27,6 +26,14 @@ body {
   height: 93px;
   align-content: center;
   border-radius: 4px;
+}
+
+.finances {
+  margin: 0 auto;
+}
+
+.new-finance {
+  width: 24%;
 }
 
 /*.a22 {
@@ -57,7 +64,7 @@ body {
 }
 
 .protocol-table {
-  margin: 0 auto; 
+  margin: 0 auto;
 }
 
 

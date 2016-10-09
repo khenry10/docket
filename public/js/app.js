@@ -2,24 +2,10 @@
 
 (function(){
   angular
-  .module("app", [
-    "ui.router",
-    "ngResource"
-
-  ])
-  .config([
-    "$stateProvider",
-    "$locationProvider",
-    router
-  ])
-  .factory("Events", [
-    "$resource",
-    Events
-  ])
-  .factory("Lists", [
-    "$resource",
-    Lists
-  ])
+  .module("app", ["ui.router","ngResource"])
+  .config(["$stateProvider","$locationProvider",router])
+  .factory("Events", ["$resource",Events])
+  .factory("Lists", ["$resource",Lists])
   .controller("IndexController", [
     "$scope",
     "Events",
@@ -44,9 +30,10 @@
     "$scope",
     listController
   ])
-  .controller("protocolController", [
+  .controller("newListsController", [
+    "Lists",
     "$scope",
-    protocolController
+    newListsController
   ])
 
   function router($stateProvider, $locationProvider){
@@ -70,11 +57,11 @@
       controller: "listController",
       controllerAs: "listsVM"
     })
-    .state("protocol", {
-      url: "/protocol-planning",
-      templateUrl: "/assets/html/protocol-planning.html",
-      controller: "protocolController",
-      controllerAs: "protocolVM"
+    .state("new-list", {
+      url: "/list/new",
+      templateUrl: "/assets/html/newList.html",
+      controller: "newListsController",
+      controllerAs: "newLists"
     })
     .state("show", {
       url: "/:name",
@@ -99,54 +86,15 @@
     var Events = $resource("/api/:name", {}, {
       update: {method: "PUT"}
     })
-    // var Events = $resource("/api")
     Events.all = Events.query();
-    Events.find = function(property, value, callback){
-      Events.all.$promise.then(function(){
-        Events.all.forEach(function(event){
-          if(event[property] == value) callback(event);
-        });
-      });
-    };
+    // Events.find = function(property, value, callback){
+    //   Events.all.$promise.then(function(){
+    //     Events.all.forEach(function(event){
+    //       if(event[property] == value) callback(event);
+    //     });
+    //   });
+    // };
     return Events
-  };
-
-  function protocolController(){
-    var vm = this;
-
-    vm.protocols = ["Antagonist", "Lupron Trigger", "Clomid IUI"]
-
-    vm.enter = function (protocol){
-      console.log("protocol = " + protocol)
-      var protocol = protocol
-      vm.datesEntered = true
-      var numberOfBCDays = vm.birthControl;
-      var firstDayOfBCDate = vm.firstDayOfBC;
-      var firstDayofBCMonth = firstDayOfBCDate.getMonth();
-      var firstDayofBCYear = firstDayOfBCDate.getFullYear();
-      var bcDay = firstDayOfBCDate.getDate();
-
-      vm.dayAfterBC = bcDay + numberOfBCDays;
-      vm.dateAfterBC = new Date(firstDayofBCYear,firstDayofBCMonth, vm.dayAfterBC);
-
-      vm.stimDays = []
-      for(var i = 3; i < 15; i++){
-          vm.stimDays.push(new Date(firstDayofBCYear, firstDayofBCMonth, vm.dayAfterBC + i))
-      };
-      vm.triggerDay = vm.stimDays[11];
-      var triggerDate = vm.triggerDay.getDate();
-      var triggerMonth = vm.triggerDay.getMonth();
-      var triggerYear = vm.triggerDay.getFullYear();
-
-      if(protocol === "Lupron Trigger"){
-        vm.lupronTrigger = new Date(triggerYear, triggerMonth, triggerDate+1);
-      }
-
-      vm.eggRetrieval = new Date(triggerYear, triggerMonth, triggerDate+2);
-      vm.embryoTransfer = new Date(triggerYear, triggerMonth, triggerDate+7);
-      vm.pregnancyTest = new Date(triggerYear, triggerMonth, triggerDate+20);
-    }
-
   };
 
   function listController(Lists){
@@ -156,6 +104,8 @@
     var revenue = [];
     Lists.all.$promise.then(function(){
       Lists.all.forEach(function(list){
+        console.log(list)
+
         finances.push(list)
 
         if(list.type === 'expense' && list.category === "variable"){
@@ -198,6 +148,29 @@
     getRemainingMonths()
 
     vm.year = date.getFullYear()
+
+  };
+
+  function newListsController(Lists, $state, $window){
+    var newVM = this;
+    newVM.recurring = ["Monthly", "Yearly", "Daily", "Quarterly"]
+    newVM.type = {
+        name: 'Expense'
+    };
+    // newVM.create = function(){
+    //   console.log("newListsController name & amount = " + newVM.name  + " & " + newVM.amount)
+    //   console.log("radio = " + newVM.type.name)
+    //   console.log("newVM.recurring = " + newVM.selectedRecurring)
+    // }
+    console.log(newVM.newList)
+    newVM.newLists = new Lists();
+    newVM.create = function(){
+      console.log(newVM.newLists)
+      newVM.newLists.$save().then(function(response){
+        console.log("newList $save callback")
+      // $window.location.replace('/')
+      })
+    }
   };
 
   function IndexController($scope, Events, $window){
@@ -254,14 +227,16 @@
 
   function NewEventsController(Events, $state, $window){
     var newVM = this;
+    console.log("newVM = " + JSON.stringify(newVM))
     newVM.new_event = new Events();
     newVM.create = function(){
+      console.log(newVM.new_event)
       newVM.new_event.$save().then(function(response){
-        console.log(newVM)
+        console.log(response)
       $window.location.replace('/')
       })
     }
-  }
+  };
 
   function ShowEventsController(Events, $stateParams, $window){
       var vm = this;
