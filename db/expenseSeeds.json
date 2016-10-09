@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Washington Post Salary",
+    "amount": 5000,
+    "type": "revenue",
+    "recurring": "monthly",
+    "category": "fixed"
+    },
+  {
+    "name": "Rent",
+    "amount": 1600,
+    "type": "expense",
+    "recurring": "monthly",
+    "category": "fixed"
+    },
+  {
+    "name": "Groceries",
+    "amount": 400,
+    "type": "expense",
+    "recurring": "monthly",
+    "category": "variable"
+  },
+{
+  "name": "Car",
+  "amount": 200,
+  "type": "expense",
+  "recurring": "monthly",
+  "category": "fixed"
+  },
+{
+  "name": "Entertainment",
+  "amount": 100,
+  "type": "expense",
+  "recurring": "monthly",
+  "category": "variable"
+}
+]
