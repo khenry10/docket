@@ -27,12 +27,15 @@
   ])
   .controller("listController", [
     "Lists",
+    "$window",
     "$scope",
     listController
   ])
   .controller("newListsController", [
     "Lists",
     "$scope",
+    "$window",
+    "$state",
     newListsController
   ])
 
@@ -97,14 +100,13 @@
     return Events
   };
 
-  function listController(Lists){
+  function listController(Lists, $window){
     var finances = [];
     var variableExpenses = [];
     var fixedExpenses = [];
     var revenue = [];
     Lists.all.$promise.then(function(){
       Lists.all.forEach(function(list){
-        console.log(list)
 
         finances.push(list)
 
@@ -140,12 +142,32 @@
     var currentMonth = date.getMonth()+1
 
     vm.months = []
-    var getRemainingMonths = function(){
+    vm.getRemainingMonths = function(){
+      console.log("getRemainingMonths")
+      vm.months = []
       for(var i = currentMonth; i < month_name.length; i++){
         vm.months.push(month_name[i])
       }
+      console.log(vm.months)
+      // $window.location.replace('/list')
     };
-    getRemainingMonths()
+
+    vm.fullYear = function(){
+      vm.months = [];
+      for(var i = 1; i < month_name.length; i++){
+        vm.months.push(month_name[i])
+      }
+    };
+
+    vm.thisMonth = function(){
+      vm.months.push(month_name[currentMonth])
+    }
+    vm.thisMonth()
+
+    function click(){
+      console.log("click")
+    }
+
 
     vm.year = date.getFullYear()
 
@@ -154,9 +176,13 @@
   function newListsController(Lists, $state, $window){
     var newVM = this;
     newVM.recurring = ["Monthly", "Yearly", "Daily", "Quarterly"]
-    newVM.type = {
-        name: 'Expense'
-    };
+    // newVM.type = {
+    //     name: 'expense'
+    // };
+    // newVM.expense = {
+    //     name: 'fixed'
+    // };
+
     // newVM.create = function(){
     //   console.log("newListsController name & amount = " + newVM.name  + " & " + newVM.amount)
     //   console.log("radio = " + newVM.type.name)
@@ -168,7 +194,7 @@
       console.log(newVM.newLists)
       newVM.newLists.$save().then(function(response){
         console.log("newList $save callback")
-      // $window.location.replace('/')
+      $window.location.replace('/list')
       })
     }
   };

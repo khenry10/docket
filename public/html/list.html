@@ -1,16 +1,20 @@
+<div class="new-finance" ng-controller="newListsController as newVM">
   <h1> {{listsVM.year}} Budget </h1>
-
-  <div class="new-finance" ng-controller="newListsController as newVM">
     <input type="text" ng-model="newVM.newLists.name" placeholder="Name"></input>
     <input type="number" ng-model="newVM.newLists.amount" placeholder="Amount"></input>
-    <input type="radio" name="type" ng-model="newVM.type.name" value="Expense"> Expense</input>
-    <input type="radio"  name="type" ng-model="newVM.type.name" value="Revenue"> Revenue</input>
+    <input type="radio" name="type" ng-model="newVM.newLists.type" value="expense"> Expense</input>
+    <input type="radio"  name="type" ng-model="newVM.newLists.type" value="revenue"> Revenue</input>
     <select ng-model="newVM.newLists.recurring" ng-options="recurring for recurring in newVM.recurring" >
         <option value='' disabled selected>Recurring </option>
-      </select>
+    </select>
+    <input type="radio" name="expense" ng-model="newVM.newLists.category" value="fixed"> Fixed</input>
+    <input type="radio"  name="expense" ng-model="newVM.newLists.category" value="variable"> Variable</input>
     <button ng-click="newVM.create()">New</button>
-    *{{newVM}}*
-  </div>
+    <!-- {{newVM.newLists}} -->
+
+
+    <button ng-click="listsVM.getRemainingMonths()"> Remaining Months</button>
+    <button ng-click="listsVM.fullYear()"> Full Year</button>
 
   <table class="finances">
     <tr>
@@ -18,30 +22,31 @@
       <th data-ng-repeat="month in listsVM.months">{{month}}</th>
     </tr>
     <tr data-ng-repeat="list in listsVM.lists" ng-if="list.type === 'revenue'">
-      <td>{{list.name}}</td>
-      <td data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
+      <td class="finances-td">{{list.name}}</td>
+      <td class="finances-td" data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
     </tr>
     <tr data-ng-repeat="list in listsVM.lists" ng-if="list.type === 'expense' && list.category == 'fixed'">
-      <td>{{list.name}}</td>
-      <td data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
+      <td class="finances-td">{{list.name}}</td>
+      <td class="finances-td" data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
     </tr>
     <tr>
       <th>Total Fixed Expenses</th>
-      <td>{{listsVM.fixedExpensesTotal | currency }}</td>
+      <td class="finances-td">{{listsVM.fixedExpensesTotal | currency }}</td>
     </tr>
     <tr data-ng-repeat="list in listsVM.lists" ng-if="list.type === 'expense' && list.category == 'variable'">
-      <td>{{list.name}}</td>
-      <td data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
+      <td class="finances-td">{{list.name}}</td>
+      <td class="finances-td" data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
     <tr>
       <th>Total Variable Expenses</th>
-        <td> {{listsVM.variableExpensesTotal | currency}}</td>
+        <td class="finances-td"> {{listsVM.variableExpensesTotal | currency}}</td>
     </tr>
     <tr>
       <th>Total Expenses </th>
-        <td>{{listsVM.expensesTotal | currency }}</td>
+        <td class="finances-td">{{listsVM.expensesTotal | currency }}</td>
     </tr>
     <tr>
       <th> Revenue - Expenses </th>
-      <td> {{listsVM.revenueMinusExpenses | currency }}</td>
+      <td class="finances-td"> {{listsVM.revenueMinusExpenses | currency }}</td>
     </tr>
   </table>
+</div>
