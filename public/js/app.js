@@ -2,7 +2,8 @@
 
 (function(){
   angular
-  .module("app", ["ui.router","ngResource"])
+  // .module("app", ["ui.router","ngResource"])
+  .module("app", ["ngResource", "ui.router", "ngMaterial"])
   .config(["$stateProvider","$locationProvider",router])
   .factory("Events", ["$resource",Events])
   .factory("Lists", ["$resource",Lists])
@@ -67,7 +68,7 @@
       controllerAs: "newLists"
     })
     .state("show", {
-      url: "/:name",
+      url: "/event/:name",
       templateUrl: "/assets/html/show.html",
       controller: "ShowEventsController",
       controllerAs: "showVM"
@@ -90,13 +91,15 @@
       update: {method: "PUT"}
     })
     Events.all = Events.query();
-    // Events.find = function(property, value, callback){
-    //   Events.all.$promise.then(function(){
-    //     Events.all.forEach(function(event){
-    //       if(event[property] == value) callback(event);
-    //     });
-    //   });
-    // };
+    Events.find = function(property, value, callback){
+      console.log("property = "+property)
+      console.log("value = " + value)
+      Events.all.$promise.then(function(){
+        Events.all.forEach(function(event){
+          if(event[property] == value) callback(event);
+        });
+      });
+    };
     return Events
   };
 
@@ -200,10 +203,11 @@
   };
 
   function IndexController($scope, Events, $window){
+    console.log($window.location)
     var vm = this
     vm.events = Events.all;
     console.log(vm.events[0])
-    for(var i = 0; vm.events.length; i++){
+    for(var i = 0; i < vm.events.length; i++){
       console.log(vm.events[i])
     }
     var date = new Date()
@@ -265,32 +269,41 @@
   };
 
   function ShowEventsController(Events, $stateParams, $window){
+    console.log("show event")
       var vm = this;
       console.log("$stateParams.name = " + $stateParams.name)
       Events.find("name", $stateParams.name, function(event){
-        // console.log("event in ShowEventsController = " + event.name)
         vm.event = event;
+        console.log(event.start_time)
+        vm.event.niceDate = event.start_time.substring(5,7) + " / "+ event.start_time.substring(9,10) + " / " +
+        event.start_time.substring(0,4)
       })
 
       vm.show = function($stateParams){
+        console.log("show")
+        console.log(event)
         Events.find("name", $stateParams.name, function(event){
-        // console.log("event in ShowEventsController = " + event.name)
+        console.log("event in ShowEventsController = " + event)
         vm.event = event;
         })
       }
 
       vm.update = function(){
-
-        Events.update({name: vm.event.name}, {event: event}, function(event){
+        console.log("update = " +vm.event.name)
+        console.log("event = "+ JSON.stringify(event))
+        var newEvent = {name: vm.event.newName, start_time: vm.event.newStartTime}
+        console.log(newEvent)
+        Events.update({name: vm.event.name}, {event: newEvent}, function(event){
           console.log(event)
           console.log("updating...")
           $window.location.replace('/')
         })
       }
 
-      vm.delete = function(){
-        console.log("vm.event.name = " + vm.event.name)
-        Events.remove({name: vm.event.name}, function(event){
+      vm.delete = function(eventName){
+        console.log("vm.event.name = " + eventName)
+
+        Events.remove({name: eventName}, function(event){
             $window.location.replace('/')
         })
       }

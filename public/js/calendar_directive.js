@@ -66,7 +66,7 @@
           }
             var count = 1;
             for(; i < 7; i++){
-              createTableRows(table, td, count, p, tr, number_of_days, month)
+              createTableRows(table, td, count, p, tr, number_of_days, month, year)
               count++
             }
 
@@ -80,7 +80,7 @@
                 for(var t = 0; t < 4; t++){
                   var tr = document.createElement("tr")
                   for(var i = 0; i < 7; i++){
-                    createTableRows(table, td, count, p, tr, number_of_days, month);
+                    createTableRows(table, td, count, p, tr, number_of_days, month, year);
                     count++
                   }
 
@@ -92,7 +92,8 @@
                   var tr = document.createElement("tr")
                     for(var i = 0; i < 7; i++){
 
-                      createTableRows(table, td, count, p, tr, number_of_days, month);
+                      createTableRows(table, td, count, p, tr, number_of_days, month, year
+                      );
                       count++
 
                     }
@@ -105,7 +106,7 @@
             var tr = document.createElement("tr")
                 for(var i = 0; i < 7; i++){
                   if(count <= number_of_days){
-                    createTableRows(table, td, count, p, tr, number_of_days, month)
+                    createTableRows(table, td, count, p, tr, number_of_days, month, year)
                     count++
                   } else {
                       var td = document.createElement("td");
@@ -130,14 +131,14 @@
         };
 
 
-        function createTableRows(table, td, count, p, tr, number_of_days, month){
+        function createTableRows(table, td, count, p, tr, number_of_days, month, year){
             //creates a td attribute which is one 1 in the table
             var td = document.createElement("td");
             //creates a paragraph attribute, which is where the name of the event will render on the calendar
             var p = document.createElement("p")
             //setting a class attribute in the p tag, with a name of "a" + whatever the count is so we can target with class
             p.setAttribute("class",  "a"+count)
-            // innerHTML of td is what the user sees on teh calendar
+            // innerHTML of td is what the user sees on the calendar
             td.innerHTML = count;
             // in order to handle multiple events on the same day, need to create ul and then have each event name be an li
             var ul = document.createElement("ul");
@@ -145,6 +146,12 @@
             p.appendChild(ul)
             td.appendChild(p);
             tr.appendChild(td);
+
+            if(count === date.getDate() && month === date.getMonth()+1 && year === date.getFullYear()){
+              console.log(date.getDate())
+              console.log(year)
+              td.setAttribute("class", "today")
+            }
 
             // Events.all[1] accesses the part of the object that actually stores the event data.
               //we have a conditional to see if the month of the object is the same month we are currently displaying
@@ -163,7 +170,13 @@
                   if(eventMonth === month){
                     if(eventDay === count){
                       var li = document.createElement("li")
-                      li.innerHTML = Events.all[i].name;
+                      console.log(li)
+                      var url = document.createElement("a")
+                      url.href = "/event/"+Events.all[i].name;
+                      url.innerHTML = Events.all[i].name;
+
+                      li.append(url)
+
                       ul.appendChild(li)
                     }
                   }

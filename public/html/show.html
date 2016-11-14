@@ -1,10 +1,21 @@
-<h1> Angular Show Page </h1>
-
-  <form>
-    <ul>
-      <li><input type="text" data-ng-model="showVM.event.name" placeholder="name of event"/></li>
-      <!-- <li><input type="date" data-ng-model="showVM.event.start_time" placeholder="Date"/><li> -->
-      <button ng-click="showVM.update()"> Update Event </button>
-      <button ng-click="showVM.delete()"> Delete Event </button>
-    </ul>
-  </form>
+<div style="background-color: #F2F3F4;">
+  <div class="show-page" data-ng-controller="ShowEventsController as showVM">
+    <div class="show-box">
+      <h1 style="color: white; padding: 1%;"> {{showVM.event.name}} </h1>
+      <form>
+        <ul>
+          <li><input type="text" data-ng-model="showVM.event.newName" placeholder={{showVM.event.name}}></li>
+          <li>
+            <md-datepicker type="date"
+                          md-placeholder="{{showVM.event.niceDate}}"
+                           data-ng-model="showVM.event.newStartTime"></md-datepicker>
+          </li>
+          <md-button class="md-raised md-primary" style="min-width: 1%;"
+                     ng-click="showVM.update()"> Update Event </md-button>
+          <md-button class="md-raised md-warn" style="min-width: 1%;"
+                     ng-click="showVM.delete()"> Delete Event </md-button>
+        </ul>
+      </form>
+    </div>
+  </div>
+</div>

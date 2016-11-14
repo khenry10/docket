@@ -59,7 +59,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Montserrat', sans-serif;
-  background-color: #81CFE0;
+  background-color: #F2F3F4;
 }
 
 .calendar table {
@@ -72,6 +72,7 @@ body {
   height: 93px;
   align-content: center;
   border-radius: 4px;
+  padding-top: 2px;
 }
 
 .finances {
@@ -80,6 +81,7 @@ body {
 
 .new-finance {
   background-color: #DCDCDC;
+  height: 1000px;
 }
 
 .finances-td {
@@ -95,11 +97,11 @@ body {
 
 
 .events-panel {
-  background-color: #86E2D5;
+  background-color: #34495E;
   color: white;
   position: fixed;
   float: left;
-  width: 22%;
+  /*width: 22%;*/
   height: 100%;
   text-align: left;
   padding: 20px;
@@ -109,9 +111,10 @@ body {
   top: 0;
   width: 86%;
   float: right;
-  background-color: #81CFE0;
-  color: white;
+  background-color: #F2F3F4;
+  color: #34495E;
   margin-bottom: 0;
+  margin-right: 5px;
 }
 
 .protocol-table {
@@ -133,18 +136,28 @@ li {
   /*padding: 20px;*/
 }
 
+.new-event-form {
+  border: 2px solid white;
+  background-color: rgba(52, 73, 94, 0.76);
+  border-radius: 4px;
+  width: 100%;
+  padding: 10px 0px 10px 0px;
+  box-shadow: 0 2px 5px 0 rgba(250, 250, 250, 0.55);
+}
+
 .calendar-navigation {
   display: flex;
-  flex-wrap: nowrap;
+  justify-content: space-between;
   align-items: center;
   margin: 0 auto;
   width: 50%;
+  margin: 1% 0% 1% 25%;
 }
 
 input[type=text] {
   width: 150px;
   height: 30px;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 input[type=date] {
@@ -176,12 +189,77 @@ h2 {
 }
 
 #calendar-dates li {
-  outline: 1px solid #81CFE0;
-  background-color: white;
-  color: #81CFE0;
+  outline: 1px solid white;
+  background-color: #4FF427;
+  color: white;
+  padding: 2px;
+}
+
+.today {
+  outline: 2px solid #208CF9;
 }
 
 a {
   text-decoration: none;
   color: white;
+  padding-left: 5px;
+}
+
+.md-icon-button+.md-datepicker-input-container {
+  background-color: white;
+  border-radius: 4px;
+}
+
+.md-button.md-icon-button md-icon, button.md-button.md-fab md-icon {
+  color: white;
+}
+
+.md-icon-button+.md-datepicker-input-container {
+  margin-left: -12px;
+  /*padding-right: 25px;*/
+  margin-right: 66px;
+  width: 150px;
+}
+
+.list-of-events {
+  margin-top: 20px;
+  border: 2px solid white;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px 0 rgba(250, 250, 250, 0.55);
+}
+
+.list-of-events td{
+  border: 0;
+  /*padding: .5%;*/
+  max-width: 10em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-of-events tr {
+  display: flex;
+  justify-content:
+  space-between;
+  align-items: center;
+  width: 109.5%;
+}
+
+.list-of-events tr:nth-child(even) {
+    background-color: rgba(250, 250, 250, 0.52);
+}
+
+.show-page {
+  border: 2px solid white;
+  border-radius: 4px;
+  margin-top: 30px;
+  width: 80%;
+  background-color: #34495E;
+  margin-left: 10%;
+  height: 40vh;
+}
+
+.show-box {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }

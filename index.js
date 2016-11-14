@@ -67,7 +67,10 @@ app.post("/api", function(req, res){
 })
 
 app.put("/api/:name", function(req, res){
+  console.log(req.params.name)
+  console.log(req.params)
   Events.findOneAndUpdate({name: req.params.name}, req.body.event, {new: true}).then(function(event){
+    console.log(event)
     res.json(event)
   })
 })
