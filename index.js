@@ -10,6 +10,7 @@ var Events   = mongoose.model("Events");
 var Expenses = mongoose.model("Expenses")
 
 app.use("/assets", express.static("public"));
+app.set("port", process.env.PORT || 3002);
 
 //boilerplate to use body parser
 app.use(parser.urlencoded({extended: true}));
@@ -87,6 +88,10 @@ app.get("/*", function(req, res){
   res.render("event")
 })
 
-app.listen(3002, function(){
-  console.log("::::::::::::: You have turned me on.  I am alive... :::::::::::::")
-})
+// app.listen(3002, function(){
+//   console.log("::::::::::::: You have turned me on.  I am alive... :::::::::::::")
+// })
+
+app.listen(app.get("port"), function(){
+  console.log("It's aliiive!");
+});
