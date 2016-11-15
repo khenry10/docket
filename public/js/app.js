@@ -206,10 +206,7 @@
     console.log($window.location)
     var vm = this
     vm.events = Events.all;
-    console.log(vm.events[0])
-    for(var i = 0; i < vm.events.length; i++){
-      console.log(vm.events[i])
-    }
+
     var date = new Date()
 
     $scope.changeMonth = {
@@ -271,19 +268,15 @@
   function ShowEventsController(Events, $stateParams, $window){
     console.log("show event")
       var vm = this;
-      console.log("$stateParams.name = " + $stateParams.name)
+
       Events.find("name", $stateParams.name, function(event){
         vm.event = event;
-        console.log(event.start_time)
         vm.event.niceDate = event.start_time.substring(5,7) + " / "+ event.start_time.substring(9,10) + " / " +
         event.start_time.substring(0,4)
       })
 
       vm.show = function($stateParams){
-        console.log("show")
-        console.log(event)
         Events.find("name", $stateParams.name, function(event){
-        console.log("event in ShowEventsController = " + event)
         vm.event = event;
         })
       }
@@ -294,8 +287,7 @@
         var newEvent = {name: vm.event.newName, start_time: vm.event.newStartTime}
         console.log(newEvent)
         Events.update({name: vm.event.name}, {event: newEvent}, function(event){
-          console.log(event)
-          console.log("updating...")
+
           $window.location.replace('/')
         })
       }
