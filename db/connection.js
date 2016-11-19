@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 
 if(process.env.NODE_ENV == "production"){
-  mongoose.connect(process.env.MONGOLAB_URI);
+  mongoose.connect("mongodb://heroku_bqk8fvgm:51ukoeapk76n1hd7n8lq9hj2ar@ds153657.mlab.com:53657/heroku_bqk8fvgm");
 }else{
   mongoose.connect("mongodb://localhost/docket");
 }
