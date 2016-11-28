@@ -22,9 +22,10 @@ angular.module('app')
 ])
 
 function IndexController($scope, Events, $window){
-  console.log($window.location)
+  console.log(Events)
   var vm = this
-  vm.events = Events.all;
+  $scope.events = []
+  $scope.events = Events.all;
 
   var date = new Date()
 
@@ -71,15 +72,19 @@ function IndexController($scope, Events, $window){
   }
 };
 
-function NewEventsController(Events, $state, $window){
+function NewEventsController(Events, $window, $scope){
   var newVM = this;
-  console.log("newVM = " + JSON.stringify(newVM))
+
   newVM.new_event = new Events();
+
   newVM.create = function(){
     console.log(newVM.new_event)
     newVM.new_event.$save().then(function(response){
-      console.log(response)
-    $window.location.replace('/')
+      // $window.location.replace('/')
+      Events.query( function(data) {
+        console.log(data)
+        $scope.events = data
+      })
     })
   }
 };
@@ -90,7 +95,7 @@ function ShowEventsController(Events, $stateParams, $window){
 
     Events.find("name", $stateParams.name, function(event){
       vm.event = event;
-      vm.event.niceDate = event.start_time.substring(5,7) + " / "+ event.start_time.substring(9,10) + " / " +
+      vm.event.niceDate = event.start_time.substring(5,7) + " / "+ event.start_time.substring(8,10) + " / " +
       event.start_time.substring(0,4)
     })
 

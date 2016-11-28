@@ -19,7 +19,7 @@
     <div class="list-of-events">
       <h2 style="padding: 3% 0% 3% 0%; outline: 1px solid white;"> Events </h2>
       <table data-ng-controller="ShowEventsController as showVM">
-        <tr data-ng-repeat="event in indexVM.events "
+        <tr data-ng-repeat="event in events "
             data-ng-model="changeMonth.count"
             data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1) &&
             changeYear.year.toString() === event.start_time.substr(0,4)">
@@ -29,7 +29,7 @@
               <md-button class="md-raised md-warn" ng-click="showVM.delete(event.name)">X</md-button>
             </td>
           </tr>
-          <tr data-ng-repeat="event in indexVM.events | orderBy:'start_time'"
+          <tr data-ng-repeat="event in events | orderBy:'start_time'"
               data-ng-model="changeMonth.count"
               data-ng-if="changeMonth.count.toString() == event.start_time.substr(5,2) &&
               changeYear.year.toString() === event.start_time.substr(0,4)">

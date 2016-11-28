@@ -170,7 +170,6 @@
                   if(eventMonth === month){
                     if(eventDay === count){
                       var li = document.createElement("li")
-                      console.log(li)
                       var url = document.createElement("a")
                       url.href = "/event/"+Events.all[i].name;
                       url.innerHTML = Events.all[i].name;

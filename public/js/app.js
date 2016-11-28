@@ -2,9 +2,19 @@
 
 (function(){
   angular
-  .module("app", ["ngResource", "ui.router", "ngMaterial"])
+  .module("app", ["ngResource", "ui.router", "ngMaterial", "xeditable", "dndLists"])
   .factory("Events", ["$resource",Events])
   .factory("Lists", ["$resource",Lists])
+  .factory("Todo", ["$resource", Todo])
+
+  function Todo($resource){
+    console.log("Todo factory envoked")
+    var Todo = $resource("api/todo/:name", {}, {
+      update: {method: "PUT"}
+    })
+    Todo.all = Todo.query();
+    return Todo
+  };
 
   function Lists($resource){
     console.log("Lists factory envoked")
@@ -22,13 +32,13 @@
     })
     Events.all = Events.query();
     Events.find = function(property, value, callback){
-      console.log("property = "+property)
-      console.log("value = " + value)
-      Events.all.$promise.then(function(){
-        Events.all.forEach(function(event){
-          if(event[property] == value) callback(event);
-        });
-      });
+      // console.log("property = "+property)
+      // console.log("value = " + value)
+      // Events.all.$promise.then(function(){
+      //   Events.all.forEach(function(event){
+      //     if(event[property] == value) callback(event);
+      //   });
+      // });
     };
     return Events
   };

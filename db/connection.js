@@ -28,4 +28,17 @@ var ExpenseSchema = new mongoose.Schema({
 });
 mongoose.model("Expenses", ExpenseSchema);
 
+
+var TodoSchema = new mongoose.Schema({
+  name: String,
+  completed: Boolean,
+  category: String,
+  time_estimate: Number,
+  time_actual: Number,
+  reocurring: String,
+  created_at: Date,
+  deadline: Date
+});
+mongoose.model("Todo", TodoSchema);
+
 module.exports = mongoose;

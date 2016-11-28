@@ -1,0 +1,25 @@
+{{todoVM.models.list}}
+
+<div ng-init="todoVM.fetchData()" class="simpleDemo" style="margin-left: 35%; margin-top: 5%;">
+  <ul dnd-list="todoVM.models.list">
+    <li><input type="text" ng-model="todoVM.newTodo.name"><button ng-click="todoVM.addNewTodo()"> + </button></li>
+    <li ng-repeat="item in todoVM.models.list"
+      class="todo"
+      dnd-draggable="item"
+      dnd-moved="todoVM.models.list.splice($index, 1) "
+      dnd-effect-allowed="move"
+      dnd-selected="todoVM.models.selected = item"
+      ng-class="{'selected': todoVM.models.selected === item}">
+      <table>
+        <tr>
+          <td>
+            <input type="checkbox" ng-model="item.completed" ng-change="todoVM.change()">
+          </td>
+          <td>
+            {{item.label}}
+          </td>
+        </tr>
+      </table>
+    </li>
+  </ul>
+</div>

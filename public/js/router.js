@@ -35,4 +35,10 @@ function router($stateProvider, $locationProvider){
     controller: "ShowEventsController",
     controllerAs: "showVM"
   })
+  .state("todo", {
+    url: "/tasks",
+    templateUrl: "/assets/html/todo/index.html",
+    controller: "todoController",
+    controllerAs: "todoVM"
+  })
 }

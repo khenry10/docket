@@ -6,8 +6,8 @@ var parser   = require("body-parser");
 var app      = express();
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
-
-var Expenses = mongoose.model("Expenses")
+var Expenses = mongoose.model("Expenses");
+var Todo = mongoose.model("Todo");
 
 app.use("/assets", express.static("public"));
 app.set("port", process.env.PORT || 3002);
@@ -34,6 +34,26 @@ app.engine(".hbs", hbs({
 //     res.json(event)
 //   })
 // })
+
+app.get('/api/todo', function(req, res){
+  console.log("todo get ")
+  Todo.find().then(function(todo){
+    res.json(todo)
+  });
+});
+
+app.post("/api/todo", function(req, res){
+  console.log("api POST " + JSON.stringify(req.body))
+  Todo.create(req.body).then(function(){
+    res.redirect("/")
+  })
+})
+
+app.put("/api/todo/:name", function(req, res){
+  Todo.findOneAndUpdate({name: req.params.name}, req.body.event, {new: true}).then(function(todo){
+    res.json(todo)
+  })
+})
 
 app.get('/expenses', function(req, res){
   console.log("expenses api called. 1")
@@ -68,10 +88,7 @@ app.post("/api", function(req, res){
 })
 
 app.put("/api/:name", function(req, res){
-  console.log(req.params.name)
-  console.log(req.params)
   Events.findOneAndUpdate({name: req.params.name}, req.body.event, {new: true}).then(function(event){
-    console.log(event)
     res.json(event)
   })
 })
