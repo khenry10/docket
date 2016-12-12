@@ -50,6 +50,8 @@ app.post("/api/todo", function(req, res){
 })
 
 app.put("/api/todo/:name", function(req, res){
+  console.log(req.body.event)
+  console.log(req.params.name)
   Todo.findOneAndUpdate({name: req.params.name}, req.body.event, {new: true}).then(function(todo){
     res.json(todo)
   })

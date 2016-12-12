@@ -1,22 +1,26 @@
-{{todoVM.models.list}}
-
-<div ng-init="todoVM.fetchData()" class="simpleDemo" style="margin-left: 35%; margin-top: 5%;">
-  <ul dnd-list="todoVM.models.list">
-    <li><input type="text" ng-model="todoVM.newTodo.name"><button ng-click="todoVM.addNewTodo()"> + </button></li>
-    <li ng-repeat="item in todoVM.models.list"
+<div ng-init="todoVM.fetchData()" class="simpleDemo" style="margin-left: 30%; margin-top: 5%; width: 35%;">
+  <li style="list-style: none">
+    <input type="text" ng-model="todoVM.newTodo.name">
+    <button ng-click="todoVM.addNewTodo()"> + </button>
+    <button ng-click="todoVM.clearComplete()"> Clear Completed </button>
+  </li>
+  <ul dnd-list="todoVM.models.toDoList">
+    <li ng-repeat="item in todoVM.models.toDoList | orderBy: 'rank' "
       class="todo"
+      ng-class="{todoComplete: item.completed}"
       dnd-draggable="item"
-      dnd-moved="todoVM.models.list.splice($index, 1) "
+      dnd-moved="todoVM.models.toDoList.splice($index, 1)"
+      dnd-dragend="todoVM.update(todoVM.models.toDoList)"
       dnd-effect-allowed="move"
       dnd-selected="todoVM.models.selected = item"
       ng-class="{'selected': todoVM.models.selected === item}">
       <table>
         <tr>
           <td>
-            <input type="checkbox" ng-model="item.completed" ng-change="todoVM.change()">
+            <input type="checkbox" ng-change="todoVM.update(item)" ng-model="item.completed">
           </td>
           <td>
-            {{item.label}}
+            {{ item.label }} - {{ item.rank }} - {{ item.completed }}
           </td>
         </tr>
       </table>
