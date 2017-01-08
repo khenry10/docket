@@ -27,9 +27,10 @@
 
   function Events($resource){
     console.log("events factory envoked")
-    var Events = $resource("/api/:name", {}, {
-      update: {method: "PUT"}
-    })
+    var Events = $resource("/api/event/:name",
+    { query:  {method:'GET', isArray: true} },
+    { update: {method: "PUT"} })
+
     Events.all = Events.query();
     Events.find = function(property, value, callback){
       // console.log("property = "+property)

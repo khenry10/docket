@@ -50,9 +50,10 @@ app.post("/api/todo", function(req, res){
 })
 
 app.put("/api/todo/:name", function(req, res){
-  console.log(req.body.event)
+  console.log("todo ")
+  console.log(req.body.todo)
   console.log(req.params.name)
-  Todo.findOneAndUpdate({name: req.params.name}, req.body.event, {new: true}).then(function(todo){
+  Todo.findOneAndUpdate({name: req.params.name}, req.body.todo, {new: false}).then(function(todo){
     res.json(todo)
   })
 })
@@ -72,24 +73,33 @@ app.post('/expenses', function(req, res){
 })
 
 // all events endpoint
-app.get('/api', function(req, res){
+app.get('/api/event', function(req, res){
   console.log('app.get /api is being used')
   console.log(req.params)
   Events.find().then(function(events){
     res.json(events)
-    // console.log(events)
+
   });
 });
 
+app.get('/api/event/:name', function(req, res){
+  console.log("findOne Event get")
+  console.log(req.params.name)
+  Events.findOne({name: req.params.name}).then(function(event){
+    res.json(event)
+  })
+})
+
 // creates event
-app.post("/api", function(req, res){
+app.post("/api/event", function(req, res){
   console.log("api POST " + JSON.stringify(req.body))
   Events.create(req.body).then(function(){
     res.redirect("/")
   })
 })
 
-app.put("/api/:name", function(req, res){
+app.put("/api/event/:name", function(req, res){
+  console.log(req.params)
   Events.findOneAndUpdate({name: req.params.name}, req.body.event, {new: true}).then(function(event){
     res.json(event)
   })

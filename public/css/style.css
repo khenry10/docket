@@ -168,7 +168,7 @@ input[type=date] {
 
 button {
   /*padding: 10px;*/
-  margin: 15px;
+  /*margin: 15px;*/
   font-size: 12px;
   border-radius: 10px;
   background-color: #ecf0f1;
@@ -181,7 +181,7 @@ button:hover {
 }
 
 input {
-  margin: 3px;
+  /*margin: 3px;*/
 }
 
 h2 {
