@@ -4,15 +4,9 @@ angular.module('app')
 .controller("IndexController", [
   "$scope",
   "Events",
+  "Todo",
   "$window",
   IndexController
-])
-.controller("NewEventsController", [
-  "Events",
-  "$state",
-  "$window",
-  "$timeout",
-  NewEventsController
 ])
 .controller("ShowEventsController", [
   "Events",
@@ -21,11 +15,15 @@ angular.module('app')
   ShowEventsController
 ])
 
-function IndexController($scope, Events, $window){
-  console.log(Events)
-  var vm = this
+function IndexController($scope, Events, Todo, $window){
+console.log(Events)
+console.log(Todo)
   $scope.events = []
   $scope.events = Events.all;
+
+  $scope.todo = Todo.all;
+  console.log($scope.todo);
+  console.log($scope.events);
 
   var date = new Date()
 
@@ -70,31 +68,43 @@ function IndexController($scope, Events, $window){
       this.year--
     }
   }
-};
 
-function NewEventsController(Events, $window, $scope){
-  var newVM = this;
+  $scope.newEvent = new Events();
+  $scope.newTodoList = new Todo()
+  $scope.entryType = 'Event'
 
-  newVM.new_event = new Events();
+    $scope.create = function(){
+      console.log($scope.newEvent.name)
+      console.log($scope.entryType)
+      if($scope.newEvent.name && $scope.newEvent.start_time){
+        if($scope.entryType === 'Event') {
+          $scope.newEvent.$save().then(function(response){
+            console.log($scope.events)
+          })
+        }
+        if($scope.entryType === 'List'){
+          $scope.newTodoList.save()
+        }
+      }
+    }
 
-  newVM.create = function(){
-    console.log(newVM.new_event)
-    newVM.new_event.$save().then(function(response){
-      // $window.location.replace('/')
-      Events.query( function(data) {
-        console.log(data)
-        $scope.events = data
+    $scope.delete = function(eventName){
+      console.log("vm.event.name = " + eventName)
+
+      Events.remove({name: eventName}, function(event){
+          $window.location.replace('/')
       })
-    })
-  }
+    }
+
 };
+
 
 function ShowEventsController(Events, $stateParams, $window){
   console.log("show event")
     var vm = this;
     console.log($stateParams.name)
 
-    vm.event = Events.query({name: $stateParams.name})
+    vm.event = Events.get({name: $stateParams.name})
 
     vm.update = function(){
       console.log("update = " +vm.event.name)
@@ -107,11 +117,4 @@ function ShowEventsController(Events, $stateParams, $window){
       })
     }
 
-    vm.delete = function(eventName){
-      console.log("vm.event.name = " + eventName)
-
-      Events.remove({name: eventName}, function(event){
-          $window.location.replace('/')
-      })
-    }
 };

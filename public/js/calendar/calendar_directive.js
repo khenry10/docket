@@ -148,8 +148,6 @@
             tr.appendChild(td);
 
             if(count === date.getDate() && month === date.getMonth()+1 && year === date.getFullYear()){
-              console.log(date.getDate())
-              console.log(year)
               td.setAttribute("class", "today")
             }
 

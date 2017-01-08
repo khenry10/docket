@@ -105,7 +105,7 @@ app.put("/api/event/:name", function(req, res){
   })
 })
 
-app.delete("/api/:name",function(req, res){
+app.delete("/api/event/:name",function(req, res){
   console.log(req.params.name)
   Events.findOneAndRemove({name: req.params.name}).then(function(){
     res.json({success: true})

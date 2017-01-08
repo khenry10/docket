@@ -2,23 +2,31 @@
   <div class="events-panel">
     <div class="new-event-form">
       <h2> Add New Event </h2>
-      <div data-ng-controller="NewEventsController as newVM">
+      <div >
         <form>
           <ul>
             <li>
-              <!-- <md-input-container class="md-block" flex-gt-sm=""> -->
-                <input type="text" data-ng-model="newVM.new_event.name" placeholder="name of event"/>
-                <!-- <md-input-container> -->
-              </li>
-            <li><md-datepicker date-input type="date" data-ng-model="newVM.new_event.start_time" md-placeholder="Date"/></md-datepicker><li>
-            <md-button class="md-raised" ng-click="newVM.create()"> Add Event </md-button>
+              <input type="text" data-ng-model="newEvent.name" placeholder="name of event"/>
+            </li>
+            <li>
+              <md-datepicker date-input type="date" data-ng-model="newEvent.start_time" md-placeholder="Date"/></md-datepicker>
+            </li>
+            <li>
+              <md-radio-group ng-model="entryType"
+                style="display: flex; justify-content: space-between; width: 60%; margin-left: 10%; margin-top: 4%">
+                <md-radio-button style="padding-left: 2%;" value="Event">Event</md-radio-button>
+                <md-radio-button value="List">List</md-radio-button>
+              </md-radio-group>
+            </li>
+            <md-button class="md-raised" ng-click="create()"> Add </md-button>
           </ul>
         </form>
       </div>
     </div>
     <div class="list-of-events">
       <h2 style="padding: 3% 0% 3% 0%; outline: 1px solid white;"> Events </h2>
-      <table data-ng-controller="ShowEventsController as showVM">
+
+      <table >
         <tr data-ng-repeat="event in events "
             data-ng-model="changeMonth.count"
             data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1) &&
@@ -26,7 +34,7 @@
             <td><a href="/event/{{event.name}}">  {{event.name}} </a></td>
             <td><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
             <td>
-              <md-button class="md-raised md-warn" ng-click="showVM.delete(event.name)">X</md-button>
+              <md-button class="md-raised md-warn" ng-click="delete(event.name)">X</md-button>
             </td>
           </tr>
           <tr data-ng-repeat="event in events | orderBy:'start_time'"
@@ -36,7 +44,7 @@
               <td style="width: 8em;"><a href="/event/{{event.name}}">  {{event.name}} </a></td>
               <td style="width: 5em;"><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
               <td style="width: 3em;">
-                <md-button style="min-width: 1%" class="md-raised md-warn" ng-click="showVM.delete(event.name)">X</md-button>
+                <md-button style="min-width: 1%" class="md-raised md-warn" ng-click="delete(event.name)">X</md-button>
               </td>
             </tr>
             </div>
@@ -45,7 +53,6 @@
       </table>
     </div>
   </div>
-
 
 <div class="calendar">
   <div class="calendar-navigation">

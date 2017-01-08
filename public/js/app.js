@@ -9,7 +9,7 @@
 
   function Todo($resource){
     console.log("Todo factory envoked")
-    var Todo = $resource("api/todo/:name", {}, {
+    var Todo = $resource("api/todo/:name", { query:  {method:'GET', isArray: true} }, {
       update: {method: "PUT"}
     })
     Todo.all = Todo.query();
