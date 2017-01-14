@@ -28,24 +28,21 @@ var ExpenseSchema = new mongoose.Schema({
 });
 mongoose.model("Expenses", ExpenseSchema);
 
-
 var TodoSchema = new mongoose.Schema({
   list_name: String,
-  created_on: Date,
+  list_created_on: Date,
   reocurring: String,
   category: String,
-  task: {
-    name: String,
-    completed: Boolean,
-    rank: Number,
-    category: String,
-    time_estimate: Number,
-    time_actual: Number,
-    reocurring: String,
-    created_at: Date,
-    completed_on: Date,
-    deadline: Date
-  }
+  task_name: String,
+  task_completed: Boolean,
+  task_rank: Number,
+  category: String,
+  time_estimate: Number,
+  time_actual: Number,
+  reocurring: String,
+  created_at: Date,
+  completed_on: Date,
+  deadline: Date
 });
 mongoose.model("Todo", TodoSchema);
 

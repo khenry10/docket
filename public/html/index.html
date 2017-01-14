@@ -6,10 +6,10 @@
         <form>
           <ul>
             <li>
-              <input type="text" data-ng-model="newEvent.name" placeholder="name of event"/>
+              <input type="text" data-ng-model="name" placeholder="name of event"/>
             </li>
             <li>
-              <md-datepicker date-input type="date" data-ng-model="newEvent.start_time" md-placeholder="Date"/></md-datepicker>
+              <md-datepicker date-input type="date" data-ng-model="start_time" md-placeholder="Date"/></md-datepicker>
             </li>
             <li>
               <md-radio-group ng-model="entryType"
@@ -17,6 +17,14 @@
                 <md-radio-button style="padding-left: 2%;" value="Event">Event</md-radio-button>
                 <md-radio-button value="List">List</md-radio-button>
               </md-radio-group>
+            </li>
+            <li>
+              <md-input-container>
+                <label>Recurring</label>
+                <md-select ng-model="repeatInterval">
+                  <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
+                </md-select>
+              </md-input-container>
             </li>
             <md-button class="md-raised" ng-click="create()"> Add </md-button>
           </ul>
@@ -47,6 +55,9 @@
                 <md-button style="min-width: 1%" class="md-raised md-warn" ng-click="delete(event.name)">X</md-button>
               </td>
             </tr>
+            <tr data-ng-repeat="list in todoLists">
+              <td><a href="/tasks/{{ list.list_name }}"> {{ list.list_name }} </a></td>
+            </tr>
             </div>
           </div>
         </tr>
@@ -67,5 +78,5 @@
                data-ng-model="changeMonth.count"
                ng-click="changeMonth.increment()"> > </md-button>
   </div>
-    <monthly-calendar change-month="changeMonth.count" current-month="currentMonth.count" ></monthly-directive>
+    <monthly-calendar change-month="changeMonth.count" current-month="currentMonth.count" list="todoLists" ></monthly-directive>
 </div>

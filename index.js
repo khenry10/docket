@@ -42,6 +42,14 @@ app.get('/api/todo', function(req, res){
   });
 });
 
+app.get('/api/todo/:name', function(req, res){
+  console.log("findOne todo List get")
+  console.log(req.params.name)
+  Todo.findOne({task_name: req.params.name}).then(function(todo){
+    res.json(todo)
+  })
+})
+
 app.post("/api/todo", function(req, res){
   console.log("api POST " + JSON.stringify(req.body))
   Todo.create(req.body).then(function(){
@@ -49,11 +57,10 @@ app.post("/api/todo", function(req, res){
   })
 })
 
-app.put("/api/todo/:name", function(req, res){
+app.put("/api/todo/", function(req, res){
   console.log("todo ")
   console.log(req.body.todo)
-  console.log(req.params.name)
-  Todo.findOneAndUpdate({name: req.params.name}, req.body.todo, {new: false}).then(function(todo){
+  Todo.findOneAndUpdate({task_name: req.body.todo.task_name}, req.body.todo, {new: false}).then(function(todo){
     res.json(todo)
   })
 })

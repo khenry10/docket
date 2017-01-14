@@ -13,11 +13,15 @@
       templateUrl: "/assets/html/_calendar.html",
       scope: {
         month: '=changeMonth',
-        current: '=currentMonth'
+        current: '=currentMonth',
+        todoList: '=list'
       },
       link: function(scope){
-
-      // $watch listens for changes that occur in the view/model.  The "<" or ">" buttons are attached to ng-model and a function in that controller which manipluates the month (count++ or count--).  Data binding allows for this to happen in both the view and the model, and passes to "change-month" in the directive, which triggers the anonymous function and passes the newValue from the model into the monthSelector function.  monthSelector deletes the current calendar HTML table and then invokes makeCalendar function with new month parameters.
+      // $watch listens for changes that occur in the view/controller.
+      // The "<" or ">" buttons are attached to ng-model and a function in that controller which manipluates the month (count++ or count--).
+        // Data binding allows for this to happen in both the view and the controller, and passes to "change-month" in the directive,
+        // which triggers the anonymous function and passes the newValue from the controller into the monthSelector function.
+        // monthSelector deletes the current calendar HTML table and then invokes makeCalendar function with new month parameters.
       scope.$watch('month', function(newMonth, oldValue){
         monthSelector(newMonth)
 
@@ -28,6 +32,13 @@
           var currentMonth = date.getMonth()+1
           var currentYear = date.getFullYear()
         }
+      }, true);
+
+      scope.$watch('todoList', function(newValue, oldValue){
+        console.log(newValue)
+        console.log(scope.month)
+        monthSelector(scope.month)
+
       }, true);
 
         // array of actual month names since the constructor function returns 0-11
@@ -153,7 +164,8 @@
 
             // Events.all[1] accesses the part of the object that actually stores the event data.
               //we have a conditional to see if the month of the object is the same month we are currently displaying
-                //loop through all the events to see if the date of the event is the same as the count, if yes, we set the p tag to the name of the event
+                //loop through all the events to see if the date of the event is the same as the count,
+                // if yes, we set the p tag to the name of the event
                   //lastly, we incremnt the count
 
               for(var i = 0; i < Events.all.length; i++ ){
@@ -179,6 +191,36 @@
                   }
                 }
               }
+
+              if(scope.todoList){
+                for(var k = 0; k < scope.todoList.length; k++){
+                  console.log(scope.todoList[k])
+                  var listCreateOnDate = scope.todoList[k].list_createdOn
+                  console.log(typeof listCreateOnDate)
+                  var listCreateOnDate = listCreateOnDate.split("-")
+
+                  // console.log(scope.todoList[k].list_createdOn)
+                  var listYear = parseInt(listCreateOnDate[0])
+                  var listMonth = parseInt(listCreateOnDate[1])
+                  var listDay = parseInt(listCreateOnDate[2].substr(0,2))
+
+                  if(listYear === year){
+                    if(listMonth === month){
+                      if(listDay === count){
+                        var li = document.createElement("li")
+                        var url = document.createElement("a")
+                        url.href = "/tasks/"+scope.todoList[k].list_name;
+                        url.innerHTML = scope.todoList[k].list_name;
+
+                        li.append(url)
+
+                        ul.appendChild(li)
+                      }
+                    }
+                  }
+                }
+              }
+
               count++
 
         };

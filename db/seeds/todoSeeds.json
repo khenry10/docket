@@ -1,35 +1,3 @@
 [
-  {
-    "name": "Pay Bills",
-    "completed": false,
-    "rank": 1,
-    "category": "Personal",
-    "time_estimate": 30,
-    "time_actual": 30,
-    "reocurring": "monthly",
-    "created_at": "Sat Nov 12 2016 14:19:11 GMT-0500 (EST)",
-    "deadline": "Fri Nov 18 2016 14:19:11 GMT-0500 (EST)"
-  },
-  {
-    "name": "Clean Bathroom",
-    "rank": 2,
-    "completed": false,
-    "category": "Personal",
-    "time_estimate": 60,
-    "time_actual": 45,
-    "reocurring": "weekly",
-    "created_at": "Sun Nov 13 2016 14:19:11 GMT-0500 (EST)",
-    "deadline": "Fri Nov 18 2016 14:19:11 GMT-0500 (EST)"
-  },
-  {
-    "name": "Laundry",
-    "completed": false,
-    "rank": 3,
-    "category": "Personal",
-    "time_estimate": 60,
-    "time_actual": 45,
-    "reocurring": "weekly",
-    "created_at": "Sun Nov 13 2016 14:19:11 GMT-0500 (EST)",
-    "deadline": "Fri Nov 18 2016 14:19:11 GMT-0500 (EST)"
-  }
+
 ]
