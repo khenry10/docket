@@ -1,3 +1,41 @@
 [
-
+  {
+    "list_name": "Finance",
+    "list_created_on": "Sat Jan 14 2016 14:19:11 GMT-0500 (EST)",
+    "task_name": "Pay Bills",
+    "task_completed": false,
+    "task_rank": 1,
+    "category": "Personal",
+    "time_estimate": 30,
+    "time_actual": 30,
+    "reocurring": "monthly",
+    "created_at": "Sat Nov 12 2016 14:19:11 GMT-0500 (EST)",
+    "deadline": "Fri Nov 18 2016 14:19:11 GMT-0500 (EST)"
+  },
+  {
+    "list_name": "Chores",
+    "list_created_on": "Sun Jan 15 2016 14:19:11 GMT-0500 (EST)",
+    "task_name": "Clean Bathroom",
+    "task_rank": 2,
+    "task_completed": false,
+    "category": "Personal",
+    "time_estimate": 60,
+    "time_actual": 45,
+    "reocurring": "weekly",
+    "created_at": "Sun Nov 13 2016 14:19:11 GMT-0500 (EST)",
+    "deadline": "Fri Nov 18 2016 14:19:11 GMT-0500 (EST)"
+  },
+  {
+    "list_name": "Chores",
+    "list_created_on": "Sun Jan 15 2016 14:19:11 GMT-0500 (EST)",
+    "task_name": "Laundry",
+    "task_completed": false,
+    "task_rank": 3,
+    "category": "Personal",
+    "time_estimate": 60,
+    "time_actual": 45,
+    "reocurring": "weekly",
+    "created_at": "Sun Nov 13 2016 14:19:11 GMT-0500 (EST)",
+    "deadline": "Fri Nov 18 2016 14:19:11 GMT-0500 (EST)"
+  }
 ]

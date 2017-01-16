@@ -20,8 +20,9 @@
             </li>
             <li>
               <md-input-container>
-                <label>Recurring</label>
-                <md-select ng-model="repeatInterval">
+                <label ng-if="!repeatInterval">Reocurring</label>
+                <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>
+                <md-select ng-model="repeatInterval" aria-label="select reocurring">
                   <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
                 </md-select>
               </md-input-container>
