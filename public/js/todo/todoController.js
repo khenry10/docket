@@ -97,13 +97,15 @@ function todoController(Todo, $window, $stateParams, $scope){
 
   vm.update = function(task){
     console.log(task)
+    console.log(task.task_name)
     if(task.length){
       console.log(task.length)
       updateAll(task);
     } else {
       var completedTime = new Date();
       console.log(completedTime)
-      var updateTask = {task_name: task.name, task_completed: task.completed}
+      var updateTask = {task_name: task.task_name, task_completed: task.completed}
+      console.log(updateTask)
       Todo.update({task_name: updateTask.name}, {todo: updateTask}, function(task){
       })
     }

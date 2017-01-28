@@ -19,13 +19,21 @@
               </md-radio-group>
             </li>
             <li>
-              <md-input-container>
+              <md-input-container style="background-color: white;">
                 <label ng-if="!repeatInterval">Reocurring</label>
                 <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>
                 <md-select ng-model="repeatInterval" aria-label="select reocurring">
                   <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
                 </md-select>
               </md-input-container>
+              <md-radio-group ng-model="reoccurEnds" ng-show=" repeatInterval.length && repeatInterval != 'None' "
+>
+                  <md-radio-button value="Never">Never</md-radio-button>
+                  <md-radio-button value="SelectDate">Select Date</md-radio-button>
+                  <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
+                    ng-model=reoccurEndsDate>
+                  </md-datepicker>
+              </md-radio-group>
             </li>
             <md-button class="md-raised" ng-click="create()"> Add </md-button>
           </ul>
@@ -79,5 +87,7 @@
                data-ng-model="changeMonth.count"
                ng-click="changeMonth.increment()"> > </md-button>
   </div>
-    <monthly-calendar change-month="changeMonth.count" current-month="currentMonth.count" list="todoLists" ></monthly-directive>
+    <monthly-calendar change-month="changeMonth.count" current-month="currentMonth.count" list="todoLists"
+      new="newCalTodoLists"
+    ></monthly-directive>
 </div>

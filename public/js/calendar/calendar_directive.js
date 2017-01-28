@@ -15,7 +15,8 @@
       scope: {
         month: '=changeMonth',
         current: '=currentMonth',
-        todoList: '=list'
+        todoList: '=list',
+        newtodoLists: '=new'
       },
       link: function(scope){
       // $watch listens for changes that occur in the view/controller.
@@ -23,13 +24,34 @@
         // Data binding allows for this to happen in both the view and the controller, and passes to "change-month" in the directive,
         // which triggers the anonymous function and passes the newValue from the controller into the monthSelector function.
         // monthSelector deletes the current calendar HTML table and then invokes makeCalendar function with new month parameters.
+
+        var loaded = 1
+        console.log(scope)
+
+      var pullTodo = function (){
+        scope.pulledTodoList = Todo.all
+        console.log(scope.todoList)
+        checkLists('new pullTodo function', scope.pulledTodoList)
+      }
+
       scope.$watch('month', function(newMonth, oldValue){
         console.log("month $watch called")
+        console.log(scope)
+        console.log(newMonth)
         monthSelector(newMonth)
+        console.log(scope.todolist)
+        var todoList = scope.todolist
+        if(scope.todolist){
+          console.log("TRUEEEEEEE")
+            checkLists('month $watch', todoList)
+        } else if(!scope.todoList){
+          pullTodo()
+        }
       }, true);
 
       scope.$watch('current', function(newValue, oldValue){
         console.log("current $watch called")
+        console.log(newValue)
         if(newValue){
           var currentMonth = date.getMonth()+1
           var currentYear = date.getFullYear()
@@ -38,10 +60,21 @@
 
       scope.$watch('todoList', function(newValue, oldValue){
         console.log("todolist $watch called")
-        // monthSelector(scope.month)
-        checkLists()
-
+        console.log(scope.month)
+        var todoList = scope.todoList
+        if(scope.todoList){
+            checkLists('todoList $watch', todoList)
+        }
       }, true);
+
+      scope.$watch('newtodoLists', function(newValue, oldValue){
+        console.log("newtodoLists $watch called")
+        scope.todoList = newValue
+        if(scope.todoList){
+            checkLists('newTodoList $watch')
+        }
+      }, false);
+
 
         // array of actual month names since the constructor function returns 0-11
         var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -156,9 +189,9 @@
           var listMonth = parseInt(listDates[1])
           var listDay = parseInt(listDates[2].substr(0,2))
 
-          // if(listYear === year){
-          //   if(listMonth === month){
-          //     if(listDay === count){
+          // console.log(year)
+          if(listYear === year){
+            if(listMonth === scope.month){
 
                 var ul = document.getElementsByClassName("u"+listDay)
                 var li = document.createElement("li")
@@ -169,29 +202,34 @@
 
                 li.append(url)
                 ul[0].appendChild(li)
+
+            }
+          }
         }
 
-        var checkLists = function(){
-          console.log("checkLists called")
-          console.log(scope.todoList)
-          console.log(scope.todoList.length)
-          if(scope.todoList.length > 1){
-            for(var k = 0; k < scope.todoList.length; k++){
-              var list = scope.todoList[k]
+        var checkLists = function(message, todoList){
+          console.log("checkLists message = " + message)
+          console.log(todoList)
+          if(todoList.length > 1){
+            for(var k = 0; k < todoList.length; k++){
+              var list = todoList[k]
               var reocurringDates = list.dates
               console.log(reocurringDates)
               reocurringDates.forEach(function(date){
-                console.log(date)
+                // console.log(date)
                 checkDates(date, list)
               })
             }
           } else {
-            console.log(scope.todoList[0])
-            list = scope.todoList[0];
-            list.dates.forEach(function(date){
-              console.log(date)
-              checkDates(date, list)
-            })
+            console.log(todoList[0])
+            list = todoList[0];
+            console.log(list)
+            if(list.dates){
+              list.dates.forEach(function(date){
+                // console.log(date)
+                checkDates(date, list)
+              })
+            }
           }
         }
 
