@@ -37,7 +37,13 @@ function router($stateProvider, $locationProvider){
   })
   .state("todo", {
     url: "/tasks",
-    templateUrl: "/assets/html/todo/index.html",
+    templateUrl: "/assets/html/todo/todo-index.html",
+    controller: "todoController",
+    controllerAs: "todoVM"
+  })
+  .state("todo-show", {
+    url: "/tasks/:list_name",
+    templateUrl: "/assets/html/todo/todo-show.html",
     controller: "todoController",
     controllerAs: "todoVM"
   })

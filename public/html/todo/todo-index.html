@@ -5,7 +5,7 @@
       <button ng-click="todoVM.addNewListCategory()">Create new Task List</button>
     </div>
     <div ng-init="todoVM.fetchData()" class="simpleDemo" style="width: 33%; outline: 1px solid pink;">
-      <h1> {{ todoVM.taskLists[0] }} </h1>
+      <h1> {{ todoVM.taskLists[0] }} Todo INDEX </h1>
       <li style="list-style: none">
         <input type="text" ng-model="todoVM.newTodo.name">
         <button ng-click="todoVM.addNewTodo()"> + </button>
@@ -27,7 +27,7 @@
                 <input type="checkbox" ng-change="todoVM.update(item)" ng-model="item.completed">
               </td>
               <td>
-                {{ item.label }} 
+                {{ item.label }}
               </td>
             </tr>
           </table>
