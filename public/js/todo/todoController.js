@@ -59,11 +59,14 @@ function todoController(Todo, $window, $stateParams, $scope){
 
   vm.clearComplete = function(){
     var newTodoList = [];
+    console.log(vm.models.toDoList)
     for(var i = 0; i < vm.models.toDoList.length; i++){
-      if(vm.models.toDoList[i].completed == false){
+      if(vm.models.toDoList[i].task_completed == false){
+          console.log(vm.models.toDoList[i])
           newTodoList.push(vm.models.toDoList[i])
       }
     }
+    console.log(vm.models.toDoList)
     vm.models.toDoList = newTodoList;
   }
 
@@ -104,7 +107,7 @@ function todoController(Todo, $window, $stateParams, $scope){
     } else {
       var completedTime = new Date();
       console.log(completedTime)
-      var updateTask = {task_name: task.task_name, task_completed: task.completed}
+      var updateTask = {task_name: task.task_name, task_completed: task.task_completed}
       console.log(updateTask)
       Todo.update({task_name: updateTask.name}, {todo: updateTask}, function(task){
       })

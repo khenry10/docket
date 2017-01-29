@@ -99,7 +99,11 @@ function IndexController($scope, Events, Todo, $window){
 
           $scope.newTodoList.list_name = $scope.name
           $scope.newTodoList.list_created_on = $scope.start_time
-          $scope.newTodoList.list_reocurring = $scope.repeatInterval
+          if($scope.repeatInterval){
+              $scope.newTodoList.list_reocurring = $scope.repeatInterval
+              $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
+          }
+
           $scope.newTodoList.dates = []
 
           var date = $scope.start_time
@@ -154,6 +158,7 @@ function IndexController($scope, Events, Todo, $window){
           // $scope.todoLists is scoped to calendar_directive, when a new item is added here, it gets passed to the calendar
           $scope.newCalTodoLists = [{list_name: $scope.newTodoList.list_name, dates: $scope.newTodoList.dates}]
           console.log($scope.newCalTodoLists)
+          console.log($scope.newTodoList)
           $scope.newTodoList.$save()
         }
       }
