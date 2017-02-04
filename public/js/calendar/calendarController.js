@@ -104,11 +104,11 @@ function IndexController($scope, Events, Todo, $window){
               $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
           }
 
-          $scope.newTodoList.dates = []
+          $scope.newTodoList.lists = []
 
           var date = $scope.start_time
-          var newDate = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate()
-          $scope.newTodoList.dates.push( newDate )
+          var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
+          $scope.newTodoList.lists.push( {date: newDate, tasks: []} )
           var count = date.getDate();
 
           var lastDay = numberOfDaysInMonth
@@ -116,7 +116,6 @@ function IndexController($scope, Events, Todo, $window){
           if($scope.reoccurEnds){
             console.log($scope.reoccurEnds)
             if($scope.reoccurEnds === "SelectDate"){
-              console.log($scope.reoccurEndsDate)
               console.log($scope.date)
               var endDateMonth = $scope.reoccurEndsDate.getMonth()
               var endDateYear = $scope.reoccurEndsDate.getFullYear()
@@ -131,10 +130,10 @@ function IndexController($scope, Events, Todo, $window){
 
           if($scope.repeatInterval === 'Daily'){
             while(count < lastDay){
-              console.log(count)
               console.log(lastDay)
               count = count + 1
-              $scope.newTodoList.dates.push( year+"-"+month+"-"+count)
+              var list = year+"-"+month+"-"+count
+              $scope.newTodoList.lists.push( { date: list, tasks: [] } )
                var date = $scope.start_time
             }
           }
@@ -142,7 +141,8 @@ function IndexController($scope, Events, Todo, $window){
           if($scope.repeatInterval === 'Weekly'){
             while(count+7 <= lastDay){
               count = count + 7
-              $scope.newTodoList.dates.push( year+"-"+month+"-"+count)
+              var list = year+"-"+month+"-"+count
+              $scope.newTodoList.lists.push( { date: list, tasks: [] } )
                var date = $scope.start_time
             }
           }
@@ -151,12 +151,13 @@ function IndexController($scope, Events, Todo, $window){
             console.log("Monthly")
             while(month < 12){
               month = month+1
-              $scope.newTodoList.dates.push( year+"-"+month+"-"+count)
-              console.log($scope.newTodoList.dates)
+              var list = year+"-"+month+"-"+count
+              $scope.newTodoList.lists.push( { date: list, tasks: [] } )
+              console.log($scope.newTodoList.lists)
             }
           }
           // $scope.todoLists is scoped to calendar_directive, when a new item is added here, it gets passed to the calendar
-          $scope.newCalTodoLists = [{list_name: $scope.newTodoList.list_name, dates: $scope.newTodoList.dates}]
+          $scope.newCalTodoLists = [{list_name: $scope.newTodoList.list_name, lists: $scope.newTodoList.lists}]
           console.log($scope.newCalTodoLists)
           console.log($scope.newTodoList)
           $scope.newTodoList.$save()

@@ -8,6 +8,9 @@
         <input type="text" ng-model="todoVM.newTodo.task_name">
         <button ng-click="todoVM.addNewTodo()"> + </button>
         <button ng-click="todoVM.clearComplete()"> Clear Completed </button>
+        <input type="text" ng-model="todoVM.newMaster.name">
+        <button ng-click="todoVM.addNewMasterTasks()"> Add to Master Tasks </button>
+
       </li>
       <ul dnd-list="todoVM.models.toDoList">
         <li ng-repeat="item in todoVM.models.toDoList "

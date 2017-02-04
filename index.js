@@ -59,10 +59,20 @@ app.post("/api/todo", function(req, res){
 
 app.put("/api/todo/", function(req, res){
   console.log("todo ")
+  console.log(req.body)
   console.log(req.body.todo)
+  console.log(req.body.todo.list_name)
+  console.log(req.body.todo.master_tasks)
   Todo.findOneAndUpdate({task_name: req.body.todo.task_name}, req.body.todo, {new: false}).then(function(todo){
     res.json(todo)
   })
+
+// below didn't work for master tasks...
+  // Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, {$push: {master_tasks: req.body.todo.master_tasks}})
+  // .then(function(todo){
+  //   res.json(todo)
+  // })
+
 })
 
 app.get('/expenses', function(req, res){
