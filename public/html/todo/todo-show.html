@@ -14,6 +14,7 @@
       </li>
       <ul dnd-list="todoVM.models.toDoList">
         <li ng-repeat="item in todoVM.models.toDoList "
+          style="height: 50px"
           class="todo"
           ng-class="{todoComplete: item.completed}"
           dnd-draggable="item"

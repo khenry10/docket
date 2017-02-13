@@ -58,12 +58,13 @@ app.post("/api/todo", function(req, res){
 })
 
 app.put("/api/todo/", function(req, res){
-  console.log("todo ")
-  console.log(req.body)
+  console.log("todo PUT ")
+  // console.log(req.body)
   console.log(req.body.todo)
   console.log(req.body.todo.list_name)
   console.log(req.body.todo.master_tasks)
-  Todo.findOneAndUpdate({task_name: req.body.todo.task_name}, req.body.todo, {new: false}).then(function(todo){
+  console.log(req.body.todo.task_name)
+  Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo){
     res.json(todo)
   })
 
@@ -131,6 +132,8 @@ app.delete("/api/event/:name",function(req, res){
 
 // route that directs to event.hbs, which is where we bootstrap angular
 app.get("/*", function(req, res){
+  console.log("wild card y'all")
+  console.log(req.params.name)
   res.render("event")
 })
 
@@ -139,5 +142,5 @@ app.get("/*", function(req, res){
 // })
 
 app.listen(app.get("port"), function(){
-  console.log("It's aliiive!");
+  console.log("I'm alive...");
 });

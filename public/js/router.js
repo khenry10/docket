@@ -4,6 +4,7 @@ angular.module("app").config(["$stateProvider","$locationProvider",router])
 
 function router($stateProvider, $locationProvider){
   $locationProvider.html5Mode(true);
+  console.log("router function")
   $stateProvider
   .state("index", {
     url: "/",
@@ -46,5 +47,11 @@ function router($stateProvider, $locationProvider){
     templateUrl: "/assets/html/todo/todo-show.html",
     controller: "todoController",
     controllerAs: "todoVM"
+  })
+  .state("catch", {
+    url: "/*",
+    templateUrl: "/assets/html/index.html",
+    controller: "IndexController",
+    controllerAs: "indexVM"
   })
 }

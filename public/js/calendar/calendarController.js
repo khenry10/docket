@@ -6,6 +6,7 @@ angular.module('app')
   "Events",
   "Todo",
   "$window",
+  "ModalService",
   IndexController
 ])
 .controller("ShowEventsController", [
@@ -15,14 +16,31 @@ angular.module('app')
   ShowEventsController
 ])
 
-function IndexController($scope, Events, Todo, $window){
+function IndexController($scope, Events, Todo, $window, ModalService){
   $scope.events = []
   $scope.events = Events.all;
 
   $scope.originalTodoLists = []
 
+  $scope.testModal = function (){
+    ModalService.showModal({
+      templateUrl: "/assets/html/todo/todo-show.html",
+      controller: "todoController"
+    }).then(function(modal) {
+      console.log(modal)
+      //it's a bootstrap element, use 'modal' to show it
+      modal.element.modal();
+      modal.close.then(function(result) {
+        console.log(result);
+      });
+    });
+  }
+
+
   Todo.all.$promise.then(function(todo){
+    console.log("*~*~*~*~ Todo.all call/data in calendarFunction is below: *~*~*~*~")
     console.log(todo)
+    console.log("*~*~*~ end *~*~*~")
     $scope.todoLists = todo
   })
 

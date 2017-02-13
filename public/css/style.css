@@ -97,14 +97,15 @@ body {
 
 
 .events-panel {
-  background-color: #34495E;
+  background-color: rgb(48, 49, 56);
   color: white;
   position: fixed;
   float: left;
-  /*width: 22%;*/
+  width: 22.5%;
   height: 100%;
   text-align: left;
   padding: 20px;
+  box-shadow: 2.5px 0px 2.5px #888888
 }
 
 .calendar {
@@ -155,6 +156,7 @@ li {
 }
 
 input[type=text] {
+  color: black;
   width: 150px;
   height: 30px;
   border-radius: 4px;
@@ -193,10 +195,11 @@ h2 {
   background-color: #4FF427;
   color: white;
   padding: 2px;
+  border-radius: 3px;
 }
 
 .today {
-  outline: 2px solid #208CF9;
+  outline: 2px solid #1000FF;
 }
 
 a {
@@ -349,4 +352,52 @@ a {
 .simpleDemo ul[dnd-list] li.selected {
     background-color: #dff0d8;
     color: #3c763d;
+}
+
+.panel-group .panel {
+  background-color: rgb(48, 49, 56);
+  border: none;
+}
+
+.panel-group .panel .panel-heading {
+  background-color: rgb(69, 71, 79);
+  color: white;
+  margin-bottom: 10px;
+  box-shadow: 1px 1px 1px grey;
+  border-radius: 2px;
+  height: 45px;
+}
+
+.panel-default>.panel-heading{
+  background-color: rgb(69, 71, 79);
+}
+
+.panel-group .panel .panel-default {
+  border-color: none
+}
+
+.custom-panel {
+  background-color: rgb(48, 49, 56);
+}
+
+.panel-heading .personal-panel {
+  background-color: rgb(69, 71, 79);
+  color: white;
+  margin-bottom: 5px;
+}
+
+.create-new-panel {
+  background-color: rgb(78, 80, 89);
+  margin-top: -7.5px;
+  padding: 10px;
+  border-radius: 2px;
+}
+
+.panel-title-custom {
+  margin-top: 2px;
+  padding-left: 25%;
+}
+
+.panel-title-custom a {
+  color: white;
 }

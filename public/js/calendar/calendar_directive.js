@@ -171,7 +171,6 @@
 
                 li.append(url)
                 ul[0].appendChild(li)
-
             }
           }
         }
@@ -189,8 +188,7 @@
                 checkDates(date, list)
               })
             }
-          } else {
-            console.log(todoList[0])
+          } else if(todoList[0]) {
             list = todoList[0];
             console.log(list)
             if(list.dates){
@@ -202,7 +200,7 @@
         };
 
         function createTableRows(table, td, count, p, tr, numberOfDays, month, year){
-            console.log("*** createTableRows called. count = " + count)
+            console.log("*** createTableRows called.")
             var td = document.createElement("td");
             td.setAttribute("class", "b"+count)
             var p = document.createElement("p")
@@ -241,7 +239,9 @@
               count++
         };
 
-        // monthHistory is an array that stores the months the user has viewed and acts as a changelog/history.  Need to the month history to determine when to increment and decrement the year.  Every condition of the monthSelector function pushes the month to this array
+        // monthHistory is an array that stores the months the user has viewed and acts as a changelog/history.
+          // Need to view the month history to determine when to increment and decrement the year.
+            // Every condition of the monthSelector function pushes the month to this array
         var monthHistory = []
 
         var monthSelector = function(month){

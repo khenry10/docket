@@ -2,7 +2,7 @@
 
 (function(){
   angular
-  .module("app", ["ngResource", "ui.router", "ngMaterial", "xeditable", "dndLists"])
+  .module("app", ["ngResource", "ui.router", "ngMaterial", "xeditable", "dndLists", "angularModalService"])
   .factory("Events", ["$resource",Events])
   .factory("Lists", ["$resource",Lists])
   .factory("Todo", ["$resource", Todo])
