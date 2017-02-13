@@ -1,0 +1,30 @@
+<div class="panel-group">
+  <div class="panel panel-default" ng-repeat="list in lists" >
+    <div class="panel-heading" style="width: 90%; margin-left: 10%;">
+      <div class="panel-title-custom">
+        <h4 class="panel-title">
+          <span class="glyphicon glyphicon-list" aria-hidden="true" style="color: rgb(48, 49, 56)"></span>
+          <a data-toggle="collapse" href="#collapseTask{{$index}}">{{ list.name }}</a>
+        </h4>
+      </div>
+    </div>
+    <div id="collapseTask{{$index}}" class="panel-collapse collapse"
+    style="width: 90%; margin-left: 10%;background-color: rgb(78, 80, 89); border-radius: 2px; color: black">
+      <ul class="list-group" >
+        <li>
+        <table>
+          <tr>
+            <td>
+              <input type="text" style="color: black" ng-model="newMaster">
+            </td>
+            <td>
+              <md-button class="md-raised" style="min-width: 40px;"ng-click="addNewMaster()" > + </md-button>
+            </td>
+          </tr>
+        </table>
+        </li>
+        <li ng-repeat="task in list.master_tasks" class="list-group-item">{{ task.name }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
