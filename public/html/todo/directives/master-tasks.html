@@ -9,21 +9,24 @@
       </div>
     </div>
     <div id="collapseTask{{$index}}" class="panel-collapse collapse"
-    style="width: 90%; margin-left: 10%;background-color: rgb(78, 80, 89); border-radius: 2px; color: black">
+    style="width: 90%; margin-left: 10%;background-color: rgb(107, 110, 122); border-radius: 2px; color: black">
       <ul class="list-group" >
         <li>
         <table>
           <tr>
             <td>
-              <input type="text" style="color: black" ng-model="newMaster">
+              <input type="text" style="color: black; margin-left: 5%;" ng-model="newMaster" placeholder="add new master">
             </td>
             <td>
-              <md-button class="md-raised" style="min-width: 40px;"ng-click="addNewMaster()" > + </md-button>
+              <md-button class="md-raised" style="min-width: 40px;"ng-click="addNewMaster(newMaster, list)" > + </md-button>
             </td>
           </tr>
         </table>
         </li>
-        <li ng-repeat="task in list.master_tasks" class="list-group-item">{{ task.name }}</li>
+        <li ng-repeat="task in list.master_tasks" class="list-group-item"
+        style="background-color: rgb(107, 110, 122); color: white;">
+          {{ task.name }}
+        </li>
       </ul>
     </div>
   </div>

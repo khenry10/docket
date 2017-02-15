@@ -15,8 +15,8 @@
           <div id="collapse1" class="panel-collapse collapse">
               <form style="color: black">
                 <ul class="create-new-panel">
-                  <li>
-                    <input type="text" data-ng-model="name" placeholder="name of event"/>
+                  <li style="margin-left: 20%">
+                    <input type="text" data-ng-model="name" placeholder="name"/>
                   </li>
                   <li>
                     <md-datepicker date-input type="date" data-ng-model="start_time" md-placeholder="Date"/></md-datepicker>
@@ -28,7 +28,8 @@
                       <md-radio-button value="List">List</md-radio-button>
                     </md-radio-group>
                   </li>
-                  <li>
+                  <li ng-if="name && start_time">
+
                     <md-input-container style="background-color: white; color: black">
                       <label ng-if="!repeatInterval">Reocurring</label>
                       <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>
@@ -36,21 +37,19 @@
                         <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
                       </md-select>
                     </md-input-container>
-                  </li>
-                </li>
+
                     <md-radio-group ng-model="reoccurEnds"
                       ng-show=" repeatInterval.length && repeatInterval != 'None' "
                       style="display: flex; justify-content: space-between; width: 75%; margin-left: 5%; margin-top: 4%">
                         <md-radio-button value="Never">Never</md-radio-button>
                         <md-radio-button value="SelectDate">Select Date</md-radio-button>
                     </md-radio-group>
-                  </li>
-                  <li>
+
                     <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
                       ng-model="reoccurEndsDate">
                     </md-datepicker>
                   </li>
-                  <md-button class="md-raised" ng-click="create()"> Add </md-button>
+                  <md-button class="md-raised" ng-click="create()" style="margin-left: 30%;"> Add </md-button>
                 </ul>
               </form>
           </div>
@@ -89,7 +88,7 @@
             </div>
             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
               <div class="list-of-events" style="color: black">
-                <table style="width: 90%;">
+                <table style="width: 90%">
                   <tr data-ng-repeat="event in events "
                       data-ng-model="changeMonth.count"
                       data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1) &&
