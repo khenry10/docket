@@ -18,13 +18,13 @@
               <input type="text" style="color: black; margin-left: 5%;" ng-model="newMaster" placeholder="add new master">
             </td>
             <td>
-              <md-button class="md-raised" style="min-width: 40px;"ng-click="addNewMaster(newMaster, list)" > + </md-button>
+              <md-button class="md-raised" style="min-width: 40px;" ng-click="addNewMaster(newMaster, list)" > + </md-button>
             </td>
           </tr>
         </table>
         </li>
         <li ng-repeat="task in list.master_tasks" class="list-group-item"
-        style="background-color: rgb(107, 110, 122); color: white;">
+        style="background-color: rgb(107, 110, 122); color: white; box-shadow: 1px 1px grey">
           {{ task.name }}
         </li>
       </ul>

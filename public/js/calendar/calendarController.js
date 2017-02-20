@@ -24,8 +24,9 @@ function IndexController($scope, Events, Todo, $window, ModalService){
 
   $scope.testModal = function (){
     ModalService.showModal({
-      templateUrl: "/assets/html/todo/todo-show.html",
-      controller: "todoController"
+      templateUrl: "/assets/html/todo/modal-test.html",
+      controller: "modalController"
+
     }).then(function(modal) {
       console.log(modal)
       //it's a bootstrap element, use 'modal' to show it
@@ -99,7 +100,6 @@ function IndexController($scope, Events, Todo, $window, ModalService){
   $scope.reoccurEndsDate = new Date()
 
     $scope.create = function(){
-
       var year = $scope.start_time.getFullYear();
       var month = $scope.start_time.getMonth()+1;
       var date = $scope.start_time.getDate();
@@ -177,8 +177,15 @@ function IndexController($scope, Events, Todo, $window, ModalService){
           // $scope.todoLists is scoped to calendar_directive, when a new item is added here, it gets passed to the calendar
           $scope.newCalTodoLists = [{list_name: $scope.newTodoList.list_name, lists: $scope.newTodoList.lists}]
           console.log($scope.newCalTodoLists)
-          console.log($scope.newTodoList)
-          $scope.newTodoList.$save()
+          console.log($scope.newTodoList.list_name)
+          $scope.newTodoList.$save().then(function(res){
+            console.log("$scope.newTodoList.$save")
+          })
+          $scope.getMasters($scope.newCalTodoLists[0])
+          $scope.name = ""
+          $scope.repeatInterval = ""
+          $scope.start_time = ""
+          $scope.entryType = ""
         }
       }
     }

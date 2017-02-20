@@ -105,7 +105,8 @@ body {
   height: 100%;
   text-align: left;
   padding: 20px;
-  box-shadow: 2.5px 0px 2.5px #888888
+  box-shadow: 2.5px 0px 2.5px #888888;
+  overflow-x: scroll
 }
 
 .calendar {
@@ -196,10 +197,17 @@ h2 {
   color: white;
   padding: 2px;
   border-radius: 3px;
+  cursor:pointer;
 }
 
 .today {
   outline: 2px solid #1000FF;
+}
+
+#calendar-dates li a {
+  text-decoration: none;
+  color: white;
+  padding-left: 5px;
 }
 
 a {
@@ -333,7 +341,6 @@ a {
    text-decoration: line-through;
    color: grey;
    font-style: italic;
-   background-color: red;
  }
 
 .simpleDemo ul[dnd-list] li {
@@ -400,4 +407,12 @@ a {
 
 .panel-title-custom a {
   color: white;
+}
+
+.modal {
+display: block;
+}
+
+md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
+  background-color: #4FF427;
 }

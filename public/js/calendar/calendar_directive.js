@@ -6,10 +6,11 @@
   .directive("monthlyCalendar", [
     "Events",
     "Todo",
+    "ModalService",
     calendarDirectiveFunction
   ])
 
-  function calendarDirectiveFunction(Events, Todo){
+  function calendarDirectiveFunction(Events, Todo, ModalService){
     return {
       templateUrl: "/assets/html/_calendar.html",
       scope: {
@@ -49,6 +50,7 @@
       scope.$watch('todoList', function(newValue, oldValue){
         console.log("todolist $watch called")
         console.log(scope.todoList)
+
         var todoList = scope.todoList
         if(scope.todoList){
             checkLists('todoList $watch', todoList)
@@ -152,6 +154,23 @@
           table.appendChild(tr)
         };
 
+        scope.testModal = function (list, date){
+          ModalService.showModal({
+            templateUrl: "/assets/html/todo/modal-test.html",
+            controller: "modalController",
+            inputs: {
+              data: list,
+              date: date
+            }
+          }).then(function(modal) {
+            //it's a bootstrap element, use 'modal' to show it
+            modal.element.modal();
+            modal.close.then(function(result) {
+              console.log(result);
+            });
+          });
+        }
+
         var checkDates = function(date, list){
           console.log(date)
           var listDates = date.date.split("-")
@@ -166,14 +185,19 @@
                 var li = document.createElement("li")
                 li.setAttribute("class",'a'+listDay)
                 var url = document.createElement("a")
-                url.href = "/tasks/"+list.list_name;
+                // url.href = "/tasks/"+list.list_name;
                 url.innerHTML = list.list_name;
+
+                li.addEventListener("click", function() {
+                  scope.testModal(list, date.date)
+                })
 
                 li.append(url)
                 ul[0].appendChild(li)
             }
           }
         }
+
 
         var checkLists = function(message, todoList){
           console.log("checkLists message = " + message)

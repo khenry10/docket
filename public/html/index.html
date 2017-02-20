@@ -28,7 +28,7 @@
                       <md-radio-button value="List">List</md-radio-button>
                     </md-radio-group>
                   </li>
-                  <li ng-if="name && start_time">
+                  <li ng-show="name && start_time">
 
                     <md-input-container style="background-color: white; color: black">
                       <label ng-if="!repeatInterval">Reocurring</label>
@@ -49,7 +49,7 @@
                       ng-model="reoccurEndsDate">
                     </md-datepicker>
                   </li>
-                  <md-button class="md-raised" ng-click="create()" style="margin-left: 30%;"> Add </md-button>
+                  <md-button class="md-raised" ng-click="create(repeatInterval)" style="margin-left: 30%;"> Add </md-button>
                 </ul>
               </form>
           </div>
@@ -58,7 +58,7 @@
           <div class="panel panel-default" style="border: none;">
             <div class="panel-heading personal-panel" role="tab" id="headingTwo">
               <h4 class="panel-title">
-                <div class="panel-title-custom">
+                <div class="panel-title-custom" ng-click="getMasters()">
                   <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
                       href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">

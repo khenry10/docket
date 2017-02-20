@@ -60,7 +60,6 @@ function todoController(Todo, $window, $stateParams, $scope){
     });
   }
 
-// this doesn't work -- fix me!!!
   vm.clearComplete = function(){
     var newTodoList = [];
     console.log(vm.models.toDoList)
