@@ -50,6 +50,8 @@
       scope.$watch('todoList', function(newValue, oldValue){
         console.log("todolist $watch called")
         console.log(scope.todoList)
+        console.log(newValue)
+        console.log(oldValue)
 
         var todoList = scope.todoList
         if(scope.todoList){
@@ -172,53 +174,70 @@
         }
 
         var checkDates = function(date, list){
+          console.log(list)
+          console.log(list._id)
           console.log(date)
           var listDates = date.date.split("-")
           var listYear = parseInt(listDates[0])
           var listMonth = parseInt(listDates[1])
           var listDay = parseInt(listDates[2].substr(0,2))
 
-          if(listYear === year){
-            if(listMonth === scope.month){
 
-                var ul = document.getElementsByClassName("u"+listDay)
-                var li = document.createElement("li")
-                li.setAttribute("class",'a'+listDay)
-                var url = document.createElement("a")
-                // url.href = "/tasks/"+list.list_name;
-                url.innerHTML = list.list_name;
+            if(listYear === year){
+              if(listMonth === scope.month){
+                  var ul = document.getElementsByClassName("u"+listDay)
 
-                li.addEventListener("click", function() {
-                  scope.testModal(list, date.date)
-                })
+                  var exists = document.getElementById(list._id+date.date)
 
-                li.append(url)
-                ul[0].appendChild(li)
+                  console.log(exists)
+
+                  if(exists){
+                    console.log("Exists ___+_+_+_+_+_+_+")
+                  } else {
+
+                  var li = document.createElement("li")
+                  li.setAttribute("class",'a'+listDay)
+                  li.setAttribute("id", list._id+date.date)
+            
+                  var url = document.createElement("a")
+                  // url.href = "/tasks/"+list.list_name;
+                  url.innerHTML = list.list_name;
+
+                  li.addEventListener("click", function() {
+                    scope.testModal(list, date.date)
+                  })
+
+                  li.append(url)
+                  ul[0].appendChild(li)
+                }
+              }
             }
-          }
+
         }
 
 
         var checkLists = function(message, todoList){
           console.log("checkLists message = " + message)
           console.log(todoList)
-          if(todoList.length){
-            for(var k = 0; k < todoList.length; k++){
-              var list = todoList[k]
-              var reocurringDates = list.lists
-              console.log(reocurringDates)
-              reocurringDates.forEach(function(date){
-                // console.log(date)
-                checkDates(date, list)
-              })
-            }
-          } else if(todoList[0]) {
-            list = todoList[0];
-            console.log(list)
-            if(list.dates){
-              list.dates.forEach(function(date){
-                checkDates(date, list)
-              })
+          if(todoList){
+            if(todoList.length){
+              for(var k = 0; k < todoList.length; k++){
+                var list = todoList[k]
+                var reocurringDates = list.lists
+                console.log(reocurringDates)
+                reocurringDates.forEach(function(date){
+                  // console.log(date)
+                  checkDates(date, list)
+                })
+              }
+            } else if(todoList[0]) {
+              list = todoList[0];
+              console.log(list)
+              if(list.dates){
+                list.dates.forEach(function(date){
+                  checkDates(date, list)
+                })
+              }
             }
           }
         };

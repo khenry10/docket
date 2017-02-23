@@ -37,7 +37,6 @@ function IndexController($scope, Events, Todo, $window, ModalService){
     });
   }
 
-
   Todo.all.$promise.then(function(todo){
     console.log("*~*~*~*~ Todo.all call/data in calendarFunction is below: *~*~*~*~")
     console.log(todo)
@@ -122,11 +121,11 @@ function IndexController($scope, Events, Todo, $window, ModalService){
               $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
           }
 
-          $scope.newTodoList.lists = []
+          $scope.newMasterLists = []
 
           var date = $scope.start_time
           var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
-          $scope.newTodoList.lists.push( {date: newDate, tasks: []} )
+          $scope.newMasterLists.push( {date: newDate, tasks: []} )
           var count = date.getDate();
 
           var lastDay = numberOfDaysInMonth
@@ -151,7 +150,7 @@ function IndexController($scope, Events, Todo, $window, ModalService){
               console.log(lastDay)
               count = count + 1
               var list = year+"-"+month+"-"+count
-              $scope.newTodoList.lists.push( { date: list, tasks: [] } )
+              $scope.newMasterLists.push( { date: list, tasks: [] } )
                var date = $scope.start_time
             }
           }
@@ -160,7 +159,7 @@ function IndexController($scope, Events, Todo, $window, ModalService){
             while(count+7 <= lastDay){
               count = count + 7
               var list = year+"-"+month+"-"+count
-              $scope.newTodoList.lists.push( { date: list, tasks: [] } )
+              $scope.newMasterLists.push( { date: list, tasks: [] } )
                var date = $scope.start_time
             }
           }
@@ -170,18 +169,24 @@ function IndexController($scope, Events, Todo, $window, ModalService){
             while(month < 12){
               month = month+1
               var list = year+"-"+month+"-"+count
-              $scope.newTodoList.lists.push( { date: list, tasks: [] } )
-              console.log($scope.newTodoList.lists)
+              $scope.newMasterLists.push( { date: list, tasks: [] } )
+              console.log($scope.newMasterLists)
             }
           }
           // $scope.todoLists is scoped to calendar_directive, when a new item is added here, it gets passed to the calendar
-          $scope.newCalTodoLists = [{list_name: $scope.newTodoList.list_name, lists: $scope.newTodoList.lists}]
+          $scope.newCalTodoLists = [{list_name: $scope.name, lists: $scope.newMasterLists}]
           console.log($scope.newCalTodoLists)
-          console.log($scope.newTodoList.list_name)
+
+          $scope.newTodoList.lists = $scope.newMasterLists
+          console.log($scope.newTodoList)
+          console.log($scope.todoLists)
           $scope.newTodoList.$save().then(function(res){
             console.log("$scope.newTodoList.$save")
+            console.log($scope.todoLists)
           })
-          $scope.getMasters($scope.newCalTodoLists[0])
+          console.log($scope.todoLists)
+          console.log($scope.newCalTodoLists[0])
+          $scope.newMasterListAddition($scope.newCalTodoLists[0])
           $scope.name = ""
           $scope.repeatInterval = ""
           $scope.start_time = ""

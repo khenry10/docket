@@ -13,20 +13,12 @@
       templateUrl: "/assets/html/todo/directives/master-tasks.html",
       link: function($scope){
 
-        console.log($scope)
 
         console.log("You in da MASTA Todo")
 
         $scope.lists = []
 
-        $scope.getMasters = function(newMaster){
-          $scope.lists = []
-          console.log(newMaster)
-          if(newMaster){
-            var name = newMaster.list_name
-            var lists = newMaster.lists
-            $scope.lists.push({name: name, master_tasks: [], lists: lists})
-          }
+        $scope.getMasters = function(){
           console.log("$scope.getMasters called")
           // Todo.all.$promise.then(function(){
             Todo.all.forEach(function(todo){
@@ -39,9 +31,16 @@
           // })
         }
 
+        $scope.newMasterListAddition = function(newMaster){
+          console.log(newMaster)
+          if(newMaster){
+            var name = newMaster.list_name
+            var lists = newMaster.lists
+            $scope.lists.push({name: name, master_tasks: [], lists: lists})
+          }
+        }
 
-
-        $scope.addNewMaster = function (master, list){
+        $scope.addNewMasterTask = function (master, list){
           console.log($scope.newMaster)
           console.log($scope.keith)
           console.log(master)
@@ -62,6 +61,8 @@
             console.log(task)
           })
         }
+
+        $scope.getMasters()
 
       }
     }
