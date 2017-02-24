@@ -37,11 +37,16 @@ function IndexController($scope, Events, Todo, $window, ModalService){
     });
   }
 
-  Todo.all.$promise.then(function(todo){
+  $scope.allTodoLists = []
+
+  Todo.all.$promise.then(function(todos){
     console.log("*~*~*~*~ Todo.all call/data in calendarFunction is below: *~*~*~*~")
-    console.log(todo)
+    console.log(todos)
     console.log("*~*~*~ end *~*~*~")
-    $scope.todoLists = todo
+    $scope.todoLists = todos
+    todos.forEach(function(todo){
+      $scope.allTodoLists.push(todo)
+    })
   })
 
   $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly']
@@ -53,6 +58,7 @@ function IndexController($scope, Events, Todo, $window, ModalService){
   $scope.changeMonth = {
     count: $scope.date.getMonth()+1,
     increment: function(){
+      console.log($scope.allTodoLists)
       if(this.count > 11){
         this.count = 1
         // once the count (which is the month) is greater than December, we reset the count to 1 (which is january).  We also invoke changeYear.increment() function, which is used in the index.html to see if the year of the event matches the current year
@@ -98,11 +104,13 @@ function IndexController($scope, Events, Todo, $window, ModalService){
   $scope.reoccurEnds = 'Never'
   $scope.reoccurEndsDate = new Date()
 
-    $scope.create = function(){
-      var year = $scope.start_time.getFullYear();
-      var month = $scope.start_time.getMonth()+1;
-      var date = $scope.start_time.getDate();
-      var numberOfDaysInMonth = new Date(year, month, 0).getDate()
+
+
+  $scope.create = function(){
+    var year = $scope.start_time.getFullYear();
+    var month = $scope.start_time.getMonth()+1;
+    var date = $scope.start_time.getDate();
+    var numberOfDaysInMonth = new Date(year, month, 0).getDate()
 
       if($scope.name && $scope.start_time){
         if($scope.entryType === 'Event') {

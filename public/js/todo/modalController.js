@@ -122,6 +122,7 @@ function modalController(Todo, $scope, data, date){
       var saveMe = {list_name: $scope.listName, lists: data.lists}
       saveMe.lists[$scope.listIndex].tasks.push({name: $scope.newTodo, task_completed: false})
       console.log(saveMe)
+      $scope.models.toDoList.push({name: $scope.newTodo, task_completed: false})
 
       Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
       $scope.newTodo = ""
