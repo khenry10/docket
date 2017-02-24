@@ -31,6 +31,7 @@ mongoose.model("Expenses", ExpenseSchema);
 var TodoSchema = new mongoose.Schema({
   list_name: String,
   list_created_on: Date,
+  first_day: Date,
   list_reocurring: String,
   list_recur_end: String,
   master_tasks: [],

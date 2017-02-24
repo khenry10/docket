@@ -49,7 +49,7 @@
                       ng-model="reoccurEndsDate">
                     </md-datepicker>
                   </li>
-                  <md-button class="md-raised" ng-click="create(repeatInterval)" style="margin-left: 30%;"> Add </md-button>
+                  <md-button class="md-raised" ng-click="create()" style="margin-left: 30%;"> Add </md-button>
                 </ul>
               </form>
           </div>
@@ -127,7 +127,7 @@
   </div>
 
 <div class="calendar">
-  <div class="calendar-navigation"> 
+  <div class="calendar-navigation">
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
                data-ng-model="currentMonth.count"
                ng-click="currentMonth.count()"> Current Month </md-button>

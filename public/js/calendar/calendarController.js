@@ -7,6 +7,7 @@ angular.module('app')
   "Todo",
   "$window",
   "ModalService",
+  "DateService",
   IndexController
 ])
 .controller("ShowEventsController", [
@@ -16,7 +17,7 @@ angular.module('app')
   ShowEventsController
 ])
 
-function IndexController($scope, Events, Todo, $window, ModalService){
+function IndexController($scope, Events, Todo, $window, ModalService, DateService){
   $scope.events = []
   $scope.events = Events.all;
 
@@ -59,6 +60,9 @@ function IndexController($scope, Events, Todo, $window, ModalService){
     count: $scope.date.getMonth()+1,
     increment: function(){
       console.log($scope.allTodoLists)
+      $scope.allTodoLists.forEach(function(list){
+        $scope.listClone(list)
+      })
       if(this.count > 11){
         this.count = 1
         // once the count (which is the month) is greater than December, we reset the count to 1 (which is january).  We also invoke changeYear.increment() function, which is used in the index.html to see if the year of the event matches the current year
@@ -67,6 +71,9 @@ function IndexController($scope, Events, Todo, $window, ModalService){
         this.count++
     },
     decrement: function(){
+      $scope.allTodoLists.forEach(function(list){
+        $scope.listClone(list)
+      })
       if(this.count <= 1) {
         this.count = 12
         $scope.changeYear.decrement()
@@ -104,9 +111,76 @@ function IndexController($scope, Events, Todo, $window, ModalService){
   $scope.reoccurEnds = 'Never'
   $scope.reoccurEndsDate = new Date()
 
+  $scope.listClone = function(masterList){
+    console.log(masterList)
+    var appsCurrentMonth = $scope.changeMonth.count+1
+    var appsCurrentYear = $scope.changeYear.year
+    var firstListDay = DateService.stringToDate(masterList.first_day).getDay()
+    var firstDateOfMonth = new Date(appsCurrentYear, $scope.changeMonth.count, 1)
+    var firstDayOfMonth = firstDateOfMonth.getDay()
+    console.log(firstListDay)
+    console.log(firstDayOfMonth)
+    console.log(firstDateOfMonth)
+    if(firstListDay === firstDayOfMonth){
+      var count = 1
+    } else {
+      console.log(firstListDay - firstDayOfMonth)
+      count = firstListDay - firstDayOfMonth + 1
+    }
+
+    var firstListDate = new Date()
+    var reoccurEnds = masterList.list_recur_end;
+    var repeatInterval = masterList.list_reocurring;
+
+    console.log($scope.changeMonth.count)
+    console.log($scope.changeYear.year)
+
+    var calendarsCurrentMonth = new Date(appsCurrentYear, appsCurrentMonth, 0).getDate()
+    console.log(calendarsCurrentMonth)
+    var lastDay = reoccurEnds === 'Never'? calendarsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
+    var listsInMasterList = masterList.lists
+
+    console.log(count)
+
+    if(reoccurEnds =! 'Never'){
+      console.log(reoccurEnds)
+      var endDateMonth = reoccurEnds.getMonth()
+      var endDateYear = reoccurEnds.getFullYear()
+      if($scope.calendarYear === endDateYear){
+        if($scope.calendarMonth.count === endDateMonth){
+          var lastDay = reoccurEndsDate.getDate()
+        }
+      }
+    }
+    console.log(repeatInterval)
+    if(repeatInterval === 'Daily'){
+      var repeater = 1
+    }
+
+    if(repeatInterval === 'Weekly'){
+      var repeater = 7
+    }
+
+    console.log(lastDay)
+    while(count < lastDay){
+      console.log(count)
+      count = count + repeater
+      console.log(count < lastDay)
+      if(count < lastDay){
+        var listDate = $scope.changeYear.year+"-"+appsCurrentMonth+"-"+count
+        listsInMasterList.push( { date: listDate, tasks: [] } )
+      }
+    }
+
+    console.log(masterList)
+
+
+    }
+
 
 
   $scope.create = function(){
+
     var year = $scope.start_time.getFullYear();
     var month = $scope.start_time.getMonth()+1;
     var date = $scope.start_time.getDate();
@@ -123,7 +197,9 @@ function IndexController($scope, Events, Todo, $window, ModalService){
           console.log($scope.repeatInterval)
 
           $scope.newTodoList.list_name = $scope.name
-          $scope.newTodoList.list_created_on = $scope.start_time
+          $scope.newTodoList.list_created_on = new Date()
+          $scope.newTodoList.first_day = $scope.start_time
+          console.log($scope.newTodoList)
           if($scope.repeatInterval){
               $scope.newTodoList.list_reocurring = $scope.repeatInterval
               $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
@@ -187,11 +263,13 @@ function IndexController($scope, Events, Todo, $window, ModalService){
 
           $scope.newTodoList.lists = $scope.newMasterLists
           console.log($scope.newTodoList)
-          console.log($scope.todoLists)
+          console.log($scope.newTodoList.first_day)
+
           $scope.newTodoList.$save().then(function(res){
             console.log("$scope.newTodoList.$save")
             console.log($scope.todoLists)
           })
+
           console.log($scope.todoLists)
           console.log($scope.newCalTodoLists[0])
           $scope.newMasterListAddition($scope.newCalTodoLists[0])
