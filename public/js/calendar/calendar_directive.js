@@ -104,7 +104,7 @@
 
             // creates 2nd, 3rd and 4th date rows
               //conditional to determine if the first day of the month starts on Friday AND has 31 days.  They need an extra row, so we need to loop through 4 times
-              if((numberOfDays === 31 && firstDayOfMonth === 5) || (numberOfDays === 31 && firstDayOfMonth === 6)){
+              if((numberOfDays === 31 && firstDayOfMonth === 5) || (numberOfDays === 31 && firstDayOfMonth === 6) || (numberOfDays === 30 && firstDayOfMonth === 6)){
                 for(var t = 0; t < 4; t++){
                   var tr = document.createElement("tr")
                   tr.setAttribute("class", "date-row-"+t)
@@ -189,16 +189,15 @@
 
                   var exists = document.getElementById(list._id+date.date)
 
-                  console.log(exists)
-
                   if(exists){
+                    console.log(exists)
                     console.log("Exists ___+_+_+_+_+_+_+")
                   } else {
 
                   var li = document.createElement("li")
                   li.setAttribute("class",'a'+listDay)
                   li.setAttribute("id", list._id+date.date)
-            
+
                   var url = document.createElement("a")
                   // url.href = "/tasks/"+list.list_name;
                   url.innerHTML = list.list_name;

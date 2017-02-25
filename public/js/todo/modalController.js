@@ -33,8 +33,12 @@ function modalController(Todo, $scope, data, date){
   $scope.nonBindedList = []
 
   $scope.data.lists.forEach(function(list, index){
+    console.log(list.date)
+    console.log(date)
+    console.log(index)
+    console.log(list.date === date)
     if(list.date === date){
-
+      $scope.models.toDoList = [];
       $scope.listIndex = index
       $scope.list = list
       console.log($scope.list)
