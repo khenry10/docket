@@ -31,9 +31,11 @@ mongoose.model("Expenses", ExpenseSchema);
 var TodoSchema = new mongoose.Schema({
   list_name: String,
   list_created_on: Date,
+  first_day: Date,
   list_reocurring: String,
   list_recur_end: String,
-  dates: [],
+  master_tasks: [],
+  lists: [],
   category: String,
   task_name: String,
   task_completed: Boolean,
@@ -55,17 +57,22 @@ var TodoSchema = new mongoose.Schema({
 //   list_recurring_interval: String,
 //   list_recur_end: String,
 //   category: String,
-//   master_tasks: [name: String],
+//   master_tasks: [{
+//     name: String,
+//     created_on: Date
+//   }],
 //   lists: [{
 //     date: Date,
-//     task_name: String,
-//     task_completed: Boolean,
-//     task_rank: Number,
-//     time_estimate: Number,
-//     time_actual: Number,
-//     task_created_on: Date,
-//     task_completed_on: Date,
-//     deadline: Date
+//     tasks: {
+//       name: String,
+//       completed: Boolean,
+//       rank: Number,
+//       time_estimate: Number,
+//       time_actual: Number,
+//       created_on: Date,
+//       completed_on: Date,
+//       deadline: Date
+//     }
 //   }]
 // }
 

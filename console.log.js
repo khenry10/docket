@@ -1,5 +1,0 @@
-// console.log("********************")
-// console.log("Events.all[" + i + "].name = " + Events.all[i].name)
-// console.log("Events.all[" + i + "].month = " + Events.all[i].month)
-// console.log("month = " + month)
-// console.log("********************")

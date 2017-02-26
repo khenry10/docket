@@ -11,8 +11,7 @@ function todoController(Todo, $window, $stateParams, $scope){
   var vm = this
   vm.todo = Todo.all
 
-  console.log("Todo Controller")
-  console.log($stateParams.list_name)
+  console.log("Todo Controller. $stateParams.list_name = " + $stateParams.list_name)
 
   vm.models = {
     selected: null,
@@ -20,40 +19,44 @@ function todoController(Todo, $window, $stateParams, $scope){
     completedList: []
   };
 
-  vm.taskLists = []
-  vm.addNewListCategory = function(){
-    vm.taskLists.push(vm.newTodoList)
-    console.log(vm.taskLists)
-  }
-
 // 1st operations - fetching the data from the db and creatings a completed and non-completed list, stored in vm.models
   vm.fetchData = function (){
+    // returns all documents in the Todo collection
     Todo.all.$promise.then(function(){
       Todo.all.forEach(function(todo){
 
+        vm.allMasterTasks = todo.master_tasks
+        // console.log(vm.allMasterTasks)
+        // looks for the list that matches the url state params
         if(todo.list_name === $stateParams.list_name){
+          // loops through the recurring lists to see if they have any tasks
           console.log(todo)
-          todo.task_completed? vm.models.completedList.push(
-            {
-              id: todo._id,
-              task_name: todo.task_name,
-              task_completed:todo.task_completed,
-              task_rank: todo.rank
-            })
-          : vm.models.toDoList.push(
-            {
-              id: todo._id,
-              task_name: todo.task_name,
-              task_completed: todo.task_completed,
-              task_rank: todo.task_rank,
-              task_category: todo.task_category
-            })
+          vm.list = todo;
+
+          // hard coded the below because I didn't feel like figuring out the routing to do this the right way
+          var testTodo = todo.lists[0].tasks;
+
+          testTodo.forEach(function(todo, index){
+            console.log(todo)
+            console.log(index)
+            todo.task_completed? vm.models.completedList.push(
+              {
+                task_name: name,
+                task_completed:todo.task_completed,
+                task_rank: count
+              })
+              : vm.models.toDoList.push(
+                {
+                  task_name: todo.name,
+                  task_completed: todo.task_completed,
+                  task_rank: index
+                })
+          })
         }
       })
       vm.models.toDoList.sort(function(a, b){
         return a.task_rank - b.task_rank;
       })
-      console.log("KEITH fetchData toDoList = " + JSON.stringify(vm.models.toDoList))
     });
   }
 
@@ -70,8 +73,63 @@ function todoController(Todo, $window, $stateParams, $scope){
     vm.models.toDoList = newTodoList;
   }
 
+  vm.addNewMasterTasks = function(){
+    console.log("vm.addNewMasterTasks. newMaster.name = " + vm.newMaster.name)
+    if(vm.newMaster){
+      var timeCreated = new Date()
+      console.log("vm.allMasterTasks = " + vm.allMasterTasks)
+      console.log(vm.list)
+
+      var saveMe = {
+        list_name: $stateParams.list_name,
+        master_tasks:  [],
+        lists: []
+      }
+
+      vm.list.master_tasks.forEach(function(master){
+        console.log(master)
+        saveMe.master_tasks.push(master)
+      })
+
+      saveMe.master_tasks.push({name: vm.newMaster.name, created_on: timeCreated})
+
+      vm.list.lists.forEach(function(list){
+        console.log("~*~*~*~~** vm.list.lists.forEach BEGIN ~*~*~~*~~*~")
+          console.log(saveMe)
+          var newToPush = {
+            date: list.date,
+            tasks: []
+          }
+
+          saveMe.master_tasks.forEach(function(master){
+            console.log(master.name)
+            var task = {
+              name: master.name,
+              task_completed: false
+            }
+            newToPush.tasks.push(task)
+          })
+
+          console.log(newToPush)
+          saveMe.lists.push(newToPush)
+
+          console.log("~*~*~*~~** vm.list.lists.forEach END ~*~*~~*~~*~")
+      })
+
+      // vm.newMaster = {list_name: $stateParams.list_name, master_tasks: vm.allMasterTasks}
+      // vm.allMasterTasks.push(vm.newMaster)
+      console.log(saveMe)
+
+      Todo.update({list_name: vm.list.list_name}, {todo: saveMe}, function(task){
+        console.log(task)
+      })
+    }
+  }
+
   vm.newTodo = new Todo();
 
+  // this needs to be updated still has old logic.
+    // Adding a new todo here creates task_name and task_complete at the list level
   vm.addNewTodo = function (){
     console.log("NEW")
     if(vm.newTodo){

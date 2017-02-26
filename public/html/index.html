@@ -1,93 +1,176 @@
 
   <div class="events-panel">
-    <div class="new-event-form">
-      <h2> Add New Event </h2>
-      <div >
-        <form>
-          <ul>
-            <li>
-              <input type="text" data-ng-model="name" placeholder="name of event"/>
-            </li>
-            <li>
-              <md-datepicker date-input type="date" data-ng-model="start_time" md-placeholder="Date"/></md-datepicker>
-            </li>
-            <li>
-              <md-radio-group ng-model="entryType"
-                style="display: flex; justify-content: space-between; width: 60%; margin-left: 10%; margin-top: 4%">
-                <md-radio-button style="padding-left: 2%;" value="Event">Event</md-radio-button>
-                <md-radio-button value="List">List</md-radio-button>
-              </md-radio-group>
-            </li>
-            <li>
-              <md-input-container style="background-color: white;">
-                <label ng-if="!repeatInterval">Reocurring</label>
-                <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>
-                <md-select ng-model="repeatInterval" aria-label="select reocurring">
-                  <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
-                </md-select>
-              </md-input-container>
-              <md-radio-group ng-model="reoccurEnds" ng-show=" repeatInterval.length && repeatInterval != 'None' "
->
-                  <md-radio-button value="Never">Never</md-radio-button>
-                  <md-radio-button value="SelectDate">Select Date</md-radio-button>
-                  <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
-                    ng-model="reoccurEndsDate">
-                  </md-datepicker>
-              </md-radio-group>
-            </li>
-            <md-button class="md-raised" ng-click="create()"> Add </md-button>
-          </ul>
-        </form>
-      </div>
-    </div>
-    <div class="list-of-events">
-      <h2 style="padding: 3% 0% 3% 0%; outline: 1px solid white;"> Events </h2>
+    <div>
+      <!-- bootstrap collapsible panel START -->
+      <div class="panel-group">
+        <div class="panel panel-default" style="border: none">
+          <div class="panel-heading">
+            <h4 class="panel-title" >
+              <div class="panel-title-custom">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <a data-toggle="collapse" href="#collapse1">Create New</a>
+              </div>
+            </h4>
+          </div>
+          <div id="collapse1" class="panel-collapse collapse">
+              <form style="color: black">
+                <ul class="create-new-panel">
+                  <li style="margin-left: 20%">
+                    <input type="text" data-ng-model="name" placeholder="name"/>
+                  </li>
+                  <li>
+                    <md-datepicker date-input type="date" data-ng-model="start_time" md-placeholder="Date"/></md-datepicker>
+                  </li>
+                  <li>
+                    <md-radio-group ng-model="entryType"
+                      style="display: flex; justify-content: space-between; width: 60%; margin-left: 10%; margin-top: 4%">
+                      <md-radio-button style="padding-left: 2%;" value="Event">Event</md-radio-button>
+                      <md-radio-button value="List">List</md-radio-button>
+                    </md-radio-group>
+                  </li>
+                  <li ng-show="name && start_time">
 
-      <table >
-        <tr data-ng-repeat="event in events "
-            data-ng-model="changeMonth.count"
-            data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1) &&
-            changeYear.year.toString() === event.start_time.substr(0,4)">
-            <td><a href="/event/{{event.name}}">  {{event.name}} </a></td>
-            <td><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
-            <td>
-              <md-button class="md-raised md-warn" ng-click="delete(event.name)">X</md-button>
-            </td>
-          </tr>
-          <tr data-ng-repeat="event in events | orderBy:'start_time'"
-              data-ng-model="changeMonth.count"
-              data-ng-if="changeMonth.count.toString() == event.start_time.substr(5,2) &&
-              changeYear.year.toString() === event.start_time.substr(0,4)">
-              <td style="width: 8em;"><a href="/event/{{event.name}}">  {{event.name}} </a></td>
-              <td style="width: 5em;"><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
-              <td style="width: 3em;">
-                <md-button style="min-width: 1%" class="md-raised md-warn" ng-click="delete(event.name)">X</md-button>
-              </td>
-            </tr>
-            <tr data-ng-repeat="list in todoLists">
-              <td><a href="/tasks/{{ list.list_name }}"> {{ list.list_name }} </a></td>
-            </tr>
+                    <md-input-container style="background-color: white; color: black">
+                      <label ng-if="!repeatInterval">Reocurring</label>
+                      <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>
+                      <md-select ng-model="repeatInterval" aria-label="select reocurring">
+                        <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
+                      </md-select>
+                    </md-input-container>
+
+                    <md-radio-group ng-model="reoccurEnds"
+                      ng-show=" repeatInterval.length && repeatInterval != 'None' "
+                      style="display: flex; justify-content: space-between; width: 75%; margin-left: 5%; margin-top: 4%">
+                        <md-radio-button value="Never">Never</md-radio-button>
+                        <md-radio-button value="SelectDate">Select Date</md-radio-button>
+                    </md-radio-group>
+
+                    <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
+                      ng-model="reoccurEndsDate">
+                    </md-datepicker>
+                  </li>
+                  <md-button class="md-raised" ng-click="create()" style="margin-left: 30%;"> Add </md-button>
+                </ul>
+              </form>
+          </div>
+          <!-- panel 2 start -->
+
+          <div class="panel panel-default" style="border: none;">
+            <div class="panel-heading personal-panel" role="tab" id="headingTwo">
+              <h4 class="panel-title">
+                <div class="panel-title-custom">
+                  <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                      href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Master Lists
+                  </a>
+                </div>
+              </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+              <todo-master></todo-master>
             </div>
           </div>
-        </tr>
-      </table>
+
+          <!-- panel 2 end  -->
+          <!-- panel 3 start -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThree">
+              <h4 class="panel-title">
+                <div class="panel-title-custom">
+                  <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                    href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Events
+                  </a>
+                </div>
+              </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+              <div class="list-of-events" style="color: black">
+                <table style="width: 90%">
+                  <tr data-ng-repeat="event in events "
+                      data-ng-model="changeMonth.count"
+                      data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1) &&
+                      changeYear.year.toString() === event.start_time.substr(0,4)">
+                      <td><a href="/event/{{event.name}}">  {{event.name}} </a></td>
+                      <td><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
+                      <td>
+                        <md-button class="md-raised md-warn" ng-click="delete(event.name)" style="min-width: 50px">X</md-button>
+                      </td>
+                    </tr>
+                    <tr data-ng-repeat="event in events | orderBy:'start_time'"
+                        data-ng-model="changeMonth.count"
+                        data-ng-if="changeMonth.count.toString() == event.start_time.substr(5,2) &&
+                        changeYear.year.toString() === event.start_time.substr(0,4)">
+                        <td style="width: 8em;"><a href="/event/{{event.name}}">  {{event.name}} </a></td>
+                        <td style="width: 5em;"><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
+                        <td style="width: 3em;">
+                          <md-button style="min-width: 1%" class="md-raised md-warn" ng-click="delete(event.name)">X</md-button>
+                        </td>
+                      </tr>
+                      <tr data-ng-repeat="list in todoLists">
+                        <td><a href="/tasks/{{ list.list_name }}"> {{ list.list_name }} </a></td>
+                      </tr>
+                      <!-- </div>
+                    </div> -->
+                  <!-- </tr> -->
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- panel 3 end -->
+
+          <!-- panel 4 start -->
+
+          <div class="panel panel-default" style="border: none;">
+            <div class="panel-heading personal-panel" role="tab" id="headingFour">
+              <h4 class="panel-title">
+                <div class="panel-title-custom">
+                  <i class="fa fa-bar-chart" aria-hidden="true"></i>
+
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                      href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                      Stats
+                  </a>
+                </div>
+              </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+              <p>
+                As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }}
+                complete with {{ date.getFullYear() }}.  At the end of {{ niceMonth }}, we'll be
+                {{ cumulativeComp * 100 | number:2}}% through the year. 
+              </p>
+            </div>
+          </div>
+
+          <!-- panel 4 end  -->
+
+        </div>
+      </div>
+      <!-- bootstrap collapsible panel END -->
     </div>
   </div>
 
 <div class="calendar">
   <div class="calendar-navigation">
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-               data-ng-model="currentMonth.count"
-               ng-click="currentMonth.count()"> Current Month </md-button>
+                ng-show="showTodayButton"
+               ng-click="currentMonth.count()"> Today </md-button>
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
                 data-ng-model="changeMonth.count"
                 ng-click="changeMonth.decrement()"> < </md-button>
-      <div style="width: 200px;"><h1><span id="calendar-month-year"></span></h1></div>
+      <div style="width: 250px;"><h1><span id="calendar-month-year"></span></h1></div>
     <md-button class="md-accent md-raised md-hue-1" style="min-width: 1%; background-color: white;"
                data-ng-model="changeMonth.count"
                ng-click="changeMonth.increment()"> > </md-button>
+               <div class="btn-group">
+  <button class="btn" ng-click="changeView('month')">Month</button>
+  <button class="btn" ng-click="changeView('week')">Week</button>
+</div>
   </div>
     <monthly-calendar change-month="changeMonth.count" current-month="currentMonth.count" list="todoLists"
-      new="newCalTodoLists"
+      new="newCalTodoLists" view="viewType"
     ></monthly-directive>
 </div>

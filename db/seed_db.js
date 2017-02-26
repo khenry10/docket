@@ -10,9 +10,9 @@ var Todo = mongoose.model("Todo")
 console.log("I am seeding the database for you...")
 
 Todo.remove({}).then(function(){
-  Todo.collection.insert(todoSeeds).then(function(){
-    process.exit();
-  });
+  // Todo.collection.insert(todoSeeds).then(function(){
+  //   process.exit();
+  // });
 });
 
 Event.remove({}).then(function(){
