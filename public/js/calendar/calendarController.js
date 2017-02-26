@@ -8,7 +8,7 @@ angular.module('app')
   "$window",
   "ModalService",
   "DateService",
-  "$stateParams",
+  "$window",
   IndexController
 ])
 .controller("ShowEventsController", [
@@ -18,14 +18,12 @@ angular.module('app')
   ShowEventsController
 ])
 
-function IndexController($scope, Events, Todo, $window, ModalService, DateService, $stateParams){
+function IndexController($scope, Events, Todo, $window, ModalService, DateService){
   $scope.events = []
   $scope.events = Events.all;
   $scope.showTodayButton = false;
   $scope.originalTodoLists = []
   $scope.viewType = 'month'
-
-  console.log($stateParams)
 
   $scope.changeView = function(view){
     console.log("view = " + view)
@@ -92,9 +90,16 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           console.log("appsCurrentMonth = " + appsCurrentMonth)
           console.log("monthOfLastDateList < appsCurrentMonth below: ")
           console.log(monthOfLastDateList < appsCurrentMonth)
-          if(monthOfLastDateList < appsCurrentMonth){
-            console.log("CLONE ME BISH!!!")
-            $scope.listClone(list)
+          var firstDateofAppsCurrentMonth = new Date($scope.changeYear.year, appsCurrentMonth, 1)
+          console.log("firstDateofAppsCurrentMonth = " + firstDateofAppsCurrentMonth)
+          var recurEnd = DateService.stringToDate(list.list_recur_end)
+          console.log("recurEnd = " + recurEnd)
+          console.log(recurEnd > firstDateofAppsCurrentMonth)
+          if(list.list_recur_end > firstDateofAppsCurrentMonth){
+            if(monthOfLastDateList < appsCurrentMonth){
+              console.log("CLONE ME BISH!!!")
+              $scope.listClone(list)
+            }
           }
         // })
       })
@@ -172,21 +177,34 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     var reoccurEnds = masterList.list_recur_end;
 
     var lastDayOfAppsCurrentMonth = new Date(appsCurrentYear, appsCurrentMonth, 0).getDate()
-    var lastDay = reoccurEnds === 'Never'? lastDayOfAppsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
+    // var lastDay = reoccurEnds === 'Never'? lastDayOfAppsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
     var listsInMasterList = masterList.lists
 
     var count = 1
 
-    if(reoccurEnds =! 'Never'){
+    console.log("reoccurEnds = " + reoccurEnds)
+    // console.log(reoccurEnds =! 'Never')
+    if(reoccurEnds != 'Never'){
       console.log(reoccurEnds)
+      reoccurEnds = DateService.stringToDate(reoccurEnds, "regMonth")
+      console.log(reoccurEnds)
+      // var last = lastDayOfAppsCurrentMonth
       var endDateMonth = reoccurEnds.getMonth()
       var endDateYear = reoccurEnds.getFullYear()
-      if($scope.calendarYear === endDateYear){
-        if($scope.calendarMonth.count === endDateMonth){
-          var lastDay = reoccurEndsDate.getDate()
+      var last = reoccurEnds.getDate()
+      console.log("endDateMonth = " + endDateMonth)
+      console.log("endDateYear = " + endDateYear)
+      console.log($scope.changeMonth.count)
+      if($scope.changeYear.year === endDateYear){
+        if($scope.changeMonth.count === endDateMonth-1){
+          console.log(endDate)
+           last = endDate
         }
       }
     }
+
+    last = last? last: lastDayOfAppsCurrentMonth
+    console.log(last)
     console.log("repeatInterval = " + repeatInterval)
     if(repeatInterval === 'Daily'){
       var repeater = 1
@@ -204,12 +222,12 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       count = firstListDay - firstDayOfMonth + 1
     }
 
-    console.log("lastDay = "+lastDay)
-    while(count <= lastDay){
+    console.log(last)
+    while(count <= last){
       console.log("count = "+count)
-      console.log(count <= lastDay)
+      console.log(count <= last)
       if(count > 0){
-        if(count <= lastDay){
+        if(count <= last){
           count = count.length === 1? "0"+count: count
           console.log("appsCurrentMonth = " + appsCurrentMonth)
           var listDate = $scope.changeYear.year+"-"+appsCurrentMonth+"-"+count
