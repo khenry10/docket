@@ -49,7 +49,7 @@ function router($stateProvider, $locationProvider){
     controllerAs: "todoVM"
   })
   .state("catch", {
-    url: "/*",
+    url: "/collapse1",
     templateUrl: "/assets/html/index.html",
     controller: "IndexController",
     controllerAs: "indexVM"

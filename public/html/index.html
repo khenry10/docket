@@ -120,6 +120,33 @@
             </div>
           </div>
           <!-- panel 3 end -->
+
+          <!-- panel 4 start -->
+
+          <div class="panel panel-default" style="border: none;">
+            <div class="panel-heading personal-panel" role="tab" id="headingFour">
+              <h4 class="panel-title">
+                <div class="panel-title-custom">
+                  <i class="fa fa-bar-chart" aria-hidden="true"></i>
+
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                      href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                      Stats
+                  </a>
+                </div>
+              </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+              <p>
+                As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }}
+                complete with {{ date.getFullYear() }}.  At the end of {{ niceMonth }}, we'll be
+                {{ cumulativeComp * 100 | number:2}}% through the year.  There are
+              </p>
+            </div>
+          </div>
+
+          <!-- panel 4 end  -->
+
         </div>
       </div>
       <!-- bootstrap collapsible panel END -->
@@ -129,8 +156,8 @@
 <div class="calendar">
   <div class="calendar-navigation">
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-               data-ng-model="currentMonth.count"
-               ng-click="currentMonth.count()"> Current Month </md-button>
+                ng-show="showTodayButton"
+               ng-click="currentMonth.count()"> Today </md-button>
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
                 data-ng-model="changeMonth.count"
                 ng-click="changeMonth.decrement()"> < </md-button>
@@ -138,8 +165,12 @@
     <md-button class="md-accent md-raised md-hue-1" style="min-width: 1%; background-color: white;"
                data-ng-model="changeMonth.count"
                ng-click="changeMonth.increment()"> > </md-button>
+               <div class="btn-group">
+  <button class="btn" ng-click="changeView('month')">Month</button>
+  <button class="btn" ng-click="changeView('week')">Week</button>
+</div>
   </div>
     <monthly-calendar change-month="changeMonth.count" current-month="currentMonth.count" list="todoLists"
-      new="newCalTodoLists"
+      new="newCalTodoLists" view="viewType"
     ></monthly-directive>
 </div>

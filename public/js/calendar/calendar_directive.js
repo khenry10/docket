@@ -17,25 +17,46 @@
         month: '=changeMonth',
         current: '=currentMonth',
         todoList: '=list',
-        newtodoLists: '=new'
+        newtodoLists: '=new',
+        newView: "=view"
       },
       link: function(scope){
 
+      console.log("view = " + scope.view)
+
       var pullTodo = function (){
+        console.log("pullTodo called")
         scope.pulledTodoList = Todo.all
         console.log(scope.todoList)
         checkLists('new pullTodo function', scope.pulledTodoList)
       }
 
+      scope.$watch('newView', function(newView, oldView){
+        console.log("newView = " + newView)
+        console.log("oldView = " + oldView)
+        if(newView === 'week'){
+          scope.numberOfRows = 1
+          monthSelector(date.getMonth()+1)
+        } else if(newView === 'month'){
+          scope.numberOfRows = 2
+          monthSelector(date.getMonth()+1)
+        }
+      }, true)
+
       scope.$watch('month', function(newMonth, oldValue){
         console.log("month $watch called")
-        monthSelector(newMonth)
         var todoList = scope.todolist
-        if(scope.todolist){
-            checkLists('month $watch', todoList)
-        } else if(!scope.todoList){
+        monthSelector(newMonth)
+        console.log(scope.todolist)
+
+        // below is commented out because Lists weren't showing up on the calendar after creating a new one and moving to the next month (only the new list was appearing)
+
+        // if(scope.todolist){
+        //     checkLists('month $watch', todoList)
+        // } else if(!scope.todoList){
           pullTodo()
-        }
+        // }
+
       }, true);
 
       scope.$watch('current', function(newValue, oldValue){
@@ -101,6 +122,17 @@
             }
             table.appendChild(tr)
             // end of 1st date row
+            if(scope.numberOfRows === 1 ){
+              var tr = document.createElement("tr")
+              tr.setAttribute("class", "date-row-"+t)
+              console.log(tr)
+              for(var i = 0; i < 7; i++){
+                createTableRows(table, td, count, p, tr, numberOfDays, month, year);
+                count++
+              }
+            table.appendChild(tr)
+          } else {
+
 
             // creates 2nd, 3rd and 4th date rows
               //conditional to determine if the first day of the month starts on Friday AND has 31 days.  They need an extra row, so we need to loop through 4 times
@@ -128,6 +160,7 @@
                   table.appendChild(tr)
                 }
               }
+            }
             // creates last row (6th row for months that start on Friday and have 31 days & 5th row for all others)
             var tr = document.createElement("tr")
                 for(var i = 0; i < 7; i++){
@@ -175,45 +208,30 @@
 
         var checkDates = function(date, list){
           console.log(list)
-          console.log(list._id)
-          console.log(date)
           var listDates = date.date.split("-")
-          var listYear = parseInt(listDates[0])
-          var listMonth = parseInt(listDates[1])
           var listDay = parseInt(listDates[2].substr(0,2))
+          var ul = document.getElementsByClassName("u"+listDay)
+          var exists = document.getElementById(list._id+date.date)
 
+          if(!exists){
+            var li = document.createElement("li")
+            li.setAttribute("class",'a'+listDay)
+            li.setAttribute("id", list._id+date.date)
 
-            if(listYear === year){
-              if(listMonth === scope.month){
-                  var ul = document.getElementsByClassName("u"+listDay)
+            var url = document.createElement("a")
+            // url.href = "/tasks/"+list.list_name;
+            url.innerHTML = list.list_name;
 
-                  var exists = document.getElementById(list._id+date.date)
+            li.addEventListener("click", function() {
+              scope.testModal(list, date.date)
+            })
 
-                  if(exists){
-                    console.log(exists)
-                    console.log("Exists ___+_+_+_+_+_+_+")
-                  } else {
-
-                  var li = document.createElement("li")
-                  li.setAttribute("class",'a'+listDay)
-                  li.setAttribute("id", list._id+date.date)
-
-                  var url = document.createElement("a")
-                  // url.href = "/tasks/"+list.list_name;
-                  url.innerHTML = list.list_name;
-
-                  li.addEventListener("click", function() {
-                    scope.testModal(list, date.date)
-                  })
-
-                  li.append(url)
-                  ul[0].appendChild(li)
-                }
-              }
-            }
-
+            li.append(url)
+            ul[0].appendChild(li)
+          } else {
+            console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR ")
+          }
         }
-
 
         var checkLists = function(message, todoList){
           console.log("checkLists message = " + message)
@@ -225,8 +243,15 @@
                 var reocurringDates = list.lists
                 console.log(reocurringDates)
                 reocurringDates.forEach(function(date){
-                  // console.log(date)
-                  checkDates(date, list)
+                  var listDates = date.date.split("-")
+                  var listYear = parseInt(listDates[0])
+                  var listMonth = parseInt(listDates[1])
+                  var listDay = parseInt(listDates[2].substr(0,2))
+                  if(listYear === year){
+                    if(listMonth === scope.month){
+                    checkDates(date, list)
+                    }
+                  }
                 })
               }
             } else if(todoList[0]) {

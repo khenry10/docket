@@ -39,8 +39,9 @@
             $scope.lists.push({name: name, master_tasks: [], lists: lists})
           }
         }
-
+        $scope.show = true;
         $scope.addNewMasterTask = function (master, list){
+          $scope.show = false;
           console.log($scope.newMaster)
           console.log($scope.keith)
           console.log(master)

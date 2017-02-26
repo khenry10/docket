@@ -8,6 +8,7 @@ angular.module('app')
   "$window",
   "ModalService",
   "DateService",
+  "$stateParams",
   IndexController
 ])
 .controller("ShowEventsController", [
@@ -17,11 +18,23 @@ angular.module('app')
   ShowEventsController
 ])
 
-function IndexController($scope, Events, Todo, $window, ModalService, DateService){
+function IndexController($scope, Events, Todo, $window, ModalService, DateService, $stateParams){
   $scope.events = []
   $scope.events = Events.all;
-
+  $scope.showTodayButton = false;
   $scope.originalTodoLists = []
+  $scope.viewType = 'month'
+
+  console.log($stateParams)
+
+  $scope.changeView = function(view){
+    console.log("view = " + view)
+    if(view === 'week'){
+      $scope.viewType = 'week'
+    } else if(view === 'month'){
+      $scope.viewType = 'month'
+    }
+  }
 
   $scope.testModal = function (){
     ModalService.showModal({
@@ -50,36 +63,49 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     })
   })
 
-  $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly']
+  $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly']
 
   $scope.date = new Date()
   $scope.calendarMonth = $scope.date.getMonth()
   $scope.calendarYear = $scope.date.getFullYear()
+  $scope.niceDate = DateService.getNiceDate($scope.date)
+  $scope.niceMonth = DateService.monthName($scope.date)
+  $scope.yearStats = DateService.percentageOfYearPassed()
+  $scope.cumulativeComp = $scope.yearStats.months[$scope.calendarMonth].cumulative_percent_of_year
 
   $scope.changeMonth = {
     count: $scope.date.getMonth()+1,
     increment: function(){
+      console.log("$scope.allTodoLists in increment below:")
       console.log($scope.allTodoLists)
-
       $scope.allTodoLists.forEach(function(list){
+        console.log("Todo.all.$promise in $scope.changeMonth.increment below: ")
         console.log(list)
-        var lastDateList = list.lists[list.lists.length-1]
-        console.log(lastDateList)
-        var monthOfLastDateList = DateService.stringToDate(lastDateList.date, 'regMonth').getMonth()
-        var appsCurrentMonth = $scope.changeMonth.count+1
-        console.log(monthOfLastDateList)
-        console.log(appsCurrentMonth)
-        if(monthOfLastDateList < appsCurrentMonth){
-          console.log("CLONE ME BISH!!!")
-          $scope.listClone(list)
-        }
+        // todos.forEach(function(list){
+          console.log("individual list below: ")
+          console.log(list)
+          console.log(list.lists)
+          var lastDateList = list.lists[list.lists.length-1]
+          var monthOfLastDateList = DateService.stringToDate(lastDateList.date, 'regMonth').getMonth()
+          var appsCurrentMonth = $scope.changeMonth.count
+          console.log("monthOfLastDateList = " + monthOfLastDateList)
+          console.log("appsCurrentMonth = " + appsCurrentMonth)
+          console.log("monthOfLastDateList < appsCurrentMonth below: ")
+          console.log(monthOfLastDateList < appsCurrentMonth)
+          if(monthOfLastDateList < appsCurrentMonth){
+            console.log("CLONE ME BISH!!!")
+            $scope.listClone(list)
+          }
+        // })
       })
       if(this.count > 11){
         this.count = 1
         // once the count (which is the month) is greater than December, we reset the count to 1 (which is january).  We also invoke changeYear.increment() function, which is used in the index.html to see if the year of the event matches the current year
         $scope.changeYear.increment()
-      } else
+      } else {
         this.count++
+      }
+      $scope.showTodayButton = $scope.changeMonth.count != $scope.calendarMonth+1
     },
     decrement: function(){
       $scope.allTodoLists.forEach(function(list){
@@ -88,19 +114,26 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       if(this.count <= 1) {
         this.count = 12
         $scope.changeYear.decrement()
-      }
-      else
+      } else {
         this.count--
+      }
+
+      $scope.showTodayButton = $scope.changeMonth.count != $scope.calendarMonth+1
+
     },
     current_month: function(){
       console.log("current_month called")
     this.count = $scope.date.getMonth()+1
-    // console.log(date)
+    console.log($scope.changeMonth.count)
+    console.log($scope.calendarMonth+1)
+    console.log($scope.changeMonth.count != $scope.calendarMonth+1)
+    $scope.showTodayButton = $scope.changeMonth.count != $scope.calendarMonth+1
     }
   }
   $scope.currentMonth = {
-    count: function($state){
-      this.count = $scope.date
+    count: function(){
+      console.log("$scope.currentMonth.count")
+      $scope.count = $scope.date
       $scope.changeMonth.current_month()
     }
   }
@@ -129,24 +162,20 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     var firstListDay = DateService.stringToDate(masterList.first_day, 'regMonth').getDay()
     var firstDateOfMonth = new Date(appsCurrentYear, $scope.changeMonth.count, 1)
     var firstDayOfMonth = firstDateOfMonth.getDay()
-    console.log(firstListDay)
-    console.log(firstDayOfMonth)
-    console.log(firstDateOfMonth)
+    // console.log(firstListDay)
+    // console.log(firstDayOfMonth)
+    // console.log(firstDateOfMonth)
+    // console.log($scope.changeMonth.count)
+    // console.log($scope.changeYear.year)
     var repeatInterval = masterList.list_reocurring;
-
     var firstListDate = new Date()
     var reoccurEnds = masterList.list_recur_end;
 
-    console.log($scope.changeMonth.count)
-    console.log($scope.changeYear.year)
-
-    var calendarsCurrentMonth = new Date(appsCurrentYear, appsCurrentMonth, 0).getDate()
-    console.log(calendarsCurrentMonth)
-    var lastDay = reoccurEnds === 'Never'? calendarsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
+    var lastDayOfAppsCurrentMonth = new Date(appsCurrentYear, appsCurrentMonth, 0).getDate()
+    var lastDay = reoccurEnds === 'Never'? lastDayOfAppsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
     var listsInMasterList = masterList.lists
 
     var count = 1
-    console.log(count)
 
     if(reoccurEnds =! 'Never'){
       console.log(reoccurEnds)
@@ -158,7 +187,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         }
       }
     }
-    console.log(repeatInterval)
+    console.log("repeatInterval = " + repeatInterval)
     if(repeatInterval === 'Daily'){
       var repeater = 1
     }
@@ -170,34 +199,42 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     if(firstListDay === firstDayOfMonth){
       var count = 1
     } else {
+      console.log("firstListDay - firstDayOfMonth = " + firstListDay - firstDayOfMonth)
       console.log(firstListDay - firstDayOfMonth)
       count = firstListDay - firstDayOfMonth + 1
     }
 
-    console.log(lastDay)
+    console.log("lastDay = "+lastDay)
     while(count <= lastDay){
-      console.log(count)
+      console.log("count = "+count)
       console.log(count <= lastDay)
       if(count > 0){
         if(count <= lastDay){
           count = count.length === 1? "0"+count: count
+          console.log("appsCurrentMonth = " + appsCurrentMonth)
           var listDate = $scope.changeYear.year+"-"+appsCurrentMonth+"-"+count
           var masterTasksToAdd = []
-          
-          masterList.master_tasks.forEach(function(task, index){
-            console.log(task)
-            masterTasksToAdd.push({
-              name: task.name,
-              rank: index,
-              task_completed: false
-            })
 
-          })
+          console.log("masterList below: ")
+          console.log(masterList)
+          if(masterList.master_tasks){
+            masterList.master_tasks.forEach(function(task, index){
+              console.log(task)
+              masterTasksToAdd.push({
+                name: task.name,
+                rank: index,
+                task_completed: false
+              })
+            })
+          }
+          console.log("listDate = " + listDate)
           listsInMasterList.push( { date: listDate, tasks: masterTasksToAdd } )
+          console.log("listsInMasterList below: ")
+          console.log(listsInMasterList)
         }
       }
       count = count + repeater
-      console.log(count)
+      console.log("last count in while function "+ count)
     }
     console.log(masterList)
     Todo.update({list_name: masterList.list_name}, {todo: masterList}, function(task){
@@ -205,8 +242,6 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     })
 
     }
-
-
 
   $scope.create = function(){
 
@@ -288,9 +323,14 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           }
           // $scope.todoLists is scoped to calendar_directive, when a new item is added here, it gets passed to the calendar
           $scope.newCalTodoLists = [{list_name: $scope.name, lists: $scope.newMasterLists}]
+          $scope.newCalTodoLists[0].first_day = $scope.start_time
+          $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
+          $scope.newCalTodoLists[0].list_recur_end =$scope.newTodoList.list_recur_end
+          console.log("console.log($scope.newCalTodoLists) below: ")
           console.log($scope.newCalTodoLists)
 
           $scope.newTodoList.lists = $scope.newMasterLists
+          console.log("$scope.newTodoList below: ")
           console.log($scope.newTodoList)
           console.log($scope.newTodoList.first_day)
 
@@ -298,7 +338,8 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
             console.log("$scope.newTodoList.$save")
             console.log($scope.todoLists)
           })
-
+          $scope.allTodoLists.push($scope.newCalTodoLists[0])
+          console.log("$scope.todoLists below ")
           console.log($scope.todoLists)
           console.log($scope.newCalTodoLists[0])
           $scope.newMasterListAddition($scope.newCalTodoLists[0])

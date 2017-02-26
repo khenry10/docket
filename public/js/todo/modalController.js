@@ -130,6 +130,7 @@ function modalController(Todo, $scope, data, date){
 
       Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
       $scope.newTodo = ""
+      console.log($scope.newTodo)
     }
   }
 
