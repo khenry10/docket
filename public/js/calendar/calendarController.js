@@ -79,29 +79,20 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       $scope.allTodoLists.forEach(function(list){
         console.log("Todo.all.$promise in $scope.changeMonth.increment below: ")
         console.log(list)
-        // todos.forEach(function(list){
-          console.log("individual list below: ")
-          console.log(list)
-          console.log(list.lists)
           var lastDateList = list.lists[list.lists.length-1]
           var monthOfLastDateList = DateService.stringToDate(lastDateList.date, 'regMonth').getMonth()
           var appsCurrentMonth = $scope.changeMonth.count
-          console.log("monthOfLastDateList = " + monthOfLastDateList)
-          console.log("appsCurrentMonth = " + appsCurrentMonth)
-          console.log("monthOfLastDateList < appsCurrentMonth below: ")
-          console.log(monthOfLastDateList < appsCurrentMonth)
+
           var firstDateofAppsCurrentMonth = new Date($scope.changeYear.year, appsCurrentMonth, 1)
-          console.log("firstDateofAppsCurrentMonth = " + firstDateofAppsCurrentMonth)
-          var recurEnd = DateService.stringToDate(list.list_recur_end)
-          console.log("recurEnd = " + recurEnd)
-          console.log(recurEnd > firstDateofAppsCurrentMonth)
-          if(list.list_recur_end > firstDateofAppsCurrentMonth){
+          var recurEnd = list.list_recur_end
+          recurEnd = recurEnd === "Never"? "Never" : DateService.stringToDate(recurEnd, 'regMonth')
+
+          if(recurEnd > firstDateofAppsCurrentMonth || recurEnd === "Never"){
             if(monthOfLastDateList < appsCurrentMonth){
               console.log("CLONE ME BISH!!!")
               $scope.listClone(list)
             }
           }
-        // })
       })
       if(this.count > 11){
         this.count = 1
@@ -167,43 +158,38 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     var firstListDay = DateService.stringToDate(masterList.first_day, 'regMonth').getDay()
     var firstDateOfMonth = new Date(appsCurrentYear, $scope.changeMonth.count, 1)
     var firstDayOfMonth = firstDateOfMonth.getDay()
-    // console.log(firstListDay)
-    // console.log(firstDayOfMonth)
-    // console.log(firstDateOfMonth)
-    // console.log($scope.changeMonth.count)
-    // console.log($scope.changeYear.year)
+
     var repeatInterval = masterList.list_reocurring;
     var firstListDate = new Date()
     var reoccurEnds = masterList.list_recur_end;
 
     var lastDayOfAppsCurrentMonth = new Date(appsCurrentYear, appsCurrentMonth, 0).getDate()
-    // var lastDay = reoccurEnds === 'Never'? lastDayOfAppsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
+    var last = reoccurEnds === 'Never'? lastDayOfAppsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
     var listsInMasterList = masterList.lists
 
     var count = 1
 
-    console.log("reoccurEnds = " + reoccurEnds)
-    // console.log(reoccurEnds =! 'Never')
     if(reoccurEnds != 'Never'){
       console.log(reoccurEnds)
       reoccurEnds = DateService.stringToDate(reoccurEnds, "regMonth")
       console.log(reoccurEnds)
-      // var last = lastDayOfAppsCurrentMonth
+      var last = lastDayOfAppsCurrentMonth
       var endDateMonth = reoccurEnds.getMonth()
       var endDateYear = reoccurEnds.getFullYear()
-      var last = reoccurEnds.getDate()
+      // var last = reoccurEnds.getDate()
       console.log("endDateMonth = " + endDateMonth)
       console.log("endDateYear = " + endDateYear)
       console.log($scope.changeMonth.count)
       if($scope.changeYear.year === endDateYear){
-        if($scope.changeMonth.count === endDateMonth-1){
-          console.log(endDate)
-           last = endDate
+        console.log($scope.changeMonth.count === endDateMonth)
+        if($scope.changeMonth.count === endDateMonth){
+          console.log("THIS IS GOING THROUGH FROM SOME REASON")
+           var last = reoccurEnds.getDate()
         }
       }
     }
 
-    last = last? last: lastDayOfAppsCurrentMonth
+    // last = last? last: lastDayOfAppsCurrentMonth
     console.log(last)
     console.log("repeatInterval = " + repeatInterval)
     if(repeatInterval === 'Daily'){
