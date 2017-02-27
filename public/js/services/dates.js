@@ -21,9 +21,9 @@ angular.module('app').service('DateService', [ function () {
     month = month-1
     }
     console.log("month in DateService = " + month)
-    var date = new Date(year, month, day)
+    // var date = 
     console.log("date in DateService = " + date)
-    return date
+    return new Date(year, month, day)
   }
 
   this.stringDaysInAMonth = function(date){
