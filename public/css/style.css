@@ -1,5 +1,13 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
 
+body {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #F2F3F4;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -19,6 +27,7 @@ time, mark, audio, video {
     font-size: 100%;
     font: inherit;
     vertical-align: baseline;
+
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -54,13 +63,6 @@ table {
   border: 2px solid white;
 }*/
 
-body {
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #F2F3F4;
-}
 
 .calendar table {
   margin: 0 auto;
@@ -69,7 +71,7 @@ body {
 .month {
   border: 2px solid white;
   width: 133px;
-  height: 93px;
+  height: 18%;
   align-content: center;
   border-radius: 4px;
   padding-top: 2px;
@@ -86,9 +88,14 @@ body {
 
 .time {
   outline: 1px solid white;
-  width: 50px;
+  width: 125px;
   height: 30px;
   vertical-align: middle;
+}
+
+#bigTd {
+  height: 100%;
+  outline: 2px solid white; 
 }
 
 .finances {
@@ -97,6 +104,7 @@ body {
 
 .row-headings th{
   text-align: center;
+  height: 30px;
 }
 
 .new-finance {
@@ -121,7 +129,7 @@ body {
   color: white;
   position: fixed;
   float: left;
-  width: 22.5%;
+  width: 20%;
   height: 100%;
   text-align: left;
   padding: 20px;
@@ -131,12 +139,13 @@ body {
 
 .calendar {
   top: 0;
-  width: 86%;
+  width: 89%;
   float: right;
   background-color: #F2F3F4;
   color: #34495E;
   margin-bottom: 0;
   margin-right: 5px;
+  min-height: 580px;
 }
 
 .protocol-table {

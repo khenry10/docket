@@ -1,4 +1,4 @@
-
+<div  style="background-color: #F2F3F4;">
   <div class="events-panel">
     <div>
       <!-- bootstrap collapsible panel START -->
@@ -140,7 +140,7 @@
               <p>
                 As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }}
                 complete with {{ date.getFullYear() }}.  At the end of {{ niceMonth }}, we'll be
-                {{ cumulativeComp * 100 | number:2}}% through the year. 
+                {{ cumulativeComp * 100 | number:2}}% through the year.
               </p>
             </div>
           </div>
@@ -155,22 +155,28 @@
 
 <div class="calendar">
   <div class="calendar-navigation">
+
+    <div class="btn-group">
+      <button class="btn" ng-click="changeView('month')">Month</button>
+      <button class="btn" ng-click="changeView('week')">Week</button>
+    </div>
+
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
                 ng-show="showTodayButton"
                ng-click="currentMonth.count()"> Today </md-button>
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
                 data-ng-model="changeMonth.count"
                 ng-click="changeMonth.decrement()"> < </md-button>
-      <div style="width: 250px;"><h1><span id="calendar-month-year"></span></h1></div>
+      <div style="width: 275px;"><h1><span id="calendar-month-year"></span></h1></div>
     <md-button class="md-accent md-raised md-hue-1" style="min-width: 1%; background-color: white;"
                data-ng-model="changeMonth.count"
                ng-click="changeMonth.increment()"> > </md-button>
-               <div class="btn-group">
-  <button class="btn" ng-click="changeView('month')">Month</button>
-  <button class="btn" ng-click="changeView('week')">Week</button>
-</div>
+
   </div>
+  <div >
     <monthly-calendar change-month="changeMonth.count" current-month="currentMonth.count" list="todoLists"
       new="newCalTodoLists" view="viewType"
     ></monthly-directive>
+  </div>
+</div>
 </div>

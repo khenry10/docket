@@ -88,15 +88,21 @@
         var date = new Date()
         var year = date.getFullYear()
 
-        var buildTimeTable = function(tr){
+        var buildTimeTable = function(tr, addTimes){
           // var timeGrid = document.createElement("table")
-          var bigTd = document.createElement("td");
+          console.log(tr)
+          // var addTimes = td? false: true;
+          var bigTd = tr === td? tr:document.createElement("td");
+          bigTd.setAttribute('id', "bigTd")
           for(var y = 0; y <= 1; y++){
             if(y === 0){
               var tr2 = document.createElement("tr");
               var td = document.createElement("td");
               td.setAttribute("class", "time")
-              td.innerHTML = "12 am"
+              if(addTimes){
+                // this is causing alighment issues
+                // td.innerHTML = "Midnight"
+              }
               tr2.appendChild(td)
               bigTd.appendChild(tr2)
               tr.appendChild(bigTd)
@@ -105,12 +111,14 @@
               var tr2 = document.createElement("tr");
               var td = document.createElement("td");
               td.setAttribute("class", "time")
-              var amOrpm = y === 0? ' am':' pm'
-              td.innerHTML = z + amOrpm
+              console.log("addTimes = " +addTimes)
+              if(addTimes){
+                var amOrpm = y === 0? ' am':' pm'
+                td.innerHTML = z + amOrpm
+              }
               tr2.appendChild(td)
               bigTd.appendChild(tr2)
               tr.appendChild(bigTd)
-
             }
           }
 
@@ -129,7 +137,7 @@
           }
             scope.count = 1;
             for(; i < 7; i++){
-              createTableRows(table, td, p, tr, numberOfDays, month, year)
+              createTDsInRows(table, td, p, tr, numberOfDays, month, year)
               // scope.count++
             }
             table.appendChild(tr)
@@ -138,19 +146,20 @@
         var dyanmicRowCreator = function(rows, table, td, p, tr, numberOfDays, month, year){
           console.log("dyanmicRowCreator td = " + td)
 
+          // we pass the number of rows to create through rows parameter to distinguish between month and weekly view. And months with 5 or 6 rows
           for(var t = 0; t < rows; t++){
             var tr = document.createElement("tr")
             if(scope.newView === 'week'){
-              buildTimeTable(tr)
+              buildTimeTable(tr, true)
             }
             tr.setAttribute("class", "date-row-"+t)
-            console.log(tr)
+
             for(var i = 0; i < 7; i++){
-              createTableRows(table, td, p, tr, numberOfDays, month, year);
+              createTDsInRows(table, td, p, tr, numberOfDays, month, year);
               // scope.count++
             }
           table.appendChild(tr)
-        }
+          }
         }
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
@@ -164,21 +173,13 @@
           // Table Heading row with names of days
 
           scope.count = 1;
-          // var numbers = []
-          // for(var k = 1; k <= numberOfDays; k++){
-          //   numbers.push(k)
-          // }
-          // console.log("NUMBERS BELOW")
-          // console.log(numbers)
+
           var count = scope.count
-          // count = numbers[count]
-          // console.log(scope.count)
-          // console.log(count)
+
           createFirstRow(table, tr, count)
           // create 1st row of dates.  First loop looks to see which day (sunday -friday) is the first of the month and then puts a '1'in that td.
           tr = document.createElement("tr");
           tr.setAttribute("class", "first-row")
-
 
           if(scope.newView === 'month'){
             monthViewFirstRow(firstDayOfMonth, tr, table, p, numberOfDays, month, year)
@@ -199,7 +200,7 @@
             var tr = document.createElement("tr")
             for(var i = 0; i < 7; i++){
               if(scope.count <= numberOfDays){
-                createTableRows(table, td, p, tr, numberOfDays, month, year)
+                createTDsInRows(table, td, p, tr, numberOfDays, month, year)
                 // scope.count++
               } else {
                 var td = document.createElement("td");
@@ -227,11 +228,18 @@
             var start = 1
           } else if(scope.newView === 'week'){
             var start = 0
+
+            scope.todayFullDate = new Date()
+            scope.todayDay = scope.todayFullDate.getDay()
+            scope.TodayDate = scope.todayFullDate.getDate()
+
+            console.log()
           }
           for(var i = start; i < 8 ; i++){
             var th = document.createElement("th")
             if(i > 0 && start === 0){
-              th.innerHTML = daysOfWeek[i] + " " + count++
+              var date = scope.TodayDate - (scope.todayDay - i)
+              th.innerHTML = daysOfWeek[i] + "  " + date
             } else {
               th.innerHTML = daysOfWeek[i]
             }
@@ -317,8 +325,14 @@
           }
         };
 
-        function createTableRows(table, td, p, tr, numberOfDays, month, year){
-            console.log("*** createTableRows called.")
+        function createTDsInRows(table, td, p, tr, numberOfDays, month, year){
+            console.log("*** createTDsInRows called." + scope.count)
+
+            if(scope.newView === "week"){
+              var td = document.createElement("td")
+              buildTimeTable(tr, false)
+            } else {
+
             var td = document.createElement("td");
             td.setAttribute("class", scope.newView)
             var p = document.createElement("p")
@@ -334,6 +348,7 @@
             if(scope.count === date.getDate() && month === date.getMonth()+1 && year === date.getFullYear()){
               td.setAttribute("class", "today")
             }
+
             // Need to move the below logic into checklists function to make more efficient
               for(var i = 0; i < Events.all.length; i++ ){
                 var eventDate = Events.all[i].start_time
@@ -357,6 +372,7 @@
                 }
               }
               scope.count++
+            }
         };
 
         // monthHistory is an array that stores the months the user has viewed and acts as a changelog/history.
