@@ -83,187 +83,27 @@
         }
       }, false);
 
+      scope.testModal = function (list, date){
+        ModalService.showModal({
+          templateUrl: "/assets/html/todo/modal-test.html",
+          controller: "modalController",
+          inputs: {
+            data: list,
+            date: date
+          }
+        }).then(function(modal) {
+          //it's a bootstrap element, use 'modal' to show it
+          modal.element.modal();
+          modal.close.then(function(result) {
+            console.log(result);
+          });
+        });
+      }
+
         var monthName = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         var date = new Date()
         var year = date.getFullYear()
-
-        var buildTimeTable = function(tr, addTimes){
-          // var timeGrid = document.createElement("table")
-          console.log(tr)
-          // var addTimes = td? false: true;
-          var bigTd = tr === td? tr:document.createElement("td");
-          bigTd.setAttribute('id', "bigTd")
-          for(var y = 0; y <= 1; y++){
-            if(y === 0){
-              var tr2 = document.createElement("tr");
-              var td = document.createElement("td");
-              td.setAttribute("class", "time")
-              if(addTimes){
-                // this is causing alighment issues
-                // td.innerHTML = "Midnight"
-              }
-              tr2.appendChild(td)
-              bigTd.appendChild(tr2)
-              tr.appendChild(bigTd)
-            }
-            for(var z = 1; z <= 12; z++){
-              var tr2 = document.createElement("tr");
-              var td = document.createElement("td");
-              td.setAttribute("class", "time")
-              console.log("addTimes = " +addTimes)
-              if(addTimes){
-                var amOrpm = y === 0? ' am':' pm'
-                td.innerHTML = z + amOrpm
-              }
-              tr2.appendChild(td)
-              bigTd.appendChild(tr2)
-              tr.appendChild(bigTd)
-            }
-          }
-
-        }
-
-        var monthViewFirstRow = function(firstDayOfMonth, tr, table, p, numberOfDays, month, year){
-          for(var i = 0; i < 7; i++){
-            if(i >= firstDayOfMonth){
-              break;
-            }
-            // this section creates a td and puts a blank string in until the loop reaches the first day of the month
-              var td = document.createElement("td");
-              td.setAttribute("class", "month")
-              td.innerHTML = "";
-              tr.appendChild(td)
-          }
-            scope.count = 1;
-            for(; i < 7; i++){
-              createTDsInRows(table, td, p, tr, numberOfDays, month, year)
-              // scope.count++
-            }
-            table.appendChild(tr)
-        }
-
-        var dyanmicRowCreator = function(rows, table, td, p, tr, numberOfDays, month, year){
-          console.log("dyanmicRowCreator td = " + td)
-
-          // we pass the number of rows to create through rows parameter to distinguish between month and weekly view. And months with 5 or 6 rows
-          for(var t = 0; t < rows; t++){
-            var tr = document.createElement("tr")
-            if(scope.newView === 'week'){
-              buildTimeTable(tr, true)
-            }
-            tr.setAttribute("class", "date-row-"+t)
-
-            for(var i = 0; i < 7; i++){
-              createTDsInRows(table, td, p, tr, numberOfDays, month, year);
-              // scope.count++
-            }
-          table.appendChild(tr)
-          }
-        }
-
-        var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
-          console.log("makeCalendar function envoked. firstDayOfMonth = " + firstDayOfMonth + ", numberOfDays = "+ numberOfDays + ", month = " + month + ", year = " + year)
-          document.getElementById("calendar-month-year").innerHTML = monthName[month] + " " + year
-          var table = document.createElement("table");
-          table.className = 'calendar';
-          table.setAttribute("id", "calendar-table");
-          var tr    = document.createElement("tr");
-          tr.setAttribute("class", "row-headings")
-          // Table Heading row with names of days
-
-          scope.count = 1;
-
-          var count = scope.count
-
-          createFirstRow(table, tr, count)
-          // create 1st row of dates.  First loop looks to see which day (sunday -friday) is the first of the month and then puts a '1'in that td.
-          tr = document.createElement("tr");
-          tr.setAttribute("class", "first-row")
-
-          if(scope.newView === 'month'){
-            monthViewFirstRow(firstDayOfMonth, tr, table, p, numberOfDays, month, year)
-            // end of 1st date row
-
-            // creates 2nd, 3rd and 4th date rows
-            //conditional to determine if the first day of the month starts on Friday AND has 31 days.  They need an extra row, so we need to loop through 4 times
-            var td = document.createElement("td");
-            if((numberOfDays === 31 && firstDayOfMonth === 5) || (numberOfDays === 31 && firstDayOfMonth === 6) || (numberOfDays === 30 && firstDayOfMonth === 6)){
-              dyanmicRowCreator(4, table, td, p, tr, numberOfDays, month, year)
-
-              // months that have less than 31 days only need 3 additional rows, so it only needs to loop 3 times
-            } else {
-              dyanmicRowCreator(3, table, td, p, tr, numberOfDays, month, year)
-            }
-
-            // creates last row (6th row for months that start on Friday and have 31 days & 5th row for all others)
-            var tr = document.createElement("tr")
-            for(var i = 0; i < 7; i++){
-              if(scope.count <= numberOfDays){
-                createTDsInRows(table, td, p, tr, numberOfDays, month, year)
-                // scope.count++
-              } else {
-                var td = document.createElement("td");
-                td.setAttribute("class", "month")
-                td.innerHTML = "";
-                tr.appendChild(td)
-              }
-            }
-          }
-
-          if(scope.newView === 'week'){
-            dyanmicRowCreator(1, table, td, p, tr, numberOfDays, month, year)
-            // buildTimeTable(table)
-          }
-
-                table.appendChild(tr)
-                document.getElementById("calendar-dates").appendChild(table);
-                var p = document.createElement("p")
-        }
-        // end ---> of make_calendar function <------//
-
-        function createFirstRow(table, tr, count){
-          console.log("createFirstRow called. count = " + count)
-          if(scope.newView === 'month'){
-            var start = 1
-          } else if(scope.newView === 'week'){
-            var start = 0
-
-            scope.todayFullDate = new Date()
-            scope.todayDay = scope.todayFullDate.getDay()
-            scope.TodayDate = scope.todayFullDate.getDate()
-
-            console.log()
-          }
-          for(var i = start; i < 8 ; i++){
-            var th = document.createElement("th")
-            if(i > 0 && start === 0){
-              var date = scope.TodayDate - (scope.todayDay - i)
-              th.innerHTML = daysOfWeek[i] + "  " + date
-            } else {
-              th.innerHTML = daysOfWeek[i]
-            }
-            tr.appendChild(th)
-          }
-          table.appendChild(tr)
-        };
-
-        scope.testModal = function (list, date){
-          ModalService.showModal({
-            templateUrl: "/assets/html/todo/modal-test.html",
-            controller: "modalController",
-            inputs: {
-              data: list,
-              date: date
-            }
-          }).then(function(modal) {
-            //it's a bootstrap element, use 'modal' to show it
-            modal.element.modal();
-            modal.close.then(function(result) {
-              console.log(result);
-            });
-          });
-        }
 
         var checkDates = function(date, list){
           console.log(list)
@@ -325,12 +165,59 @@
           }
         };
 
-        function createTDsInRows(table, td, p, tr, numberOfDays, month, year){
+        var buildTimeTable = function(tr, addTimes, index){
+          console.log("buildTimeTable")
+          console.log(index)
+          // var timeGrid = document.createElement("table")
+          console.log(tr)
+          // var addTimes = td? false: true;
+          var bigTd = tr === td? tr:document.createElement("td");
+
+          bigTd.setAttribute('class', "bigTd"+index)
+          for(var y = 0; y <= 1; y++){
+            if(y === 0){
+              var tr2 = document.createElement("tr");
+              var td = document.createElement("td");
+              td.setAttribute("class", "time")
+              if(addTimes){
+                // this is causing alighment issues
+                // td.innerHTML = "Midnight"
+              }
+              tr2.appendChild(td)
+              bigTd.appendChild(tr2)
+              tr.appendChild(bigTd)
+            }
+            for(var z = 1; z <= 12; z++){
+              var tr2 = document.createElement("tr");
+              var td = document.createElement("td");
+              td.setAttribute("class", "time")
+              console.log("addTimes = " +addTimes)
+              if(addTimes){
+                var amOrpm = y === 0? ' am':' pm'
+                td.innerHTML = z + amOrpm
+              }
+              tr2.appendChild(td)
+              bigTd.appendChild(tr2)
+              tr.appendChild(bigTd)
+            }
+          }
+          var todayWeekly = document.getElementsByClassName("todayInWeeklyView")
+          // var todayWeekly = document.getElementById(index+1)
+
+        
+          console.log(todayWeekly[0])
+          console.log(todayWeekly.id)
+          todayWeekly = todayWeekly.getId
+          console.log(todayWeekly)
+        }
+
+        function createTDsInRows(table, td, p, tr, numberOfDays, month, year, index){
             console.log("*** createTDsInRows called." + scope.count)
 
             if(scope.newView === "week"){
               var td = document.createElement("td")
-              buildTimeTable(tr, false)
+              console.log("calling buildTimeTable from createTDsInRows!!!!!")
+              buildTimeTable(tr, false, index)
             } else {
 
             var td = document.createElement("td");
@@ -348,7 +235,6 @@
             if(scope.count === date.getDate() && month === date.getMonth()+1 && year === date.getFullYear()){
               td.setAttribute("class", "today")
             }
-
             // Need to move the below logic into checklists function to make more efficient
               for(var i = 0; i < Events.all.length; i++ ){
                 var eventDate = Events.all[i].start_time
@@ -374,6 +260,132 @@
               scope.count++
             }
         };
+
+        var dyanmicRowCreator = function(rows, table, td, p, tr, numberOfDays, month, year){
+          console.log("dyanmicRowCreator td = " + td)
+          // we pass the number of rows to create through rows parameter to distinguish between month and weekly view. And months with 5 or 6 rows
+          for(var t = 0; t < rows; t++){
+            var tr = document.createElement("tr")
+            if(scope.newView === 'week'){
+              console.log("calling buildTimeTable from dynamicRowCreator")
+              buildTimeTable(tr, true)
+            }
+            tr.setAttribute("class", "date-row-"+t)
+
+            for(var i = 0; i < 7; i++){
+              createTDsInRows(table, td, p, tr, numberOfDays, month, year, i);
+              // scope.count++
+            }
+          table.appendChild(tr)
+          }
+        }
+
+        var monthViewFirstDateRow = function(firstDayOfMonth, tr, table, p, numberOfDays, month, year){
+          for(var i = 0; i < 7; i++){
+            if(i >= firstDayOfMonth){
+              break;
+            }
+            // this section creates a td and puts a blank string in until the loop reaches the first day of the month
+              var td = document.createElement("td");
+              td.setAttribute("class", "month")
+              td.innerHTML = "";
+              tr.appendChild(td)
+          }
+            scope.count = 1;
+            for(; i < 7; i++){
+              createTDsInRows(table, td, p, tr, numberOfDays, month, year)
+              // scope.count++
+            }
+            table.appendChild(tr)
+        }
+
+        function createTableHeadingRow(table, tr, count){
+          console.log("createTableHeadingRow called. count = " + count)
+          if(scope.newView === 'month'){
+            var start = 1
+          } else if(scope.newView === 'week'){
+            var start = 0
+            scope.todayFullDate = new Date()
+            scope.todayDay = scope.todayFullDate.getDay()
+            scope.TodayDate = scope.todayFullDate.getDate()
+            scope.TodaysMonth = scope.todayFullDate.getMonth()
+            scope.TodaysYear = scope.todayFullDate.getFullYear()
+          }
+          for(var i = start; i < 8 ; i++){
+            var th = document.createElement("th")
+            if(i > 0 && start === 0){
+
+              var daysAwayFromDate = (i - scope.todayDay) - scope.TodayDate
+              var date = scope.TodayDate + daysAwayFromDate
+              if(date <= 0){
+                var lastDayOfLastMonth = new Date (scope.TodaysYear, scope.TodaysMonth-1, 0).getDate()
+                console.log(lastDayOfLastMonth)
+                var date = lastDayOfLastMonth+1 + daysAwayFromDate
+              }
+              th.innerHTML = daysOfWeek[i] + "  " + date
+              if(daysAwayFromDate === 0){
+                th.setAttribute("class", "todayInWeeklyView")
+                th.setAttribute("id", i)
+              }
+            } else {
+              th.innerHTML = daysOfWeek[i]
+            }
+            tr.appendChild(th)
+          }
+          table.appendChild(tr)
+        };
+
+        var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
+          console.log("makeCalendar function envoked. firstDayOfMonth = " + firstDayOfMonth + ", numberOfDays = "+ numberOfDays + ", month = " + month + ", year = " + year)
+          document.getElementById("calendar-month-year").innerHTML = monthName[month] + " " + year
+          var table = document.createElement("table");
+          table.className = 'calendar';
+          table.setAttribute("id", "calendar-table");
+          var tr    = document.createElement("tr");
+          tr.setAttribute("class", "row-headings")
+          // Table Heading row with names of days
+          scope.count = 1;
+          var count = scope.count
+          createTableHeadingRow(table, tr, count)
+          // create 1st row of dates.  First loop looks to see which day (sunday -friday) is the first of the month and then puts a '1'in that td.
+          tr = document.createElement("tr");
+          tr.setAttribute("class", "first-row")
+          if(scope.newView === 'month'){
+            monthViewFirstDateRow(firstDayOfMonth, tr, table, p, numberOfDays, month, year)
+            // end of 1st date row
+
+            // creates 2nd, 3rd and 4th date rows
+            //conditional to determine if the first day of the month starts on Friday AND has 31 days.  They need an extra row, so we need to loop through 4 times
+            var td = document.createElement("td");
+            if((numberOfDays === 31 && firstDayOfMonth === 5) || (numberOfDays === 31 && firstDayOfMonth === 6) || (numberOfDays === 30 && firstDayOfMonth === 6)){
+              dyanmicRowCreator(4, table, td, p, tr, numberOfDays, month, year)
+
+              // months that have less than 31 days only need 3 additional rows, so it only needs to loop 3 times
+            } else {
+              dyanmicRowCreator(3, table, td, p, tr, numberOfDays, month, year)
+            }
+            // creates last row (6th row for months that start on Friday and have 31 days & 5th row for all others)
+            var tr = document.createElement("tr")
+            for(var i = 0; i < 7; i++){
+              if(scope.count <= numberOfDays){
+                createTDsInRows(table, td, p, tr, numberOfDays, month, year)
+                // scope.count++
+              } else {
+                var td = document.createElement("td");
+                td.setAttribute("class", "month")
+                td.innerHTML = "";
+                tr.appendChild(td)
+              }
+            }
+          }
+          if(scope.newView === 'week'){
+            dyanmicRowCreator(1, table, td, p, tr, numberOfDays, month, year)
+          }
+                table.appendChild(tr)
+                document.getElementById("calendar-dates").appendChild(table);
+                var p = document.createElement("p")
+        }
+        // end ---> of make_calendar function <------//
 
         // monthHistory is an array that stores the months the user has viewed and acts as a changelog/history.
           // Need to view the month history to determine when to increment and decrement the year.
