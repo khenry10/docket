@@ -14,7 +14,7 @@
     return {
       templateUrl: "/assets/html/_calendar.html",
       scope: {
-        month: '=changeMonth',
+        date: '=changeDate',
         current: '=currentMonth',
         todoList: '=list',
         newtodoLists: '=new',
@@ -22,7 +22,7 @@
       },
       link: function(scope){
 
-      console.log("view = " + scope.view)
+      console.log("view = " + scope.newView)
 
       var pullTodo = function (){
         console.log("pullTodo called")
@@ -38,10 +38,11 @@
         monthSelector(date.getMonth()+1)
       }, true)
 
-      scope.$watch('month', function(newMonth, oldValue){
-        console.log("month $watch called")
+      scope.$watch('date', function(newDate, oldValue){
+        console.log("month $watch called. newDate below: ")
+        console.log(newDate)
         var todoList = scope.todolist
-        monthSelector(newMonth)
+        monthSelector(newDate.monthCount)
         console.log(scope.todolist)
 
         // below is commented out because Lists weren't showing up on the calendar after creating a new one and moving to the next month (only the new list was appearing)
@@ -147,7 +148,7 @@
                   var listMonth = parseInt(listDates[1])
                   var listDay = parseInt(listDates[2].substr(0,2))
                   if(listYear === year){
-                    if(listMonth === scope.month){
+                    if(listMonth === scope.date.monthCount){
                     checkDates(date, list)
                     }
                   }
@@ -172,8 +173,17 @@
           console.log(tr)
           // var addTimes = td? false: true;
           var bigTd = tr === td? tr:document.createElement("td");
+          console.log(scope.daysAwayFromDate)
 
-          bigTd.setAttribute('class', "bigTd"+index)
+          index = index
+          console.log(index)
+          // scope.daysAwayFromDate = scope.daysAwayFromDate-1
+          if(scope.todayDay === index && scope.date.weekCount === 0){
+
+            bigTd.setAttribute("class", "today")
+          }
+
+          // bigTd.setAttribute('class', "bigTd"+index)
           for(var y = 0; y <= 1; y++){
             if(y === 0){
               var tr2 = document.createElement("tr");
@@ -204,7 +214,7 @@
           var todayWeekly = document.getElementsByClassName("todayInWeeklyView")
           // var todayWeekly = document.getElementById(index+1)
 
-        
+          console.log(todayWeekly)
           console.log(todayWeekly[0])
           console.log(todayWeekly.id)
           todayWeekly = todayWeekly.getId
@@ -299,13 +309,24 @@
             table.appendChild(tr)
         }
 
+        var lastDate = []
+
         function createTableHeadingRow(table, tr, count){
           console.log("createTableHeadingRow called. count = " + count)
           if(scope.newView === 'month'){
             var start = 1
           } else if(scope.newView === 'week'){
             var start = 0
-            scope.todayFullDate = new Date()
+            console.log(scope.date.weekCount)
+            if(scope.date.weekCount === 0){
+              scope.todayFullDate = new Date()
+              scope.todayDay = scope.todayFullDate.getDay()
+              scope.TodayDate = scope.todayFullDate.getDate()
+              scope.TodaysMonth = scope.todayFullDate.getMonth()
+              scope.TodaysYear = scope.todayFullDate.getFullYear()
+            } else {
+              scope.todayFullDate = new Date(scope.todayFullDate.getFullYear(), scope.todayFullDate.getMonth(), scope.todayFullDate.getDate()+7)
+            }
             scope.todayDay = scope.todayFullDate.getDay()
             scope.TodayDate = scope.todayFullDate.getDate()
             scope.TodaysMonth = scope.todayFullDate.getMonth()
@@ -313,19 +334,40 @@
           }
           for(var i = start; i < 8 ; i++){
             var th = document.createElement("th")
+            // i > 0 is because the first column is for the time and we want the first date columns
+              // start === 0 tells us that we want a weekly view
             if(i > 0 && start === 0){
+              // when the scope.date.weekCount === 0, we know that we should dispaly the week of the current date
 
-              var daysAwayFromDate = (i - scope.todayDay) - scope.TodayDate
-              var date = scope.TodayDate + daysAwayFromDate
-              if(date <= 0){
-                var lastDayOfLastMonth = new Date (scope.TodaysYear, scope.TodaysMonth-1, 0).getDate()
-                console.log(lastDayOfLastMonth)
-                var date = lastDayOfLastMonth+1 + daysAwayFromDate
+              if(scope.date.weekCount === 0){
+                var daysAwayFromDate = (i - scope.todayDay) - scope.TodayDate
+                var date = scope.TodayDate + daysAwayFromDate
+                // if the date is less than zero, we need find the last day of previous month
+                lastDate.push(date)
+                if(date < 0){
+                  console.log(date)
+                  var lastMonth = new Date (scope.TodaysYear, scope.TodaysMonth, 0)
+                  console.log(lastMonth)
+                  var lastDayOfLastMonth = lastMonth.getDate()
+                  console.log(lastDayOfLastMonth)
+                  console.log(daysAwayFromDate)
+                  var date = lastDayOfLastMonth + date
+                  // date = monthName[scope.TodaysMonth] + " " + date
+                  lastDate.push(date)
+                }
+                // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
+              } else {
+                console.log(lastDate)
+                var date = lastDate.pop() + 1;
+                lastDate.push(date)
               }
+              // since date = todays date + days away, today = 0 and we have to +1
+              date = date+1
               th.innerHTML = daysOfWeek[i] + "  " + date
               if(daysAwayFromDate === 0){
                 th.setAttribute("class", "todayInWeeklyView")
                 th.setAttribute("id", i)
+                scope.daysAwayFromDate = i
               }
             } else {
               th.innerHTML = daysOfWeek[i]
@@ -425,6 +467,16 @@
           var numberOfDays = new Date(year, month, 0).getDate()
           makeCalendar(firstDayOfMonth, numberOfDays, month, year)
         }
+
+        var todayWeekly = document.getElementsByClassName("todayInWeeklyView")
+        // var todayWeekly = document.getElementById(index+1)
+
+        console.log(todayWeekly[0])
+        console.log(todayWeekly.id)
+        todayWeekly = todayWeekly.getId
+        console.log(todayWeekly)
+
+
       }
     }
   }

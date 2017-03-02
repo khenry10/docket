@@ -71,66 +71,77 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   $scope.yearStats = DateService.percentageOfYearPassed()
   $scope.cumulativeComp = $scope.yearStats.months[$scope.calendarMonth].cumulative_percent_of_year
 
-  $scope.changeMonth = {
-    count: $scope.date.getMonth()+1,
-    increment: function(){
-      console.log("$scope.allTodoLists in increment below:")
-      console.log($scope.allTodoLists)
-      $scope.allTodoLists.forEach(function(list){
-        console.log("Todo.all.$promise in $scope.changeMonth.increment below: ")
-        console.log(list)
-          var lastDateList = list.lists[list.lists.length-1]
-          var monthOfLastDateList = DateService.stringToDate(lastDateList.date, 'regMonth').getMonth()
-          var appsCurrentMonth = $scope.changeMonth.count
+  var verifyCloneList = function(){
+    // console.log("$scope.allTodoLists in increment below:")
+    // console.log($scope.allTodoLists)
+    $scope.allTodoLists.forEach(function(list){
+      console.log("Todo.all.$promise in $scope.changeDate.increment below: ")
+      console.log(list)
+      var lastDateList = list.lists[list.lists.length-1]
+      var monthOfLastDateList = DateService.stringToDate(lastDateList.date, 'regMonth').getMonth()
+      var appsCurrentMonth = $scope.changeDate.monthCount
 
-          var firstDateofAppsCurrentMonth = new Date($scope.changeYear.year, appsCurrentMonth, 1)
-          var recurEnd = list.list_recur_end
-          recurEnd = recurEnd === "Never"? "Never" : DateService.stringToDate(recurEnd, 'regMonth')
+      var firstDateofAppsCurrentMonth = new Date($scope.changeYear.year, appsCurrentMonth, 1)
+      var recurEnd = list.list_recur_end
+      recurEnd = recurEnd === "Never"? "Never" : DateService.stringToDate(recurEnd, 'regMonth')
 
-          if(recurEnd > firstDateofAppsCurrentMonth || recurEnd === "Never"){
-            if(monthOfLastDateList < appsCurrentMonth){
-              console.log("CLONE ME BISH!!!")
-              $scope.listClone(list)
-            }
-          }
-      })
-      if(this.count > 11){
-        this.count = 1
-        // once the count (which is the month) is greater than December, we reset the count to 1 (which is january).  We also invoke changeYear.increment() function, which is used in the index.html to see if the year of the event matches the current year
-        $scope.changeYear.increment()
-      } else {
-        this.count++
+      if(recurEnd > firstDateofAppsCurrentMonth || recurEnd === "Never"){
+        if(monthOfLastDateList < appsCurrentMonth){
+          console.log("CLONE ME BISH!!!")
+          $scope.listClone(list)
+        }
       }
-      $scope.showTodayButton = $scope.changeMonth.count != $scope.calendarMonth+1
+    })
+  }
+
+
+  $scope.changeDate = {
+    monthCount: $scope.date.getMonth()+1,
+    weekCount: 0,
+    increment: function(){
+      console.log($scope.viewType)
+      if($scope.viewType === 'week'){
+        this.weekCount++
+      } else {
+        verifyCloneList()
+        if(this.monthCount > 11){
+          this.monthCount = 1
+          // once the count (which is the month) is greater than December, we reset the count to 1 (which is january).  We also invoke changeYear.increment() function, which is used in the index.html to see if the year of the event matches the current year
+          $scope.changeYear.increment()
+        } else {
+          this.monthCount++
+        }
+        $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
+      }
     },
     decrement: function(){
       $scope.allTodoLists.forEach(function(list){
         $scope.listClone(list)
       })
-      if(this.count <= 1) {
-        this.count = 12
+      if(this.monthCount <= 1) {
+        this.monthCount = 12
         $scope.changeYear.decrement()
       } else {
-        this.count--
+        this.monthCount--
       }
 
-      $scope.showTodayButton = $scope.changeMonth.count != $scope.calendarMonth+1
+      $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
 
     },
     current_month: function(){
       console.log("current_month called")
-    this.count = $scope.date.getMonth()+1
-    console.log($scope.changeMonth.count)
+    this.monthCount = $scope.date.getMonth()+1
+    console.log($scope.changeDate.monthCount)
     console.log($scope.calendarMonth+1)
-    console.log($scope.changeMonth.count != $scope.calendarMonth+1)
-    $scope.showTodayButton = $scope.changeMonth.count != $scope.calendarMonth+1
+    console.log($scope.changeDate.monthCount != $scope.calendarMonth+1)
+    $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
     }
   }
   $scope.currentMonth = {
     count: function(){
       console.log("$scope.currentMonth.count")
       $scope.count = $scope.date
-      $scope.changeMonth.current_month()
+      $scope.changeDate.current_month()
     }
   }
 
@@ -153,10 +164,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
   $scope.listClone = function(masterList){
     console.log(masterList)
-    var appsCurrentMonth = $scope.changeMonth.count+1
+    var appsCurrentMonth = $scope.changeDate.monthCount+1
     var appsCurrentYear = $scope.changeYear.year
     var firstListDay = DateService.stringToDate(masterList.first_day, 'regMonth').getDay()
-    var firstDateOfMonth = new Date(appsCurrentYear, $scope.changeMonth.count, 1)
+    var firstDateOfMonth = new Date(appsCurrentYear, $scope.changeDate.monthCount, 1)
     var firstDayOfMonth = firstDateOfMonth.getDay()
 
     var repeatInterval = masterList.list_reocurring;
@@ -179,10 +190,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       // var last = reoccurEnds.getDate()
       console.log("endDateMonth = " + endDateMonth)
       console.log("endDateYear = " + endDateYear)
-      console.log($scope.changeMonth.count)
+      console.log($scope.changeDate.monthCount)
       if($scope.changeYear.year === endDateYear){
-        console.log($scope.changeMonth.count === endDateMonth)
-        if($scope.changeMonth.count === endDateMonth){
+        console.log($scope.changeDate.monthCount === endDateMonth)
+        if($scope.changeDate.monthCount === endDateMonth){
           console.log("THIS IS GOING THROUGH FROM SOME REASON")
            var last = reoccurEnds.getDate()
         }
