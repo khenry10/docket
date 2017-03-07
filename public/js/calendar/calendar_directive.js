@@ -311,14 +311,27 @@
 
         var lastDate = []
 
+        var createDate = function(increment){
+          scope.todayFullDate = new Date()
+
+            
+
+          scope.todayDay = scope.todayFullDate.getDay()
+          scope.TodayDate = scope.todayFullDate.getDate()
+          scope.TodaysMonth = scope.todayFullDate.getMonth()
+            scope.TodaysYear = scope.todayFullDate.getFullYear()
+        }
+
         function createTableHeadingRow(table, tr, count){
           console.log("createTableHeadingRow called. count = " + count)
+          // week gets a start of 0, becuase we need an extra column to add the times of the day
           if(scope.newView === 'month'){
             var start = 1
           } else if(scope.newView === 'week'){
             var start = 0
-            console.log(scope.date.weekCount)
-            if(scope.date.weekCount === 0){
+            // scope.date.weekCount is used to track when the user is incrementing to the next month.
+              // 0 means that they have only clicked "weekly" button and should be seeing the current week
+            if(scope.date.weekCount == 0){
               scope.todayFullDate = new Date()
               scope.todayDay = scope.todayFullDate.getDay()
               scope.TodayDate = scope.todayFullDate.getDate()
@@ -326,43 +339,37 @@
               scope.TodaysYear = scope.todayFullDate.getFullYear()
             } else {
               scope.todayFullDate = new Date(scope.todayFullDate.getFullYear(), scope.todayFullDate.getMonth(), scope.todayFullDate.getDate()+7)
+              scope.todayDay = scope.todayFullDate.getDay()
+              scope.TodayDate = scope.todayFullDate.getDate()
+              scope.TodaysMonth = scope.todayFullDate.getMonth()
+              scope.TodaysYear = scope.todayFullDate.getFullYear()
             }
-            scope.todayDay = scope.todayFullDate.getDay()
-            scope.TodayDate = scope.todayFullDate.getDate()
-            scope.TodaysMonth = scope.todayFullDate.getMonth()
-            scope.TodaysYear = scope.todayFullDate.getFullYear()
           }
+
           for(var i = start; i < 8 ; i++){
             var th = document.createElement("th")
             // i > 0 is because the first column is for the time and we want the first date columns
-              // start === 0 tells us that we want a weekly view
+              // start === 0 tells us that we want a weekly view that should dispaly the week of the current date
             if(i > 0 && start === 0){
-              // when the scope.date.weekCount === 0, we know that we should dispaly the week of the current date
-
-              if(scope.date.weekCount === 0){
-                var daysAwayFromDate = (i - scope.todayDay) - scope.TodayDate
-                var date = scope.TodayDate + daysAwayFromDate
-                // if the date is less than zero, we need find the last day of previous month
+              var daysAwayFromDate = i - scope.todayDay
+              daysAwayFromDate = daysAwayFromDate -1
+              var daysAwayMinusTodayDate = daysAwayFromDate + scope.TodayDate
+              var date = daysAwayMinusTodayDate
+              if(daysAwayMinusTodayDate < 0 ){
                 lastDate.push(date)
                 if(date < 0){
-                  console.log(date)
                   var lastMonth = new Date (scope.TodaysYear, scope.TodaysMonth, 0)
-                  console.log(lastMonth)
                   var lastDayOfLastMonth = lastMonth.getDate()
-                  console.log(lastDayOfLastMonth)
-                  console.log(daysAwayFromDate)
                   var date = lastDayOfLastMonth + date
-                  // date = monthName[scope.TodaysMonth] + " " + date
                   lastDate.push(date)
                 }
                 // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
+              } else if (daysAwayMinusTodayDate > 0){
+                  lastDate.push(date)
               } else {
-                console.log(lastDate)
                 var date = lastDate.pop() + 1;
                 lastDate.push(date)
               }
-              // since date = todays date + days away, today = 0 and we have to +1
-              date = date+1
               th.innerHTML = daysOfWeek[i] + "  " + date
               if(daysAwayFromDate === 0){
                 th.setAttribute("class", "todayInWeeklyView")
