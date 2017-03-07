@@ -311,15 +311,20 @@
 
         var lastDate = []
 
-        var createDate = function(increment){
+        var createDate = function(){
           scope.todayFullDate = new Date()
 
-            
+          scope.todayFullDate = new Date(
+            scope.todayFullDate.getFullYear(),
+            scope.todayFullDate.getMonth(),
+            scope.todayFullDate.getDate()+(7 * scope.date.weekCount))
 
           scope.todayDay = scope.todayFullDate.getDay()
           scope.TodayDate = scope.todayFullDate.getDate()
           scope.TodaysMonth = scope.todayFullDate.getMonth()
-            scope.TodaysYear = scope.todayFullDate.getFullYear()
+          scope.TodaysYear = scope.todayFullDate.getFullYear()
+          scope.daysInMonth = new Date(scope.todayFullDate.getFullYear(), scope.todayFullDate.getMonth()+1, 0).getDate()
+          document.getElementById("calendar-month-year").innerHTML = monthName[scope.TodaysMonth+1] + " " + scope.TodaysYear
         }
 
         function createTableHeadingRow(table, tr, count){
@@ -331,19 +336,9 @@
             var start = 0
             // scope.date.weekCount is used to track when the user is incrementing to the next month.
               // 0 means that they have only clicked "weekly" button and should be seeing the current week
-            if(scope.date.weekCount == 0){
-              scope.todayFullDate = new Date()
-              scope.todayDay = scope.todayFullDate.getDay()
-              scope.TodayDate = scope.todayFullDate.getDate()
-              scope.TodaysMonth = scope.todayFullDate.getMonth()
-              scope.TodaysYear = scope.todayFullDate.getFullYear()
-            } else {
-              scope.todayFullDate = new Date(scope.todayFullDate.getFullYear(), scope.todayFullDate.getMonth(), scope.todayFullDate.getDate()+7)
-              scope.todayDay = scope.todayFullDate.getDay()
-              scope.TodayDate = scope.todayFullDate.getDate()
-              scope.TodaysMonth = scope.todayFullDate.getMonth()
-              scope.TodaysYear = scope.todayFullDate.getFullYear()
-            }
+
+            createDate(21)
+
           }
 
           for(var i = start; i < 8 ; i++){
@@ -355,6 +350,9 @@
               daysAwayFromDate = daysAwayFromDate -1
               var daysAwayMinusTodayDate = daysAwayFromDate + scope.TodayDate
               var date = daysAwayMinusTodayDate
+              console.log(daysAwayMinusTodayDate <= scope.daysInMonth)
+              console.log("daysAwayMinusTodayDate = " + daysAwayMinusTodayDate)
+              console.log("scope.daysInMonth = " + scope.daysInMonth)
               if(daysAwayMinusTodayDate < 0 ){
                 lastDate.push(date)
                 if(date < 0){
@@ -364,9 +362,16 @@
                   lastDate.push(date)
                 }
                 // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
-              } else if (daysAwayMinusTodayDate > 0){
+
+              } else if (daysAwayMinusTodayDate > 0 && (daysAwayMinusTodayDate < scope.daysInMonth)){
+                console.log("here 1")
                   lastDate.push(date)
+              } else if(daysAwayMinusTodayDate > scope.daysInMonth){
+                console.log("here 2")
+                date = daysAwayMinusTodayDate - scope.daysInMonth
+                lastDate.push(date)
               } else {
+                console.log("here 3")
                 var date = lastDate.pop() + 1;
                 lastDate.push(date)
               }

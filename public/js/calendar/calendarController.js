@@ -115,18 +115,20 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       }
     },
     decrement: function(){
-      $scope.allTodoLists.forEach(function(list){
-        $scope.listClone(list)
-      })
-      if(this.monthCount <= 1) {
-        this.monthCount = 12
-        $scope.changeYear.decrement()
+      if($scope.viewType === 'week'){
+        this.weekCount--
       } else {
-        this.monthCount--
+        $scope.allTodoLists.forEach(function(list){
+          $scope.listClone(list)
+        })
+        if(this.monthCount <= 1) {
+          this.monthCount = 12
+          $scope.changeYear.decrement()
+        } else {
+          this.monthCount--
+        }
+        $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
       }
-
-      $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
-
     },
     current_month: function(){
       console.log("current_month called")
@@ -135,6 +137,9 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     console.log($scope.calendarMonth+1)
     console.log($scope.changeDate.monthCount != $scope.calendarMonth+1)
     $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
+    },
+    thisWeek: function(){
+      this.weekCount = 0
     }
   }
   $scope.currentMonth = {

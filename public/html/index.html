@@ -162,18 +162,24 @@
     </div>
 
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-                ng-show="showTodayButton"
-               ng-click="currentMonth.count()"> Today </md-button>
+              ng-show="showTodayButton"
+               ng-click="currentMonth.count()">
+               Today
+    </md-button>
+
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
                 data-ng-model="changeDate.monthCount"
-                ng-click="changeDate.decrement()"> < </md-button>
-      <div style="width: 275px;"><h1><span id="calendar-month-year"></span></h1></div>
+                ng-click="changeDate.decrement()">
+                <
+    </md-button>
+    <div style="width: 275px;"><h1><span id="calendar-month-year"></span></h1></div>
     <md-button class="md-accent md-raised md-hue-1" style="min-width: 1%; background-color: white;"
                data-ng-model="changeDate.monthCount"
-               ng-click="changeDate.increment()"> > </md-button>
-
+               ng-click="changeDate.increment()">
+               >
+    </md-button>
   </div>
-  <div >
+  <div>
     <monthly-calendar change-date="changeDate" current-month="currentMonth.count" list="todoLists"
       new="newCalTodoLists" view="viewType"
     ></monthly-directive>
