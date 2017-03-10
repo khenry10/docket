@@ -12,7 +12,7 @@ var EventSchema = new mongoose.Schema(
   name: String,
   duration: Number,
   reoccuring: String,
-  start_time: Date,
+  first_day: Date,
   date: Number,
   month: Number
   }
@@ -31,6 +31,8 @@ mongoose.model("Expenses", ExpenseSchema);
 var TodoSchema = new mongoose.Schema({
   list_name: String,
   list_created_on: Date,
+  start_time: String,
+  end_time: String,
   first_day: Date,
   list_reocurring: String,
   list_recur_end: String,

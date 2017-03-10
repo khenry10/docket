@@ -24,6 +24,9 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   $scope.showTodayButton = false;
   $scope.originalTodoLists = []
   $scope.viewType = 'month'
+  $scope.times = ["12:00am", "1:00am", "2:00am", "3:00am", "4:00am", "5:00am", "6:00am", "7:00am",
+  "8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", "1:00pm", "2:00pm", "3:00pm", "4:00pm",
+  "5:00pm", "6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm"]
 
   $scope.changeView = function(view){
     console.log("view = " + view)
@@ -265,15 +268,15 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
   $scope.create = function(){
 
-    var year = $scope.start_time.getFullYear();
-    var month = $scope.start_time.getMonth()+1;
-    var date = $scope.start_time.getDate();
+    var year = $scope.firstDay.getFullYear();
+    var month = $scope.firstDay.getMonth()+1;
+    var date = $scope.firstDay.getDate();
     var numberOfDaysInMonth = new Date(year, month, 0).getDate()
-
-      if($scope.name && $scope.start_time){
+      console.log($scope.firstDay)
+      if($scope.name && $scope.firstDay){
         if($scope.entryType === 'Event') {
           $scope.newEvent.name = $scope.name
-          $scope.newEvent.start_time = $scope.start_time
+          $scope.newEvent.first_day = $scope.firstDay
           $scope.newEvent.$save().then(function(response){
           })
         }
@@ -282,7 +285,9 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
           $scope.newTodoList.list_name = $scope.name
           $scope.newTodoList.list_created_on = new Date()
-          $scope.newTodoList.first_day = $scope.start_time
+          $scope.newTodoList.first_day = $scope.firstDay
+          $scope.newTodoList.start_time =  $scope.startTime
+          $scope.newTodoList.end_time = $scope.endTime
           console.log($scope.newTodoList)
           if($scope.repeatInterval){
               $scope.newTodoList.list_reocurring = $scope.repeatInterval
@@ -291,7 +296,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
           $scope.newMasterLists = []
 
-          var date = $scope.start_time
+          var date = $scope.firstDay
           var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
           $scope.newMasterLists.push( {date: newDate, tasks: []} )
           var count = date.getDate();
@@ -319,7 +324,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
               count = count + 1
               var list = year+"-"+month+"-"+count
               $scope.newMasterLists.push( { date: list, tasks: [] } )
-               var date = $scope.start_time
+               var date = $scope.firstDay
             }
           }
 
@@ -328,7 +333,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
               count = count + 7
               var list = year+"-"+month+"-"+count
               $scope.newMasterLists.push( { date: list, tasks: [] } )
-               var date = $scope.start_time
+               var date = $scope.firstDay
             }
           }
 
@@ -343,7 +348,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           }
           // $scope.todoLists is scoped to calendar_directive, when a new item is added here, it gets passed to the calendar
           $scope.newCalTodoLists = [{list_name: $scope.name, lists: $scope.newMasterLists}]
-          $scope.newCalTodoLists[0].first_day = $scope.start_time
+          $scope.newCalTodoLists[0].first_day = $scope.firstDay
           $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
           $scope.newCalTodoLists[0].list_recur_end =$scope.newTodoList.list_recur_end
           console.log("console.log($scope.newCalTodoLists) below: ")
@@ -365,12 +370,11 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           $scope.newMasterListAddition($scope.newCalTodoLists[0])
           $scope.name = ""
           $scope.repeatInterval = ""
-          $scope.start_time = ""
+          $scope.firstDay = ""
           $scope.entryType = ""
         }
       }
     }
-
 
     $scope.delete = function(eventName){
       console.log("vm.event.name = " + eventName)
@@ -382,7 +386,6 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
 };
 
-
 function ShowEventsController(Events, $stateParams, $window){
   console.log("show event")
     var vm = this;
@@ -393,7 +396,7 @@ function ShowEventsController(Events, $stateParams, $window){
     vm.update = function(){
       console.log("update = " +vm.event.name)
       console.log("event = "+ JSON.stringify(event))
-      var newEvent = {name: vm.event.newName, start_time: vm.event.newStartTime}
+      var newEvent = {name: vm.event.newName, first_day: vm.event.newStartTime}
       console.log(newEvent)
       Events.update({name: vm.event.name}, {event: newEvent}, function(event){
 

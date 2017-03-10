@@ -19,7 +19,27 @@
                     <input type="text" data-ng-model="name" placeholder="name"/>
                   </li>
                   <li style="margin-left: -20px">
-                    <md-datepicker date-input type="date" data-ng-model="start_time" md-placeholder="Date"/></md-datepicker>
+                    <md-datepicker date-input type="date" data-ng-model="firstDay" md-placeholder="Date"/></md-datepicker>
+                  </li>
+                  <li>
+                    <!-- start time -->
+                    <md-input-container style="background-color: white; color: black">
+                      <label> Start Time </label>
+                      <!-- <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label> -->
+                      <md-select ng-model="startTime" aria-label="select reocurring">
+                        <md-option ng-repeat="time in times"> {{ time }}</option>
+                      </md-select>
+                    </md-input-container>
+
+                    <!-- end time -->
+                    <md-input-container style="background-color: white; color: black">
+                      <label> End Time </label>
+                      <!-- <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label> -->
+                      <md-select ng-model="endTime" aria-label="select reocurring">
+                        <md-option ng-repeat="time in times"> {{ time }}</option>
+                      </md-select>
+                    </md-input-container>
+
                   </li>
                   <li>
                     <md-radio-group ng-model="entryType"
@@ -28,7 +48,7 @@
                       <md-radio-button value="List">List</md-radio-button>
                     </md-radio-group>
                   </li>
-                  <li ng-show="name && start_time">
+                  <li ng-show="name && firstDay">
 
                     <md-input-container style="background-color: white; color: black">
                       <label ng-if="!repeatInterval">Reocurring</label>
@@ -91,20 +111,20 @@
                 <table style="width: 95%">
                   <tr data-ng-repeat="event in events "
                       data-ng-model="changeMonth.count"
-                      data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1) &&
-                      changeYear.year.toString() === event.start_time.substr(0,4)">
+                      data-ng-if="changeMonth.count.toString() == event.firstDay.substr(6,1) &&
+                      changeYear.year.toString() === event.firstDay.substr(0,4)">
                       <td><a href="/event/{{event.name}}">  {{event.name}} </a></td>
-                      <td><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
+                      <td><a href="/event/{{event.name}}">  {{event.firstDay | date:'MM/dd/yy'}} </a></td>
                       <td>
                         <md-button class="md-raised md-warn" ng-click="delete(event.name)" style="min-width: 50px">X</md-button>
                       </td>
                     </tr>
-                    <tr data-ng-repeat="event in events | orderBy:'start_time'"
+                    <tr data-ng-repeat="event in events | orderBy:'firstDay'"
                         data-ng-model="changeMonth.count"
-                        data-ng-if="changeMonth.count.toString() == event.start_time.substr(5,2) &&
-                        changeYear.year.toString() === event.start_time.substr(0,4)">
+                        data-ng-if="changeMonth.count.toString() == event.firstDay.substr(5,2) &&
+                        changeYear.year.toString() === event.firstDay.substr(0,4)">
                         <td style="width: 8em;"><a href="/event/{{event.name}}">  {{event.name}} </a></td>
-                        <td style="width: 5em;"><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
+                        <td style="width: 5em;"><a href="/event/{{event.name}}">  {{event.firstDay | date:'MM/dd/yy'}} </a></td>
                         <td style="width: 3em;">
                           <md-button style="min-width: 1%" class="md-raised md-warn" ng-click="delete(event.name)">X</md-button>
                         </td>
@@ -157,13 +177,19 @@
   <div class="calendar-navigation">
 
     <div class="btn-group">
-      <button class="btn" ng-click="changeView('month')">Month</button>
-      <button class="btn" ng-click="changeView('week')">Week</button>
+      <button class="btn" ng-click="changeView('month')" style="box-shadow: 1px 1px 1px grey; background-color: white">Month</button>
+      <button class="btn" ng-click="changeView('week')" style="box-shadow: 1px 1px 1px grey; background-color: white">Week</button>
     </div>
 
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
               ng-show="showTodayButton"
                ng-click="currentMonth.count()">
+               Today
+    </md-button>
+
+    <md-button class="md-raised" style="min-width: 1%; background-color: white;"
+              ng-show="changeDate.weekCount != 0"
+               ng-click="changeDate.thisWeek()">
                Today
     </md-button>
 

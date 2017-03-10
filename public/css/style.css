@@ -86,7 +86,7 @@ table {
   padding-top: 2px;
 }
 
-.time {
+#time {
   outline: 1px solid white;
   width: 125px;
   height: 30px;
@@ -95,7 +95,7 @@ table {
 
 #bigTd {
   height: 100%;
-  outline: 2px solid white; 
+  outline: 2px solid white;
 }
 
 .finances {
@@ -221,7 +221,6 @@ h2 {
 }
 
 #calendar-dates li {
-  outline: 1px solid white;
   background-color: #4FF427;
   color: white;
   padding: 2px;
@@ -444,4 +443,8 @@ display: block;
 
 md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
   background-color: #4FF427;
+}
+
+.today .time {
+  outline: none
 }

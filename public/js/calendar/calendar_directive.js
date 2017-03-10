@@ -34,8 +34,11 @@
       scope.$watch('newView', function(newView, oldView){
         console.log("newView = " + newView)
         console.log("oldView = " + oldView)
-
         monthSelector(date.getMonth()+1)
+        if(newView === 'month'){
+          pullTodo()
+        }
+        checkLists('newView $watch', scope.pulledTodoList)
       }, true)
 
       scope.$watch('date', function(newDate, oldValue){
@@ -108,9 +111,27 @@
 
         var checkDates = function(date, list){
           console.log(list)
-          var listDates = date.date.split("-")
-          var listDay = parseInt(listDates[2].substr(0,2))
-          var ul = document.getElementsByClassName("u"+listDay)
+          console.log(date)
+          if(scope.newView === 'month'){
+            var listDates = date.date.split("-")
+            var listDay = parseInt(listDates[2].substr(0,2))
+            var ul = document.getElementsByClassName("u"+listDay)
+            } else if(scope.newView === 'week') {
+              var listDate = list.first_day.split("-")
+              var listDay = listDate[2].substring(0,2)
+              var listMonth = listDate[1]
+              listMonth = listMonth-1
+              var listYear = listDate[0]
+              var realListDate = new Date(listYear, listMonth, listDay)
+              console.log(realListDate)
+              var columnHeading = document.getElementsByClassName("row-headings")
+              console.log(columnHeading)
+              console.log(columnHeading[0])
+              console.log(columnHeading[0].cells[realListDate.getDay()].innerHTML)
+              console.log(listDay)
+                var ul = document.getElementsByClassName("w"+realListDate.getDay())
+                console.log(ul)
+            }
           var exists = document.getElementById(list._id+date.date)
 
           if(!exists){
@@ -166,24 +187,48 @@
           }
         };
 
+        // this doesn't work yet
+        var addEventsToCalendar = function(){
+          for(var i = 0; i < Events.all.length; i++ ){
+            console.log(Events.all[i])
+            var eventDate = Events.all[i].first_day
+            var eventDate = eventDate.split("-")
+
+            var eventYear = parseInt(eventDate[0])
+            var eventMonth = parseInt(eventDate[1])
+            var eventDay = parseInt(eventDate[2].substr(0,2))
+
+            if(eventYear === year){
+              if(eventMonth === month){
+                if(eventDay === scope.count){
+                  var li = document.createElement("li")
+                  var url = document.createElement("a")
+                  url.href = "/event/"+Events.all[i].name;
+                  url.innerHTML = Events.all[i].name;
+                  li.append(url)
+                  ul.appendChild(li)
+                }
+              }
+            }
+          }
+        }
+
         var buildTimeTable = function(tr, addTimes, index){
           console.log("buildTimeTable")
           console.log(index)
-          // var timeGrid = document.createElement("table")
           console.log(tr)
-          // var addTimes = td? false: true;
+
           var bigTd = tr === td? tr:document.createElement("td");
           console.log(scope.daysAwayFromDate)
 
           index = index
           console.log(index)
-          // scope.daysAwayFromDate = scope.daysAwayFromDate-1
-          if(scope.todayDay === index && scope.date.weekCount === 0){
 
+          if(scope.todayDay === index && scope.date.weekCount === 0){
             bigTd.setAttribute("class", "today")
           }
 
-          // bigTd.setAttribute('class', "bigTd"+index)
+          bigTd.setAttribute('class', "w"+index)
           for(var y = 0; y <= 1; y++){
             if(y === 0){
               var tr2 = document.createElement("tr");
@@ -200,25 +245,42 @@
             for(var z = 1; z <= 12; z++){
               var tr2 = document.createElement("tr");
               var td = document.createElement("td");
-              td.setAttribute("class", "time")
+              td.setAttribute("id", "time")
               console.log("addTimes = " +addTimes)
+              var amOrpm = y === 0? ' am':' pm'
+              td.setAttribute("class", z+amOrpm)
               if(addTimes){
-                var amOrpm = y === 0? ' am':' pm'
                 td.innerHTML = z + amOrpm
               }
+              td.addEventListener("click", function(td){
+                console.log(td.srcElement.className)
+
+                  // var list = "keith"
+                  // var date = "prifte"
+                  //
+                  // ModalService.showModal({
+                  //   templateUrl: "/assets/html/todo/modal-test.html",
+                  //   controller: "modalController",
+                  //   inputs: {
+                  //     data: list,
+                  //     date: date
+                  //   }
+                  // }).then(function(modal) {
+                  //   //it's a bootstrap element, use 'modal' to show it
+                  //   modal.element.modal();
+                  //   modal.close.then(function(result) {
+                  //     console.log(result);
+                  //   });
+                  // });
+
+              } )
               tr2.appendChild(td)
               bigTd.appendChild(tr2)
               tr.appendChild(bigTd)
             }
           }
           var todayWeekly = document.getElementsByClassName("todayInWeeklyView")
-          // var todayWeekly = document.getElementById(index+1)
-
-          console.log(todayWeekly)
-          console.log(todayWeekly[0])
-          console.log(todayWeekly.id)
           todayWeekly = todayWeekly.getId
-          console.log(todayWeekly)
         }
 
         function createTDsInRows(table, td, p, tr, numberOfDays, month, year, index){
@@ -246,27 +308,32 @@
               td.setAttribute("class", "today")
             }
             // Need to move the below logic into checklists function to make more efficient
-              for(var i = 0; i < Events.all.length; i++ ){
-                var eventDate = Events.all[i].start_time
-                var eventDate = eventDate.split("-")
+            console.log(Events.all.length)
+              if(Events.all.length > 0){
+                for(var i = 0; i < Events.all.length; i++ ){
+                  console.log(Events.all[i])
+                  var eventDate = Events.all[i].first_day
+                  var eventDate = eventDate.split("-")
 
-                var eventYear = parseInt(eventDate[0])
-                var eventMonth = parseInt(eventDate[1])
-                var eventDay = parseInt(eventDate[2].substr(0,2))
+                  var eventYear = parseInt(eventDate[0])
+                  var eventMonth = parseInt(eventDate[1])
+                  var eventDay = parseInt(eventDate[2].substr(0,2))
 
-                if(eventYear === year){
-                  if(eventMonth === month){
-                    if(eventDay === scope.count){
-                      var li = document.createElement("li")
-                      var url = document.createElement("a")
-                      url.href = "/event/"+Events.all[i].name;
-                      url.innerHTML = Events.all[i].name;
-                      li.append(url)
-                      ul.appendChild(li)
+                  if(eventYear === year){
+                    if(eventMonth === month){
+                      if(eventDay === scope.count){
+                        var li = document.createElement("li")
+                        var url = document.createElement("a")
+                        url.href = "/event/"+Events.all[i].name;
+                        url.innerHTML = Events.all[i].name;
+                        li.append(url)
+                        ul.appendChild(li)
+                      }
                     }
                   }
                 }
               }
+
               scope.count++
             }
         };
@@ -311,7 +378,7 @@
 
         var lastDate = []
 
-        var createDate = function(){
+        var createWeeklyDates = function(){
           scope.todayFullDate = new Date()
 
           scope.todayFullDate = new Date(
@@ -327,6 +394,44 @@
           document.getElementById("calendar-month-year").innerHTML = monthName[scope.TodaysMonth+1] + " " + scope.TodaysYear
         }
 
+        var weeklyTableHeadingRow = function(th, i){
+          var daysAwayFromDate = i - scope.todayDay
+          daysAwayFromDate = daysAwayFromDate -1
+          var daysAwayMinusTodayDate = daysAwayFromDate + scope.TodayDate
+          var date = daysAwayMinusTodayDate
+          console.log(daysAwayMinusTodayDate <= scope.daysInMonth)
+          console.log("daysAwayMinusTodayDate = " + daysAwayMinusTodayDate)
+          console.log("scope.daysInMonth = " + scope.daysInMonth)
+          if(daysAwayMinusTodayDate < 0 ){
+            lastDate.push(date)
+            if(date < 0){
+              var lastMonth = new Date (scope.TodaysYear, scope.TodaysMonth, 0)
+              var lastDayOfLastMonth = lastMonth.getDate()
+              var date = lastDayOfLastMonth + date
+              lastDate.push(date)
+            }
+            // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
+
+          } else if (daysAwayMinusTodayDate > 0 && (daysAwayMinusTodayDate < scope.daysInMonth)){
+            console.log("here 1")
+              lastDate.push(date)
+          } else if(daysAwayMinusTodayDate > scope.daysInMonth){
+            console.log("here 2")
+            date = daysAwayMinusTodayDate - scope.daysInMonth
+            lastDate.push(date)
+          } else {
+            console.log("here 3")
+            var date = lastDate.pop() + 1;
+            lastDate.push(date)
+          }
+          th.innerHTML = daysOfWeek[i] + "  " + date
+          if(daysAwayFromDate === 0){
+            th.setAttribute("class", "todayInWeeklyView")
+            th.setAttribute("id", i)
+            scope.daysAwayFromDate = i
+          }
+        }
+
         function createTableHeadingRow(table, tr, count){
           console.log("createTableHeadingRow called. count = " + count)
           // week gets a start of 0, becuase we need an extra column to add the times of the day
@@ -334,53 +439,14 @@
             var start = 1
           } else if(scope.newView === 'week'){
             var start = 0
-            // scope.date.weekCount is used to track when the user is incrementing to the next month.
-              // 0 means that they have only clicked "weekly" button and should be seeing the current week
-
-            createDate(21)
-
+            createWeeklyDates()
           }
-
           for(var i = start; i < 8 ; i++){
             var th = document.createElement("th")
             // i > 0 is because the first column is for the time and we want the first date columns
               // start === 0 tells us that we want a weekly view that should dispaly the week of the current date
             if(i > 0 && start === 0){
-              var daysAwayFromDate = i - scope.todayDay
-              daysAwayFromDate = daysAwayFromDate -1
-              var daysAwayMinusTodayDate = daysAwayFromDate + scope.TodayDate
-              var date = daysAwayMinusTodayDate
-              console.log(daysAwayMinusTodayDate <= scope.daysInMonth)
-              console.log("daysAwayMinusTodayDate = " + daysAwayMinusTodayDate)
-              console.log("scope.daysInMonth = " + scope.daysInMonth)
-              if(daysAwayMinusTodayDate < 0 ){
-                lastDate.push(date)
-                if(date < 0){
-                  var lastMonth = new Date (scope.TodaysYear, scope.TodaysMonth, 0)
-                  var lastDayOfLastMonth = lastMonth.getDate()
-                  var date = lastDayOfLastMonth + date
-                  lastDate.push(date)
-                }
-                // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
-
-              } else if (daysAwayMinusTodayDate > 0 && (daysAwayMinusTodayDate < scope.daysInMonth)){
-                console.log("here 1")
-                  lastDate.push(date)
-              } else if(daysAwayMinusTodayDate > scope.daysInMonth){
-                console.log("here 2")
-                date = daysAwayMinusTodayDate - scope.daysInMonth
-                lastDate.push(date)
-              } else {
-                console.log("here 3")
-                var date = lastDate.pop() + 1;
-                lastDate.push(date)
-              }
-              th.innerHTML = daysOfWeek[i] + "  " + date
-              if(daysAwayFromDate === 0){
-                th.setAttribute("class", "todayInWeeklyView")
-                th.setAttribute("id", i)
-                scope.daysAwayFromDate = i
-              }
+              weeklyTableHeadingRow(th, i)
             } else {
               th.innerHTML = daysOfWeek[i]
             }
@@ -479,7 +545,6 @@
           var numberOfDays = new Date(year, month, 0).getDate()
           makeCalendar(firstDayOfMonth, numberOfDays, month, year)
         }
-
         var todayWeekly = document.getElementsByClassName("todayInWeeklyView")
         // var todayWeekly = document.getElementById(index+1)
 
@@ -487,8 +552,6 @@
         console.log(todayWeekly.id)
         todayWeekly = todayWeekly.getId
         console.log(todayWeekly)
-
-
       }
     }
   }
