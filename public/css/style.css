@@ -87,15 +87,67 @@ table {
 }
 
 #time {
-  outline: 1px solid white;
+  border: 1px solid white;
   width: 125px;
   height: 30px;
   vertical-align: middle;
 }
 
+#time-with-entry {
+  border: none;
+  width: 125px;
+  height: 30px;
+  vertical-align: middle;
+  color: white;
+}
+
 #bigTd {
   height: 100%;
   outline: 2px solid white;
+}
+
+.timeTd {
+  background-color: #4FF427;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  /*border-radius: 4px;*/
+}
+
+.startTime {
+  background-color: #4FF427;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  /*border-radius: 4px;*/
+  border-bottom: none;
+}
+
+.endTime {
+  background-color: #4FF427;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  /*border-radius: 4px;*/
+  border-top: none;
+}
+
+.middleTime {
+  background-color: #4FF427;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  /*border-radius: 4px;*/
+  border-top: none;
+  border-bottom: none;
+}
+
+div#time.startTimeTd {
+  border: none
+}
+
+div#time.endTimeTd {
+  border: none
 }
 
 .finances {

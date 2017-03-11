@@ -24,8 +24,8 @@
                   <li>
                     <!-- start time -->
                     <md-input-container style="background-color: white; color: black">
-                      <label> Start Time </label>
-                      <!-- <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label> -->
+                      <label ng-if="!startTime"> Start Time </label>
+                      <label ng-if="startTime" aria-label="select reocurring"> {{ startTime }} </label>
                       <md-select ng-model="startTime" aria-label="select reocurring">
                         <md-option ng-repeat="time in times"> {{ time }}</option>
                       </md-select>
@@ -33,8 +33,8 @@
 
                     <!-- end time -->
                     <md-input-container style="background-color: white; color: black">
-                      <label> End Time </label>
-                      <!-- <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label> -->
+                      <label ng-if="!endTime"> End Time </label>
+                      <label ng-if="endTime" aria-label="select reocurring"> {{ endTime }} </label>
                       <md-select ng-model="endTime" aria-label="select reocurring">
                         <md-option ng-repeat="time in times"> {{ time }}</option>
                       </md-select>

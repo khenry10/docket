@@ -109,7 +109,88 @@
         var date = new Date()
         var year = date.getFullYear()
 
+        var createHourlyCalItem = function(list, time, realListDate, timeStructure){
+          var bigTdContainer = document.getElementsByClassName(time)
+          var pForBigTd = document.createElement('p')
+          if(timeStructure === 'startTime'){
+            pForBigTd.innerHTML = list.list_name
+          }
+          bigTdContainer = bigTdContainer[realListDate.getDay()+1]
+          bigTdContainer.addEventListener("click", function() {
+            scope.testModal(list, date.date)
+          })
+          bigTdContainer.setAttribute("id", "time-with-entry")
+          pForBigTd.setAttribute("class", timeStructure)
+          bigTdContainer.appendChild(pForBigTd)
+        }
+
+        var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, realListDate){
+          console.log("addMiddleTimeCalItems. startTime and endTime")
+          console.log(startTime)
+          console.log(endTime)
+          for(var t = startTime; t <= endTime; t++){
+            console.log(t)
+            var time = t + ":00" + amOrpm
+            console.log(time)
+            createHourlyCalItem(list, time, realListDate, "middleTime")
+          }
+        }
+
+        var putHourlyItemsOnWeeklyCalendar = function(list, realListDate){
+          createHourlyCalItem(list, list.start_time, realListDate, "startTime")
+          // createHourlyCalItem(list, list.end_time, realListDate, "endTime")
+
+          var startTime = list.start_time.split(":")
+          var startTimeAmOrPm = startTime[1].substr(2,4)
+          var startTime = startTime[0]
+
+          var endTime = list.end_time.split(":")
+          var endTimeAmOrPm = endTime[1].substr(2,4)
+          var endTime = endTime[0]
+          var originalEndTime = endTime
+
+          var timeDifference = endTime - startTime
+          if(timeDifference < 0){
+            var time = 12 - startTime
+            var timeDifference = time + endTime
+          }
+          console.log(timeDifference)
+
+          if(startTimeAmOrPm === endTimeAmOrPm && timeDifference === 2){
+            var endTime = endTime -1
+            var endTime = endTime + ":00" + endTimeAmOrPm
+            createHourlyCalItem(list, endTime, realListDate, "middleTime")
+          } else if (timeDifference > 1) {
+            console.log(startTime)
+            console.log("endTime " + endTime)
+            var startTime = parseInt(startTime)+1
+            var startTime = startTime >= 12? 12: startTime
+            var endTime = parseInt(endTime)-1
+            console.log("endTime " + endTime)
+            var endTime = endTime >= 12? 12: endTime
+            console.log("endTime " + endTime)
+
+            if(startTimeAmOrPm === endTimeAmOrPm){
+              console.log("here-sky 1")
+              addMiddleTimeCalItems(startTime, endTime, startTimeAmOrPm, list, realListDate)
+            } else if(startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "am"){
+              console.log("here-sky 2")
+              addMiddleTimeCalItems(startTime, 11, "am", list, realListDate)
+              addMiddleTimeCalItems(12, 12, "pm", list, realListDate)
+              if(originalEndTime != 12 && endTimeAmOrPm === 'pm'){
+                addMiddleTimeCalItems(1, endTime, "pm", list, realListDate)
+              }
+            } else if (startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "pm") {
+              console.log("here-sky 3")
+              addMiddleTimeCalItems(startTime, 12, "pm", list, realListDate)
+              addMiddleTimeCalItems(1, endTime, "am", list, realListDate)
+            }
+          }
+
+        }
+
         var checkDates = function(date, list){
+          console.log("checkDates function envoked. list and then date below:")
           console.log(list)
           console.log(date)
           if(scope.newView === 'month'){
@@ -117,27 +198,30 @@
             var listDay = parseInt(listDates[2].substr(0,2))
             var ul = document.getElementsByClassName("u"+listDay)
             } else if(scope.newView === 'week') {
-              var listDate = list.first_day.split("-")
-              var listDay = listDate[2].substring(0,2)
-              var listMonth = listDate[1]
-              listMonth = listMonth-1
-              var listYear = listDate[0]
-              var realListDate = new Date(listYear, listMonth, listDay)
-              console.log(realListDate)
-              var columnHeading = document.getElementsByClassName("row-headings")
-              console.log(columnHeading)
-              console.log(columnHeading[0])
-              console.log(columnHeading[0].cells[realListDate.getDay()].innerHTML)
-              console.log(listDay)
+              console.log(list)
+              console.log(typeof list.first_day)
+              // added the below since I was getting an error message when adding a new list (before reloading)
+              if(typeof list.first_day == "object"){
+                console.log("made it in")
+                var listDay = list.first_day.getDay()
+                var ul = document.getElementsByClassName("w"+listDay)
+              } else {
+                var listDate = list.first_day.split("-")
+                var listDay = listDate[2].substring(0,2)
+                var listMonth = listDate[1]
+                listMonth = listMonth-1
+                var listYear = listDate[0]
+                var realListDate = new Date(listYear, listMonth, listDay)
+                // var columnHeading = document.getElementsByClassName("row-headings")
                 var ul = document.getElementsByClassName("w"+realListDate.getDay())
-                console.log(ul)
+              }
             }
           var exists = document.getElementById(list._id+date.date)
 
           if(!exists){
             var li = document.createElement("li")
-            li.setAttribute("class",'a'+listDay)
-            li.setAttribute("id", list._id+date.date)
+              li.setAttribute("class",'a'+listDay)
+              li.setAttribute("id", list._id+date.date)
 
             var url = document.createElement("a")
             // url.href = "/tasks/"+list.list_name;
@@ -148,7 +232,15 @@
             })
 
             li.append(url)
-            ul[0].appendChild(li)
+
+            if(scope.newView === 'week' && list.start_time){
+              putHourlyItemsOnWeeklyCalendar(list, realListDate)
+            }
+
+            if(scope.newView === 'month'){
+              ul[0].appendChild(li)
+            }
+
           } else {
             console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR ")
           }
@@ -161,16 +253,35 @@
             if(todoList.length){
               for(var k = 0; k < todoList.length; k++){
                 var list = todoList[k]
+                console.log(list)
                 var reocurringDates = list.lists
                 console.log(reocurringDates)
-                reocurringDates.forEach(function(date){
+                reocurringDates.forEach(function(date, index){
                   var listDates = date.date.split("-")
                   var listYear = parseInt(listDates[0])
                   var listMonth = parseInt(listDates[1])
                   var listDay = parseInt(listDates[2].substr(0,2))
                   if(listYear === year){
                     if(listMonth === scope.date.monthCount){
-                    checkDates(date, list)
+                      if(scope.newView === 'week'){
+
+                        if(list.list_reocurring === 'Daily'){
+                          console.log(listDay === scope.lastDate[scope.lastDate.length-1])
+                          console.log("listDay = "+listDay)
+                          console.log("last value in scope.lastDate = " + scope.lastDate[scope.lastDate.length-1])
+                          console.log("index = " + index )
+                          console.log(scope.lastDate)
+                          if(listDay === scope.lastDate[index]){
+                            checkDates(date, list)
+                          }
+                        } else {
+                          if(listDay >= scope.lastDate[0] && listDay < scope.lastDate[scope.lastDate.length-1]){
+                            checkDates(date, list)
+                          }
+                        }
+                      } else {
+                        checkDates(date, list)
+                      }
                     }
                   }
                 })
@@ -215,14 +326,8 @@
 
         var buildTimeTable = function(tr, addTimes, index){
           console.log("buildTimeTable")
-          console.log(index)
-          console.log(tr)
-
           var bigTd = tr === td? tr:document.createElement("td");
-          console.log(scope.daysAwayFromDate)
-
           index = index
-          console.log(index)
 
           if(scope.todayDay === index && scope.date.weekCount === 0){
             bigTd.setAttribute("class", "today")
@@ -230,50 +335,30 @@
 
           bigTd.setAttribute('class', "w"+index)
           for(var y = 0; y <= 1; y++){
+            // we create 1 large TD that makes up the column, only the first time creates the big TD
             if(y === 0){
               var tr2 = document.createElement("tr");
               var td = document.createElement("td");
               td.setAttribute("class", "time")
-              if(addTimes){
-                // this is causing alighment issues
-                // td.innerHTML = "Midnight"
-              }
               tr2.appendChild(td)
               bigTd.appendChild(tr2)
               tr.appendChild(bigTd)
             }
+            // big TD then get's the times by the below looping twice
             for(var z = 1; z <= 12; z++){
               var tr2 = document.createElement("tr");
               var td = document.createElement("td");
               td.setAttribute("id", "time")
               console.log("addTimes = " +addTimes)
-              var amOrpm = y === 0? ' am':' pm'
-              td.setAttribute("class", z+amOrpm)
+              if(z === 12){
+                var amOrpm = y === 0? 'pm':'am'
+              } else {
+                var amOrpm = y === 0? 'am':'pm'
+              }
+              td.setAttribute("class", z+":00"+amOrpm)
               if(addTimes){
                 td.innerHTML = z + amOrpm
               }
-              td.addEventListener("click", function(td){
-                console.log(td.srcElement.className)
-
-                  // var list = "keith"
-                  // var date = "prifte"
-                  //
-                  // ModalService.showModal({
-                  //   templateUrl: "/assets/html/todo/modal-test.html",
-                  //   controller: "modalController",
-                  //   inputs: {
-                  //     data: list,
-                  //     date: date
-                  //   }
-                  // }).then(function(modal) {
-                  //   //it's a bootstrap element, use 'modal' to show it
-                  //   modal.element.modal();
-                  //   modal.close.then(function(result) {
-                  //     console.log(result);
-                  //   });
-                  // });
-
-              } )
               tr2.appendChild(td)
               bigTd.appendChild(tr2)
               tr.appendChild(bigTd)
@@ -308,10 +393,10 @@
               td.setAttribute("class", "today")
             }
             // Need to move the below logic into checklists function to make more efficient
-            console.log(Events.all.length)
+
               if(Events.all.length > 0){
                 for(var i = 0; i < Events.all.length; i++ ){
-                  console.log(Events.all[i])
+
                   var eventDate = Events.all[i].first_day
                   var eventDate = eventDate.split("-")
 
@@ -376,7 +461,7 @@
             table.appendChild(tr)
         }
 
-        var lastDate = []
+        scope.lastDate = []
 
         var createWeeklyDates = function(){
           scope.todayFullDate = new Date()
@@ -403,26 +488,26 @@
           console.log("daysAwayMinusTodayDate = " + daysAwayMinusTodayDate)
           console.log("scope.daysInMonth = " + scope.daysInMonth)
           if(daysAwayMinusTodayDate < 0 ){
-            lastDate.push(date)
+            scope.lastDate.push(date)
             if(date < 0){
               var lastMonth = new Date (scope.TodaysYear, scope.TodaysMonth, 0)
               var lastDayOfLastMonth = lastMonth.getDate()
               var date = lastDayOfLastMonth + date
-              lastDate.push(date)
+              scope.lastDate.push(date)
             }
             // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
 
           } else if (daysAwayMinusTodayDate > 0 && (daysAwayMinusTodayDate < scope.daysInMonth)){
             console.log("here 1")
-              lastDate.push(date)
+              scope.lastDate.push(date)
           } else if(daysAwayMinusTodayDate > scope.daysInMonth){
             console.log("here 2")
             date = daysAwayMinusTodayDate - scope.daysInMonth
-            lastDate.push(date)
+            scope.lastDate.push(date)
           } else {
             console.log("here 3")
-            var date = lastDate.pop() + 1;
-            lastDate.push(date)
+            var date = scope.lastDate.pop() + 1;
+            scope.lastDate.push(date)
           }
           th.innerHTML = daysOfWeek[i] + "  " + date
           if(daysAwayFromDate === 0){
