@@ -101,17 +101,25 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     monthCount: $scope.date.getMonth()+1,
     weekCount: 0,
     dayCount: [],
+    twoMonthsWeekly: false,
     increment: function(){
       console.log($scope.viewType)
       if($scope.viewType === 'week'){
         this.weekCount++
         var date = $scope.changeDate.dayCount[$scope.changeDate.dayCount.length-1]
-        var lastDayOfMonth = new Date($scope.calendarYear, $scope.calendarMonth+1, 0).getDate()
+        if(this.weekCount === 0){
+          var lastDayOfMonth = new Date($scope.calendarYear, $scope.calendarMonth+1, 0).getDate()
+        } else {
+          var newMonth = $scope.date.getMonth()
+          var lastDayOfMonth = new Date($scope.calendarYear, newMonth+1, 0).getDate()
+        }
+
         for(var d = 1; d <= 7; d++ ){
           var date = date + 1
           if(date > lastDayOfMonth){
             this.monthCount++
             date = 1
+            this.twoMonthsWeekly = true
           }
           $scope.changeDate.dayCount.push(date)
         }

@@ -182,13 +182,13 @@
     </div>
 
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-              ng-show="showTodayButton"
+              ng-show="showTodayButton && viewType === 'month' "
                ng-click="currentMonth.count()">
                Today
     </md-button>
 
     <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-              ng-show="changeDate.weekCount != 0"
+              ng-show="changeDate.weekCount != 0 && viewType === 'week' "
                ng-click="changeDate.thisWeek()">
                Today
     </md-button>

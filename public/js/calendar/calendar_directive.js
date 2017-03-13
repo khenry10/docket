@@ -238,6 +238,70 @@
             }
         }
 
+        var checkWeeklyDate = function(listDay, date, list, listYear, listMonth){
+          var dateArrayLength = scope.lastDate.length
+          var lastWeeklyDate = scope.lastDate[dateArrayLength-1]
+          var firstWeeklyDate = scope.lastDate[dateArrayLength-7]
+
+          if(scope.date.twoMonthsWeekly){
+            var lastMonth = listMonth-1
+            var lastDayOfOldMonth = new Date (listYear, listMonth, 0).getDate()
+            var thisWeekDates = []
+            for(var t = scope.lastDate.indexOf(firstWeeklyDate); t < dateArrayLength; t++){
+              thisWeekDates.push(scope.lastDate[t])
+            }
+            if(listDay >= firstWeeklyDate && listDay <= lastDayOfOldMonth){
+              if(listMonth === scope.date.monthCount-1){
+                loopThroughLastDateArray(listDay, date, list)
+              }
+            } else if(listDay < firstWeeklyDate){
+              var indexOfLastDayOldMonth = thisWeekDates.indexOf(lastDayOfOldMonth)
+              console.log("list name = " + list.list_name+ ", listDay = " + listDay + ", listMonth = " + listMonth)
+              console.log("listMonth = " + listMonth)
+              console.log("scope.date.monthCount = "+ scope.date.monthCount)
+              if(listMonth === scope.date.monthCount){
+                for(var z = indexOfLastDayOldMonth; z <  thisWeekDates.length; z++){
+                  console.log("listDay = " + listDay)
+                  console.log("thisWeekDates[z] = " + thisWeekDates[z])
+                  console.log(listDay === thisWeekDates[z])
+                  if(listDay === thisWeekDates[z]){
+                    loopThroughLastDateArray(listDay, date, list)
+                  }
+                }
+              }
+            }
+          } else {
+            if(listDay >= firstWeeklyDate && listDay <= lastWeeklyDate){
+              if(listYear === year && listMonth === scope.date.monthCount){
+                checkDates(date, list)
+              }
+            } else if(firstWeeklyDate > lastWeeklyDate ){
+              console.log("MADE IT IN")
+              if(listDay >= firstWeeklyDate || listDay === lastWeeklyDate){
+                console.log(listDay)
+                if(listMonth === scope.date.monthCount){
+                  loopThroughLastDateArray(listDay, date, list)
+                } else if(listMonth === scope.date.monthCount-1){
+                  var newArray = []
+                  for(var v = lastWeeklyDate; v > dateArrayLength-8; v--){
+                    var loopingDate = scope.lastDate[v]
+                    console.log(listDay === scope.lastDate[v])
+                    if(loopingDate < dateArrayLength-8){
+                      newArray.push(loopingDate)
+                    }
+                  }
+                  newArray.forEach(function(newMonthDate){
+                    if(listDay === newMonthDate){
+                      loopThroughLastDateArray(listDay, date, list)
+                    }
+                  })
+                }
+
+              }
+            }
+          }
+        }
+
         var checkLists = function(message, todoList){
           // checkLists function recieves the full todoList loops the first, and all of the date lists within to determine if it should be displayed on the calendar
           console.log("checkLists message = " + message)
@@ -251,44 +315,56 @@
                 var reocurringDates = list.lists
                 reocurringDates.forEach(function(date, index){
                   var listDates = date.date.split("-")
-                  console.log(listDates)
-                  console.log(scope.date)
+                  // console.log(listDates)
+                  // console.log(scope.date)
                   var listYear = parseInt(listDates[0])
                   var listMonth = parseInt(listDates[1])
                   var listDay = parseInt(listDates[2].substr(0,2))
-                  var dateArrayLength = scope.lastDate.length
 
+                  var lastMonth = scope.date.monthCount-1
                   if(scope.newView === 'week'){
-                    console.log(listDay >= scope.lastDate[dateArrayLength-7] && listDay <= scope.lastDate[dateArrayLength-1])
-                    console.log(scope.lastDate)
-                    if(listDay >= scope.lastDate[dateArrayLength-7] && listDay <= scope.lastDate[dateArrayLength-1]){
-                      if(listYear === year && listMonth === scope.date.monthCount){
-                        checkDates(date, list)
+                    if(scope.date.twoMonthsWeekly){
+                      if(listMonth === scope.date.monthCount || listMonth === lastMonth ){
+                        checkWeeklyDate(listDay, date, list, listYear, listMonth)
                       }
-                    } else if(scope.lastDate[dateArrayLength-7] > scope.lastDate[dateArrayLength-1] ){
-                      console.log("MADE IT IN")
-                      if(listDay >= scope.lastDate[dateArrayLength-7] || listDay === scope.lastDate[dateArrayLength-1]){
-                        console.log(listDay)
-                        if(listMonth === scope.date.monthCount){
-                          loopThroughLastDateArray(listDay, date, list)
-                        } else if(listMonth === scope.date.monthCount+1){
-                          var newArray = []
-                          for(var v = scope.lastDate.length-1; v > scope.lastDate.length-8; v--){
-                            var loopingDate = scope.lastDate[v]
-                            console.log(listDay === scope.lastDate[v])
-                            if(loopingDate < scope.lastDate.length-8){
-                              newArray.push(loopingDate)
-                            }
-                          }
-                          newArray.forEach(function(newMonthDate){
-                            if(listDay === newMonthDate){
-                              loopThroughLastDateArray(listDay, date, list)
-                            }
-                          })
-                        }
-
+                    } else {
+                      // console.log("listMonth = " + listMonth)
+                      // console.log("scope.date.monthCount = " + scope.date.monthCount)
+                      if(listMonth === scope.date.monthCount){
+                        checkWeeklyDate(listDay, date, list, listYear, listMonth)
                       }
                     }
+
+                    // console.log(listDay >= scope.lastDate[dateArrayLength-7] && listDay <= scope.lastDate[dateArrayLength-1])
+                    // console.log(scope.lastDate)
+                    // if(listDay >= scope.lastDate[dateArrayLength-7] && listDay <= scope.lastDate[dateArrayLength-1]){
+                    //   if(listYear === year && listMonth === scope.date.monthCount){
+                    //     checkDates(date, list)
+                    //   }
+                    // } else if(scope.lastDate[dateArrayLength-7] > scope.lastDate[dateArrayLength-1] ){
+                    //   console.log("MADE IT IN")
+                    //   if(listDay >= scope.lastDate[dateArrayLength-7] || listDay === scope.lastDate[dateArrayLength-1]){
+                    //     console.log(listDay)
+                    //     if(listMonth === scope.date.monthCount){
+                    //       loopThroughLastDateArray(listDay, date, list)
+                    //     } else if(listMonth === scope.date.monthCount+1){
+                    //       var newArray = []
+                    //       for(var v = scope.lastDate.length-1; v > scope.lastDate.length-8; v--){
+                    //         var loopingDate = scope.lastDate[v]
+                    //         console.log(listDay === scope.lastDate[v])
+                    //         if(loopingDate < scope.lastDate.length-8){
+                    //           newArray.push(loopingDate)
+                    //         }
+                    //       }
+                    //       newArray.forEach(function(newMonthDate){
+                    //         if(listDay === newMonthDate){
+                    //           loopThroughLastDateArray(listDay, date, list)
+                    //         }
+                    //       })
+                    //     }
+                    //
+                    //   }
+                    // }
                   } else {
                     if(listYear === year && listMonth === scope.date.monthCount){
                         checkDates(date, list)
