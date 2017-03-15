@@ -159,8 +159,8 @@
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
               <p>
                 As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }}
-                complete with {{ date.getFullYear() }}.  At the end of {{ niceMonth }}, we'll be
-                {{ cumulativeComp * 100 | number:2}}% through the year.
+                complete with {{ date.getFullYear() }}.  {{ niceMonth }} accounts for {{ monthPercent * 100 | number:2}}% of the year,
+                and we'll be {{ cumulativeComp * 100 | number:2}}% through {{ date.getFullYear() }} when {{ niceMonth }} ends.
               </p>
             </div>
           </div>

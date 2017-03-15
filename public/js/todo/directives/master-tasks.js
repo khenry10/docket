@@ -20,15 +20,10 @@
 
         $scope.getMasters = function(){
           console.log("$scope.getMasters called")
-          // Todo.all.$promise.then(function(){
             Todo.all.forEach(function(todo){
-                console.log(todo)
-                console.log(todo.master_tasks)
                 $scope.lists.push({name: todo.list_name, master_tasks: todo.master_tasks, lists: todo.lists})
 
             })
-            console.log($scope.lists)
-          // })
         }
 
         $scope.newMasterListAddition = function(newMaster){
