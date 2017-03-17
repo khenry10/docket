@@ -113,56 +113,65 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     }
     var date = $scope.changeDate.dayCount[$scope.changeDate.dayCount.length-1]
     var newMonth = $scope.date.getMonth()
-
-    if($scope.changeDate.weekCount === 0){
-      var lastDayOfMonth = new Date($scope.calendarYear, $scope.calendarMonth+1, 0).getDate()
-    } else if($scope.changeDate.weekCount > 1){
-      var lastDayPlusOfMonth = new Date($scope.calendarYear, newMonth+1, 0).getDate()
-    } else if ($scope.changeDate.weekCount < 0) {
-      var lastDayMinusOfMonth = new Date($scope.calendarYear, newMonth, 0).getDate()
-    }
+    var lastDayOfMonth = new Date($scope.calendarYear, $scope.calendarMonth+1, 0).getDate()
+    var lastDayPlusOfMonth = new Date($scope.calendarYear, newMonth+1, 0).getDate()
+    var lastDayMinusOfMonth = new Date($scope.calendarYear, newMonth, 0).getDate()
     $scope.changeDate.twoMonthsWeekly = false
+    var dateArrayLength = $scope.changeDate.dayCount.length
+    dateArrayLength = dateArrayLength-1
+    var actionDate = $scope.changeDate.dayCount[dateArrayLength]
+
     if(move === "increment"){
+
+      // var date = $scope.changeDate.lastMove === "decrement"? actionDate+6 : actionDate
+      if($scope.changeDate.lastMove === "decrement"){
+        var date = actionDate+6
+      } else {
+        date = actionDate
+      }
+
+      var thisMonthsLastDay = new Date($scope.calendarYear, $scope.changeDate.monthCount, 0).getDate()
+      console.log("thisMonthsLastDay = " + thisMonthsLastDay)
       for(var d = 1; d <= 7; d++ ){
+        $scope.changeDate.lastMove = "increment"
         var date = date + 1
-        if(date > lastDayPlusOfMonth){
+
+        if(date > thisMonthsLastDay){
           $scope.changeDate.monthCount++
           date = 1
-          if(date < 7){
-            $scope.changeDate.twoMonthsWeekly = true
-          }
+          $scope.changeDate.twoMonthsWeekly = true
         }
         $scope.changeDate.dayCount.push(date)
       }
     } else {
 
-      var dateArrayLength = $scope.changeDate.dayCount.length
-      dateArrayLength = dateArrayLength-1
-      console.log($scope.changeDate.dayCount)
-      var minusDate = $scope.changeDate.dayCount[dateArrayLength]
-      console.log($scope.changeDate)
-      console.log($scope.changeDate.weekCount === 0)
-      if($scope.changeDate.weekCount === -1){
-        var minusDate = minusDate-7
-      } else {
-        minusDate = minusDate -1
-      }
-      var loopTo = minusDate-7
-      // if(minusDate-7 < 0){
-      //   var loopTo = lastDayMinusOfMonth - (minusDate-7)
-      // }
-      console.log("minusDate = " + minusDate)
-      for(var e = 1; e >= 7; e--){
-        console.log(e)
-        if(e === 0){
-          $scope.changeDate.monthCount--
-          var date = date - e
-          var minusDate = lastDayMinusOfMonth
-          $scope.changeDate.dayCount.push(minusDate)
-          $scope.changeDate.twoMonthsWeekly = true
+      if($scope.changeDate.lastMove === "increment"){
+        console.log(date-6 < 0)
+        if(date - 6 < 0){
+          var lastDayOfEarlierMonth = new Date($scope.calendarYear, $scope.changeDate.monthCount-1, 0)
+          var lastDayOfEarlierMonth = lastDayOfEarlierMonth.getDate()
+          var date = lastDayOfEarlierMonth + (date - 6)
         } else {
-          $scope.changeDate.dayCount.push(e)
+          var date = actionDate-6
         }
+      } else {
+        date = actionDate
+      }
+
+      console.log("date = " +date)
+      // var date = $scope.changeDate.lastMove === "increment"? actionDate-6 : actionDate
+
+      for(var e = 1; e <= 7; e++){
+        $scope.changeDate.lastMove = "decrement"
+        var date = date - 1
+        if(date <= 0){
+          $scope.changeDate.monthCount--
+          var date = lastDayMinusOfMonth
+          if(date > lastDayMinusOfMonth-7 || date < 7) {
+            $scope.changeDate.twoMonthsWeekly = true
+          }
+        }
+        $scope.changeDate.dayCount.push(date)
       }
     }
 
@@ -231,6 +240,8 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     date = date-day
     date = date-1
     console.log(date)
+    $scope.changeDate.lastMove = "increment"
+    console.log($scope.changeDate)
     for(var d = 1; d <= 7; d++ ){
       var date = date + 1
       $scope.changeDate.dayCount.push(date)
