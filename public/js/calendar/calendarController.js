@@ -76,6 +76,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   $scope.cumulativeComp = $scope.yearStats.months[$scope.calendarMonth].cumulative_percent_of_year
 
   var verifyCloneList = function(){
+    console.log("verifyCloneList called")
     // console.log("$scope.allTodoLists in increment below:")
     // console.log($scope.allTodoLists)
     $scope.allTodoLists.forEach(function(list){
@@ -122,20 +123,16 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     var actionDate = $scope.changeDate.dayCount[dateArrayLength]
 
     if(move === "increment"){
-
-      // var date = $scope.changeDate.lastMove === "decrement"? actionDate+6 : actionDate
       if($scope.changeDate.lastMove === "decrement"){
+        // when we go from increment to decrement we need to adjust the date count in order to synchronize correctly
         var date = actionDate+6
       } else {
         date = actionDate
       }
-
       var thisMonthsLastDay = new Date($scope.calendarYear, $scope.changeDate.monthCount, 0).getDate()
-      console.log("thisMonthsLastDay = " + thisMonthsLastDay)
       for(var d = 1; d <= 7; d++ ){
         $scope.changeDate.lastMove = "increment"
         var date = date + 1
-
         if(date > thisMonthsLastDay){
           $scope.changeDate.monthCount++
           date = 1
@@ -146,8 +143,8 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     } else {
 
       if($scope.changeDate.lastMove === "increment"){
-        console.log(date-6 < 0)
         if(date - 6 < 0){
+          // this is needed to account for when the date is less than 6 to move to the previous month and not generate negative dates
           var lastDayOfEarlierMonth = new Date($scope.calendarYear, $scope.changeDate.monthCount-1, 0)
           var lastDayOfEarlierMonth = lastDayOfEarlierMonth.getDate()
           var date = lastDayOfEarlierMonth + (date - 6)
@@ -157,9 +154,6 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       } else {
         date = actionDate
       }
-
-      console.log("date = " +date)
-      // var date = $scope.changeDate.lastMove === "increment"? actionDate-6 : actionDate
 
       for(var e = 1; e <= 7; e++){
         $scope.changeDate.lastMove = "decrement"
@@ -174,7 +168,6 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         $scope.changeDate.dayCount.push(date)
       }
     }
-
   }
 
   $scope.changeDate = {
@@ -184,10 +177,13 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     twoMonthsWeekly: false,
     increment: function(){
       console.log($scope.viewType)
+      verifyCloneList()
       if($scope.viewType === 'week'){
+        if(!$scope.changeDate.dayCount.length){
+          intializeDayCount()
+        }
         weeklyMove("increment")
       } else {
-        verifyCloneList()
         if(this.monthCount > 11){
           this.monthCount = 1
           // once the count (which is the month) is greater than December, we reset the count to 1 (which is january).  We also invoke changeYear.increment() function, which is used in the index.html to see if the year of the event matches the current year
@@ -362,20 +358,41 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
     }
 
-  $scope.create = function(){
+  $scope.newMasterLists = []
 
+// not being used yet, ran into too many other bugs
+  var createRepeater = function(year, month, count, lastDay, increment){
+    console.log(year)
+    console.log(month)
+    console.log(count)
+    console.log(lastDay)
+    console.log(increment)
+    while(count < lastDay){
+      count = count + increment
+      var list = year+"-"+month+"-"+count
+      $scope.newMasterLists.push( { date: list, tasks: [] } )
+       var date = $scope.firstDay
+    }
+  }
+
+  $scope.create = function(){
     var year = $scope.firstDay.getFullYear();
     var month = $scope.firstDay.getMonth()+1;
     var date = $scope.firstDay.getDate();
     var numberOfDaysInMonth = new Date(year, month, 0).getDate()
       console.log($scope.firstDay)
+
+      // conditional checker to ensure sufficient info has been filled out
       if($scope.name && $scope.firstDay){
+        // can probably get rid of the below since I decided today that Event will be deprecated
         if($scope.entryType === 'Event') {
           $scope.newEvent.name = $scope.name
           $scope.newEvent.first_day = $scope.firstDay
           $scope.newEvent.$save().then(function(response){
           })
         }
+
+
         if($scope.entryType === 'List'){
           console.log($scope.repeatInterval)
 
@@ -385,12 +402,14 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           $scope.newTodoList.start_time =  $scope.startTime
           $scope.newTodoList.end_time = $scope.endTime
           console.log($scope.newTodoList)
+
           if($scope.repeatInterval){
               $scope.newTodoList.list_reocurring = $scope.repeatInterval
               $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
           }
 
-          $scope.newMasterLists = []
+          // moving to a new, outside function
+          // $scope.newMasterLists = []
 
           var date = $scope.firstDay
           var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
@@ -401,8 +420,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
           if($scope.reoccurEnds){
             console.log($scope.reoccurEnds)
+
             if($scope.reoccurEnds === "SelectDate"){
               console.log($scope.date)
+
               var endDateMonth = $scope.reoccurEndsDate.getMonth()
               var endDateYear = $scope.reoccurEndsDate.getFullYear()
               if($scope.calendarYear === endDateYear){
@@ -410,11 +431,14 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
                   var lastDay = $scope.reoccurEndsDate.getDate()
                 }
               }
+
             }
           }
           console.log(lastDay)
 
           if($scope.repeatInterval === 'Daily'){
+            // createRepeater(year, month, count, lastDay, 1)
+
             while(count < lastDay){
               console.log(lastDay)
               count = count + 1
@@ -425,6 +449,8 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           }
 
           if($scope.repeatInterval === 'Weekly'){
+            // count = count+7
+            // createRepeater(year, month, count, lastDay, 7)
             while(count+7 <= lastDay){
               count = count + 7
               var list = year+"-"+month+"-"+count
@@ -435,6 +461,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
           if($scope.repeatInterval === 'Monthly'){
             console.log("Monthly")
+            // createRepeater(year, count, month, lastDay, 1)
             while(month < 12){
               month = month+1
               var list = year+"-"+month+"-"+count
@@ -442,28 +469,34 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
               console.log($scope.newMasterLists)
             }
           }
-          // $scope.todoLists is scoped to calendar_directive, when a new item is added here, it gets passed to the calendar
+          // I recreated the new object to get rid of new Todo() junk which I thought was causing issues
+          // $scope.newCalTodoLists is a dependency that gets injected into the calendar directive
           $scope.newCalTodoLists = [{list_name: $scope.name, lists: $scope.newMasterLists}]
           $scope.newCalTodoLists[0].first_day = $scope.firstDay
           $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
           $scope.newCalTodoLists[0].list_recur_end =$scope.newTodoList.list_recur_end
-          console.log("console.log($scope.newCalTodoLists) below: ")
+
+          console.log("$scope.newCalTodoLists below: ")
           console.log($scope.newCalTodoLists)
 
+          // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
           $scope.newTodoList.lists = $scope.newMasterLists
-          console.log("$scope.newTodoList below: ")
-          console.log($scope.newTodoList)
-          console.log($scope.newTodoList.first_day)
 
           $scope.newTodoList.$save().then(function(res){
-            console.log("$scope.newTodoList.$save")
-            console.log($scope.todoLists)
+            console.log("$scope.newTodoList.$save success")
           })
-          $scope.allTodoLists.push($scope.newCalTodoLists[0])
-          console.log("$scope.todoLists below ")
-          console.log($scope.todoLists)
-          console.log($scope.newCalTodoLists[0])
+
+          // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
           $scope.newMasterListAddition($scope.newCalTodoLists[0])
+
+          // verifyCloneList function works off of $scope.allTodoLists,
+          $scope.newCalTodoLists[0].start_time =  $scope.startTime
+          $scope.newCalTodoLists[0].end_time =  $scope.endTime
+
+          console.log($scope.newCalTodoLists[0])
+          $scope.allTodoLists.push($scope.newCalTodoLists[0])
+
+          // clears the input fields for new additions
           $scope.name = ""
           $scope.repeatInterval = ""
           $scope.firstDay = ""

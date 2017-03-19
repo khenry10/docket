@@ -237,12 +237,6 @@ li {
   margin: 1% 0% 1% 25%;
 }
 
-input[type=text] {
-  color: black;
-  width: 150px;
-  height: 30px;
-  border-radius: 4px;
-}
 
 input[type=date] {
   width: 150px;
@@ -278,6 +272,7 @@ h2 {
   padding: 2px;
   border-radius: 3px;
   cursor:pointer;
+  outline: 1px solid white;
 }
 
 .today {
@@ -499,4 +494,18 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 
 .today .time {
   outline: none
+}
+
+input[type=text].new-todo-input {
+  height: 40px;
+  width: 200px;
+  color: black;
+  border-radius: 4px;
+}
+
+input[type=text] {
+  color: black;
+  width: 150px;
+  height: 30px;
+  border-radius: 4px;
 }
