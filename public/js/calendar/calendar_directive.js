@@ -28,7 +28,7 @@
         console.log("pullTodo called")
         console.log(scope.todoList)
         scope.pulledTodoList = Todo.all
-        if(scope.todoList && scope.todoList.length === 1){
+        if(scope.isThereANewTodo && scope.todoList && scope.todoList.length === 1){
           scope.pulledTodoList.push(scope.todoList[0])
         }
         console.log(scope.pulledTodoList)
@@ -96,8 +96,10 @@
         console.log("newtodoLists $watch called")
         console.log(scope.todoList)
         console.log(newValue)
-        scope.todoList = newValue
+        scope.isThereANewTodo = newValue
+        console.log(scope.isThereANewTodo)
         if(newValue){
+          console.log("newValue conditional true in newTodoLists ")
             checkLists('newTodoList $watch', newValue)
         }
       }, false);
@@ -137,9 +139,9 @@
             pForBigTd.innerHTML = list.list_name
           }
           bigTdContainer = bigTdContainer[realListDate.getDay()+1]
-          bigTdContainer.addEventListener("click", function() {
-            scope.testModal(list, date.date)
-          })
+          // bigTdContainer.addEventListener("click", function() {
+          //   scope.testModal(list, date.date)
+          // })
           bigTdContainer.setAttribute("id", "time-with-entry")
           pForBigTd.setAttribute("class", timeStructure)
           bigTdContainer.appendChild(pForBigTd)
@@ -147,6 +149,8 @@
 
         var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate){
           // addMiddleTimeCalItems function is to determine how many hours between start and end time need to be appended to teh calendar for each item
+          console.log(startTime)
+          console.log(endTime)
           for(var t = startTime; t <= endTime; t++){
             var time = t + ":00" + amOrpm
             createHourlyCalItem(list, time, date, realListDate, "middleTime")
@@ -179,6 +183,11 @@
           if(startTimeAmOrPm === endTimeAmOrPm && timeDifference === 2){
             var endTime = endTime -1
             var endTime = endTime + ":00" + endTimeAmOrPm
+            createHourlyCalItem(list, endTime, date, realListDate, "middleTime")
+          } else if(startTimeAmOrPm != endTimeAmOrPm && timeDifference === 2 && list.end_time === "12:00am"){
+            console.log(realListDate)
+            var endTime = endTime -1
+            var endTime = endTime + ":00pm"
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime")
           } else if (timeDifference > 1) {
             var startTime = parseInt(startTime)+1
@@ -450,51 +459,48 @@
               console.log("calling buildTimeTable from createTDsInRows!!!!!")
               buildTimeTable(tr, false, index)
             } else {
-
-            var td = document.createElement("td");
-            td.setAttribute("class", scope.newView)
-            var p = document.createElement("p")
-            p.setAttribute("class",  "a"+scope.count)
-            if(scope.newView === 'month'){
-              td.innerHTML = scope.count;
-            }
-            var ul = document.createElement("ul");
-            ul.setAttribute("class", "u"+scope.count)
-            p.appendChild(ul)
-            td.appendChild(p);
-            tr.appendChild(td);
-            if(scope.count === date.getDate() && month === date.getMonth()+1 && year === date.getFullYear()){
-              td.setAttribute("class", "today")
-            }
-            // Need to move the below logic into checklists function to make more efficient
-
-              if(Events.all.length > 0){
-                for(var i = 0; i < Events.all.length; i++ ){
-
-                  var eventDate = Events.all[i].first_day
-                  var eventDate = eventDate.split("-")
-
-                  var eventYear = parseInt(eventDate[0])
-                  var eventMonth = parseInt(eventDate[1])
-                  var eventDay = parseInt(eventDate[2].substr(0,2))
-
-                  if(eventYear === year){
-                    if(eventMonth === month){
-                      if(eventDay === scope.count){
-                        var li = document.createElement("li")
-                        var url = document.createElement("a")
-                        url.href = "/event/"+Events.all[i].name;
-                        url.innerHTML = Events.all[i].name;
-                        li.append(url)
-                        ul.appendChild(li)
-                      }
-                    }
-                  }
-                }
+              var td = document.createElement("td");
+              td.setAttribute("class", scope.newView)
+              var p = document.createElement("p")
+              p.setAttribute("class",  "a"+scope.count)
+              if(scope.newView === 'month'){
+                td.innerHTML = scope.count;
               }
-
+              var ul = document.createElement("ul");
+              ul.setAttribute("class", "u"+scope.count)
+              p.appendChild(ul)
+              td.appendChild(p);
+              tr.appendChild(td);
+              if(scope.count === date.getDate() && month === date.getMonth()+1 && year === date.getFullYear()){
+                td.setAttribute("class", "today")
+              }
               scope.count++
+          }
+          td.addEventListener("click", function(e){
+            // HERE
+            console.log(e)
+            console.log(e.srcElement.nodeName)
+            if(e.srcElement.nodeName === 'TD'){
+
+                var list = "keith"
+                var date = {date: e.srcElement.textContent, month: month, year: year}
+                ModalService.showModal({
+                  templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
+                  controller: "newCalItemModalController",
+                  inputs: {
+                    data: list,
+                    date: date
+                  }
+                }).then(function(modal) {
+                  //it's a bootstrap element, use 'modal' to show it
+                  modal.element.modal();
+                  modal.close.then(function(result) {
+                    console.log(result);
+                  });
+                });
+
             }
+          })
         };
 
         var dyanmicRowCreator = function(rows, table, td, p, tr, numberOfDays, month, year){

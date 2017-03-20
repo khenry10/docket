@@ -13,65 +13,7 @@
             </h4>
           </div>
           <div id="collapse1" class="panel-collapse collapse">
-              <form style="color: black">
-                <ul class="create-new-panel">
-                  <li style="margin-left: 20%">
-                    <input type="text" data-ng-model="name" placeholder="name"/>
-                  </li>
-                  <li style="margin-left: -20px">
-                    <md-datepicker date-input type="date" data-ng-model="firstDay" md-placeholder="Date"/></md-datepicker>
-                  </li>
-                  <li>
-                    <!-- start time -->
-                    <md-input-container style="background-color: white; color: black">
-                      <label ng-if="!startTime"> Start Time </label>
-                      <label ng-if="startTime" aria-label="select reocurring"> {{ startTime }} </label>
-                      <md-select ng-model="startTime" aria-label="select reocurring">
-                        <md-option ng-repeat="time in times"> {{ time }}</option>
-                      </md-select>
-                    </md-input-container>
-
-                    <!-- end time -->
-                    <md-input-container style="background-color: white; color: black">
-                      <label ng-if="!endTime"> End Time </label>
-                      <label ng-if="endTime" aria-label="select reocurring"> {{ endTime }} </label>
-                      <md-select ng-model="endTime" aria-label="select reocurring">
-                        <md-option ng-repeat="time in times"> {{ time }}</option>
-                      </md-select>
-                    </md-input-container>
-
-                  </li>
-                  <li>
-                    <md-radio-group ng-model="entryType"
-                      style="display: flex; justify-content: space-between; width: 95%; margin-top: 4%">
-                      <md-radio-button style="padding-left: 2%;" value="Event">Event</md-radio-button>
-                      <md-radio-button value="List">List</md-radio-button>
-                    </md-radio-group>
-                  </li>
-                  <li ng-show="name && firstDay">
-
-                    <md-input-container style="background-color: white; color: black">
-                      <label ng-if="!repeatInterval">Reocurring</label>
-                      <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>
-                      <md-select ng-model="repeatInterval" aria-label="select reocurring">
-                        <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
-                      </md-select>
-                    </md-input-container>
-
-                    <md-radio-group ng-model="reoccurEnds"
-                      ng-show=" repeatInterval.length && repeatInterval != 'None' "
-                      style="display: flex; justify-content: space-between; width: 75%; margin-left: 5%; margin-top: 4%">
-                        <md-radio-button value="Never">Never</md-radio-button>
-                        <md-radio-button value="SelectDate">Select Date</md-radio-button>
-                    </md-radio-group>
-
-                    <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
-                      ng-model="reoccurEndsDate">
-                    </md-datepicker>
-                  </li>
-                  <md-button class="md-raised" ng-click="create()" style="margin-left: 30%;"> Add </md-button>
-                </ul>
-              </form>
+            <add-new-cal-item></add-new-cal-item>
           </div>
           <!-- panel 2 start -->
 

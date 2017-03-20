@@ -1,18 +1,12 @@
 "use strict";
 
 (function(){
-  angular
-  .module("app")
-  .directive("todoMaster", [
-    "Todo",
-    masterTasks
-  ])
+  angular.module("app").directive("todoMaster", ["Todo", masterTasks])
 
   function masterTasks(Todo){
     return {
       templateUrl: "/assets/html/todo/directives/master-tasks.html",
       link: function($scope){
-
 
         console.log("You in da MASTA Todo")
 
