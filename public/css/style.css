@@ -509,3 +509,24 @@ input[type=text] {
   height: 30px;
   border-radius: 4px;
 }
+
+.md-select-menu-container md-active md-clickable {
+  z-index: 5000;
+}
+
+/* the below is to keep the start/end time select boxes in front of the modal */
+/*#select_container_66 {
+  z-index: 5000;
+}
+
+#select_container_68 {
+  z-index: 5000;
+}
+
+#select_container_75 {
+  z-index: 5000;
+}*/
+
+.md-select-menu-container.md-active {
+  z-index: 5000;
+}

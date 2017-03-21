@@ -11,12 +11,21 @@
   function createNewCalItem(Todo){
     return {
       templateUrl: "/assets/html/calendar/directives/add-new-cal-item.html",
-      $scope: {
-        source: "=view"
+      scope: {
+        data: "=data",
+        newMaster: "&",
+        newCal: "=newCal"
       },
       link: function($scope){
-        console.log($scope.source)
+        console.log($scope)
+        console.log($scope.data)
+
         console.log("this is addNewCalItem directive")
+        $scope.times = ["1:00am", "2:00am", "3:00am", "4:00am", "5:00am", "6:00am", "7:00am",
+        "8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", "1:00pm", "2:00pm", "3:00pm", "4:00pm",
+        "5:00pm", "6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm", "12:00am"]
+
+        $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly']
 
         // not being used yet, ran into too many other bugs 3/18/2017
           var createRepeater = function(year, month, count, lastDay, increment){
@@ -33,30 +42,35 @@
             }
           }
 
+        $scope.newMasterLists = []
+
         $scope.create = function(){
+          console.log($scope)
+          console.log($scope.data.newCal)
           $scope.newTodoList = new Todo();
+          console.log($scope.data.view)
+          console.log($scope.firstDay)
+          console.log("name = "+ $scope.name)
+          if($scope.data.view == "modal"){
+            $scope.firstDay = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
+          }
+          console.log($scope.firstDay)
           var year = $scope.firstDay.getFullYear();
           var month = $scope.firstDay.getMonth()+1;
           var date = $scope.firstDay.getDate();
           var numberOfDaysInMonth = new Date(year, month, 0).getDate()
             console.log($scope.firstDay)
 
-            // conditional checker to ensure sufficient info has been filled out
-            if($scope.name && $scope.firstDay){
-            //   // can probably get rid of the below since I decided today that Event will be deprecated
-            //   if($scope.entryType === 'Event') {
-            //     $scope.newEvent.name = $scope.name
-            //     $scope.newEvent.first_day = $scope.firstDay
-            //     $scope.newEvent.$save().then(function(response){
-            //     })
-            //   }
 
-              // if($scope.entryType === 'List'){
+            if($scope.name && $scope.firstDay || $scope.view === 'modal'){
+
                 console.log($scope.repeatInterval)
 
                 $scope.newTodoList.list_name = $scope.name
                 $scope.newTodoList.list_created_on = new Date()
+
                 $scope.newTodoList.first_day = $scope.firstDay
+
                 $scope.newTodoList.start_time =  $scope.startTime
                 $scope.newTodoList.end_time = $scope.endTime
                 console.log($scope.newTodoList)
@@ -145,14 +159,19 @@
                 })
 
                 // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
-                $scope.newMasterListAddition($scope.newCalTodoLists[0])
+                // since below function is from an external controller, we have to pass the parameter as an object literal, they key must match the parameter name in index.html
+                $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
 
-                // verifyCloneList function works off of $scope.allTodoLists,
                 $scope.newCalTodoLists[0].start_time =  $scope.startTime
                 $scope.newCalTodoLists[0].end_time =  $scope.endTime
+                // newCal is scoped to newCalTodoLists, which is $watched in calendar directive.  Has to be sent in array because that is what is expected in calednar directive
 
-                console.log($scope.newCalTodoLists[0])
-                $scope.allTodoLists.push($scope.newCalTodoLists[0])
+                console.log($scope.data.view == "modal")
+                if($scope.data.view == "modal"){
+                  $scope.data.newCal = [$scope.newCalTodoLists[0]]  
+                } else {
+                  $scope.newCal = [$scope.newCalTodoLists[0]]
+                }
 
                 // clears the input fields for new additions
                 $scope.name = ""

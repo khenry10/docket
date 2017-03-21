@@ -19,6 +19,8 @@ angular.module('app')
 ])
 
 function IndexController($scope, Events, Todo, $window, ModalService, DateService){
+  console.log($scope)
+  // console.log($scope.newMasterListAddition())
   $scope.events = []
   $scope.events = Events.all;
   $scope.showTodayButton = false;
@@ -27,6 +29,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   $scope.times = ["1:00am", "2:00am", "3:00am", "4:00am", "5:00am", "6:00am", "7:00am",
   "8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", "1:00pm", "2:00pm", "3:00pm", "4:00pm",
   "5:00pm", "6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm", "12:00am"]
+  $scope.newCalTodoLists = [];
 
   $scope.changeView = function(view){
     console.log("view = " + view)
@@ -64,8 +67,6 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     })
   })
 
-  $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly']
-
   $scope.date = new Date()
   $scope.calendarMonth = $scope.date.getMonth()
   $scope.calendarYear = $scope.date.getFullYear()
@@ -76,7 +77,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   $scope.monthPercent = $scope.yearStats.months[$scope.calendarMonth].percent_of_year
   $scope.cumulativeComp = $scope.yearStats.months[$scope.calendarMonth].cumulative_percent_of_year
 
-  var verifyCloneList = function(){
+  $scope.verifyCloneList = function(){
     console.log("verifyCloneList called")
     // console.log("$scope.allTodoLists in increment below:")
     // console.log($scope.allTodoLists)
@@ -106,7 +107,13 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       }
     })
   }
+  // testing this for add-new-call directive, but not working yet
+  $scope.$watch("allTodoLists", function(newValue, oldValue){
+    console.log(newValue)
+    $scope.verifyCloneList()
+  })
 
+  // logic for weekly calendar view days when user is "flipping" through calendar view, invoked in $scope.changeDate.increment and decrement
   var weeklyMove = function(move){
     if(move === "increment"){
       $scope.changeDate.weekCount++
@@ -178,7 +185,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     twoMonthsWeekly: false,
     increment: function(){
       console.log($scope.viewType)
-      verifyCloneList()
+      $scope.verifyCloneList()
       if($scope.viewType === 'week'){
         if(!$scope.changeDate.dayCount.length){
           intializeDayCount()
@@ -196,6 +203,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       }
     },
     decrement: function(){
+      $scope.verifyCloneList()
       if($scope.viewType === 'week'){
         weeklyMove('decrement')
       } else {
@@ -233,6 +241,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     }
   }
 
+  // adds the dates of the current week to $scope.changeDate.dayCount array upon page load
   var intializeDayCount = function(){
     var date = $scope.date.getDate()
     var day = $scope.date.getDay()
@@ -367,7 +376,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
     }
 
-  $scope.newMasterLists = []
+  // $scope.newMasterLists = []
 
     $scope.delete = function(eventName){
       console.log("vm.event.name = " + eventName)

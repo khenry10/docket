@@ -101,6 +101,8 @@
         if(newValue){
           console.log("newValue conditional true in newTodoLists ")
             checkLists('newTodoList $watch', newValue)
+            // we have to push to scope.todoList because that array is what gets used when user flips between weekly and monthly views
+            scope.todoList.push(newValue[0])
         }
       }, false);
 
@@ -336,6 +338,7 @@
           console.log("checkLists message = " + message)
           console.log(todoList)
           if(todoList){
+            console.log(todoList.length)
             if(todoList.length){
               for(var k = 0; k < todoList.length; k++){
                 var list = todoList[k]
@@ -381,32 +384,6 @@
             }
           }
         };
-
-        // this doesn't work yet
-        var addEventsToCalendar = function(){
-          for(var i = 0; i < Events.all.length; i++ ){
-            console.log(Events.all[i])
-            var eventDate = Events.all[i].first_day
-            var eventDate = eventDate.split("-")
-
-            var eventYear = parseInt(eventDate[0])
-            var eventMonth = parseInt(eventDate[1])
-            var eventDay = parseInt(eventDate[2].substr(0,2))
-
-            if(eventYear === year){
-              if(eventMonth === month){
-                if(eventDay === scope.count){
-                  var li = document.createElement("li")
-                  var url = document.createElement("a")
-                  url.href = "/event/"+Events.all[i].name;
-                  url.innerHTML = Events.all[i].name;
-                  li.append(url)
-                  ul.appendChild(li)
-                }
-              }
-            }
-          }
-        }
 
         var buildTimeTable = function(tr, addTimes, index){
           console.log("buildTimeTable")
@@ -481,17 +458,22 @@
             console.log(e)
             console.log(e.srcElement.nodeName)
             if(e.srcElement.nodeName === 'TD'){
+                console.log(e.srcElement)
+                console.log(e)
+                console.log(e.srcElement.attributes[0].ownerElement.childNodes[0].data)
 
-                var list = "keith"
-                var date = {date: e.srcElement.textContent, month: month, year: year}
+                var date = {date: e.srcElement.attributes[0].ownerElement.childNodes[0].data, month: month, year: year}
+                var data = {view: 'modal', date, newCal: scope.newtodoLists}
+
                 ModalService.showModal({
                   templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
                   controller: "newCalItemModalController",
                   inputs: {
-                    data: list,
-                    date: date
+                    data: data
                   }
                 }).then(function(modal) {
+                  console.log(".then in modal")
+                  console.log(modal)
                   //it's a bootstrap element, use 'modal' to show it
                   modal.element.modal();
                   modal.close.then(function(result) {

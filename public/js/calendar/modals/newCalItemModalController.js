@@ -3,12 +3,14 @@
 angular.module("app").controller("newCalItemModalController", [
   "$scope",
   "data",
-  "date",
   newCalItemModalController
 ])
 
-function newCalItemModalController($scope, data, date){
+function newCalItemModalController($scope, data){
   console.log("modal controller")
-  $scope.date = date;
+  console.log($scope)
+  console.log($scope.data)
+  $scope.data = data;
+  $scope.date = data.date;
 
 }
