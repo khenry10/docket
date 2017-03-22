@@ -1,11 +1,9 @@
 <form style="color: black">
   <ul class="create-new-panel">
     <li style="margin-left: 20%">
-      ** {{ name }}
       <input type="text" data-ng-model="name" placeholder="name"/>
     </li>
     <li style="margin-left: -20px;" ng-if='!data.view'>
-      ~~ {{ firstDay }}
       <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder="Date"/></md-datepicker>
     </li>
     <li style="display: inline-flex; justify-content: space-between; ">
@@ -19,7 +17,6 @@
       </md-input-container>
 
       <!-- end time -->
-      -- {{ endTime }}
       <md-input-container style="background-color: white; color: black">
         <label ng-if="!endTime"> End Time </label>
         <label ng-if="endTime" aria-label="select reocurring"> {{ endTime }} </label>
@@ -38,7 +35,6 @@
     </li> -->
 
     <li ng-show="name">
-      @ {{ repeatInterval }}
       <md-input-container style="background-color: white; color: black">
         <label ng-if="!repeatInterval">Reocurring</label>
         <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>

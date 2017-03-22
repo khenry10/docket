@@ -14,7 +14,7 @@
       scope: {
         data: "=data",
         newMaster: "&",
-        newCal: "=newCal"
+        close: "&"
       },
       link: function($scope){
         console.log($scope)
@@ -156,11 +156,8 @@
 
                 $scope.newTodoList.$save().then(function(res){
                   console.log("$scope.newTodoList.$save success")
+                  $scope.close()
                 })
-
-                // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
-                // since below function is from an external controller, we have to pass the parameter as an object literal, they key must match the parameter name in index.html
-                $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
 
                 $scope.newCalTodoLists[0].start_time =  $scope.startTime
                 $scope.newCalTodoLists[0].end_time =  $scope.endTime
@@ -168,10 +165,16 @@
 
                 console.log($scope.data.view == "modal")
                 if($scope.data.view == "modal"){
-                  $scope.data.newCal = [$scope.newCalTodoLists[0]]  
+                  $scope.data.checkLists("from add-new-cal-item",[$scope.newCalTodoLists[0]])
+                  $scope.data.newMaster($scope.newCalTodoLists[0])
                 } else {
                   $scope.newCal = [$scope.newCalTodoLists[0]]
+                  // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
+                  // since below function is from an external controller, we have to pass the parameter as an object literal, they key must match the parameter name in index.html
+                  $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
                 }
+
+                $scope.newCal = [$scope.newCalTodoLists[0]]
 
                 // clears the input fields for new additions
                 $scope.name = ""

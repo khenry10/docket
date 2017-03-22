@@ -21,7 +21,7 @@
         newView: "=view"
       },
       link: function(scope){
-
+        console.log(scope)
       console.log("view = " + scope.newView)
 
       var pullTodo = function (){
@@ -32,7 +32,7 @@
           scope.pulledTodoList.push(scope.todoList[0])
         }
         console.log(scope.pulledTodoList)
-        checkLists('new pullTodo function', scope.pulledTodoList)
+        scope.checkLists('new pullTodo function', scope.pulledTodoList)
       }
 
       scope.$watch('newView', function(newView, oldView){
@@ -44,15 +44,15 @@
           // looks to see if the month view is made up more of the current or next month to decide which to show on monthly view
           if(scope.date.dayCount[dayCountLength-3] < 7){
             monthSelector(scope.date.monthCount)
-            checkLists('newView $watch', scope.pulledTodoList)
+            scope.checkLists('newView $watch', scope.pulledTodoList)
           } else {
             monthSelector(scope.date.monthCount-1)
-            checkLists('newView $watch', scope.pulledTodoList)
+            scope.checkLists('newView $watch', scope.pulledTodoList)
             scope.date.monthCount = scope.date.monthCount-1
           }
         } else {
           monthSelector(date.getMonth()+1)
-          checkLists('newView $watch', scope.pulledTodoList)
+          scope.checkLists('newView $watch', scope.pulledTodoList)
         }
         if(newView === 'month'){
           console.log("TRIGGERED")
@@ -88,7 +88,7 @@
       //
       //   var todoList = scope.todoList
       //   if(scope.todoList){
-      //       checkLists('todoList $watch', todoList)
+      //       scope.checkLists('todoList $watch', todoList)
       //   }
       // }, true);
 
@@ -100,7 +100,7 @@
         console.log(scope.isThereANewTodo)
         if(newValue){
           console.log("newValue conditional true in newTodoLists ")
-            checkLists('newTodoList $watch', newValue)
+            scope.checkLists('newTodoList $watch', newValue)
             // we have to push to scope.todoList because that array is what gets used when user flips between weekly and monthly views
             scope.todoList.push(newValue[0])
         }
@@ -333,9 +333,9 @@
           }
         };
 
-      // checkLists function recieves the full todoList loops the first, and all of the date lists within to determine if it should be displayed on the calendar
-        var checkLists = function(message, todoList){
-          console.log("checkLists message = " + message)
+      // scope.checkLists function recieves the full todoList loops the first, and all of the date lists within to determine if it should be displayed on the calendar
+        scope.checkLists = function(message, todoList){
+          console.log("scope.checkLists message = " + message)
           console.log(todoList)
           if(todoList){
             console.log(todoList.length)
@@ -385,10 +385,55 @@
           }
         };
 
-        var buildTimeTable = function(tr, addTimes, index){
+        var addNewModal = function(e, month, year, index){
+          // HERE
+          console.log(e)
+          console.log(startTime)
+          console.log(index)
+          console.log(e.srcElement.nodeName)
+          if(e.srcElement.nodeName === 'TD'){
+            // need to add in logic so this function can handle both MONTHLY & WEEKLY views, messed up the monthly stuff while adding weekly
+              console.log(e.srcElement.className)
+              console.log(e)
+              console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells)
+              console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].attributes[0].nodeValue)
+
+
+              var startTime = e.srcElement.className
+              var date = e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].attributes[0].nodeValue
+              var date = date.split("/")
+              var month = date[0]
+              var entryDate = date[1]
+
+              var date = {date: entryDate, month: month, year: year}
+              var data = {view: 'modal', date, newCal: scope.newtodoLists}
+              data.checkLists = scope.checkLists
+              data.newMaster = scope.$parent.newMasterListAddition
+
+              ModalService.showModal({
+                templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
+                controller: "newCalItemModalController",
+                inputs: {
+                  data: data
+                }
+              }).then(function(modal) {
+                console.log(".then in modal")
+                console.log(modal)
+                console.log(modal.scope)
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function(result) {
+                  console.log(result);
+                });
+              });
+
+          }
+        }
+
+        var buildTimeTable = function(tr, addTimes, index, year){
           console.log("buildTimeTable")
           var bigTd = tr === td? tr:document.createElement("td");
-          index = index
+          console.log(index)
 
           if(scope.todayDay === index && scope.date.weekCount === 0){
             bigTd.setAttribute("class", "today")
@@ -416,6 +461,10 @@
                 var amOrpm = y === 0? 'am':'pm'
               }
               td.setAttribute("class", z+":00"+amOrpm)
+              td.addEventListener("click", function(e){
+                console.log(index)
+                addNewModal(e, undefined, year, index)
+              })
               if(addTimes){
                 td.innerHTML = z + amOrpm
               }
@@ -434,7 +483,7 @@
             if(scope.newView === "week"){
               var td = document.createElement("td")
               console.log("calling buildTimeTable from createTDsInRows!!!!!")
-              buildTimeTable(tr, false, index)
+              buildTimeTable(tr, false, index, year)
             } else {
               var td = document.createElement("td");
               td.setAttribute("class", scope.newView)
@@ -454,34 +503,38 @@
               scope.count++
           }
           td.addEventListener("click", function(e){
-            // HERE
-            console.log(e)
-            console.log(e.srcElement.nodeName)
-            if(e.srcElement.nodeName === 'TD'){
-                console.log(e.srcElement)
-                console.log(e)
-                console.log(e.srcElement.attributes[0].ownerElement.childNodes[0].data)
-
-                var date = {date: e.srcElement.attributes[0].ownerElement.childNodes[0].data, month: month, year: year}
-                var data = {view: 'modal', date, newCal: scope.newtodoLists}
-
-                ModalService.showModal({
-                  templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
-                  controller: "newCalItemModalController",
-                  inputs: {
-                    data: data
-                  }
-                }).then(function(modal) {
-                  console.log(".then in modal")
-                  console.log(modal)
-                  //it's a bootstrap element, use 'modal' to show it
-                  modal.element.modal();
-                  modal.close.then(function(result) {
-                    console.log(result);
-                  });
-                });
-
-            }
+            addNewModal(e, month, year)
+            // // HERE
+            // console.log(e)
+            // console.log(e.srcElement.nodeName)
+            // if(e.srcElement.nodeName === 'TD'){
+            //     console.log(e.srcElement)
+            //     console.log(e)
+            //     console.log(e.srcElement.attributes[0].ownerElement.childNodes[0].data)
+            //
+            //     var date = {date: e.srcElement.attributes[0].ownerElement.childNodes[0].data, month: month, year: year}
+            //     var data = {view: 'modal', date, newCal: scope.newtodoLists}
+            //     data.checkLists = scope.checkLists
+            //     data.newMaster = scope.$parent.newMasterListAddition
+            //
+            //     ModalService.showModal({
+            //       templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
+            //       controller: "newCalItemModalController",
+            //       inputs: {
+            //         data: data
+            //       }
+            //     }).then(function(modal) {
+            //       console.log(".then in modal")
+            //       console.log(modal)
+            //       console.log(modal.scope)
+            //       //it's a bootstrap element, use 'modal' to show it
+            //       modal.element.modal();
+            //       modal.close.then(function(result) {
+            //         console.log(result);
+            //       });
+            //     });
+            //
+            // }
           })
         };
 
@@ -492,7 +545,7 @@
             var tr = document.createElement("tr")
             if(scope.newView === 'week'){
               console.log("calling buildTimeTable from dynamicRowCreator")
-              buildTimeTable(tr, true)
+              buildTimeTable(tr, true, undefined, year)
             }
             tr.setAttribute("class", "date-row-"+t)
 
@@ -550,36 +603,46 @@
           // console.log(daysAwayMinusTodayDate <= scope.daysInMonth)
           // console.log("daysAwayMinusTodayDate = " + daysAwayMinusTodayDate)
           // console.log("scope.daysInMonth = " + scope.daysInMonth)
+          var month = new Date (scope.TodaysYear, scope.TodaysMonth+2, 0).getMonth()
           if(daysAwayMinusTodayDate < 0 ){
             scope.lastDate.push(date)
+
             if(date < 0){
               var lastMonth = new Date (scope.TodaysYear, scope.TodaysMonth, 0)
               var lastDayOfLastMonth = lastMonth.getDate()
               var date = lastDayOfLastMonth + date
+              var month = month-1
               scope.lastDate.push(date)
             }
             // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
 
           } else if (daysAwayMinusTodayDate > 0 && (daysAwayMinusTodayDate < scope.daysInMonth)){
-            // console.log("here 1")
+            console.log("here 1")
+            console.log(date)
               scope.lastDate.push(date)
           } else if(daysAwayMinusTodayDate > scope.daysInMonth){
-            // console.log("here 2")
+            console.log("here 2")
+            console.log(date)
             date = daysAwayMinusTodayDate - scope.daysInMonth
             scope.lastDate.push(date)
+            var month = month + 1
           } else {
-            // console.log("here 3")
-            // console.log("date = " + date)
+            console.log("here 3")
+            console.log("date = " + date)
             var date = scope.lastDate[scope.lastDate.length-1];
             date = parseInt(date) + 1
+
             scope.lastDate.push(date)
           }
           th.innerHTML = daysOfWeek[i] + "  " + date
           if(daysAwayFromDate === 0){
             th.setAttribute("class", "todayInWeeklyView")
-            th.setAttribute("id", i)
+            // th.setAttribute("id", i)
+            th.setAttribute("id", month +"/"+ date)
             scope.daysAwayFromDate = i
           }
+          th.setAttribute("id", month +"/"+ date)
+
         }
 
         function createTableHeadingRow(table, tr, count){
