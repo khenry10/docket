@@ -14,7 +14,8 @@
       scope: {
         data: "=data",
         newMaster: "&",
-        close: "&"
+        saved: "=saved",
+        newCal: "=newCal"
       },
       link: function($scope){
         console.log($scope)
@@ -46,12 +47,12 @@
 
         $scope.create = function(){
           console.log($scope)
-          console.log($scope.data.newCal)
           $scope.newTodoList = new Todo();
-          console.log($scope.data.view)
+
           console.log($scope.firstDay)
           console.log("name = "+ $scope.name)
-          if($scope.data.view == "modal"){
+          if($scope.data){
+            console.log($scope.data)
             $scope.firstDay = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
           }
           console.log($scope.firstDay)
@@ -60,7 +61,6 @@
           var date = $scope.firstDay.getDate();
           var numberOfDaysInMonth = new Date(year, month, 0).getDate()
             console.log($scope.firstDay)
-
 
             if($scope.name && $scope.firstDay || $scope.view === 'modal'){
 
@@ -72,16 +72,19 @@
                 $scope.newTodoList.first_day = $scope.firstDay
 
                 $scope.newTodoList.start_time =  $scope.startTime
+                if($scope.data && $scope.data.date.startTime){
+                  $scope.newTodoList.start_time = $scope.data.date.startTime
+                }
+                console.log($scope.newTodoList.start_time)
+
                 $scope.newTodoList.end_time = $scope.endTime
+
                 console.log($scope.newTodoList)
 
                 if($scope.repeatInterval){
                     $scope.newTodoList.list_reocurring = $scope.repeatInterval
                     $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
                 }
-
-                // moving to a new, outside function
-                // $scope.newMasterLists = []
 
                 var date = $scope.firstDay
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
@@ -154,27 +157,32 @@
                 // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
                 $scope.newTodoList.lists = $scope.newMasterLists
 
-                $scope.newTodoList.$save().then(function(res){
-                  console.log("$scope.newTodoList.$save success")
-                  $scope.close()
-                })
-
-                $scope.newCalTodoLists[0].start_time =  $scope.startTime
+                $scope.newCalTodoLists[0].start_time =  $scope.newTodoList.start_time
                 $scope.newCalTodoLists[0].end_time =  $scope.endTime
                 // newCal is scoped to newCalTodoLists, which is $watched in calendar directive.  Has to be sent in array because that is what is expected in calednar directive
 
-                console.log($scope.data.view == "modal")
-                if($scope.data.view == "modal"){
+                console.log($scope.data)
+                if($scope.data){
+                  // new events trough the modal all go use methods provided by $scope.data
                   $scope.data.checkLists("from add-new-cal-item",[$scope.newCalTodoLists[0]])
                   $scope.data.newMaster($scope.newCalTodoLists[0])
                 } else {
+                  // new events from side rail use isolated directive scope
                   $scope.newCal = [$scope.newCalTodoLists[0]]
                   // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
                   // since below function is from an external controller, we have to pass the parameter as an object literal, they key must match the parameter name in index.html
                   $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
                 }
 
-                $scope.newCal = [$scope.newCalTodoLists[0]]
+                // got an error that this was defined when adding by modal
+                // $scope.newCal = [$scope.newCalTodoLists[0]]
+
+                $scope.newTodoList.$save().then(function(res){
+                  console.log("$scope.newTodoList.$save success")
+                  if($scope.data){
+                    $scope.saved = true
+                  }
+                })
 
                 // clears the input fields for new additions
                 $scope.name = ""

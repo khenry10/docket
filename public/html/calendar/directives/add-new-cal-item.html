@@ -8,7 +8,7 @@
     </li>
     <li style="display: inline-flex; justify-content: space-between; ">
       <!-- start time -->
-      <md-input-container style="background-color: white; color: black">
+      <md-input-container style="background-color: white; color: black" ng-hide="data.view && data.date.startTime">
         <label ng-if="!startTime"> Start Time </label>
         <label ng-if="startTime" aria-label="select reocurring"> {{ startTime }} </label>
         <md-select ng-model="startTime" aria-label="select reocurring" style="position: relative; z-index: 5000">
@@ -54,6 +54,8 @@
         ng-model="reoccurEndsDate">
       </md-datepicker>
     </li>
-    <md-button class="md-raised" ng-click="create()" style="margin-left: 30%;"> Add </md-button>
+    <li>
+      <md-button class="md-raised" ng-click="create()" > Add </md-button>
+    </li>
   </ul>
 </form>

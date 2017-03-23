@@ -141,9 +141,10 @@
             pForBigTd.innerHTML = list.list_name
           }
           bigTdContainer = bigTdContainer[realListDate.getDay()+1]
-          // bigTdContainer.addEventListener("click", function() {
-          //   scope.testModal(list, date.date)
-          // })
+          bigTdContainer.addEventListener("click", function(e) {
+            console.log(e)
+            scope.testModal(list, date.date)
+          })
           bigTdContainer.setAttribute("id", "time-with-entry")
           pForBigTd.setAttribute("class", timeStructure)
           bigTdContainer.appendChild(pForBigTd)
@@ -220,7 +221,8 @@
             li.setAttribute("id", list._id+date.date)
             var url = document.createElement("a")
             url.innerHTML = list.list_name;
-            li.addEventListener("click", function() {
+            li.addEventListener("click", function(e) {
+              consoe.log(e)
               scope.testModal(list, date.date)
             })
             li.append(url)
@@ -395,17 +397,23 @@
             // need to add in logic so this function can handle both MONTHLY & WEEKLY views, messed up the monthly stuff while adding weekly
               console.log(e.srcElement.className)
               console.log(e)
-              console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells)
-              console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].attributes[0].nodeValue)
 
+              if(scope.newView === 'week'){
+                console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells)
+                console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].attributes[0].nodeValue)
+                console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].id)
+                var startTime = e.srcElement.className
+                var date = e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].id
+                var date = date.split("/")
+                console.log(date)
+                var month = date[0]
+                var entryDate = date[1]
+                console.log(entryDate)
+                var date = {date: entryDate, month: month, year: year, startTime: e.srcElement.className}
+              } else {
+                  var date = {date: e.srcElement.attributes[0].ownerElement.childNodes[0].data, month: month, year: year}
+              }
 
-              var startTime = e.srcElement.className
-              var date = e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].attributes[0].nodeValue
-              var date = date.split("/")
-              var month = date[0]
-              var entryDate = date[1]
-
-              var date = {date: entryDate, month: month, year: year}
               var data = {view: 'modal', date, newCal: scope.newtodoLists}
               data.checkLists = scope.checkLists
               data.newMaster = scope.$parent.newMasterListAddition
@@ -422,8 +430,10 @@
                 console.log(modal.scope)
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
+                console.log(modal.element)
                 modal.close.then(function(result) {
                   console.log(result);
+
                 });
               });
 
@@ -462,8 +472,14 @@
               }
               td.setAttribute("class", z+":00"+amOrpm)
               td.addEventListener("click", function(e){
-                console.log(index)
-                addNewModal(e, undefined, year, index)
+                console.log(e)
+
+                if(e.srcElement.nodeName === "TD" && e.srcElement.nodeName != "P"){
+                  addNewModal(e, undefined, year, index)
+                } else {
+
+                }
+
               })
               if(addTimes){
                 td.innerHTML = z + amOrpm
@@ -502,40 +518,12 @@
               }
               scope.count++
           }
-          td.addEventListener("click", function(e){
-            addNewModal(e, month, year)
-            // // HERE
-            // console.log(e)
-            // console.log(e.srcElement.nodeName)
-            // if(e.srcElement.nodeName === 'TD'){
-            //     console.log(e.srcElement)
-            //     console.log(e)
-            //     console.log(e.srcElement.attributes[0].ownerElement.childNodes[0].data)
-            //
-            //     var date = {date: e.srcElement.attributes[0].ownerElement.childNodes[0].data, month: month, year: year}
-            //     var data = {view: 'modal', date, newCal: scope.newtodoLists}
-            //     data.checkLists = scope.checkLists
-            //     data.newMaster = scope.$parent.newMasterListAddition
-            //
-            //     ModalService.showModal({
-            //       templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
-            //       controller: "newCalItemModalController",
-            //       inputs: {
-            //         data: data
-            //       }
-            //     }).then(function(modal) {
-            //       console.log(".then in modal")
-            //       console.log(modal)
-            //       console.log(modal.scope)
-            //       //it's a bootstrap element, use 'modal' to show it
-            //       modal.element.modal();
-            //       modal.close.then(function(result) {
-            //         console.log(result);
-            //       });
-            //     });
-            //
-            // }
-          })
+          if(scope.newView === 'month'){
+            td.addEventListener("click", function(e){
+              console.log(e)
+              addNewModal(e, month, year)
+            })
+          }
         };
 
         var dyanmicRowCreator = function(rows, table, td, p, tr, numberOfDays, month, year){
