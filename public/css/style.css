@@ -1,5 +1,13 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
 
+body {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #F2F3F4;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -19,6 +27,7 @@ time, mark, audio, video {
     font-size: 100%;
     font: inherit;
     vertical-align: baseline;
+
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -54,29 +63,100 @@ table {
   border: 2px solid white;
 }*/
 
-body {
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #F2F3F4;
-}
 
 .calendar table {
   margin: 0 auto;
 }
 
-.calendar td {
+.month {
   border: 2px solid white;
   width: 133px;
-  height: 93px;
+  height: 18%;
   align-content: center;
   border-radius: 4px;
   padding-top: 2px;
 }
 
+.week {
+  border: 2px solid white;
+  width: 128px;
+  height: 550px;
+  align-content: center;
+  border-radius: 4px;
+  padding-top: 2px;
+}
+
+#time {
+  border: 1px solid white;
+  width: 125px;
+  height: 30px;
+  vertical-align: middle;
+}
+
+#time-with-entry {
+  border: none;
+  width: 125px;
+  height: 30px;
+  vertical-align: middle;
+  color: white;
+}
+
+#bigTd {
+  height: 100%;
+  outline: 2px solid white;
+}
+
+.timeTd {
+  background-color: #4FF427;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  /*border-radius: 4px;*/
+}
+
+.startTime {
+  background-color: #4FF427;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  /*border-radius: 4px;*/
+  border-bottom: none;
+}
+
+.endTime {
+  background-color: #4FF427;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  /*border-radius: 4px;*/
+  border-top: none;
+}
+
+.middleTime {
+  background-color: #4FF427;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  /*border-radius: 4px;*/
+  border-top: none;
+  border-bottom: none;
+}
+
+div#time.startTimeTd {
+  border: none
+}
+
+div#time.endTimeTd {
+  border: none
+}
+
 .finances {
   margin: 0 auto;
+}
+
+.row-headings th{
+  text-align: center;
+  height: 30px;
 }
 
 .new-finance {
@@ -101,7 +181,7 @@ body {
   color: white;
   position: fixed;
   float: left;
-  width: 22.5%;
+  width: 20%;
   height: 100%;
   text-align: left;
   padding: 20px;
@@ -111,12 +191,13 @@ body {
 
 .calendar {
   top: 0;
-  width: 86%;
+  width: 89%;
   float: right;
   background-color: #F2F3F4;
   color: #34495E;
   margin-bottom: 0;
   margin-right: 5px;
+  min-height: 580px;
 }
 
 .protocol-table {
@@ -156,12 +237,6 @@ li {
   margin: 1% 0% 1% 25%;
 }
 
-input[type=text] {
-  color: black;
-  width: 150px;
-  height: 30px;
-  border-radius: 4px;
-}
 
 input[type=date] {
   width: 150px;
@@ -192,12 +267,12 @@ h2 {
 }
 
 #calendar-dates li {
-  outline: 1px solid white;
   background-color: #4FF427;
   color: white;
   padding: 2px;
   border-radius: 3px;
   cursor:pointer;
+  outline: 1px solid white;
 }
 
 .today {
@@ -415,4 +490,55 @@ display: block;
 
 md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
   background-color: #4FF427;
+}
+
+.today .time {
+  outline: none
+}
+
+input[type=text].new-todo-input {
+  height: 40px;
+  width: 200px;
+  color: black;
+  border-radius: 4px;
+}
+
+input[type=text] {
+  color: black;
+  width: 150px;
+  height: 30px;
+  border-radius: 4px;
+}
+
+.md-select-menu-container md-active md-clickable {
+  z-index: 5000;
+}
+
+/* the below is to keep the start/end time select boxes in front of the modal */
+/*#select_container_66 {
+  z-index: 5000;
+}
+
+#select_container_68 {
+  z-index: 5000;
+}
+
+#select_container_75 {
+  z-index: 5000;
+}*/
+
+.md-select-menu-container.md-active {
+  z-index: 5000;
+}
+
+.md-datepicker-calendar-pane {
+  z-index: 1200;
+}
+
+.md-datepicker-calendar-pane md-whiteframe-z1 md-datepicker-pos-adjusted md-pane-open {
+  z-index: 1200
+}
+
+.md-picker {
+  z-index: 5000
 }

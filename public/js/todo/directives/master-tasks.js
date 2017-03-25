@@ -1,18 +1,12 @@
 "use strict";
 
 (function(){
-  angular
-  .module("app")
-  .directive("todoMaster", [
-    "Todo",
-    masterTasks
-  ])
+  angular.module("app").directive("todoMaster", ["Todo", masterTasks])
 
   function masterTasks(Todo){
     return {
       templateUrl: "/assets/html/todo/directives/master-tasks.html",
       link: function($scope){
-
 
         console.log("You in da MASTA Todo")
 
@@ -20,15 +14,11 @@
 
         $scope.getMasters = function(){
           console.log("$scope.getMasters called")
-          // Todo.all.$promise.then(function(){
             Todo.all.forEach(function(todo){
-                console.log(todo)
-                console.log(todo.master_tasks)
+              if(todo =! undefined){
                 $scope.lists.push({name: todo.list_name, master_tasks: todo.master_tasks, lists: todo.lists})
-
+              }
             })
-            console.log($scope.lists)
-          // })
         }
 
         $scope.newMasterListAddition = function(newMaster){

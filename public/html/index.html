@@ -1,4 +1,4 @@
-
+<div  style="background-color: #F2F3F4;">
   <div class="events-panel">
     <div>
       <!-- bootstrap collapsible panel START -->
@@ -13,45 +13,8 @@
             </h4>
           </div>
           <div id="collapse1" class="panel-collapse collapse">
-              <form style="color: black">
-                <ul class="create-new-panel">
-                  <li style="margin-left: 20%">
-                    <input type="text" data-ng-model="name" placeholder="name"/>
-                  </li>
-                  <li>
-                    <md-datepicker date-input type="date" data-ng-model="start_time" md-placeholder="Date"/></md-datepicker>
-                  </li>
-                  <li>
-                    <md-radio-group ng-model="entryType"
-                      style="display: flex; justify-content: space-between; width: 60%; margin-left: 10%; margin-top: 4%">
-                      <md-radio-button style="padding-left: 2%;" value="Event">Event</md-radio-button>
-                      <md-radio-button value="List">List</md-radio-button>
-                    </md-radio-group>
-                  </li>
-                  <li ng-show="name && start_time">
-
-                    <md-input-container style="background-color: white; color: black">
-                      <label ng-if="!repeatInterval">Reocurring</label>
-                      <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>
-                      <md-select ng-model="repeatInterval" aria-label="select reocurring">
-                        <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
-                      </md-select>
-                    </md-input-container>
-
-                    <md-radio-group ng-model="reoccurEnds"
-                      ng-show=" repeatInterval.length && repeatInterval != 'None' "
-                      style="display: flex; justify-content: space-between; width: 75%; margin-left: 5%; margin-top: 4%">
-                        <md-radio-button value="Never">Never</md-radio-button>
-                        <md-radio-button value="SelectDate">Select Date</md-radio-button>
-                    </md-radio-group>
-
-                    <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
-                      ng-model="reoccurEndsDate">
-                    </md-datepicker>
-                  </li>
-                  <md-button class="md-raised" ng-click="create()" style="margin-left: 30%;"> Add </md-button>
-                </ul>
-              </form>
+            <add-new-cal-item new-master="newMasterListAddition(newMaster)"
+            new-cal="newCalTodoLists" date-tracker="changeDate"></add-new-cal-item>
           </div>
           <!-- panel 2 start -->
 
@@ -88,23 +51,23 @@
             </div>
             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
               <div class="list-of-events" style="color: black">
-                <table style="width: 90%">
+                <table style="width: 95%">
                   <tr data-ng-repeat="event in events "
                       data-ng-model="changeMonth.count"
-                      data-ng-if="changeMonth.count.toString() == event.start_time.substr(6,1) &&
-                      changeYear.year.toString() === event.start_time.substr(0,4)">
+                      data-ng-if="changeMonth.count.toString() == event.firstDay.substr(6,1) &&
+                      changeYear.year.toString() === event.firstDay.substr(0,4)">
                       <td><a href="/event/{{event.name}}">  {{event.name}} </a></td>
-                      <td><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
+                      <td><a href="/event/{{event.name}}">  {{event.firstDay | date:'MM/dd/yy'}} </a></td>
                       <td>
                         <md-button class="md-raised md-warn" ng-click="delete(event.name)" style="min-width: 50px">X</md-button>
                       </td>
                     </tr>
-                    <tr data-ng-repeat="event in events | orderBy:'start_time'"
+                    <tr data-ng-repeat="event in events | orderBy:'firstDay'"
                         data-ng-model="changeMonth.count"
-                        data-ng-if="changeMonth.count.toString() == event.start_time.substr(5,2) &&
-                        changeYear.year.toString() === event.start_time.substr(0,4)">
+                        data-ng-if="changeMonth.count.toString() == event.firstDay.substr(5,2) &&
+                        changeYear.year.toString() === event.firstDay.substr(0,4)">
                         <td style="width: 8em;"><a href="/event/{{event.name}}">  {{event.name}} </a></td>
-                        <td style="width: 5em;"><a href="/event/{{event.name}}">  {{event.start_time | date:'MM/dd/yy'}} </a></td>
+                        <td style="width: 5em;"><a href="/event/{{event.name}}">  {{event.firstDay | date:'MM/dd/yy'}} </a></td>
                         <td style="width: 3em;">
                           <md-button style="min-width: 1%" class="md-raised md-warn" ng-click="delete(event.name)">X</md-button>
                         </td>
@@ -139,8 +102,8 @@
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
               <p>
                 As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }}
-                complete with {{ date.getFullYear() }}.  At the end of {{ niceMonth }}, we'll be
-                {{ cumulativeComp * 100 | number:2}}% through the year. 
+                complete with {{ date.getFullYear() }}.  {{ niceMonth }} accounts for {{ monthPercent * 100 | number:2}}% of the year,
+                and we'll be {{ cumulativeComp * 100 | number:2}}% through {{ date.getFullYear() }} when {{ niceMonth }} ends.
               </p>
             </div>
           </div>
@@ -154,23 +117,42 @@
   </div>
 
 <div class="calendar">
-  <div class="calendar-navigation">
-    <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-                ng-show="showTodayButton"
-               ng-click="currentMonth.count()"> Today </md-button>
-    <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-                data-ng-model="changeMonth.count"
-                ng-click="changeMonth.decrement()"> < </md-button>
-      <div style="width: 250px;"><h1><span id="calendar-month-year"></span></h1></div>
-    <md-button class="md-accent md-raised md-hue-1" style="min-width: 1%; background-color: white;"
-               data-ng-model="changeMonth.count"
-               ng-click="changeMonth.increment()"> > </md-button>
-               <div class="btn-group">
-  <button class="btn" ng-click="changeView('month')">Month</button>
-  <button class="btn" ng-click="changeView('week')">Week</button>
-</div>
-  </div>
-    <monthly-calendar change-month="changeMonth.count" current-month="currentMonth.count" list="todoLists"
+  <div class="calendar-header">
+    <div class="calendar-navigation">
+      <div class="btn-group">
+        <button class="btn" ng-click="changeView('month')" style="box-shadow: 1px 1px 1px grey; background-color: white">Month</button>
+        <button class="btn" ng-click="changeView('week')" style="box-shadow: 1px 1px 1px grey; background-color: white">Week</button>
+      </div>
+
+      <md-button class="md-raised" style="min-width: 1%; background-color: white;"
+                ng-show="showTodayButton && viewType === 'month' "
+                 ng-click="currentMonth.count()">
+                 Today
+      </md-button>
+
+      <md-button class="md-raised" style="min-width: 1%; background-color: white;"
+                ng-show="changeDate.weekCount != 0 && viewType === 'week' "
+                 ng-click="changeDate.thisWeek()">
+                 Today
+      </md-button>
+
+      <md-button class="md-raised" style="min-width: 1%; background-color: white;"
+                  data-ng-model="changeDate.monthCount"
+                  ng-click="changeDate.decrement()">
+                  <
+      </md-button>
+      <div style="width: 275px;"><h1><span id="calendar-month-year"></span></h1></div>
+      <md-button class="md-accent md-raised md-hue-1" style="min-width: 1%; background-color: white;"
+                 data-ng-model="changeDate.monthCount"
+                 ng-click="changeDate.increment()">
+                 >
+      </md-button>
+    </div>
+  
+  <div>
+    <monthly-calendar change-date="changeDate" current-month="currentMonth.count" list="todoLists"
       new="newCalTodoLists" view="viewType"
     ></monthly-directive>
+  </div>
+</div>
 </div>

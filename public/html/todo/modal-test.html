@@ -1,12 +1,12 @@
 <div class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content" style="width: 75%; margin-left: 15%;">
-      <div class="modal-header">
+      <div class="modal-header" style="padding: 10px">
         <button type="button" class="close" ng-click="close(false)" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3 class="modal-title">{{ listName }} </h3>
-        <h4> {{ niceDate }} </h4>
+        <h5> {{ niceDate }} </h5>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="background-color: #F2F3F4">
 
         <!-- start of todo list D&D  -->
         <div>
@@ -14,7 +14,7 @@
             <div ng-init="todoVM.fetchData()" class="simpleDemo" style="">
 
               <li style="list-style: none; padding-bottom: 2%;">
-                <input type="text" ng-model="newTodo">
+                <input class="new-todo-input" type="text" ng-model="newTodo" >
                 <button type="button" ng-click="addNewTodo()" class="btn btn-default" > + </button>
                 <button type="button" ng-click="clearComplete()"
                         ng-if="showClearCompleted"
@@ -104,9 +104,9 @@
         <!-- end of completedList -->
 
       </div>
-      <div class="modal-footer">
-      <!-- footer style here  -->
-      </div>
+      <!-- <div class="modal-footer">
+
+      </div> -->
     </div>
   </div>
 </div>
