@@ -21,7 +21,7 @@ angular.module('app').service('DateService', [ function () {
     month = month-1
     }
     console.log("month in DateService = " + month)
-    // var date = 
+    // var date =
     console.log("date in DateService = " + date)
     return new Date(year, month, day)
   }
@@ -121,6 +121,24 @@ angular.module('app').service('DateService', [ function () {
     var month = date.getMonth()
     var nameOfMonth = monthName[month]
     return nameOfMonth
+  }
+
+  this.stringDateSplit = function(date){
+    console.log(date)
+    console.log(typeof date)
+    // var year = date.substring(0,4)
+    // var month = date.substring(5,7)
+    // var date = date.substring(8,10)
+    // console.log(month)
+    var date = date.split("-")
+
+    var year = date[0]
+    var month = date[1]
+    var date = date[2]
+
+    var fullDate = new Date(year, month-1, date)
+
+    return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}
   }
 
 }]);

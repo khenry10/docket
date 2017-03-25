@@ -530,3 +530,15 @@ input[type=text] {
 .md-select-menu-container.md-active {
   z-index: 5000;
 }
+
+.md-datepicker-calendar-pane {
+  z-index: 1200;
+}
+
+.md-datepicker-calendar-pane md-whiteframe-z1 md-datepicker-pos-adjusted md-pane-open {
+  z-index: 1200
+}
+
+.md-picker {
+  z-index: 5000
+}

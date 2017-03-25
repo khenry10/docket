@@ -5,17 +5,19 @@
   .module("app")
   .directive("addNewCalItem", [
     "Todo",
+    "DateService",
     createNewCalItem
   ])
 
-  function createNewCalItem(Todo){
+  function createNewCalItem(Todo, DateService){
     return {
       templateUrl: "/assets/html/calendar/directives/add-new-cal-item.html",
       scope: {
         data: "=data",
         newMaster: "&",
         saved: "=saved",
-        newCal: "=newCal"
+        newCal: "=newCal",
+        dateTracker: "=dateTracker"
       },
       link: function($scope){
         console.log($scope)
@@ -27,6 +29,18 @@
         "5:00pm", "6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm", "12:00am"]
 
         $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly']
+
+        $scope.changeEndTimeArray = function(){
+
+          var start = $scope.times.indexOf($scope.startTime)
+          $scope.endTime = $scope.times[start+1]
+          $scope.newTimes = []
+          for(var t = start+1; t < $scope.times.length; t++){
+            console.log(($scope.times[t]))
+            $scope.newTimes.push($scope.times[t])
+          }
+
+        }
 
         // not being used yet, ran into too many other bugs 3/18/2017
           var createRepeater = function(year, month, count, lastDay, increment){
@@ -49,7 +63,7 @@
           console.log($scope)
           $scope.newTodoList = new Todo();
 
-          console.log($scope.firstDay)
+
           console.log("name = "+ $scope.name)
           if($scope.data){
             console.log($scope.data)
@@ -94,22 +108,23 @@
                 var lastDay = numberOfDaysInMonth
 
                 if($scope.reoccurEnds){
-                  console.log($scope.reoccurEnds)
-
                   if($scope.reoccurEnds === "SelectDate"){
-                    console.log($scope.date)
 
-                    var endDateMonth = $scope.reoccurEndsDate.getMonth()
+                    var calendar = $scope.dateTracker? $scope.dateTracker : $scope.data.dateTracker
+                    console.log(calendar)
+
+                    var endDateMonth = $scope.reoccurEndsDate.getMonth()+1
                     var endDateYear = $scope.reoccurEndsDate.getFullYear()
-                    if($scope.calendarYear === endDateYear){
-                      if($scope.calendarMonth === endDateMonth){
+
+                    if(calendar.year === endDateYear){
+                      if(calendar.monthCount === endDateMonth){
                         var lastDay = $scope.reoccurEndsDate.getDate()
                       }
                     }
 
                   }
                 }
-                console.log(lastDay)
+                console.log("lastDay = " + lastDay)
 
                 if($scope.repeatInterval === 'Daily'){
                   // createRepeater(year, month, count, lastDay, 1)
@@ -162,6 +177,7 @@
                 // newCal is scoped to newCalTodoLists, which is $watched in calendar directive.  Has to be sent in array because that is what is expected in calednar directive
 
                 console.log($scope.data)
+                // $scope.data is only passed in when the modal is being used
                 if($scope.data){
                   // new events trough the modal all go use methods provided by $scope.data
                   $scope.data.checkLists("from add-new-cal-item",[$scope.newCalTodoLists[0]])
@@ -174,9 +190,10 @@
                   $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
                 }
 
-                // got an error that this was defined when adding by modal
+                // got an error that this wasn't defined when adding by modal
                 // $scope.newCal = [$scope.newCalTodoLists[0]]
 
+                console.log($scope.newTodoList)
                 $scope.newTodoList.$save().then(function(res){
                   console.log("$scope.newTodoList.$save success")
                   if($scope.data){

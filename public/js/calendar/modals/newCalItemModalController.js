@@ -33,4 +33,10 @@ function newCalItemModalController($scope, data, DateService, close, $element){
     }
   })
 
+  $scope.close = function(){
+    close()
+    $('#add-new-modal').modal('hide');
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+  }
 }

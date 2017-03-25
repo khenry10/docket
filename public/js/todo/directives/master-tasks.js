@@ -15,8 +15,9 @@
         $scope.getMasters = function(){
           console.log("$scope.getMasters called")
             Todo.all.forEach(function(todo){
+              if(todo =! undefined){
                 $scope.lists.push({name: todo.list_name, master_tasks: todo.master_tasks, lists: todo.lists})
-
+              }
             })
         }
 

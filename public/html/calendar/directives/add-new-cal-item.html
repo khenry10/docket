@@ -11,7 +11,9 @@
       <md-input-container style="background-color: white; color: black" ng-hide="data.view && data.date.startTime">
         <label ng-if="!startTime"> Start Time </label>
         <label ng-if="startTime" aria-label="select reocurring"> {{ startTime }} </label>
-        <md-select ng-model="startTime" aria-label="select reocurring" style="position: relative; z-index: 5000">
+        <md-select ng-model="startTime" aria-label="select reocurring"
+                   ng-change="changeEndTimeArray()"
+                   style="position: relative; z-index: 5000">
           <md-option ng-repeat="time in times"> {{ time }}</option>
         </md-select>
       </md-input-container>
@@ -21,7 +23,7 @@
         <label ng-if="!endTime"> End Time </label>
         <label ng-if="endTime" aria-label="select reocurring"> {{ endTime }} </label>
         <md-select ng-model="endTime" aria-label="select reocurring">
-          <md-option ng-repeat="time in times"> {{ time }}</option>
+          <md-option ng-repeat="time in newTimes"> {{ time }}</option>
         </md-select>
       </md-input-container>
 
@@ -51,6 +53,7 @@
       </md-radio-group>
 
       <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
+
         ng-model="reoccurEndsDate">
       </md-datepicker>
     </li>

@@ -99,6 +99,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         DateService.stringToDate(recurEnd, 'regMonth')
       }
 
+      console.log(recurEnd)
+      console.log(firstDateofAppsCurrentMonth)
+      console.log(recurEnd > firstDateofAppsCurrentMonth )
+
       if(recurEnd > firstDateofAppsCurrentMonth || recurEnd === "Never"){
         if(monthOfLastDateList < appsCurrentMonth){
           console.log("CLONE ME BISH!!!")
@@ -179,6 +183,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   }
 
   $scope.changeDate = {
+    year: $scope.calendarYear,
     monthCount: $scope.date.getMonth()+1,
     weekCount: 0,
     dayCount: [],
