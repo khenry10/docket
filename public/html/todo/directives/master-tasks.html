@@ -4,7 +4,7 @@
       <div class="panel-title-custom">
         <h4 class="panel-title">
           <span class="glyphicon glyphicon-list" aria-hidden="true" style="color: rgb(48, 49, 56)"></span>
-          <a data-toggle="collapse" href="#collapseTask{{$index}}">{{ list.name }}</a>
+          <a data-toggle="collapse" href="#collapseTask{{$index}}">{{ list.name }}</a> {{ list.duration }}
         </h4>
       </div>
     </div>
@@ -16,10 +16,10 @@
         <table>
           <tr>
             <td>
-              <input type="text" style="color: black; margin-left: 5%;" ng-model="keith" placeholder="add new master">
+              <input type="text" style="color: black; margin-left: 5%;" ng-model="newMasterInDirective" placeholder="add new master">
             </td>
             <td>
-              <md-button class="md-raised" style="min-width: 40px;" ng-click="addNewMasterTask(keith, list)" > + </md-button>
+              <md-button class="md-raised" style="min-width: 40px;" ng-click="addNewMasterTask(newMasterInDirective, list)" > + </md-button>
             </td>
           </tr>
         </table>

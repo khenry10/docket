@@ -33,6 +33,7 @@ var TodoSchema = new mongoose.Schema({
   list_created_on: Date,
   start_time: String,
   end_time: String,
+  duration: Number,
   first_day: Date,
   list_reocurring: String,
   list_recur_end: String,

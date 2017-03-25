@@ -31,15 +31,21 @@
         $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly']
 
         $scope.changeEndTimeArray = function(){
-
-          var start = $scope.times.indexOf($scope.startTime)
+          console.log("changeEndTimeArray envoked")
+          if($scope.startTime){
+            var start = $scope.times.indexOf($scope.startTime)
+          } else {
+            var start = $scope.times.indexOf($scope.data.date.startTime);
+          }
           $scope.endTime = $scope.times[start+1]
           $scope.newTimes = []
           for(var t = start+1; t < $scope.times.length; t++){
-            console.log(($scope.times[t]))
             $scope.newTimes.push($scope.times[t])
           }
+        }
 
+        if($scope.data){
+          $scope.changeEndTimeArray()
         }
 
         // not being used yet, ran into too many other bugs 3/18/2017
@@ -55,6 +61,33 @@
               $scope.newMasterLists.push( { date: list, tasks: [] } )
                var date = $scope.firstDay
             }
+          }
+
+          var getHours = function(){
+            console.log("$scope.startTime = " + $scope.startTime)
+            console.log("$scope.endTime = " + $scope.endTime)
+
+            var startTime = $scope.startTime.split(":")
+            var startTimeAmOrPm = startTime[1].substr(2,4)
+            var startTime = startTime[0]
+
+            var endTime = $scope.endTime.split(":")
+            var endTimeAmOrPm = endTime[1].substr(2,4)
+            var endTime = endTime[0]
+
+            var timeDifference = endTime - startTime
+            // below is to account for when something starts in the am and ends in the pm
+            if(timeDifference < 0){
+              var time = 12 - startTime
+              var timeDifference = time + endTime
+            }
+            console.log("timeDifference = " + timeDifference)
+            $scope.newTodoList.duration = timeDifference
+            // if(startTimeAmOrPm === endTimeAmOrPm ){
+            //   $scope.newTodoList.duration = timeDifference
+            // } else if(startTimeAmOrPm != endTimeAmOrPm){
+            //
+            // }
           }
 
         $scope.newMasterLists = []
@@ -92,8 +125,12 @@
                 console.log($scope.newTodoList.start_time)
 
                 $scope.newTodoList.end_time = $scope.endTime
+                if($scope.firstDay && $scope.endTime){
+                  getHours()
+                }
 
                 console.log($scope.newTodoList)
+                console.log($scope.newTodoList.duration)
 
                 if($scope.repeatInterval){
                     $scope.newTodoList.list_reocurring = $scope.repeatInterval

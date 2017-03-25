@@ -193,7 +193,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       $scope.verifyCloneList()
       if($scope.viewType === 'week'){
         if(!$scope.changeDate.dayCount.length){
-          intializeDayCount()
+          $scope.intializeDayCount()
         }
         weeklyMove("increment")
       } else {
@@ -235,7 +235,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     thisWeek: function(){
       this.weekCount = 0;
       $scope.changeDate.dayCount = [];
-      intializeDayCount()
+      $scope.intializeDayCount()
     }
   }
   $scope.currentMonth = {
@@ -247,7 +247,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   }
 
   // adds the dates of the current week to $scope.changeDate.dayCount array upon page load
-  var intializeDayCount = function(){
+  $scope.intializeDayCount = function(){
     var date = $scope.date.getDate()
     var day = $scope.date.getDay()
     date = date-day
@@ -266,7 +266,8 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       $scope.changeDate.dayCount.push(date)
     }
   }
-  intializeDayCount()
+  $scope.intializeDayCount()
+  console.log($scope.changeDate.dayCount)
 
   // changeYear is only used to compare against the events stored in the database, to see if they match.  This function has nothing to do with building the calendar or displaying on the calendar.  All calendar logic for year is within the calendar_directive and above changeMonth function.
   $scope.changeYear = {
