@@ -1,0 +1,114 @@
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width: 75%; margin-left: 15%;">
+      <div class="modal-header" style="padding: 10px">
+        <button type="button" class="close" ng-click="close(false)" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 class="modal-title">{{ listName }} </h3>
+        <h5> {{ niceDate }} </h5>
+      </div>
+      <div class="modal-body" style="background-color: #F2F3F4">
+
+        <!-- <drag-drop-checklist  data="data" date="date"></drag-drop-checklist> -->
+
+        <!-- start of todo list D&D  -->
+        <div>
+          <div class="task-list-workspace" >
+            <div ng-init="todoVM.fetchData()" class="simpleDemo" style="">
+
+              <li style="list-style: none; padding-bottom: 2%;">
+                <input class="new-todo-input" type="text" ng-model="newTodo" >
+                <button type="button" ng-click="addNewTodo()" class="btn btn-default" > + </button>
+                <button type="button" ng-click="clearComplete()"
+                        ng-if="showClearCompleted"
+                        class="btn btn-primary"> Clear Completed </button>
+              </li>
+              <ul dnd-list="models.toDoList">
+                <li ng-repeat="item in models.toDoList "
+                  style="height: 50px; font-size: 16px;"
+                  class="todo"
+                  ng-class="{todoComplete: item.completed}"
+                  dnd-draggable="item"
+                  dnd-moved="models.toDoList.splice($index, 1)"
+                  dnd-dragend="update(models.toDoList)"
+                  dnd-effect-allowed="move"
+                  dnd-selected="todoVM.models.selected = item"
+                  ng-class="{'selected': todoVM.models.selected === item}">
+                  <table>
+                    <tr>
+                      <td>
+                        <md-checkbox ng-change="update(item, $index)" ng-model="item.task_completed"></md-checkbox>
+                      </td>
+                      <td>
+                        <span ng-if="!item.task_completed" >
+                          {{ item.name }}
+                        </span>
+                        <span ng-if="item.task_completed" class="todoComplete">
+                          {{ item.name }}
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- end of D&D -->
+
+        <!-- start of completedList  -->
+
+        <button type="button"
+                ng-if="list.clearedTasks.length && !showHideButton"
+                ng-click="showCompletedList()"
+                style="margin-bottom: 2%"
+                class="btn btn-default" > Show Cleared </button>
+
+        <button type="button"
+                ng-if="showHideButton"
+                ng-click="hideCompletedList()"
+                style="margin-bottom: 2%"
+                class="btn btn-default" > Hide Cleared </button>
+        <div>
+          <div class="task-list-workspace" >
+            <div  class="simpleDemo" style="">
+
+              <ul dnd-list="list.completedList">
+                <li ng-repeat="item in models.completedList "
+                  style="height: 50px; font-size: 16px;"
+                  class="todo"
+                  ng-class="{todoComplete: item.completed}"
+                  dnd-draggable="item"
+                  dnd-moved="models.completedList.splice($index, 1)"
+                  dnd-dragend="update(models.toDoList)"
+                  dnd-effect-allowed="move"
+                  dnd-selected="todoVM.models.selected = item"
+                  ng-class="{'selected': todoVM.models.selected === item}">
+                  <table>
+                    <tr>
+                      <td>
+                        <md-checkbox ng-change="update(item, $index)" ng-model="item.task_completed"></md-checkbox>
+                      </td>
+                      <td>
+                        <span ng-if="!item.task_completed" >
+                          {{ item.name }}
+                        </span>
+                        <span ng-if="item.task_completed" class="todoComplete">
+                          {{ item.name }}
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- end of completedList -->
+
+      </div>
+      <!-- <div class="modal-footer">
+
+      </div> -->
+    </div>
+  </div>
+</div>

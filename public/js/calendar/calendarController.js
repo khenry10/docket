@@ -42,7 +42,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
   $scope.testModal = function (){
     ModalService.showModal({
-      templateUrl: "/assets/html/todo/modal-test.html",
+      templateUrl: "/assets/html/todo/cal-entry-modal.html",
       controller: "modalController"
 
     }).then(function(modal) {
@@ -121,6 +121,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   var weeklyMove = function(move){
     if(move === "increment"){
       $scope.changeDate.weekCount++
+      if($scope.changeDate.twoMonthsWeekly){
+        $scope.changeDate.monthCount++
+        $scope.changeDate.twoMonthsWeekly = false;
+      }
     } else {
       $scope.changeDate.weekCount--
     }
@@ -142,10 +146,12 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         date = actionDate
       }
       var thisMonthsLastDay = new Date($scope.calendarYear, $scope.changeDate.monthCount, 0).getDate()
+      console.log(thisMonthsLastDay)
       for(var d = 1; d <= 7; d++ ){
         $scope.changeDate.lastMove = "increment"
         var date = date + 1
         if(date > thisMonthsLastDay){
+          console.log("WE INCREMENTING THE MONTH!!!!")
           $scope.changeDate.monthCount++
           date = 1
           $scope.changeDate.twoMonthsWeekly = true
@@ -202,6 +208,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           // once the count (which is the month) is greater than December, we reset the count to 1 (which is january).  We also invoke changeYear.increment() function, which is used in the index.html to see if the year of the event matches the current year
           $scope.changeYear.increment()
         } else {
+          if(!$scope.changeDate.dayCount.length){
+            $scope.intializeDayCount()
+          }
+          console.log("I've been incremented")
           this.monthCount++
         }
         $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
@@ -257,9 +267,11 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     console.log($scope.changeDate)
     $scope.changeDate.twoMonthsWeekly = false;
     $scope.changeDate.monthCount = $scope.calendarMonth+1;
+    var currentMonthsLastDay = new Date($scope.changeDate.year, $scope.changeDate.monthCount+2, 0).getDate()
     for(var d = 1; d <= 7; d++ ){
       var date = date + 1
-      if(date > $scope.lastDateOfCurrentMonth){
+      console.log(currentMonthsLastDay)
+      if(date > currentMonthsLastDay){
         date = 1
         $scope.changeDate.twoMonthsWeekly = true;
       }

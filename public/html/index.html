@@ -18,14 +18,15 @@
           </div>
           <!-- panel 2 start -->
 
-          <div class="panel panel-default" style="border: none;">
+          <div class="panel panel-default" style="border: none;" ng-show="lists.length > 0">
             <div class="panel-heading personal-panel" role="tab" id="headingTwo">
               <h4 class="panel-title">
                 <div class="panel-title-custom">
                   <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
                       href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      Master Lists
+                      <span ng-show="lists.length ===1">{{ lists.length }} Master List</span>
+                      <span ng-show="lists.length > 1">{{ lists.length }} Master Lists</span>
                   </a>
                 </div>
               </h4>
@@ -36,8 +37,9 @@
           </div>
 
           <!-- panel 2 end  -->
+
           <!-- panel 3 start -->
-          <div class="panel panel-default">
+          <!-- <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingThree">
               <h4 class="panel-title">
                 <div class="panel-title-custom">
@@ -75,16 +77,42 @@
                       <tr data-ng-repeat="list in todoLists">
                         <td><a href="/tasks/{{ list.list_name }}"> {{ list.list_name }} </a></td>
                       </tr>
-                      <!-- </div>
-                    </div> -->
-                  <!-- </tr> -->
+                      </div>
+                    </div>
+                  </tr>
                 </table>
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- panel 3 end -->
 
-          <!-- panel 4 start -->
+
+          <!-- panel 4 Start   -->
+          <div class="panel panel-default" style="border: none;" ng-show="false">
+            <div class="panel-heading personal-panel" role="tab" id="headingFive">
+              <h4 class="panel-title">
+                <div class="panel-title-custom">
+                  <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                      href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                      All Tasks
+                  </a>
+                </div>
+              </h4>
+            </div>
+            <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+              <p>Expand Please </p>
+              <ul>
+                  <li ng-repeat="task in realAggTasks track by $index">
+                    {{ task.name}}
+                  </li>
+
+              </ul>
+            </div>
+          </div>
+          <!-- panel 4 End -->
+
+          <!-- panel 5 start -->
 
           <div class="panel panel-default" style="border: none;">
             <div class="panel-heading personal-panel" role="tab" id="headingFour">
@@ -148,7 +176,7 @@
                  >
       </md-button>
     </div>
-  
+
   <div>
     <monthly-calendar change-date="changeDate" current-month="currentMonth.count" list="todoLists"
       new="newCalTodoLists" view="viewType"

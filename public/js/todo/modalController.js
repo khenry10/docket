@@ -11,7 +11,9 @@ angular.module("app").controller("modalController", [
 function modalController(Todo, $scope, data, date){
   console.log("modal controller")
   console.log(data)
+  console.log(date)
   $scope.data = data
+  $scope.date = date
   var splitDate = date.split("-")
 
   var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]

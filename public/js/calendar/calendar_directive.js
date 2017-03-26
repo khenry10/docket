@@ -41,15 +41,19 @@
         console.log(date.getMonth()+1)
         console.log(scope.date)
         var dayCountLength = scope.date.dayCount.length-1;
-        if(scope.date.twoMonthsWeekly){
+        if(scope.date.twoMonthsWeekly && newView === 'week'){
           // looks to see if the month view is made up more of the current or next month to decide which to show on monthly view
+          console.log(scope.date.dayCount[dayCountLength-3])
           if(scope.date.dayCount[dayCountLength-3] < 7){
             monthSelector(scope.date.monthCount)
             scope.checkLists('newView $watch', scope.pulledTodoList)
           } else {
-            monthSelector(scope.date.monthCount-1)
+            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            monthSelector(scope.date.monthCount)
             scope.checkLists('newView $watch', scope.pulledTodoList)
-            scope.date.monthCount = scope.date.monthCount-1
+            // monthSelector(scope.date.monthCount-1)
+            // scope.checkLists('newView $watch', scope.pulledTodoList)
+            // scope.date.monthCount = scope.date.monthCount-1
           }
         } else {
           monthSelector(date.getMonth()+1)
@@ -57,9 +61,9 @@
         }
         if(newView === 'month'){
           console.log("TRIGGERED")
-          scope.date.weekCount = 0;
-          scope.date.twoMonthsWeekly = false;
-          scope.date.dayCount = [];
+          // scope.date.weekCount = 0;
+          // scope.date.twoMonthsWeekly = false;
+          // scope.date.dayCount = [];
         }
       }, true)
 
@@ -109,7 +113,7 @@
 
       scope.testModal = function (list, date){
         ModalService.showModal({
-          templateUrl: "/assets/html/todo/modal-test.html",
+          templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
           inputs: {
             data: list,
@@ -148,6 +152,7 @@
             bigTdContainer = bigTdContainer[listDay+1]
           } else {
             bigTdContainer = bigTdContainer[realListDate.getDay()+1]
+            console.log(bigTdContainer)
           }
           bigTdContainer.addEventListener("click", function(e) {
             console.log(e)
@@ -308,7 +313,7 @@
         }
 
         var checkWeeklyDate = function(listDay, date, list, listYear, listMonth){
-          // console.log("checkWeeklyDate function.  listDay = " + listDay + " date = " + date + " listYear = " + listYear)
+          console.log("checkWeeklyDate function.  listDay = " + listDay + " date = " + date + " listYear = " + listYear + " listMonth = "  + listMonth)
           var dateArrayLength = scope.lastDate.length
           console.log(scope.lastDate)
           var lastWeeklyDate = scope.lastDate[dateArrayLength-1]
@@ -323,8 +328,15 @@
               thisWeekDates.push(scope.lastDate[t])
             }
 
+            console.log("listDay = " + listDay)
+            console.log("firstWeeklyDate = " + firstWeeklyDate)
+            console.log("lastDayOfOldMonth = " + lastDayOfOldMonth)
+
             if(listDay >= firstWeeklyDate && listDay <= lastDayOfOldMonth){
-              if(listMonth === scope.date.monthCount-1){
+              console.log("listMonth = "  + listMonth)
+              console.log("scope.date.monthCount = " + scope.date.monthCount)
+              if(listMonth === scope.date.monthCount){
+                console.log("we are here.")
                 // loopThroughLastDateArray(listDay, date, list)
                 checkDates(date, list)
               }
@@ -332,13 +344,13 @@
               console.log("listDay ("+ listDay +") < firstWeeklyDate(" + firstWeeklyDate+")")
               var lastDayOfOldMonth = new Date (listYear, listMonth-1, 0).getDate()
               var indexOfLastDayOldMonth = thisWeekDates.indexOf(lastDayOfOldMonth)
-              if(listMonth === scope.date.monthCount){
+              if(listMonth === scope.date.monthCount+1){
                 console.log("listMonth = " + listMonth)
                 console.log(listDay)
                 for(var z = indexOfLastDayOldMonth+1; z <  thisWeekDates.length; z++){
                   if(listDay === thisWeekDates[z]){
-                    loopThroughLastDateArray(listDay, date, list)
-                    // checkDates(date, list)
+                    // loopThroughLastDateArray(listDay, date, list)
+                    checkDates(date, list)
                   }
                 }
               }
