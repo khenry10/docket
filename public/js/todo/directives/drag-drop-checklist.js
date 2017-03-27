@@ -20,8 +20,8 @@
 
         console.log("ddChecklist")
 
-        $scope.data = data
-        var splitDate = date.split("-")
+
+        var splitDate = $scope.date.split("-")
 
         var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -35,7 +35,7 @@
           completedList: []
         };
 
-        $scope.listName = data.list_name
+        $scope.listName = $scope.data.list_name
 
         $scope.showClearCompleted = false;
 
@@ -43,10 +43,10 @@
 
         $scope.data.lists.forEach(function(list, index){
           console.log(list.date)
-          console.log(date)
+          // console.log(date)
           console.log(index)
-          console.log(list.date === date)
-          if(list.date === date){
+          console.log(list.date === $scope.date)
+          if(list.date === $scope.date){
             $scope.models.toDoList = [];
             $scope.listIndex = index
             $scope.list = list
@@ -82,10 +82,10 @@
           }
             console.log($scope.listName)
             console.log($scope.models.toDoList)
-            console.log(date)
+            console.log($scope.date)
 
-            var saveMe = {list_name: $scope.listName, lists: data.lists}
-            saveMe.lists[$scope.listIndex] = {date: date, tasks: $scope.models.toDoList, clearedTasks: $scope.models.completedList}
+            var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
+            saveMe.lists[$scope.listIndex] = {date: $scope.date, tasks: $scope.models.toDoList, clearedTasks: $scope.models.completedList}
             console.log(saveMe)
             Todo.update({list_name: $scope.listName},   {todo: saveMe}, function(task){
             })
@@ -94,7 +94,7 @@
 
         $scope.update = function(task, index){
           console.log($scope.data)
-          console.log(data.lists)
+          console.log($scope.data.lists)
           console.log(task)
           console.log($scope.models)
           console.log($scope.models.toDoList)
@@ -111,7 +111,7 @@
             var completedTime = new Date();
             console.log(index)
             console.log($scope.listIndex)
-            var updateTask = {list_name: $scope.listName, lists: data.lists}
+            var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
             console.log(updateTask)
             console.log(updateTask.lists[$scope.listIndex].tasks[index])
             updateTask.lists[$scope.listIndex].tasks[index] = {
@@ -132,7 +132,7 @@
 
             var timeCreated = new Date();
 
-            var saveMe = {list_name: $scope.listName, lists: data.lists}
+            var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
             saveMe.lists[$scope.listIndex].tasks.push({name: $scope.newTodo, task_completed: false})
             console.log(saveMe)
             $scope.models.toDoList.push({name: $scope.newTodo, task_completed: false})
@@ -147,7 +147,7 @@
         $scope.clearComplete = function(){
           $scope.showClearCompleted = false;
           var newTodoList = [];
-          var saveMe = {list_name: $scope.listName, lists: data.lists}
+          var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
           console.log(saveMe)
           saveMe.lists[$scope.listIndex].clearedTasks = []
           saveMe.lists[$scope.listIndex].clearedTasks = $scope.list.clearedTasks

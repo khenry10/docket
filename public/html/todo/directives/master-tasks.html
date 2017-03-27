@@ -1,10 +1,10 @@
 <div class="panel-group">
-  <div class="panel panel-default" ng-repeat="list in lists" >
+  <div class="panel panel-default" ng-repeat="list in listss" >
     <div class="panel-heading" style="margin-left: 5%;">
       <div class="panel-title-custom">
         <h4 class="panel-title">
           <span class="glyphicon glyphicon-list" aria-hidden="true" style="color: rgb(48, 49, 56)"></span>
-          <a data-toggle="collapse" href="#collapseTask{{$index}}">{{ list.name }}  ({{ list.duration }} hours)</a> 
+          <a data-toggle="collapse" href="#collapseTask{{$index}}">{{ list.name }}  ({{ list.duration }} hrs)</a>
         </h4>
       </div>
     </div>
@@ -24,7 +24,7 @@
           </tr>
         </table>
         </li>
-        <li ng-repeat="task in list.master_tasks" class="list-group-item"
+        <li ng-repeat="task in list.master_tasks track by $index" class="list-group-item"
         style="background-color: rgb(107, 110, 122); color: white; box-shadow: 1px 1px grey">
           {{ task.name }}
         </li>
