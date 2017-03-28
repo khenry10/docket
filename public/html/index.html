@@ -17,8 +17,7 @@
             new-cal="newCalTodoLists" date-tracker="changeDate"></add-new-cal-item>
           </div>
           <!-- panel 2 start -->
-
-          <div class="panel panel-default" style="border: none;" ng-show="true">
+          <div class="panel panel-default" style="border: none;" ng-show="listss.length">
             <div class="panel-heading personal-panel" role="tab" id="headingTwo">
               <h4 class="panel-title">
                 <div class="panel-title-custom">
@@ -101,13 +100,13 @@
               </h4>
             </div>
             <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-              <p>Expand Please </p>
-              <ul>
-                  <li ng-repeat="task in realAggTasks track by $index">
-                    {{ task.name}}
-                  </li>
 
-              </ul>
+              <!-- <ul> -->
+                <dd-checklist  data="allTasks" element=" 'rail' "></dd-checklist>
+                  <!-- <li ng-repeat="task in allTasks track by $index">
+                    {{ task.name }} - {{ task.list }} - {{ task.tasks.name}}
+                  </li> -->
+              <!-- </ul> -->
             </div>
           </div>
           <!-- panel 4 End -->

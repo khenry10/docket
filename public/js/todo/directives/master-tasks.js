@@ -10,78 +10,90 @@
         console.log($scope)
         console.log("You in da MASTA Todo")
 
-        $scope.lists = []
+        var lists = []
 
         $scope.$watch("viewType", function(newV, oldV){
           console.log("viewType watched called")
           console.log(newV)
-          $scope.lists = [];
+          var listsToAdd = []
+          lists = [];
           $scope.listss = [];
-          $scope.getMasters()
+          $scope.getMasters("viewType")
         })
 
         $scope.$watch("changeDate.monthCount", function(newDate, oldDate){
           console.log("changeDate.monthCount watched called")
           console.log(newDate)
-          $scope.lists = [];
+          console.log($scope.changeDate)
+          var listsToAdd = []
+          lists = [];
           $scope.listss = [];
-          $scope.getMasters()
+          // below is to help prevent getMasters() called multiple times in a single page load
+          if($scope.viewType === 'month')
+          $scope.getMasters("monthCount")
         })
 
-        // $scope.$watch("changeDate.weekCount", function(newDate, oldDate){
-        //   console.log("changeDate weekCount called")
-        //   console.log(newDate)
-        //   $scope.lists = [];
-        //   $scope.getMasters()
-        // })
+        $scope.$watch("changeDate.weekCount", function(newDate, oldDate){
+          console.log("changeDate weekCount called")
+          console.log($scope.changeDate)
+          console.log(newDate)
+          $scope.lists = [];
+          // below is to help prevent getMasters() called multiple times in a single page load
+          if($scope.viewType === 'week' && !$scope.viewTypeCalledMasters){
+            $scope.getMasters("weekCount")
+          }
+        })
 
         // below is was the first attempt at aggregrating all Tasks in a given period, but think I need put Drag and Drop list in a directive first
-        $scope.aggWeeklyTasks = []
-        $scope.realAggTasks = []
-        var loopThroughWeekAggs = function(){
+
+        var pullOutAllTasks = function(visibleLists){
+          $scope.allTasks = []
           console.log("loopThroughWeekAggs envoked ")
-          console.log($scope.lists)
-          console.log($scope.aggWeeklyTasks)
-          $scope.aggWeeklyTasks.forEach(function(list){
-            console.log(list)
-            list.tasks.forEach(function(tasks){
-              console.log(tasks)
-              $scope.realAggTasks.push(tasks)
+          console.log(visibleLists)
+
+          visibleLists.forEach(function(visible){
+            console.log(visible)
+            var name = visible.name
+            visible.lists.forEach(function(list){
+              console.log(list)
+              var listName = list.date
+              list.tasks.forEach(function(task){
+                console.log(task)
+                $scope.allTasks.push({name: name, list: listName, tasks: task})
+              })
             })
           })
-          console.log($scope.realAggTasks)
+
         }
 
         // looks to see if there are any lists embedded in each Todo, if yes, put it on calendar
         var checkLists = function(){
-          var newList = [];
-          var newList = $scope.lists
-          console.log(newList)
-          console.log($scope.lists.length)
-          for(var e = 0; e < $scope.lists.length; e++){
-            console.log($scope.lists.length)
-            console.log($scope.lists[e])
-            console.log($scope.lists[e].lists.length)
-            if(!$scope.lists[e].lists.length){
+          var reallyNewList = []
+          console.log(lists.length)
+          console.log(JSON.stringify(lists))
+          for(var e = 0; e < lists.length; e++){
+            if(lists[e].lists.length){
               console.log("TRUE. e = " + e)
-              console.log($scope.lists[e].name)
-              newList.splice(e, 1)
-              console.log(newList)
+              console.log(lists[e].name)
+              reallyNewList.push(lists[e])
+              console.log(JSON.stringify(reallyNewList))
             }
           }
-          console.log(newList)
-          $scope.listss = newList
+          pullOutAllTasks(reallyNewList)
+          $scope.listss = reallyNewList
           console.log($scope.listss)
         }
 
         // retrieves all todo lists from database
-        $scope.getMasters = function(){
-          console.log("$scope.getMasters called")
-          $scope.lists= [];
-          console.log($scope.lists)
+        $scope.getMasters = function(origin){
+          console.log("$scope.getMasters called from " + origin)
+          lists= [];
+          console.log(lists)
+          console.log(JSON.stringify(lists))
 
             Todo.all.forEach(function(todo, index){
               if(todo != undefined){
+                console.log(todo)
                   var masters = {
                     name: todo.list_name,
                     master_tasks: todo.master_tasks,
@@ -89,12 +101,13 @@
                     duration: todo.duration
                   }
               console.log($scope.changeDate)
-              $scope.lists.push(masters)
+              lists.push(masters)
 
               // need to loop through every date list in every larger list to see if it's on the calendar
               var listsToAdd = []
               for(var t = 0; t < todo.lists.length; t++) {
                 var list = todo.lists[t]
+                console.log(todo.list_name)
                 console.log(list)
                 var listDate = DateService.stringDateSplit(list.date)
 
@@ -104,7 +117,7 @@
                       console.log("made it past viewType === month")
 
                       listsToAdd.push(list)
-                      console.log($scope.lists)
+                      console.log(lists)
 
                     } else if($scope.viewType === "week"){
                       // similar to what happens in calendar_directive, need to check by day
@@ -126,7 +139,7 @@
                               }
                             } else {
                               console.log(index + " here2 KP. " +list.date)
-
+                              console.log(masters)
                               listsToAdd.push(list)
                               console.log(list)
 
@@ -143,7 +156,7 @@
                     }
                   }
               }
-              $scope.lists[index].lists = listsToAdd
+              lists[index].lists = listsToAdd
             }
           }) // end of Todo.all.forEach
           checkLists()
@@ -155,7 +168,7 @@
           if(newMaster){
             var name = newMaster.list_name
             var lists = newMaster.lists
-            $scope.lists.push({name: name, master_tasks: [], lists: lists})
+            lists.push({name: name, master_tasks: [], lists: lists})
           }
         }
         $scope.show = true;
@@ -171,10 +184,16 @@
             task_completed: false
           }
           list.master_tasks.push({name: master, created_on: today})
-          list.lists.forEach(function(recurring){
-            console.log(recurring)
-            recurring.tasks.push(saveMe)
+          Todo.all.forEach(function(todo){
+            console.log(todo)
+            if(todo != undefined){
+              todo.lists.forEach(function(list){
+                console.log(list)
+                list.tasks.push(saveMe)
+              })
+            }
           })
+
           list.list_name = list.name
           console.log(list)
           Todo.update({list_name: list.list_name}, {todo: list}, function(task){

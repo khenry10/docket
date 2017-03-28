@@ -96,7 +96,6 @@
           console.log($scope)
           $scope.newTodoList = new Todo();
 
-
           console.log("name = "+ $scope.name)
           if($scope.data){
             console.log($scope.data)
@@ -205,6 +204,7 @@
 
                 console.log("$scope.newCalTodoLists below: ")
                 console.log($scope.newCalTodoLists)
+                console.log($scope.newMasterLists)
 
                 // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
                 $scope.newTodoList.lists = $scope.newMasterLists

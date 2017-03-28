@@ -14,20 +14,33 @@
       templateUrl: "/assets/html/todo/directives/drag-drop-checklist.html",
       scope: {
         data: "=data",
-        date: "=date"
+        date: "=date",
+        element: "=element"
       },
       link: function($scope){
 
         console.log("ddChecklist")
+        // the data from the list that gets clicked gets passed through to hear via $scope.data
+        console.log($scope.data)
+        console.log($scope.date)
+        console.log($scope.element)
 
-
-        var splitDate = $scope.date.split("-")
+        $scope.$watch("data", function(newD, oldD){
+          console.log("$watch data envoked")
+          if($scope.element === "rails"){
+            $scope.models.toDoList = [];
+            allTaskRailDataFunction()
+          }
+        })
 
         var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-        var newDate = new Date(splitDate[0], splitDate[1]-1, splitDate[2])
-        $scope.niceDate = daysOfWeek[newDate.getDay()] + " " + monthName[splitDate[1]-1] +" "+ splitDate[2] + ", " + splitDate[0]
+        if($scope.element != "rail"){
+          var splitDate = $scope.date.split("-")
+          var newDate = new Date(splitDate[0], splitDate[1]-1, splitDate[2])
+          $scope.niceDate = daysOfWeek[newDate.getDay()] + " " + monthName[splitDate[1]-1] +" "+ splitDate[2] + ", " + splitDate[0]
+        }
 
         $scope.models = {
           selected: null,
@@ -41,38 +54,66 @@
 
         $scope.nonBindedList = []
 
-        $scope.data.lists.forEach(function(list, index){
-          console.log(list.date)
-          // console.log(date)
-          console.log(index)
-          console.log(list.date === $scope.date)
-          if(list.date === $scope.date){
-            $scope.models.toDoList = [];
-            $scope.listIndex = index
-            $scope.list = list
-            console.log($scope.list)
-            list.tasks.forEach(function(task, index){
-              console.log(task)
-              task.rank = index
+        var processTasksForList = function(list, index){
+          $scope.models.toDoList = [];
+          $scope.listIndex = index
+          $scope.list = list
+          console.log($scope.list)
+          list.tasks.forEach(function(task, index){
+            console.log(task)
+            task.rank = index
 
-              if(task.task_completed){
-                $scope.showClearCompleted = true;
-              }
+            if(task.task_completed){
+              $scope.showClearCompleted = true;
+            }
 
-              $scope.nonBindedTask = {
-                name: task.name,
-                rank: task.rank,
-                task_completed: task.task_completed
-              }
-              console.log($scope.nonBindedTask)
-              $scope.models.toDoList.push($scope.nonBindedTask)
-            })
-            console.log(list.tasks)
+            $scope.nonBindedTask = {
+              name: task.name,
+              rank: task.rank,
+              task_completed: task.task_completed
+            }
+            console.log($scope.nonBindedTask)
+            $scope.models.toDoList.push($scope.nonBindedTask)
+          })
+          console.log(list.tasks)
 
-            console.log($scope.models.toDoList)
-            $scope.nonBindedList = list.tasks
-          }
-        })
+          console.log($scope.models.toDoList)
+          $scope.nonBindedList = list.tasks
+        }
+
+        var modalDataFunction = function(){
+          $scope.data.lists.forEach(function(list, index){
+            console.log(list.date)
+            // console.log(date)
+            console.log(index)
+            console.log(list.date === $scope.date)
+            if(list.date === $scope.date){
+              processTasksForList(list, index)
+            }
+          })
+        }
+
+        var allTaskRailDataFunction = function(){
+          console.log("allTaskRailDataFunction")
+          $scope.models.toDoList = [];
+          $scope.data.forEach(function(list, index){
+            // console.log(list)
+            // processTasksForList(list, index)
+            $scope.nonBindedTask = {
+              name: list.tasks.name,
+              rank: index,
+              task_completed: list.tasks.task_completed
+            }
+            console.log($scope.nonBindedTask)
+            $scope.models.toDoList.push($scope.nonBindedTask)
+          })
+        }
+
+        if($scope.element === "rail"){
+          allTaskRailDataFunction()
+        } else {
+          modalDataFunction()
+        }
 
         var updateAll = function(task){
           for(var z = 0; z < $scope.models.toDoList.length; z++){
