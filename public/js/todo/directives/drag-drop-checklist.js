@@ -25,13 +25,16 @@
         console.log($scope.date)
         console.log($scope.element)
 
-        $scope.$watch("data", function(newD, oldD){
-          console.log("$watch data envoked")
-          if($scope.element === "rails"){
-            $scope.models.toDoList = [];
-            allTaskRailDataFunction()
-          }
-        })
+        // $scope.$watch("data", function(newD, oldD){
+        //   console.log("$watch data envoked")
+        //   console.log(newD)
+        //   console.log(oldD)
+        //   console.log($scope.element)
+        //   // below condition fixes the problem where clicking on a list on the calendar doesn't show tasks, but it also doesn't update the left rail to have to driven off what is on the calendar
+        //   if($scope.element === "rail"){
+        //     allTaskRailDataFunction()
+        //   }
+        // })
 
         var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -151,14 +154,19 @@
           } else {
             var completedTime = new Date();
             console.log(index)
-            console.log($scope.listIndex)
-            var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
-            console.log(updateTask)
-            console.log(updateTask.lists[$scope.listIndex].tasks[index])
-            updateTask.lists[$scope.listIndex].tasks[index] = {
-              name: task.name,
-              task_completed: task.task_completed,
-              time_completed: completedTime
+            if($scope.element === 'rail'){
+              console.log($scope.data[0])
+              var updateTask = {list_name: $scope.data[0].name, lists: {date: $scope.data[0].list, tasks: task}}
+            } else {
+              console.log($scope.listIndex)
+              var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
+              console.log(updateTask)
+              console.log(updateTask.lists[$scope.listIndex].tasks[index])
+              updateTask.lists[$scope.listIndex].tasks[index] = {
+                name: task.name,
+                task_completed: task.task_completed,
+                time_completed: completedTime
+              }
             }
             console.log(updateTask)
             Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){

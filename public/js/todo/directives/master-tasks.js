@@ -70,13 +70,13 @@
         var checkLists = function(){
           var reallyNewList = []
           console.log(lists.length)
-          console.log(JSON.stringify(lists))
+          // console.log(JSON.stringify(lists))
           for(var e = 0; e < lists.length; e++){
             if(lists[e].lists.length){
               console.log("TRUE. e = " + e)
               console.log(lists[e].name)
               reallyNewList.push(lists[e])
-              console.log(JSON.stringify(reallyNewList))
+              // console.log(JSON.stringify(reallyNewList))
             }
           }
           pullOutAllTasks(reallyNewList)
@@ -89,7 +89,7 @@
           console.log("$scope.getMasters called from " + origin)
           lists= [];
           console.log(lists)
-          console.log(JSON.stringify(lists))
+          // console.log(JSON.stringify(lists))
 
             Todo.all.forEach(function(todo, index){
               if(todo != undefined){
@@ -165,6 +165,9 @@
 
         $scope.newMasterListAddition = function(newMaster){
           console.log(newMaster)
+          console.log(newMaster.lists)
+          console.log(newMaster.lists[4])
+          console.log(newMaster.lists[5])
           if(newMaster){
             var name = newMaster.list_name
             var lists = newMaster.lists

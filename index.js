@@ -51,7 +51,8 @@ app.get('/api/todo/:name', function(req, res){
 })
 
 app.post("/api/todo", function(req, res){
-  console.log("api POST " + JSON.stringify(req.body))
+  console.log("api POST ")
+  // console.log("api POST " + JSON.stringify(req.body))
   Todo.create(req.body).then(function(){
     res.redirect("/")
   })

@@ -49,24 +49,28 @@
         }
 
         // not being used yet, ran into too many other bugs 3/18/2017
-          var createRepeater = function(year, month, count, lastDay, increment){
-            console.log(year)
-            console.log(month)
-            console.log(count)
-            console.log(lastDay)
-            console.log(increment)
-            while(count < lastDay){
-              count = count + increment
-              var list = year+"-"+month+"-"+count
-              $scope.newMasterLists.push( { date: list, tasks: [] } )
-               var date = $scope.firstDay
-            }
-          }
+          // var createRepeater = function(year, month, count, lastDay, increment){
+          //   console.log(year)
+          //   console.log(month)
+          //   console.log(count)
+          //   console.log(lastDay)
+          //   console.log(increment)
+          //   while(count < lastDay){
+          //     count = count + increment
+          //     var list = year+"-"+month+"-"+count
+          //     $scope.newMasterLists.push( { date: list, tasks: [] } )
+          //      var date = $scope.firstDay
+          //   }
+          // }
 
           var getHours = function(){
             console.log("$scope.startTime = " + $scope.startTime)
             console.log("$scope.endTime = " + $scope.endTime)
 
+            if($scope.newTodoList.start_time){
+              $scope.startTime = $scope.newTodoList.start_time
+            }
+            console.log($scope.startTime)
             var startTime = $scope.startTime.split(":")
             var startTimeAmOrPm = startTime[1].substr(2,4)
             var startTime = startTime[0]
@@ -90,7 +94,7 @@
             // }
           }
 
-        $scope.newMasterLists = []
+        var createListOfLists = []
 
         $scope.create = function(){
           console.log($scope)
@@ -138,7 +142,10 @@
 
                 var date = $scope.firstDay
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
-                $scope.newMasterLists.push( {date: newDate, tasks: []} )
+                console.log($scope)
+                console.log(createListOfLists)
+                createListOfLists.push( {date: newDate, tasks: []} )
+                console.log(createListOfLists)
                 var count = date.getDate();
 
                 var lastDay = numberOfDaysInMonth
@@ -169,7 +176,7 @@
                     console.log(lastDay)
                     count = count + 1
                     var list = year+"-"+month+"-"+count
-                    $scope.newMasterLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push( { date: list, tasks: [] } )
                      var date = $scope.firstDay
                   }
                 }
@@ -177,12 +184,14 @@
                 if($scope.repeatInterval === 'Weekly'){
                   // count = count+7
                   // createRepeater(year, month, count, lastDay, 7)
+                  console.log(JSON.stringify(createListOfLists))
                   while(count+7 <= lastDay){
                     count = count + 7
                     var list = year+"-"+month+"-"+count
-                    $scope.newMasterLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push( { date: list, tasks: [] } )
                      var date = $scope.firstDay
                   }
+                  console.log(JSON.stringify(createListOfLists))
                 }
 
                 if($scope.repeatInterval === 'Monthly'){
@@ -191,32 +200,45 @@
                   while(month < 12){
                     month = month+1
                     var list = year+"-"+month+"-"+count
-                    $scope.newMasterLists.push( { date: list, tasks: [] } )
-                    console.log($scope.newMasterLists)
+                    createListOfLists.push( { date: list, tasks: [] } )
+                    console.log(createListOfLists)
                   }
                 }
                 // I recreated the new object to get rid of new Todo() junk which I thought was causing issues
                 // $scope.newCalTodoLists is a dependency that gets injected into the calendar directive
-                $scope.newCalTodoLists = [{list_name: $scope.name, lists: $scope.newMasterLists}]
+                console.log(JSON.stringify(createListOfLists))
+                $scope.newCalTodoLists = [{list_name: $scope.name, lists: createListOfLists}]
                 $scope.newCalTodoLists[0].first_day = $scope.firstDay
                 $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
                 $scope.newCalTodoLists[0].list_recur_end =$scope.newTodoList.list_recur_end
 
                 console.log("$scope.newCalTodoLists below: ")
                 console.log($scope.newCalTodoLists)
-                console.log($scope.newMasterLists)
+                console.log(JSON.stringify(createListOfLists))
 
                 // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
-                $scope.newTodoList.lists = $scope.newMasterLists
+                $scope.newTodoList.lists = createListOfLists
 
                 $scope.newCalTodoLists[0].start_time =  $scope.newTodoList.start_time
                 $scope.newCalTodoLists[0].end_time =  $scope.endTime
                 // newCal is scoped to newCalTodoLists, which is $watched in calendar directive.  Has to be sent in array because that is what is expected in calednar directive
 
+                // got an error that this wasn't defined when adding by modal
+                // $scope.newCal = [$scope.newCalTodoLists[0]]
+
+                console.log($scope.newTodoList)
+                console.log($scope.newTodoList.lists[5])
+                $scope.newTodoList.$save().then(function(res){
+                  console.log("$scope.newTodoList.$save success")
+                  if($scope.data){
+                    $scope.saved = true
+                  }
+                })
+
                 console.log($scope.data)
                 // $scope.data is only passed in when the modal is being used
                 if($scope.data){
-                  // new events trough the modal all go use methods provided by $scope.data
+                  // new events through the modal all use methods provided by $scope.data
                   $scope.data.checkLists("from add-new-cal-item",[$scope.newCalTodoLists[0]])
                   $scope.data.newMaster($scope.newCalTodoLists[0])
                 } else {
@@ -226,17 +248,6 @@
                   // since below function is from an external controller, we have to pass the parameter as an object literal, they key must match the parameter name in index.html
                   $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
                 }
-
-                // got an error that this wasn't defined when adding by modal
-                // $scope.newCal = [$scope.newCalTodoLists[0]]
-
-                console.log($scope.newTodoList)
-                $scope.newTodoList.$save().then(function(res){
-                  console.log("$scope.newTodoList.$save success")
-                  if($scope.data){
-                    $scope.saved = true
-                  }
-                })
 
                 // clears the input fields for new additions
                 $scope.name = ""

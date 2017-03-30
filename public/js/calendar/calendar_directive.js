@@ -375,7 +375,13 @@
         scope.checkLists = function(message, todoList){
           console.log("scope.checkLists message = " + message)
           console.log(todoList)
+
           if(todoList){
+            if(todoList[0]){
+              console.log(todoList[0].lists)
+              console.log(todoList[0].lists[4])
+              console.log(todoList[0].lists[5])
+            }
             console.log(todoList.length)
             if(todoList.length){
               for(var k = 0; k < todoList.length; k++){
