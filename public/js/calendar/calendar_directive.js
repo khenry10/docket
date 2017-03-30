@@ -345,11 +345,10 @@
             } else if(listDay < firstWeeklyDate){
               console.log("listDay ("+ listDay +") < firstWeeklyDate(" + firstWeeklyDate+")")
               var lastDayOfOldMonth = new Date (listYear, listMonth-1, 0).getDate()
-              var indexOfLastDayOldMonth = thisWeekDates.indexOf(lastDayOfOldMonth)
+              // not sure why I was using indexOfLastDayOldMonth to initilaze z in the loop, created duplicates on weekly view after flipping ahead and then pressing "today"
+              // var indexOfLastDayOldMonth = thisWeekDates.indexOf(lastDayOfOldMonth)
               if(listMonth === scope.date.monthCount+1){
-                console.log("listMonth = " + listMonth)
-                console.log(listDay)
-                for(var z = indexOfLastDayOldMonth+1; z <  thisWeekDates.length; z++){
+                for(var z = thisWeekDates.length-7; z <  thisWeekDates.length; z++){
                   if(listDay === thisWeekDates[z]){
                     // loopThroughLastDateArray(listDay, date, list)
                     checkDates(date, list)
@@ -377,11 +376,6 @@
           console.log(todoList)
 
           if(todoList){
-            if(todoList[0]){
-              console.log(todoList[0].lists)
-              console.log(todoList[0].lists[4])
-              console.log(todoList[0].lists[5])
-            }
             console.log(todoList.length)
             if(todoList.length){
               for(var k = 0; k < todoList.length; k++){
@@ -401,14 +395,19 @@
                       var listDay = parseInt(listDates[2].substr(0,2))
                       var lastMonth = scope.date.monthCount-1
 
-                      // console.log("scope.newView = " + scope.newView )
-                      if(scope.newView === 'week' && scope.date.monthCount === listMonth ||
-                        scope.newView === 'week' && listMonth === lastMonth){
+                      console.log( scope.date )
+                      console.log(date)
+                      console.log(listMonth)
+                      console.log(scope.date.twoMonthsWeekly && listMonth === scope.date.monthCount+1)
+                      if(scope.newView === 'week' &&
+                      scope.date.monthCount === listMonth ||
+                      scope.newView === 'week' && listMonth === lastMonth ||
+                      (scope.date.twoMonthsWeekly && listMonth === scope.date.monthCount+1 && scope.newView === 'week')){
                           console.log("sending to checkWeeklyDate()")
                         // console.log("listMonth = " + listMonth)
-                        // console.log(scope.date)
                         // we send the full broken out full date date, the list itself and the full date to process further
                         checkWeeklyDate(listDay, date, list, listYear, listMonth)
+
                       } else {
                         if(listYear === year && listMonth === scope.date.monthCount){
                             console.log("sending to checkDates()")

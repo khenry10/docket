@@ -110,8 +110,12 @@
                 console.log(todo.list_name)
                 console.log(list)
                 var listDate = DateService.stringDateSplit(list.date)
-
-                  if(listDate.month == $scope.changeDate.monthCount){
+                  console.log($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)
+                  console.log(listDate.month)
+                  console.log($scope.changeDate.monthCount+1)
+                  console.log($scope.changeDate.twoMonthsWeekly)
+                  if(listDate.month == $scope.changeDate.monthCount ||
+                    ($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)){
                     console.log("made it past listDate.month")
                     if($scope.viewType === "month"){
                       console.log("made it past viewType === month")
@@ -176,8 +180,8 @@
         $scope.show = true;
         $scope.addNewMasterTask = function (master, list){
           $scope.show = false;
-          console.log($scope.newMaster)
-          console.log($scope.keith)
+          // console.log($scope.newMaster)
+          // console.log($scope.keith)
           console.log(master)
           console.log(list)
           var today = new Date()
@@ -186,15 +190,21 @@
             task_completed: false
           }
           list.master_tasks.push({name: master, created_on: today})
-          Todo.all.forEach(function(todo){
-            console.log(todo)
-            if(todo != undefined){
-              todo.lists.forEach(function(list){
-                console.log(list)
-                list.tasks.push(saveMe)
-              })
-            }
+          console.log(list)
+          list.lists.forEach(function(list){
+            console.log(list)
+            list.tasks.push(saveMe)
           })
+          // not sure when the below was added... but it was adding a master task to EVERY list.  Assuming I put it in for something with ALL tasks, keeping for now 3/20/17
+          // Todo.all.forEach(function(todo){
+          //   console.log(todo)
+          //   if(todo != undefined){
+          //     todo.lists.forEach(function(list){
+          //       console.log(list)
+          //       list.tasks.push(saveMe)
+          //     })
+          //   }
+          // })
 
           list.list_name = list.name
           console.log(list)
