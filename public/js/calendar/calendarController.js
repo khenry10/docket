@@ -85,6 +85,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       console.log("Todo.all.$promise in $scope.changeDate.increment below: ")
       console.log(list)
       var lastDateList = list.lists[list.lists.length-1]
+
       var monthOfLastDateList = DateService.stringToDate(lastDateList.date, 'regMonth').getMonth()
       var appsCurrentMonth = $scope.changeDate.monthCount
 
@@ -415,7 +416,7 @@ function ShowEventsController(Events, $stateParams, $window){
 
     vm.update = function(){
       console.log("update = " +vm.event.name)
-      console.log("event = "+ JSON.stringify(event))
+      // console.log("event = "+ JSON.stringify(event))
       var newEvent = {name: vm.event.newName, first_day: vm.event.newStartTime}
       console.log(newEvent)
       Events.update({name: vm.event.name}, {event: newEvent}, function(event){

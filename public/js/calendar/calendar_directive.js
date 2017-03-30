@@ -50,7 +50,7 @@
           } else {
             console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             monthSelector(scope.date.monthCount)
-            scope.checkLists('newView $watch', scope.pulledTodoList)
+            scope.checkLists('newView $watch WEEK', scope.pulledTodoList)
             // monthSelector(scope.date.monthCount-1)
             // scope.checkLists('newView $watch', scope.pulledTodoList)
             // scope.date.monthCount = scope.date.monthCount-1
@@ -64,6 +64,8 @@
           // scope.date.weekCount = 0;
           // scope.date.twoMonthsWeekly = false;
           // scope.date.dayCount = [];
+          monthSelector(scope.date.monthCount)
+          scope.checkLists('newView $watch MONTH', scope.pulledTodoList)
         }
       }, true)
 
@@ -273,7 +275,7 @@
         }
 
         var checkDates = function(date, list){
-          // console.log("checkDates function envoked. list and then date below:")
+          console.log("checkDates function envoked. list and then date below:")
           console.log(date)
           console.log(list)
           if(scope.newView === 'month'){
@@ -373,7 +375,13 @@
         scope.checkLists = function(message, todoList){
           console.log("scope.checkLists message = " + message)
           console.log(todoList)
+
           if(todoList){
+            if(todoList[0]){
+              console.log(todoList[0].lists)
+              console.log(todoList[0].lists[4])
+              console.log(todoList[0].lists[5])
+            }
             console.log(todoList.length)
             if(todoList.length){
               for(var k = 0; k < todoList.length; k++){

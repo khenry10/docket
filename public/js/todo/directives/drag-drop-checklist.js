@@ -14,20 +14,36 @@
       templateUrl: "/assets/html/todo/directives/drag-drop-checklist.html",
       scope: {
         data: "=data",
-        date: "=date"
+        date: "=date",
+        element: "=element"
       },
       link: function($scope){
 
         console.log("ddChecklist")
+        // the data from the list that gets clicked gets passed through to hear via $scope.data
+        console.log($scope.data)
+        console.log($scope.date)
+        console.log($scope.element)
 
-        $scope.data = data
-        var splitDate = date.split("-")
+        // $scope.$watch("data", function(newD, oldD){
+        //   console.log("$watch data envoked")
+        //   console.log(newD)
+        //   console.log(oldD)
+        //   console.log($scope.element)
+        //   // below condition fixes the problem where clicking on a list on the calendar doesn't show tasks, but it also doesn't update the left rail to have to driven off what is on the calendar
+        //   if($scope.element === "rail"){
+        //     allTaskRailDataFunction()
+        //   }
+        // })
 
         var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-        var newDate = new Date(splitDate[0], splitDate[1]-1, splitDate[2])
-        $scope.niceDate = daysOfWeek[newDate.getDay()] + " " + monthName[splitDate[1]-1] +" "+ splitDate[2] + ", " + splitDate[0]
+        if($scope.element != "rail"){
+          var splitDate = $scope.date.split("-")
+          var newDate = new Date(splitDate[0], splitDate[1]-1, splitDate[2])
+          $scope.niceDate = daysOfWeek[newDate.getDay()] + " " + monthName[splitDate[1]-1] +" "+ splitDate[2] + ", " + splitDate[0]
+        }
 
         $scope.models = {
           selected: null,
@@ -35,44 +51,72 @@
           completedList: []
         };
 
-        $scope.listName = data.list_name
+        $scope.listName = $scope.data.list_name
 
         $scope.showClearCompleted = false;
 
         $scope.nonBindedList = []
 
-        $scope.data.lists.forEach(function(list, index){
-          console.log(list.date)
-          console.log(date)
-          console.log(index)
-          console.log(list.date === date)
-          if(list.date === date){
-            $scope.models.toDoList = [];
-            $scope.listIndex = index
-            $scope.list = list
-            console.log($scope.list)
-            list.tasks.forEach(function(task, index){
-              console.log(task)
-              task.rank = index
+        var processTasksForList = function(list, index){
+          $scope.models.toDoList = [];
+          $scope.listIndex = index
+          $scope.list = list
+          console.log($scope.list)
+          list.tasks.forEach(function(task, index){
+            console.log(task)
+            task.rank = index
 
-              if(task.task_completed){
-                $scope.showClearCompleted = true;
-              }
+            if(task.task_completed){
+              $scope.showClearCompleted = true;
+            }
 
-              $scope.nonBindedTask = {
-                name: task.name,
-                rank: task.rank,
-                task_completed: task.task_completed
-              }
-              console.log($scope.nonBindedTask)
-              $scope.models.toDoList.push($scope.nonBindedTask)
-            })
-            console.log(list.tasks)
+            $scope.nonBindedTask = {
+              name: task.name,
+              rank: task.rank,
+              task_completed: task.task_completed
+            }
+            console.log($scope.nonBindedTask)
+            $scope.models.toDoList.push($scope.nonBindedTask)
+          })
+          console.log(list.tasks)
 
-            console.log($scope.models.toDoList)
-            $scope.nonBindedList = list.tasks
-          }
-        })
+          console.log($scope.models.toDoList)
+          $scope.nonBindedList = list.tasks
+        }
+
+        var modalDataFunction = function(){
+          $scope.data.lists.forEach(function(list, index){
+            console.log(list.date)
+            // console.log(date)
+            console.log(index)
+            console.log(list.date === $scope.date)
+            if(list.date === $scope.date){
+              processTasksForList(list, index)
+            }
+          })
+        }
+
+        var allTaskRailDataFunction = function(){
+          console.log("allTaskRailDataFunction")
+          $scope.models.toDoList = [];
+          $scope.data.forEach(function(list, index){
+            // console.log(list)
+            // processTasksForList(list, index)
+            $scope.nonBindedTask = {
+              name: list.tasks.name,
+              rank: index,
+              task_completed: list.tasks.task_completed
+            }
+            console.log($scope.nonBindedTask)
+            $scope.models.toDoList.push($scope.nonBindedTask)
+          })
+        }
+
+        if($scope.element === "rail"){
+          allTaskRailDataFunction()
+        } else {
+          modalDataFunction()
+        }
 
         var updateAll = function(task){
           for(var z = 0; z < $scope.models.toDoList.length; z++){
@@ -82,10 +126,10 @@
           }
             console.log($scope.listName)
             console.log($scope.models.toDoList)
-            console.log(date)
+            console.log($scope.date)
 
-            var saveMe = {list_name: $scope.listName, lists: data.lists}
-            saveMe.lists[$scope.listIndex] = {date: date, tasks: $scope.models.toDoList, clearedTasks: $scope.models.completedList}
+            var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
+            saveMe.lists[$scope.listIndex] = {date: $scope.date, tasks: $scope.models.toDoList, clearedTasks: $scope.models.completedList}
             console.log(saveMe)
             Todo.update({list_name: $scope.listName},   {todo: saveMe}, function(task){
             })
@@ -94,7 +138,7 @@
 
         $scope.update = function(task, index){
           console.log($scope.data)
-          console.log(data.lists)
+          console.log($scope.data.lists)
           console.log(task)
           console.log($scope.models)
           console.log($scope.models.toDoList)
@@ -110,14 +154,19 @@
           } else {
             var completedTime = new Date();
             console.log(index)
-            console.log($scope.listIndex)
-            var updateTask = {list_name: $scope.listName, lists: data.lists}
-            console.log(updateTask)
-            console.log(updateTask.lists[$scope.listIndex].tasks[index])
-            updateTask.lists[$scope.listIndex].tasks[index] = {
-              name: task.name,
-              task_completed: task.task_completed,
-              time_completed: completedTime
+            if($scope.element === 'rail'){
+              console.log($scope.data[0])
+              var updateTask = {list_name: $scope.data[0].name, lists: {date: $scope.data[0].list, tasks: task}}
+            } else {
+              console.log($scope.listIndex)
+              var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
+              console.log(updateTask)
+              console.log(updateTask.lists[$scope.listIndex].tasks[index])
+              updateTask.lists[$scope.listIndex].tasks[index] = {
+                name: task.name,
+                task_completed: task.task_completed,
+                time_completed: completedTime
+              }
             }
             console.log(updateTask)
             Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
@@ -132,7 +181,7 @@
 
             var timeCreated = new Date();
 
-            var saveMe = {list_name: $scope.listName, lists: data.lists}
+            var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
             saveMe.lists[$scope.listIndex].tasks.push({name: $scope.newTodo, task_completed: false})
             console.log(saveMe)
             $scope.models.toDoList.push({name: $scope.newTodo, task_completed: false})
@@ -147,7 +196,7 @@
         $scope.clearComplete = function(){
           $scope.showClearCompleted = false;
           var newTodoList = [];
-          var saveMe = {list_name: $scope.listName, lists: data.lists}
+          var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
           console.log(saveMe)
           saveMe.lists[$scope.listIndex].clearedTasks = []
           saveMe.lists[$scope.listIndex].clearedTasks = $scope.list.clearedTasks
