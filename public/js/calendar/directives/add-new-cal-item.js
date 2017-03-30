@@ -239,13 +239,17 @@
                 // $scope.data is only passed in when the modal is being used
                 if($scope.data){
                   // new events through the modal all use methods provided by $scope.data
+
                   $scope.data.checkLists("from add-new-cal-item",[$scope.newCalTodoLists[0]])
+                  // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
                   $scope.data.newMaster($scope.newCalTodoLists[0])
                 } else {
                   // new events from side rail use isolated directive scope
                   $scope.newCal = [$scope.newCalTodoLists[0]]
                   // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
                   // since below function is from an external controller, we have to pass the parameter as an object literal, they key must match the parameter name in index.html
+                  console.log($scope.newCalTodoLists[0])
+                  // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
                   $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
                 }
 

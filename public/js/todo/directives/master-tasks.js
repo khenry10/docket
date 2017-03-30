@@ -163,15 +163,14 @@
         } //end of checkMasters
 
 
-        $scope.newMasterListAddition = function(newMaster){
-          console.log(newMaster)
-          console.log(newMaster.lists)
-          console.log(newMaster.lists[4])
-          console.log(newMaster.lists[5])
-          if(newMaster){
-            var name = newMaster.list_name
-            var lists = newMaster.lists
-            lists.push({name: name, master_tasks: [], lists: lists})
+        $scope.newMasterListAddition = function(newVariableName){
+          // changed parameter to "newVariableName" because it was newMaster and I think something was getting scoped to it and adding the WHOLE list as an onbject in list.list which was creating JSON stringify issue
+          console.log(newVariableName)
+
+          if(newVariableName){
+            var name = newVariableName.list_name
+            var listOfLists = newVariableName.lists
+            $scope.listss.push({name: name, master_tasks: [], lists: listOfLists})
           }
         }
         $scope.show = true;
