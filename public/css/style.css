@@ -501,6 +501,7 @@ input[type=text].new-todo-input {
   width: 200px;
   color: black;
   border-radius: 4px;
+  width: 82%;
 }
 
 input[type=text] {

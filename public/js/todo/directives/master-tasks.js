@@ -70,7 +70,7 @@
         var checkLists = function(){
           var reallyNewList = []
           console.log(lists.length)
-          // console.log(JSON.stringify(lists))
+          console.log(lists)
           for(var e = 0; e < lists.length; e++){
             if(lists[e].lists.length){
               console.log("TRUE. e = " + e)
@@ -117,7 +117,7 @@
                   if(listDate.month == $scope.changeDate.monthCount ||
                     ($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)){
                     console.log("made it past listDate.month")
-                    if($scope.viewType === "month"){
+                    if($scope.viewType === "month" && listDate.month == $scope.changeDate.monthCount){
                       console.log("made it past viewType === month")
 
                       listsToAdd.push(list)
@@ -128,28 +128,41 @@
                       console.log("made it into daily masters")
                       var weekDays = $scope.changeDate.dayCount
                       var weekDaysLength = $scope.changeDate.dayCount.length-7
-
+                      console.log(weekDays)
+                      console.log(listDate.date)
+                      console.log(listDate.month)
+                      console.log($scope.changeDate.dayCount[weekDaysLength])
+                      console.log($scope.changeDate)
                       // need to add the twoMonthsWeekly logic so that lists from the beginning of the month, don't sneak in at the end of the month (example: last of week of March has a list from 3/1 sneaking through)
                       for(var w = weekDaysLength; w < weekDaysLength+7; w++){
                         if($scope.changeDate.dayCount[w] == listDate.date){
                           if($scope.changeDate.twoMonthsWeekly){
+                            console.log((listDate.date < $scope.changeDate.dayCount[weekDaysLength]))
+                            console.log(listDate.month == $scope.changeDate.monthCount)
                             if(listDate.date < $scope.changeDate.dayCount[weekDaysLength]){
-                              if(listDate.month === $scope.changeDate.monthCount+1){
-                                console.log(index + " here1 KP")
+                              console.log(listDate.month === $scope.changeDate.monthCount+1)
+                              if(listDate.month == $scope.changeDate.monthCount+1){
+                                console.log(index + " here1 KP.  2 month view ===true list.month === monthCount+1 is in t ")
 
                                 listsToAdd.push(list)
                                 console.log(list)
 
+                              } else if(listDate.month == $scope.changeDate.monthCount-1) {
+                                console.log(index + " here2 KP. " +list.date + " twoMonthView and list === list.monthCount")
+                                console.log(masters)
+                                listsToAdd.push(list)
+                                console.log(list)
+
                               }
-                            } else {
-                              console.log(index + " here2 KP. " +list.date)
+                            } else if(listDate.month == $scope.changeDate.monthCount) {
+                              console.log(index + " here3 KP. " +list.date + " twoMonthView and list === list.monthCount")
                               console.log(masters)
                               listsToAdd.push(list)
                               console.log(list)
 
                             }
                           } else {
-                            console.log(index + " here3 KP")
+                            console.log(index + " here4 KP")
 
                             listsToAdd.push(list)
                             console.log(list)
