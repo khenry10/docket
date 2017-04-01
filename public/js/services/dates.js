@@ -136,6 +136,10 @@ angular.module('app').service('DateService', [ function () {
     var month = date[1]
     var date = date[2]
 
+    if(date.length > 2){
+      date = date.substring(0,2)
+    }
+
     var fullDate = new Date(year, month-1, date)
 
     return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}

@@ -137,6 +137,7 @@
 
                 if($scope.repeatInterval){
                     $scope.newTodoList.list_reocurring = $scope.repeatInterval
+                    console.log($scope.reoccurEnds)
                     $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
                 }
 
@@ -227,6 +228,7 @@
                 // $scope.newCal = [$scope.newCalTodoLists[0]]
 
                 console.log($scope.newTodoList)
+                console.log($scope.newTodoList.list_recur_end)
                 console.log($scope.newTodoList.lists[5])
                 $scope.newTodoList.$save().then(function(res){
                   console.log("$scope.newTodoList.$save success")

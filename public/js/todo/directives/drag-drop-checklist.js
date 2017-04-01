@@ -71,6 +71,7 @@
             }
 
             $scope.nonBindedTask = {
+              list_date: list.date,
               name: task.name,
               rank: task.rank,
               task_completed: task.task_completed
@@ -100,10 +101,11 @@
           console.log("allTaskRailDataFunction")
           $scope.models.toDoList = [];
           $scope.data.forEach(function(list, index){
-            // console.log(list)
+            console.log(list)
             // processTasksForList(list, index)
             $scope.nonBindedTask = {
               name: list.tasks.name,
+              list_date: list.list,
               rank: index,
               task_completed: list.tasks.task_completed
             }
@@ -161,16 +163,40 @@
 
               var allTodos = Todo.all
               console.log(allTodos)
+
+              var newTaskLists = []
+
               allTodos.forEach(function(todo){
                 console.log(todo)
                 if(todo && todo.list_name === $scope.data[0].name){
                   console.log("namematch")
+
+                  todo.lists.forEach(function(list){
+                    console.log(list)
+                    if(list.date === task.list_date){
+                      var updatingListTasks = {date: task.list_date, tasks: []}
+
+                      list.tasks.forEach(function(originTask){
+                        console.log(originTask)
+                        if(originTask.name === task.name ){
+                          updatingListTasks.tasks.push({name: task.name, task_completed: task.task_completed})
+                        } else {
+                          updatingListTasks.tasks.push(originTask)
+                        }
+                        console.log("end of list.tasks forEach")
+                        console.log(updatingListTasks)
+                      })
+
+                      newTaskLists.push(updatingListTasks)
+                    } else {
+                      newTaskLists.push(list)
+                    }
+                  }) //end of todo.lists.forEach
+                  console.log(newTaskLists)
                 }
               })
-              // $scope.data[0].lists.forEach(function(list){
-              //   if(task.)
-              // })
-              var updateTask = {list_name: $scope.data[0].name, lists: {date: $scope.data[0].list, tasks: task}}
+
+              var updateTask = {list_name: $scope.data[0].name, lists: newTaskLists}
             } else {
               console.log($scope.listIndex)
               var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
@@ -183,8 +209,8 @@
               }
             }
             console.log(updateTask)
-            // Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
-            // })
+            Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
+            })
           }
         }
 
