@@ -110,10 +110,10 @@
                 console.log(todo.list_name)
                 console.log(list)
                 var listDate = DateService.stringDateSplit(list.date)
-                  console.log($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)
-                  console.log(listDate.month)
-                  console.log($scope.changeDate.monthCount+1)
-                  console.log($scope.changeDate.twoMonthsWeekly)
+                  // console.log($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)
+                  // console.log(listDate.month)
+                  // console.log($scope.changeDate.monthCount+1)
+                  // console.log($scope.changeDate.twoMonthsWeekly)
                   if(listDate.month == $scope.changeDate.monthCount ||
                     ($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)){
                     console.log("made it past listDate.month")
@@ -128,11 +128,11 @@
                       console.log("made it into daily masters")
                       var weekDays = $scope.changeDate.dayCount
                       var weekDaysLength = $scope.changeDate.dayCount.length-7
-                      console.log(weekDays)
-                      console.log(listDate.date)
-                      console.log(listDate.month)
-                      console.log($scope.changeDate.dayCount[weekDaysLength])
-                      console.log($scope.changeDate)
+                      // console.log(weekDays)
+                      // console.log(listDate.date)
+                      // console.log(listDate.month)
+                      // console.log($scope.changeDate.dayCount[weekDaysLength])
+                      // console.log($scope.changeDate)
                       // need to add the twoMonthsWeekly logic so that lists from the beginning of the month, don't sneak in at the end of the month (example: last of week of March has a list from 3/1 sneaking through)
                       for(var w = weekDaysLength; w < weekDaysLength+7; w++){
                         if($scope.changeDate.dayCount[w] == listDate.date){

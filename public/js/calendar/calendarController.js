@@ -147,6 +147,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     if(move === "increment"){
       $scope.changeDate.weekCount++
       if($scope.changeDate.twoMonthsWeekly){
+        // commented out since this was incrementing monthCount in the beginning of the month
         // $scope.changeDate.monthCount++
         $scope.changeDate.twoMonthsWeekly = false;
       }
@@ -162,16 +163,26 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     var dateArrayLength = $scope.changeDate.dayCount.length
     dateArrayLength = dateArrayLength-1
     var actionDate = $scope.changeDate.dayCount[dateArrayLength]
+    console.log(actionDate)
 
     if(move === "increment"){
+      var thisMonthsLastDay = new Date($scope.calendarYear, $scope.changeDate.monthCount, 0).getDate()
       if($scope.changeDate.lastMove === "decrement"){
         // when we go from increment to decrement we need to adjust the date count in order to synchronize correctly
+        console.log(date)
         var date = actionDate+6
+        console.log(date)
+        console.log(date > thisMonthsLastDay)
+        if(date > thisMonthsLastDay){
+          date = date - thisMonthsLastDay
+          $scope.changeDate.monthCount++
+        }
+        console.log(date)
       } else {
         date = actionDate
       }
       console.log(JSON.stringify($scope.changeDate.monthCount))
-      var thisMonthsLastDay = new Date($scope.calendarYear, $scope.changeDate.monthCount, 0).getDate()
+
       console.log(thisMonthsLastDay)
       for(var d = 1; d <= 7; d++ ){
         $scope.changeDate.lastMove = "increment"
@@ -213,8 +224,72 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         $scope.changeDate.dayCount.push(date)
       }
     }
+      console.log("new stuff here")
+      if($scope.changeDate.twoMonthsWeekly){
+        console.log("new stuff here")
+        if($scope.changeDate.lastMove === 'increment'){
+          var lastDayOfOldMonth = new Date ($scope.changeDate.year, $scope.changeDate.monthCount-1, 0).getDate()
+          var oldMonth = $scope.changeDate.monthCount-1
+          var newMonth = $scope.changeDate.monthCount
+        } else {
+          var lastDayOfOldMonth = new Date ($scope.changeDate.year, $scope.date.monthCount, 0).getDate()
+          var oldMonth = $scope.changeDate.monthCount
+          var newMonth = $scope.changeDate.monthCount+1
+        }
+        console.log(lastDayOfOldMonth)
+
+        var dateArrayLength = $scope.changeDate.dayCount.length
+        var firstWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-7]
+        console.log(firstWeeklyDate)
+
+        var oldMonthDate = {month: oldMonth, date: []};
+        var newMonthDate = {month: newMonth, date: []};
+
+        for(var t = dateArrayLength-7; t <= dateArrayLength-1; t++){
+          console.log($scope.changeDate.dayCount[t])
+          if(firstWeeklyDate === 1){
+            if($scope.changeDate.dayCount[t] < 7){
+
+              newMonthDate.date.push($scope.changeDate.dayCount[t])
+            } else {
+              oldMonthDate.date.push($scope.changeDate.dayCount[t])
+            }
+          } else {
+
+            if($scope.changeDate.dayCount[t] >= firstWeeklyDate){
+              oldMonthDate.date.push($scope.changeDate.dayCount[t])
+            } else {
+              newMonthDate.date.push($scope.changeDate.dayCount[t])
+            }
+          }
+        }
+        $scope.changeDate.twoMonthsWeeklyDate = {
+          oldMonthDate: oldMonthDate,
+          newMonthDate: newMonthDate
+        }
+      }
+
+
     $scope.verifyCloneList();
   }
+
+  var monthContext = function(){
+    var month = $scope.changeDate.monthCount
+    $scope.changeDate.months = {
+      thisMonth: {
+        count: month,
+        days: new Date($scope.changeDate.year, month, 0).getDate()
+      },
+      previousMonth: {
+        count: month-1 < 1? 12 : month-1,
+        days: new Date($scope.changeDate.year, month-1, 0).getDate()
+      },
+      nextMonth: {
+        count: month+1 > 12? 1 : month+1,
+        days: new Date($scope.changeDate.year, month+1, 0).getDate()
+      }
+    }
+  };
 
   $scope.changeDate = {
     year: $scope.calendarYear,
@@ -244,6 +319,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         this.monthCount++
         $scope.verifyCloneList();
       }
+      monthContext()
       $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
     },
     decrement: function(){
@@ -262,6 +338,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         }
         $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
       }
+      monthContext()
       $scope.verifyCloneList()
     },
     current_month: function(){
@@ -277,7 +354,9 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       $scope.changeDate.dayCount = [];
       $scope.intializeDayCount()
     }
-  }
+  };
+
+
   $scope.currentMonth = {
     count: function(){
       console.log("$scope.currentMonth.count")
@@ -319,7 +398,8 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       }
       $scope.changeDate.dayCount.push(date)
     }
-  }
+    monthContext()
+  };
   $scope.intializeDayCount()
   console.log($scope.changeDate.dayCount)
 
