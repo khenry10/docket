@@ -24,15 +24,25 @@
         console.log($scope.data)
         console.log($scope.date)
         console.log($scope.element)
+        if($scope.element == undefined){
+          var initialized = true
+        } else {
+          var initialized = false;
+        }
 
         $scope.$watch("data", function(newD, oldD){
           console.log("$watch data envoked")
           console.log(newD)
           console.log(oldD)
           console.log($scope.element)
+          console.log($scope)
           // below condition fixes the problem where clicking on a list on the calendar doesn't show tasks, but it also doesn't update the left rail to have to driven off what is on the calendar
-          if($scope.element === "rail"){
+          if($scope.element === "rail" && newD != undefined){
+            console.log("calling allTaskRailDataFunction")
             allTaskRailDataFunction()
+            var initialized = true;
+          } else {
+            var initialized = false;
           }
         })
 
@@ -51,10 +61,10 @@
           completedList: []
         };
 
-        $scope.listName = $scope.data.list_name
-
+        if($scope.data){
+          $scope.listName = $scope.data.list_name
+        }
         $scope.showClearCompleted = false;
-
         $scope.nonBindedList = []
 
         var processTasksForList = function(list, index){
@@ -86,6 +96,20 @@
         }
 
         var modalDataFunction = function(){
+          // thought this would update the modal data after making a change in the left rail, wouldn't work though
+          // var allTodos  = Todo.all
+          // if(allTodos && allTodos.length){
+          //   allTodos.forEach(function(todo){
+          //     if(todo){
+          //       console.log(todo)
+          //       if(todo.list_name === $scope.data.list_name){
+          //         console.log("locked it in")
+          //         $scope.data.lists = todo.lists;
+          //       }
+          //     }
+          //   })
+          // }
+          console.log($scope.data.lists)
           $scope.data.lists.forEach(function(list, index){
             console.log(list.date)
             // console.log(date)
@@ -114,10 +138,12 @@
           })
         }
 
-        if($scope.element === "rail"){
-          allTaskRailDataFunction()
-        } else {
-          modalDataFunction()
+        if(initialized){
+          if($scope.element === "rail"){
+            allTaskRailDataFunction()
+          } else {
+            modalDataFunction()
+          }
         }
 
         var updateAll = function(task){
@@ -209,8 +235,10 @@
               }
             }
             console.log(updateTask)
+
             Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
             })
+
           }
         }
 

@@ -9,6 +9,16 @@
       link: function($scope){
         console.log($scope)
         console.log("You in da MASTA Todo")
+        $scope.taskButton = false;
+
+        // $scope.allTasksClicked = function(){
+        //   $scope.isAllTasksOpen = !$scope.taskButton
+        //   console.log("allTasksClicked clicked")
+        //   console.log($scope.isAllTasksOpen)
+        //   if($scope.isAllTasksOpen){
+        //     $scope.getMasters()
+        //   }
+        // }
 
         var lists = []
 
@@ -18,7 +28,9 @@
           var listsToAdd = []
           lists = [];
           $scope.listss = [];
-          $scope.getMasters("viewType")
+          if(newV != oldV){
+            $scope.getMasters("viewType")
+          }
         })
 
         $scope.$watch("changeDate.monthCount", function(newDate, oldDate){
@@ -29,8 +41,9 @@
           lists = [];
           $scope.listss = [];
           // below is to help prevent getMasters() called multiple times in a single page load
-          if($scope.viewType === 'month')
-          $scope.getMasters("monthCount")
+          // if($scope.isAllTasksOpen){
+            $scope.getMasters("monthCount")
+          // }
         })
 
         $scope.$watch("changeDate.weekCount", function(newDate, oldDate){
@@ -97,14 +110,14 @@
                   var masters = {
                     name: todo.list_name,
                     master_tasks: todo.master_tasks,
-                    lists: todo.lists,
-                    duration: todo.duration
+                    lists: todo.lists
                   }
               console.log($scope.changeDate)
-              lists.push(masters)
+              // lists.push(masters)
 
               // need to loop through every date list in every larger list to see if it's on the calendar
               var listsToAdd = []
+              var timesLooped = []
               for(var t = 0; t < todo.lists.length; t++) {
                 var list = todo.lists[t]
                 console.log(todo.list_name)
@@ -118,6 +131,7 @@
                     ($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)){
                     console.log("made it past listDate.month")
                     if($scope.viewType === "month" && listDate.month == $scope.changeDate.monthCount){
+                      timesLooped = [t+1]
                       console.log("made it past viewType === month")
 
                       listsToAdd.push(list)
@@ -137,19 +151,23 @@
                       for(var w = weekDaysLength; w < weekDaysLength+7; w++){
                         if($scope.changeDate.dayCount[w] == listDate.date){
                           if($scope.changeDate.twoMonthsWeekly){
+
                             console.log((listDate.date < $scope.changeDate.dayCount[weekDaysLength]))
                             console.log(listDate.month == $scope.changeDate.monthCount)
+
                             if(listDate.date < $scope.changeDate.dayCount[weekDaysLength]){
                               console.log(listDate.month === $scope.changeDate.monthCount+1)
                               if(listDate.month == $scope.changeDate.monthCount+1){
                                 console.log(index + " here1 KP.  2 month view ===true list.month === monthCount+1 is in t ")
 
                                 listsToAdd.push(list)
+                                timesLooped = [w+1]
                                 console.log(list)
 
                               } else if(listDate.month == $scope.changeDate.monthCount-1) {
                                 console.log(index + " here2 KP. " +list.date + " twoMonthView and list === list.monthCount")
                                 console.log(masters)
+                                timesLooped = [w+1]
                                 listsToAdd.push(list)
                                 console.log(list)
 
@@ -157,13 +175,14 @@
                             } else if(listDate.month == $scope.changeDate.monthCount) {
                               console.log(index + " here3 KP. " +list.date + " twoMonthView and list === list.monthCount")
                               console.log(masters)
+                              timesLooped = [w+1]
                               listsToAdd.push(list)
                               console.log(list)
 
                             }
                           } else {
                             console.log(index + " here4 KP")
-
+                            timesLooped = [w+1]
                             listsToAdd.push(list)
                             console.log(list)
 
@@ -173,8 +192,12 @@
                     }
                   }
               }
+              console.log(timesLooped)
+              masters.duration = todo.duration*timesLooped[0]
+              lists.push(masters)
               lists[index].lists = listsToAdd
             }
+
           }) // end of Todo.all.forEach
           checkLists()
         } //end of checkMasters

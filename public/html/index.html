@@ -90,16 +90,16 @@
           <div class="panel panel-default" style="border: none;" ng-show="true">
             <div class="panel-heading personal-panel" role="tab" id="headingFive">
               <h4 class="panel-title">
-                <div class="panel-title-custom">
+                <div class="panel-title-custom" ng-click="allTasksClicked()" ng-model="taskButton">
                   <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                      href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                      href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" >
                       All Tasks
                   </a>
                 </div>
               </h4>
             </div>
-            <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+            <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive" >
 
               <!-- <ul> -->
                 <dd-checklist  data="allTasks" element=" 'rail' "></dd-checklist>

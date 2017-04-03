@@ -275,9 +275,9 @@
         }
 
         var checkDates = function(date, list){
-          console.log("checkDates function envoked. list and then date below:")
-          console.log(date)
-          console.log(list)
+          // console.log("checkDates function envoked. list and then date below:")
+          // console.log(date)
+          // console.log(list)
           if(scope.newView === 'month'){
             var listDates = date.date.split("-")
             var listDay = parseInt(listDates[2].substr(0,2))
@@ -320,7 +320,7 @@
           var dateArrayLength = scope.lastDate.length
           var firstWeeklyDate = scope.lastDate[dateArrayLength-7]
           var lastWeeklyDate = scope.lastDate[dateArrayLength-1]
-          
+
           // conditional to see if the week spans two different months
           if(scope.date.twoMonthsWeekly){
             console.log(scope.date)
@@ -358,10 +358,10 @@
         var local = []
         scope.checkLists = function(message, listArray){
 
-          console.log("scope.checkLists message = " + message)
-          console.log(JSON.stringify(listArray))
-          console.log(JSON.stringify(local))
-          console.log(local.length)
+          // console.log("scope.checkLists message = " + message)
+          // console.log(JSON.stringify(listArray))
+          // console.log(JSON.stringify(local))
+          // console.log(local.length)
 
 
           if(listArray){
@@ -376,24 +376,15 @@
             if(message == 'newList'){
               local.push(listArray[0])
             }
-
-
-            // if(listArray && listArray.length == 1){
-            //   console.log("pushing to local")
-            //   console.log(listArray[0])
-            //   local.push(listArray[0])
-            // }
-            console.log(local)
-            console.log(listArray)
-
-
-            console.log(listArray.length)
+            // console.log(local)
+            // console.log(listArray)
+            // console.log(listArray.length)
             if(listArray.length){
               for(var k = 0; k < listArray.length; k++){
                 var list = listArray[k]
                 if(listArray[k] != undefined){
-                    console.log(list)
-                    console.log("list = " + list.list_name + " index = " + k)
+                    // console.log(list)
+                    // console.log("list = " + list.list_name + " index = " + k)
                     var reocurringDates = list.lists
                     // need to access all of the recurring lists which are nested in reocurringDates, which is done below
                     // console.log(scope.date)
@@ -406,10 +397,10 @@
                       var listDay = parseInt(listDates[2].substr(0,2))
                       var lastMonth = scope.date.monthCount-1
 
-                      console.log( scope.date )
-                      console.log(date)
-                      console.log(listMonth)
-                      console.log(scope.date.twoMonthsWeekly && listMonth === scope.date.monthCount+1)
+                      // console.log( scope.date )
+                      // console.log(date)
+                      // console.log(listMonth)
+                      // console.log(scope.date.twoMonthsWeekly && listMonth === scope.date.monthCount+1)
                       if(scope.newView === 'week' &&
                       scope.date.monthCount === listMonth ||
                       scope.newView === 'week' && listMonth === lastMonth ||
@@ -642,6 +633,7 @@
           var daysAwayMinusTodayDate = daysAwayFromDate + scope.TodayDate
           var date = daysAwayMinusTodayDate
           // console.log("date = " + date)
+          // console.log(scope.date)
           // console.log(daysAwayMinusTodayDate <= scope.daysInMonth)
           // console.log("daysAwayMinusTodayDate = " + daysAwayMinusTodayDate)
           // console.log("scope.daysInMonth = " + scope.daysInMonth)
@@ -669,9 +661,13 @@
           } else {
             console.log("here 3")
             console.log("date = " + date)
-            var date = scope.lastDate[scope.lastDate.length-1];
-            date = parseInt(date) + 1
 
+            if(scope.date.lastMove === 'increment'){
+              var date = scope.date.months.previousMonth.days
+            } else {
+              var date = scope.date.months.thisMonth.days
+            }
+            console.log(date)
             scope.lastDate.push(date)
           }
           th.innerHTML = daysOfWeek[i] + "  " + date
