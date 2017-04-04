@@ -8,8 +8,14 @@
       </div>
       <div class="modal-body" style="background-color: #F2F3F4">
 
-        <dd-checklist  data="data" date="date"></dd-checklist>
-        <regular-list></regular-list>
+
+        <div class="btn-group" ng-if="!list_type">
+          <button class="btn" ng-click="pickListType('todo')" style="box-shadow: 1px 1px 1px grey; background-color: white">To Do List</button>
+          <button class="btn" ng-click="pickListType('shopping')" style="box-shadow: 1px 1px 1px grey; background-color: white">Shopping List</button>
+        </div>
+        ** {{ listType }}
+        <dd-checklist ng-if="listType"  data="data" date="date" list-type="listType"></dd-checklist>
+        <!-- <regular-list ng-if="shoppingType"></regular-list> -->
 
 
       </div>

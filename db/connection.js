@@ -30,6 +30,7 @@ mongoose.model("Expenses", ExpenseSchema);
 
 var TodoSchema = new mongoose.Schema({
   list_name: String,
+  list_type: String,
   list_created_on: Date,
   start_time: String,
   end_time: String,

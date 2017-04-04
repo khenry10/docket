@@ -15,14 +15,17 @@
       scope: {
         data: "=data",
         date: "=date",
-        element: "=element"
+        element: "=element",
+        listType: "="
       },
       link: function($scope){
 
         console.log("ddChecklist")
+        console.log($scope.listType)
+
         // the data from the list that gets clicked gets passed through to hear via $scope.data
         console.log($scope.data)
-        console.log($scope.date)
+        console.log($scope)
         console.log($scope.element)
         if($scope.element == undefined){
           var initialized = true
@@ -96,6 +99,7 @@
         }
 
         var modalDataFunction = function(){
+
           // thought this would update the modal data after making a change in the left rail, wouldn't work though
           // var allTodos  = Todo.all
           // if(allTodos && allTodos.length){
@@ -147,6 +151,8 @@
         }
 
         var updateAll = function(task){
+          // $scope.listName isn't available when updating from the left rail, which is why eash task has it's list name included
+          console.log("$scope.element = " + $scope.element)
           for(var z = 0; z < $scope.models.toDoList.length; z++){
             $scope.models.toDoList[z].rank = z;
             console.log($scope.models.toDoList[z])
@@ -155,7 +161,7 @@
             console.log($scope.listName)
             console.log($scope.models.toDoList)
             console.log($scope.date)
-
+            console.log(task)
             var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
             saveMe.lists[$scope.listIndex] = {date: $scope.date, tasks: $scope.models.toDoList, clearedTasks: $scope.models.completedList}
             console.log(saveMe)
@@ -167,6 +173,7 @@
         $scope.update = function(task, index){
           console.log($scope.data)
           console.log($scope.data.lists)
+          console.log($scope)
           console.log(task)
           console.log($scope.models)
           console.log($scope.models.toDoList)
@@ -236,7 +243,10 @@
             }
             console.log(updateTask)
 
+
             Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
+
+              console.log(task)
             })
 
           }
@@ -245,14 +255,33 @@
         $scope.addNewTodo = function (index){
           console.log("NEW")
           console.log($scope.newTodo)
-          if($scope.newTodo){
 
+
+          if($scope.newTodo || $scope.shoppingProductName){
             var timeCreated = new Date();
-
             var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
-            saveMe.lists[$scope.listIndex].tasks.push({name: $scope.newTodo, task_completed: false})
+
+            if(!$scope.data.list_type){
+              saveMe.list_type = $scope.listType
+            }
+
+            if($scope.data.list_type === 'todo'){
+              // below finds the correct date list and pushes the new Task into it
+              saveMe.lists[$scope.listIndex].tasks.push({name: $scope.newTodo, task_completed: false})
+              // faking ajax like functionality
+              $scope.models.toDoList.push({name: $scope.newTodo, task_completed: false})
+            }
             console.log(saveMe)
-            $scope.models.toDoList.push({name: $scope.newTodo, task_completed: false})
+
+            if($scope.data.list_type === 'shopping'){
+              var shoppingListItem = {
+                product_name: $scope.shoppingProductName,
+                quantity: $scope.shoppingProductQuantity,
+                price: $scope.shoppingProductPrice,
+                total_cost: $scope.shoppingProductQuantity * $scope.shoppingProductPrice
+              }
+              saveMe.lists[$scope.listIndex].tasks.push(shoppingListItem)
+            }
 
             Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
             $scope.newTodo = ""
