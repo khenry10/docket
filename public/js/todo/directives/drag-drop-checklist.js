@@ -27,6 +27,11 @@
         console.log($scope.data)
         console.log($scope)
         console.log($scope.element)
+
+        $scope.shopping = {};
+        var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
         if($scope.element == undefined){
           var initialized = true
         } else {
@@ -37,8 +42,6 @@
           console.log("$watch data envoked")
           console.log(newD)
           console.log(oldD)
-          console.log($scope.element)
-          console.log($scope)
           // below condition fixes the problem where clicking on a list on the calendar doesn't show tasks, but it also doesn't update the left rail to have to driven off what is on the calendar
           if($scope.element === "rail" && newD != undefined){
             console.log("calling allTaskRailDataFunction")
@@ -48,9 +51,6 @@
             var initialized = false;
           }
         })
-
-        var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
         if($scope.element != "rail"){
           var splitDate = $scope.date.split("-")
@@ -84,10 +84,15 @@
             }
 
             $scope.nonBindedTask = {
-              list_date: list.date,
-              name: task.name,
-              rank: task.rank,
-              task_completed: task.task_completed
+                list_date: list.date,
+                name: task.name,
+                rank: task.rank,
+                task_completed: task.task_completed
+            }
+            if($scope.listType === 'shopping' ){
+              $scope.nonBindedTask.name = task.product_name;
+              $scope.nonBindedTask.quantity = task.quantity;
+              $scope.nonBindedTask.price = task.price;
             }
             console.log($scope.nonBindedTask)
             $scope.models.toDoList.push($scope.nonBindedTask)
@@ -172,13 +177,8 @@
 
         $scope.update = function(task, index){
           console.log($scope.data)
-          console.log($scope.data.lists)
-          console.log($scope)
           console.log(task)
           console.log($scope.models)
-          console.log($scope.models.toDoList)
-          console.log($scope.nonBindedList)
-          console.log(task.length)
 
           if(task.task_completed){
             $scope.showClearCompleted = true;
@@ -242,22 +242,20 @@
               }
             }
             console.log(updateTask)
-
-
             Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
-
               console.log(task)
-            })
+            });
 
           }
-        }
+        };
 
         $scope.addNewTodo = function (index){
           console.log("NEW")
-          console.log($scope.newTodo)
+          console.log($scope)
+          console.log($scope.shopping.productName)
+          console.log($scope.data)
 
-
-          if($scope.newTodo || $scope.shoppingProductName){
+          if($scope.newTodo || $scope.shopping.productName){
             var timeCreated = new Date();
             var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
 
@@ -269,22 +267,34 @@
               // below finds the correct date list and pushes the new Task into it
               saveMe.lists[$scope.listIndex].tasks.push({name: $scope.newTodo, task_completed: false})
               // faking ajax like functionality
-              $scope.models.toDoList.push({name: $scope.newTodo, task_completed: false})
+              $scope.models.toDoList.push({name: $scope.newTodo, task_completed: false, listType: 'todo'})
             }
             console.log(saveMe)
 
             if($scope.data.list_type === 'shopping'){
               var shoppingListItem = {
-                product_name: $scope.shoppingProductName,
-                quantity: $scope.shoppingProductQuantity,
-                price: $scope.shoppingProductPrice,
-                total_cost: $scope.shoppingProductQuantity * $scope.shoppingProductPrice
+                product_name: $scope.shopping.productName,
+                quantity: $scope.shopping.productQuantity,
+                price: $scope.shopping.productPrice,
+                total_cost: $scope.shopping.productQuantity * $scope.shopping.productPrice,
+                purchased: false
               }
+              console.log(shoppingListItem)
               saveMe.lists[$scope.listIndex].tasks.push(shoppingListItem)
+              $scope.models.toDoList.push({
+                name: $scope.shopping.productName,
+                quantity: $scope.shopping.productQuantity,
+                price: $scope.shopping.productPrice,
+                totalCost: $scope.shopping.productQuantity * $scope.shopping.productPrice,
+                listType: 'shopping',
+                task_completed: false})
             }
-
+            console.log(saveMe)
             Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
             $scope.newTodo = ""
+            $scope.shopping.productName = ""
+            $scope.shopping.productQuantity = ""
+            $scope.shopping.productPrice = ""
             console.log($scope.newTodo)
           }
         }
@@ -314,20 +324,17 @@
 
           console.log(newTodoList)
           $scope.models.toDoList = newTodoList;
-        }
-
-        $scope.showHideButton = false;
+        };
 
         $scope.showCompletedList = function(){
           $scope.showHideButton = true;
           $scope.models.completedList = $scope.list.clearedTasks
-        }
+        };
 
         $scope.hideCompletedList = function(){
           $scope.showHideButton = false;
           $scope.models.completedList = []
-        }
-
+        };
 
       }
     }
