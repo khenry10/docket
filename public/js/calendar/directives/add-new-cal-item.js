@@ -113,10 +113,9 @@
             console.log($scope.firstDay)
 
             if($scope.name && $scope.firstDay || $scope.view === 'modal'){
-
-                console.log($scope.repeatInterval)
-
+                console.log($scope.listType)
                 $scope.newTodoList.list_name = $scope.name
+                $scope.newTodoList.list_type = $scope.listType
                 $scope.newTodoList.list_created_on = new Date()
 
                 $scope.newTodoList.first_day = $scope.firstDay
@@ -211,7 +210,8 @@
                 $scope.newCalTodoLists = [{list_name: $scope.name, lists: createListOfLists}]
                 $scope.newCalTodoLists[0].first_day = $scope.firstDay
                 $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
-                $scope.newCalTodoLists[0].list_recur_end =$scope.newTodoList.list_recur_end
+                $scope.newCalTodoLists[0].list_recur_end = $scope.newTodoList.list_recur_end
+                $scope.newCalTodoLists[0].list_type = $scope.newTodoList.list_type
 
                 console.log("$scope.newCalTodoLists below: ")
                 console.log($scope.newCalTodoLists)
@@ -248,9 +248,9 @@
                 } else {
                   // new events from side rail use isolated directive scope
                   $scope.newCal = [$scope.newCalTodoLists[0]]
-                  // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
-                  // since below function is from an external controller, we have to pass the parameter as an object literal, they key must match the parameter name in index.html
                   console.log($scope.newCalTodoLists[0])
+                  // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
+                  // since below function is from an external controller, we have to pass the parameter as an object literal, the key must match the parameter name in index.html
                   // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
                   $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
                 }

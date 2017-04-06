@@ -24,8 +24,8 @@
                   <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
                       href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      <span ng-show="listss.length ===1">{{ listss.length }} Master List</span>
-                      <span ng-show="listss.length > 1">{{ listss.length }} Master Lists</span>
+                      <span ng-show="listss.length ===1">{{ listss.length }} Todo List</span>
+                      <span ng-show="listss.length > 1">{{ listss.length }} Todo Lists</span>
                   </a>
                 </div>
               </h4>
@@ -36,6 +36,29 @@
           </div>
 
           <!-- panel 2 end  -->
+
+
+          <!-- panel 2.5 start -->
+          <div class="panel panel-default" style="border: none;" ng-show="listss.length">
+            <div class="panel-heading personal-panel" role="tab" id="headingSix">
+              <h4 class="panel-title">
+                <div class="panel-title-custom">
+                  <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                      href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                      <span ng-show="listss.length ===1">{{ listss.length }} Shopping List</span>
+                      <span ng-show="listss.length > 1">{{ listss.length }} Shopping Lists</span>
+                  </a>
+                </div>
+              </h4>
+            </div>
+            <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+              <todo-master  ></todo-master>
+            </div>
+          </div>
+
+          <!-- panel 2.5 end  -->
+
 
           <!-- panel 3 start -->
           <!-- <div class="panel panel-default">

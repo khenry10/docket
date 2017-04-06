@@ -19,6 +19,7 @@ angular.module('app')
 ])
 
 function IndexController($scope, Events, Todo, $window, ModalService, DateService){
+console.log("IndexController slash calendarController below")
   console.log($scope)
   // console.log($scope.newMasterListAddition())
   $scope.events = []

@@ -90,7 +90,7 @@
                 task_completed: task.task_completed
             }
             if($scope.listType === 'shopping' ){
-              $scope.nonBindedTask.name = task.product_name;
+              $scope.nonBindedTask.name = task.name;
               $scope.nonBindedTask.quantity = task.quantity;
               $scope.nonBindedTask.price = task.price;
             }
@@ -235,6 +235,9 @@
               var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
               console.log(updateTask)
               console.log(updateTask.lists[$scope.listIndex].tasks[index])
+
+              console.log($scope.data)
+              // if($scope.data.list === 'todo')
               updateTask.lists[$scope.listIndex].tasks[index] = {
                 name: task.name,
                 task_completed: task.task_completed,
@@ -249,35 +252,41 @@
           }
         };
 
+
+        $scope.newTask = {};
         $scope.addNewTodo = function (index){
           console.log("NEW")
           console.log($scope)
           console.log($scope.shopping.productName)
-          console.log($scope.data)
+          console.log($scope.newTask.name)
+          console.log($scope.listType)
 
-          if($scope.newTodo || $scope.shopping.productName){
+          if($scope.newTask.name || $scope.shopping.productName){
             var timeCreated = new Date();
             var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
 
             if(!$scope.data.list_type){
               saveMe.list_type = $scope.listType
             }
+            console.log($scope.data)
+            console.log($scope.data.list_type)
 
-            if($scope.data.list_type === 'todo'){
+            if($scope.data.list_type === 'todo' || $scope.listType === 'todo'){
               // below finds the correct date list and pushes the new Task into it
-              saveMe.lists[$scope.listIndex].tasks.push({name: $scope.newTodo, task_completed: false})
+              saveMe.lists[$scope.listIndex].tasks.push({
+                name: $scope.newTask.name, task_completed: false})
               // faking ajax like functionality
-              $scope.models.toDoList.push({name: $scope.newTodo, task_completed: false, listType: 'todo'})
+              $scope.models.toDoList.push({name: $scope.newTask.name, task_completed: false, listType: 'todo'})
             }
             console.log(saveMe)
 
-            if($scope.data.list_type === 'shopping'){
+            if($scope.data.list_type === 'shopping' || $scope.listType === 'shopping'){
               var shoppingListItem = {
-                product_name: $scope.shopping.productName,
+                name: $scope.shopping.productName,
                 quantity: $scope.shopping.productQuantity,
                 price: $scope.shopping.productPrice,
                 total_cost: $scope.shopping.productQuantity * $scope.shopping.productPrice,
-                purchased: false
+                task_completed: false
               }
               console.log(shoppingListItem)
               saveMe.lists[$scope.listIndex].tasks.push(shoppingListItem)
@@ -291,11 +300,11 @@
             }
             console.log(saveMe)
             Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
-            $scope.newTodo = ""
+            $scope.newTask.name = ""
             $scope.shopping.productName = ""
             $scope.shopping.productQuantity = ""
             $scope.shopping.productPrice = ""
-            console.log($scope.newTodo)
+            console.log($scope.newTask)
           }
         }
 

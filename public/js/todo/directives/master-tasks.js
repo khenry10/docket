@@ -7,6 +7,7 @@
     return {
       templateUrl: "/assets/html/todo/directives/master-tasks.html",
       link: function($scope){
+        console.log("masterTask aks todoMaster $scope below")
         console.log($scope)
         console.log("You in da MASTA Todo")
         $scope.taskButton = false;
