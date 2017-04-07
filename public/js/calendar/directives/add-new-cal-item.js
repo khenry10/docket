@@ -244,7 +244,7 @@
 
                   $scope.data.checkLists("newList",[$scope.newCalTodoLists[0]])
                   // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
-                  $scope.data.newMaster($scope.newCalTodoLists[0])
+                  // $scope.data.newMaster($scope.newCalTodoLists[0])
                 } else {
                   // new events from side rail use isolated directive scope
                   $scope.newCal = [$scope.newCalTodoLists[0]]
