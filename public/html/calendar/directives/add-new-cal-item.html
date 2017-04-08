@@ -36,6 +36,10 @@
       </md-radio-group>
     </li>
 
+    <li>
+      <input input="text" ng-if="listType === 'shopping' " ng-model="newEntry.budget" placeholder="Budget"/>
+    </li>
+
     <li ng-show="name">
       <md-input-container style="background-color: white; color: black">
         <label ng-if="!repeatInterval">Reocurring</label>

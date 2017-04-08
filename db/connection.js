@@ -36,6 +36,7 @@ var TodoSchema = new mongoose.Schema({
   end_time: String,
   duration: Number,
   first_day: Date,
+  budget: Number,
   list_reocurring: String,
   list_recur_end: String,
   master_tasks: [],

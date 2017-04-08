@@ -26,10 +26,6 @@ function modalController(Todo, $scope, data, date){
   var newDate = new Date(splitDate[0], splitDate[1]-1, splitDate[2])
   $scope.niceDate = daysOfWeek[newDate.getDay()] + " " + monthName[splitDate[1]-1] +" "+ splitDate[2] + ", " + splitDate[0]
 
-  $scope.pickListType = function(type){
-    console.log(type)
-    $scope.listType = type;
-
-  }
+  
 
 }

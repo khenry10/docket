@@ -63,6 +63,15 @@ table {
   border: 2px solid white;
 }*/
 
+.panel-title-custom a:hover {
+  color:white;
+  text-decoration: none;
+}
+
+.panel-title-custom a:focus{
+  color:white;
+  text-decoration: none;
+}
 
 .calendar table {
   margin: 0 auto;
@@ -184,7 +193,7 @@ div#time.endTimeTd {
   width: 20%;
   height: 100%;
   text-align: left;
-  padding: 20px;
+  padding: 20px 10px 20px 0px;
   box-shadow: 2.5px 0px 2.5px #888888;
   overflow-x: scroll
 }

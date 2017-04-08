@@ -3,8 +3,48 @@
 <div>
   <div class="task-list-workspace" >
     <div ng-init="todoVM.fetchData()" class="simpleDemo" style="">
+      <!-- <div ng-if="listType === 'shopping' " style="margin-top: 0px">
+        <p style="margin-top: 0px"> Budget: {{ data.budget | currency }} </p>
+        <p style="margin-top: 0px"> Remaining: {{ data.budget - totalShoppingList | currency }} </p>
+        <p style="margin-top: 0px"> Shopping List Total: {{ totalShoppingList | currency }} </p>
+      </div> -->
 
-      <li style="list-style: none; padding-bottom: 2%;">
+      <div class="container" style="background-color: white; width: 100%; margin-top: 0px;">
+        <div ng-if="listType === 'shopping' " style="margin-top: 10px; display: flex; justify-content: space-between ">
+          <span style="width: 10%">
+            <p style=" margin-bottom: 0px"> Budget: </p>
+            <p> {{ data.budget | currency }} </p>
+          </span>
+
+          <span style="margin-top: 0px width: 33%">
+            <p style=" margin-bottom: 0px"> Remaining: </p>
+            <p> {{ data.budget - totalShoppingList | currency }} </p>
+          </span>
+
+          <span style="margin-top: 0px width: 33%">
+            <p style=" margin-bottom: 0px"> List Total: </p>
+            <p> {{ totalShoppingList | currency }} </p>
+          </span>
+
+        </div>
+        <div ng-if="listType === 'shopping' " class="progress" id="progress-container" style="margin-top: 10px">
+
+          <div class="progress-bar progress-bar-danger progress-bar-striped"
+                ng-style="{'width': totalShoppingListPercent+'%'}"
+               role="progressbar"
+               md-tooltip="Shopping List Total {{ totalShoppingListPercent }}%"
+               ng-model="totalShoppingListPercent">
+               <md-tooltip style="z-index: 5000 ">Shopping List Total {{ totalShoppingListPercent }}%</md-tooltip>
+          </div>
+          <!-- <div class="progress-bar progress-bar" style=" background-color: white;"
+                ng-style="{'width': remainingBudgetPercent+'%'}"
+               role="progressbar"
+               ng-model="remainingBudgetPercent">
+          </div>  -->
+        </div>
+      </div>
+
+      <li style="list-style: none; padding-bottom: 2%; margin-top: 20px;">
         <div ng-if="listType === 'todo' ">
           <input class="new-todo-input" type="text" ng-model="newTask.name"  placeholder="Add new task">
           <button type="button" ng-click="addNewTodo()" class="btn btn-default" > + </button>
@@ -20,12 +60,12 @@
                 class="btn btn-primary"> Clear Completed </button>
       </li>
       <ul dnd-list="models.toDoList">
-        <table ng-if="listType === 'shopping' " style="width: 100%">
+        <table ng-if="listType === 'shopping' && models.toDoList.length " style="width: 100%">
           <tr>
             <th class="shopping-list-head">  </th>
             <th class="shopping-list-head"> Product </th>
             <th class="shopping-list-head"> Quantity </th>
-            <th class="shopping-list-head"> Price </th>
+            <th class="shopping-list-head"> Unit Price </th>
           </tr>
         </table>
         <li ng-repeat="item in models.toDoList "
@@ -60,8 +100,8 @@
               <td style="width: 35%"> {{ item.name }} </td>
               <td style="width: 25%"> {{ item.quantity }} </td>
               <td style="width: 25%"> {{ item.price | currency }} </td>
-              <td> *{{item.task_completed}} </td>
-              
+              <!-- <td> *{{item.task_completed}} </td> -->
+
             </tr>
           </table>
         </li>

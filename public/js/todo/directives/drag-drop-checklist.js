@@ -28,9 +28,17 @@
         console.log($scope)
         console.log($scope.element)
 
+        $scope.models = {
+          selected: null,
+          toDoList: [],
+          completedList: []
+        };
         $scope.shopping = {};
         var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        $scope.showClearCompleted = false;
+        $scope.nonBindedList = [];
+        $scope.totalShoppingList = 0;
 
         if($scope.element == undefined){
           var initialized = true
@@ -58,17 +66,25 @@
           $scope.niceDate = daysOfWeek[newDate.getDay()] + " " + monthName[splitDate[1]-1] +" "+ splitDate[2] + ", " + splitDate[0]
         }
 
-        $scope.models = {
-          selected: null,
-          toDoList: [],
-          completedList: []
-        };
-
         if($scope.data){
           $scope.listName = $scope.data.list_name
         }
-        $scope.showClearCompleted = false;
-        $scope.nonBindedList = []
+
+        var round = function(value, decimals) {
+          return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+        };
+
+        var budgetProgressBar = function(){
+          // console.log(price)
+          // console.log(quantity)
+          // $scope.totalShoppingList = $scope.totalShoppingList+(quantity * price);
+          console.log($scope.totalShoppingList)
+          console.log($scope.data.budget)
+          $scope.totalShoppingListPercent = round($scope.totalShoppingList/$scope.data.budget*100, 2);
+          console.log($scope.totalShoppingListPercent)
+          $scope.remainingBudgetPercent = round(100 - $scope.totalShoppingListPercent, 2);
+          console.log($scope.remainingBudgetPercent)
+        }
 
         var processTasksForList = function(list, index){
           $scope.models.toDoList = [];
@@ -90,13 +106,16 @@
                 task_completed: task.task_completed
             }
             if($scope.listType === 'shopping' ){
+
               $scope.nonBindedTask.name = task.name;
               $scope.nonBindedTask.quantity = task.quantity;
               $scope.nonBindedTask.price = task.price;
+              $scope.totalShoppingList = $scope.totalShoppingList+(task.quantity * task.price);
             }
             console.log($scope.nonBindedTask)
             $scope.models.toDoList.push($scope.nonBindedTask)
           })
+          budgetProgressBar()
           console.log(list.tasks)
 
           console.log($scope.models.toDoList)
@@ -281,6 +300,8 @@
             console.log(saveMe)
 
             if($scope.data.list_type === 'shopping' || $scope.listType === 'shopping'){
+              $scope.totalShoppingList = $scope.totalShoppingList+($scope.shopping.productQuantity * $scope.shopping.productPrice)
+
               var shoppingListItem = {
                 name: $scope.shopping.productName,
                 quantity: $scope.shopping.productQuantity,
@@ -298,6 +319,7 @@
                 listType: 'shopping',
                 task_completed: false})
             }
+            budgetProgressBar()
             console.log(saveMe)
             Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
             $scope.newTask.name = ""

@@ -96,6 +96,8 @@
 
         var createListOfLists = []
 
+        $scope.newEntry = {}
+
         $scope.create = function(){
           console.log($scope)
           $scope.newTodoList = new Todo();
@@ -111,11 +113,15 @@
           var date = $scope.firstDay.getDate();
           var numberOfDaysInMonth = new Date(year, month, 0).getDate()
             console.log($scope.firstDay)
+            console.log($scope.newEntry)
 
             if($scope.name && $scope.firstDay || $scope.view === 'modal'){
                 console.log($scope.listType)
                 $scope.newTodoList.list_name = $scope.name
                 $scope.newTodoList.list_type = $scope.listType
+                if($scope.listType === 'shopping'){
+                  $scope.newTodoList.budget = $scope.newEntry.budget;
+                }
                 $scope.newTodoList.list_created_on = new Date()
 
                 $scope.newTodoList.first_day = $scope.firstDay
@@ -212,6 +218,7 @@
                 $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
                 $scope.newCalTodoLists[0].list_recur_end = $scope.newTodoList.list_recur_end
                 $scope.newCalTodoLists[0].list_type = $scope.newTodoList.list_type
+                $scope.newCalTodoLists[0].budget = $scope.newTodoList.budget
 
                 console.log("$scope.newCalTodoLists below: ")
                 console.log($scope.newCalTodoLists)

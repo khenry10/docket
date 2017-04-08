@@ -9,8 +9,7 @@
       scope: {
         viewType: "=",
         listType: "@",
-        changeDate: "=",
-        listss: "="
+        changeDate: "="
       },
       link: function($scope){
         console.log("masterTask aks todoMaster $scope below")
@@ -91,135 +90,131 @@
             }
           }
           pullOutAllTasks(reallyNewList)
+          if($scope.listType === 'shopping'){
+            $scope.shoppingList = reallyNewList
+          }
           $scope.listss = reallyNewList
           console.log($scope.listss)
           console.log($scope)
+        };
+
+
+        var listsToAdd = [];
+        var timesLooped = [];
+        var checkWeeklyLists = function(listDate, index, list){
+
+          var weekDays = $scope.changeDate.dayCount
+          var weekDaysLength = $scope.changeDate.dayCount.length-7
+          // console.log(weekDays)
+          // console.log(listDate.date)
+          // console.log(listDate.month)
+          // console.log($scope.changeDate.dayCount[weekDaysLength])
+          // console.log($scope.changeDate)
+          // need to add the twoMonthsWeekly logic so that lists from the beginning of the month, don't sneak in at the end of the month (example: last of week of March has a list from 3/1 sneaking through)
+          for(var w = weekDaysLength; w < weekDaysLength+7; w++){
+            if($scope.changeDate.dayCount[w] == listDate.date){
+              if($scope.changeDate.twoMonthsWeekly){
+
+                console.log((listDate.date < $scope.changeDate.dayCount[weekDaysLength]))
+                console.log(listDate.month == $scope.changeDate.monthCount)
+
+                if(listDate.date < $scope.changeDate.dayCount[weekDaysLength]){
+                  console.log(listDate.month === $scope.changeDate.monthCount+1)
+                  if(listDate.month == $scope.changeDate.monthCount+1){
+                    console.log(index + " here1 KP.  2 month view ===true list.month === monthCount+1 is in t ")
+
+                    listsToAdd.push(list)
+                    timesLooped = [w+1]
+                    console.log(list)
+
+                  } else if(listDate.month == $scope.changeDate.monthCount-1) {
+                    console.log(index + " here2 KP. " +list.date + " twoMonthView and list === list.monthCount")
+                    console.log(masters)
+                    timesLooped = [w+1]
+                    listsToAdd.push(list)
+                    console.log(list)
+
+                  }
+                } else if(listDate.month == $scope.changeDate.monthCount) {
+                  console.log(index + " here3 KP. " +list.date + " twoMonthView and list === list.monthCount")
+                  console.log(masters)
+                  timesLooped = [w+1]
+                  listsToAdd.push(list)
+                  console.log(list)
+
+                }
+              } else {
+                console.log(index + " here4 KP")
+                timesLooped = [w+1]
+                listsToAdd.push(list)
+                console.log(list)
+
+              }
+            }
+          }
         }
 
         // retrieves all todo lists from database
         $scope.getMasters = function(origin){
           console.log("$scope.getMasters called from " + origin)
-          var lists= [];
-          var timesLooped = []
+          lists= [];
+          console.log(lists)
 
-          // Loop through all Todo Lists and create master object, which will get sent to
             Todo.all.forEach(function(todo, index){
-              if(todo != undefined){
+              console.log(todo.list_type)
+              console.log($scope.listType)
+              if(todo != undefined && todo.list_type == $scope.listType){
                 console.log(todo)
-                if(todo.list_type == $scope.listType){
                   var masters = {
                     name: todo.list_name,
+                    list_type: todo.list_type,
                     master_tasks: todo.master_tasks,
                     lists: todo.lists
                   }
+              console.log($scope.changeDate)
+              // lists.push(masters)
 
               // need to loop through every date list in every larger list to see if it's on the calendar
-              var listsToAdd = []
+              for(var t = 0; t < todo.lists.length; t++) {
+                var list = todo.lists[t]
+                console.log(todo.list_name)
+                console.log(list)
+                var listDate = DateService.stringDateSplit(list.date)
+                    if(listDate.month == $scope.changeDate.monthCount ||
+                      ($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)){
+                      console.log("made it past listDate.month")
+                      if($scope.viewType === "month" && listDate.month == $scope.changeDate.monthCount){
+                        timesLooped = [t+1]
+                        console.log("made it past viewType === month")
 
+                        listsToAdd.push(list)
+                        console.log(list)
+                        console.log(listsToAdd)
 
-              console.log(todo.list_type)
-              console.log($scope.listType)
-
-
-
-                for(var t = 0; t < todo.lists.length; t++) {
-                  console.log(t)
-                  var list = todo.lists[t]
-                  console.log(todo.list_name)
-                  console.log(list)
-                  var listDate = DateService.stringDateSplit(list.date)
-                    // console.log($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)
-                    // console.log(listDate.month)
-                    // console.log($scope.changeDate.monthCount+1)
-                    // console.log($scope.changeDate.twoMonthsWeekly)
-
-                      if(listDate.month == $scope.changeDate.monthCount ||
-                        ($scope.changeDate.twoMonthsWeekly && listDate.month == $scope.changeDate.monthCount+1)){
-                        console.log("made it past listDate.month")
-                        if($scope.viewType === "month" && listDate.month == $scope.changeDate.monthCount){
-                          timesLooped = [t+1]
-                          console.log("made it past viewType === month")
-
-                          listsToAdd.push(list)
-                          console.log(list)
-                          console.log(listsToAdd)
-
-                        } else if($scope.viewType === "week"){
-                          // similar to what happens in calendar_directive, need to check by day
-                          console.log("made it into daily masters")
-                          var weekDays = $scope.changeDate.dayCount
-                          var weekDaysLength = $scope.changeDate.dayCount.length-7
-                          // console.log(weekDays)
-                          // console.log(listDate.date)
-                          // console.log(listDate.month)
-                          // console.log($scope.changeDate.dayCount[weekDaysLength])
-                          // console.log($scope.changeDate)
-                          // need to add the twoMonthsWeekly logic so that lists from the beginning of the month, don't sneak in at the end of the month (example: last of week of March has a list from 3/1 sneaking through)
-                          for(var w = weekDaysLength; w < weekDaysLength+7; w++){
-                            if($scope.changeDate.dayCount[w] == listDate.date){
-                              if($scope.changeDate.twoMonthsWeekly){
-
-                                console.log((listDate.date < $scope.changeDate.dayCount[weekDaysLength]))
-                                console.log(listDate.month == $scope.changeDate.monthCount)
-
-                                if(listDate.date < $scope.changeDate.dayCount[weekDaysLength]){
-                                  console.log(listDate.month === $scope.changeDate.monthCount+1)
-                                  if(listDate.month == $scope.changeDate.monthCount+1){
-                                    console.log(index + " here1 KP.  2 month view ===true list.month === monthCount+1 is in t ")
-
-                                    listsToAdd.push(list)
-                                    timesLooped = [w+1]
-                                    console.log(list)
-
-                                  } else if(listDate.month == $scope.changeDate.monthCount-1) {
-                                    console.log(index + " here2 KP. " +list.date + " twoMonthView and list === list.monthCount")
-                                    console.log(masters)
-                                    timesLooped = [w+1]
-                                    listsToAdd.push(list)
-                                    console.log(list)
-
-                                  }
-                                } else if(listDate.month == $scope.changeDate.monthCount) {
-                                  console.log(index + " here3 KP. " +list.date + " twoMonthView and list === list.monthCount")
-                                  console.log(masters)
-                                  timesLooped = [w+1]
-                                  listsToAdd.push(list)
-                                  console.log(list)
-
-                                }
-                              } else {
-                                console.log(index + " here4 KP")
-                                timesLooped = [w+1]
-                                listsToAdd.push(list)
-                                console.log(list)
-
-                              }
-                            }
-                          }
-                        }
-                      } // end of if statement with a bunch of conditinals
-
-
-
-                      console.log(timesLooped)
-                      if(timesLooped){
-
-                        masters.duration = todo.duration*timesLooped[0]
+                      } else if($scope.viewType === "week"){
+                        // similar to what happens in calendar_directive, need to check by day
+                        console.log("made it into daily masters")
+                        checkWeeklyLists(listDate, index, list)
                       }
-                      console.log(masters)
-                      lists.push(masters)
-                      console.log(index)
-                      console.log(lists)
-                      console.log(listsToAdd)
-                      lists[t].lists = listsToAdd
-                      console.log(lists[t].lists )
-                }
+                    } // end of if statement with a bunch of conditinals
+              }
 
-            }
+              console.log(timesLooped)
+              masters.duration = todo.duration*timesLooped[0]
+              if($scope.listType === 'shopping'){
+                masters.budget = todo.budget;
+              }
+              console.log(masters)
+              lists.push(masters)
+
+              console.log(index)
+              // lists[index].lists = listsToAdd
+              lists[0].lists = listsToAdd
+              console.log(lists[0].lists)
+              console.log(lists)
             }
 
           }) // end of Todo.all.forEach
-
           checkLists()
         } //end of checkMasters
 
@@ -234,43 +229,48 @@
             $scope.listss.push({name: name, master_tasks: [], lists: listOfLists})
           }
         }
+
         $scope.show = true;
-        $scope.addNewMasterTask = function (master, list){
+        $scope.newMasterInDirective = {}
+
+        $scope.addNewMasterTask = function (list){
           $scope.show = false;
-          // console.log($scope.newMaster)
-          // console.log($scope.keith)
-          console.log(master)
-          console.log(list)
+          console.log($scope)
+          console.log(JSON.stringify($scope.newMasterInDirective))
+          var master = $scope.newMasterInDirective.name
+
           var today = new Date()
           var saveMe = {
             name: master,
-            task_completed: false
+            task_completed: false,
+            created_on: today
           }
+
+          if($scope.listType === 'shopping'){
+            saveMe.price = $scope.newMasterInDirective.price
+            saveMe.quantity = $scope.newMasterInDirective.quantity
+          }
+
+          console.log(list)
+
           list.master_tasks.push({name: master, created_on: today})
           console.log(list)
           list.lists.forEach(function(list){
             console.log(list)
             list.tasks.push(saveMe)
           })
-          // not sure when the below was added... but it was adding a master task to EVERY list.  Assuming I put it in for something with ALL tasks, keeping for now 3/20/17
-          // Todo.all.forEach(function(todo){
-          //   console.log(todo)
-          //   if(todo != undefined){
-          //     todo.lists.forEach(function(list){
-          //       console.log(list)
-          //       list.tasks.push(saveMe)
-          //     })
-          //   }
-          // })
 
           list.list_name = list.name
           console.log(list)
           Todo.update({list_name: list.list_name}, {todo: list}, function(task){
             console.log(task)
+
           })
+          $scope.newMasterInDirective.name = "";
+          $scope.newMasterInDirective.price = "";
+          $scope.newMasterInDirective.quantity = "";
         }
 
-        // $scope.getMasters()
 
       }
     }

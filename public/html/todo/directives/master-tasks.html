@@ -5,28 +5,38 @@
         <h4 class="panel-title">
           <span class="glyphicon glyphicon-list" aria-hidden="true" style="color: rgb(48, 49, 56)"></span>
 
-          <a data-toggle="collapse" href="#collapseTask{{$index}}">{{ list.name }}  ({{ list.duration }} hrs)</a>
+          <a data-toggle="collapse" style="font-size: 14px"
+             href="#collapseTask{{listType}}{{$index}}" ng-if="listType == list.list_type" >
+            <span ng-if="listType === 'todo' ">{{ list.name }}  ({{ list.duration }} hrs)</span>
+            <span ng-if="listType === 'shopping' ">{{ list.name }}  ({{ list.budget | currency }})</span>
+          </a>
+
         </h4>
       </div>
     </div>
-    <div id="collapseTask{{$index}}" class="panel-collapse collapse"
+    <div id="collapseTask{{ listType }}{{$index}}" class="panel-collapse collapse"
     style="margin-left: 5%;background-color: rgb(107, 110, 122);
             border-radius: 2px; color: black; margin-top: -8px">
       <ul class="list-group" >
         <li>
         <table>
           <tr>
-            <td>
-              <input type="text" style="color: black; margin-left: 5%;" ng-model="newMasterInDirective" placeholder="add new master">
+            <td ng-if="listType ==='todo'">
+              <input type="text" style="color: black; margin-left: 5%;" ng-model="newMasterInDirective.name" placeholder="add new recurring task">
+            </td>
+            <td ng-if="listType === 'shopping' ">
+              <input type="text" style="color: black; margin-left: 5%;" ng-model="newMasterInDirective.name" placeholder="add new recurring">
+                <input type="text" style="color: black; margin-left: 5%;" ng-model="newMasterInDirective.price" placeholder="$">
+                <input type="text" style="color: black; margin-left: 5%;" ng-model="newMasterInDirective.quantity" placeholder="Quantity">
             </td>
             <td>
-              <md-button class="md-raised" style="min-width: 40px;" ng-click="addNewMasterTask(newMasterInDirective, list)" > + </md-button>
+              <md-button class="md-raised" style="min-width: 40px;" ng-click="addNewMasterTask(list)" > + </md-button>
             </td>
           </tr>
         </table>
-        {{ list }}
+
         </li>
-        <li ng-repeat="task in list.master_tasks track by $index" class="list-group-item"
+        <li ng-repeat="task in list.master_tasks " class="list-group-item"
         style="background-color: rgb(107, 110, 122); color: white; box-shadow: 1px 1px grey">
           {{ task.name }}
         </li>
