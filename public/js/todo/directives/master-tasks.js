@@ -161,9 +161,10 @@
           console.log(lists)
 
             Todo.all.forEach(function(todo, index){
-              console.log(todo.list_type)
-              console.log($scope.listType)
+
               if(todo != undefined && todo.list_type == $scope.listType){
+                console.log(todo)
+                console.log($scope.listType)
                 console.log(todo)
                   var masters = {
                     name: todo.list_name,

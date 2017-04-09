@@ -39,6 +39,8 @@
         $scope.showClearCompleted = false;
         $scope.nonBindedList = [];
         $scope.totalShoppingList = 0;
+        $scope.completedText = $scope.listType === 'shopping'? "Clear Purchased" : "Clear Completed";
+        $scope.shoppingPurchased = 0;
 
         if($scope.element == undefined){
           var initialized = true
@@ -80,10 +82,12 @@
           // $scope.totalShoppingList = $scope.totalShoppingList+(quantity * price);
           console.log($scope.totalShoppingList)
           console.log($scope.data.budget)
-          $scope.totalShoppingListPercent = round($scope.totalShoppingList/$scope.data.budget*100, 2);
+          $scope.totalShoppingListPercent = round($scope.totalShoppingList-$scope.shoppingPurchased/$scope.data.budget*100, 2);
           console.log($scope.totalShoppingListPercent)
-          $scope.remainingBudgetPercent = round(100 - $scope.totalShoppingListPercent, 2);
           console.log($scope.remainingBudgetPercent)
+          $scope.shoppingPurchasedPercent = round($scope.shoppingPurchased/$scope.data.budget*100,2)
+          $scope.remainingBudgetPercent = round(100 - $scope.totalShoppingListPercent - $scope.shoppingPurchasedPercent, 2);
+
         }
 
         var processTasksForList = function(list, index){
@@ -91,6 +95,15 @@
           $scope.listIndex = index
           $scope.list = list
           console.log($scope.list)
+          // need to loop through cleared lists to correctly tabulate budget
+
+          if(list.clearedTasks){
+            list.clearedTasks.forEach(function(cleared){
+              console.log(cleared)
+              $scope.shoppingPurchased = $scope.shoppingPurchased+(cleared.quantity * cleared.price);
+            })
+          }
+
           list.tasks.forEach(function(task, index){
             console.log(task)
             task.rank = index
@@ -111,6 +124,10 @@
               $scope.nonBindedTask.quantity = task.quantity;
               $scope.nonBindedTask.price = task.price;
               $scope.totalShoppingList = $scope.totalShoppingList+(task.quantity * task.price);
+              if(task.task_completed){
+                console.log(task.quantity * task.price)
+                $scope.shoppingPurchased = $scope.shoppingPurchased+(task.quantity * task.price);
+              }
             }
             console.log($scope.nonBindedTask)
             $scope.models.toDoList.push($scope.nonBindedTask)
@@ -200,6 +217,7 @@
           console.log($scope.models)
 
           if(task.task_completed){
+            $scope.completedText = $scope.listType === 'shopping'? "Clear Purchased" : "Clear Completed"
             $scope.showClearCompleted = true;
           }
 
@@ -262,7 +280,21 @@
                 task_completed: task.task_completed,
                 time_completed: completedTime
               }
+
+              if($scope.listType === 'shopping'){
+                updateTask.lists[$scope.listIndex].tasks[index].price = task.price;
+                updateTask.lists[$scope.listIndex].tasks[index].quantity = task.quantity;
+                if(updateTask.lists[$scope.listIndex].tasks[index].task_completed){
+                  console.log(task.quantity * task.price)
+                  $scope.shoppingPurchased = $scope.shoppingPurchased+(task.quantity * task.price);
+                } else {
+                  $scope.shoppingPurchased = $scope.shoppingPurchased-(task.quantity * task.price);
+                }
+                budgetProgressBar()
+              }
+
             }
+            console.log(updateTask.lists[$scope.listIndex].tasks[index])
             console.log(updateTask)
             Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
               console.log(task)
@@ -331,13 +363,16 @@
         }
 
         $scope.completedButton = "Show Completed"
+
         $scope.clearComplete = function(){
           $scope.showClearCompleted = false;
           var newTodoList = [];
           var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
           console.log(saveMe)
-          saveMe.lists[$scope.listIndex].clearedTasks = []
-          saveMe.lists[$scope.listIndex].clearedTasks = $scope.list.clearedTasks
+          console.log($scope.listIndex)
+          saveMe.lists[$scope.listIndex].clearedTasks = $scope.list.clearedTasks? $scope.list.clearedTasks : [];
+          console.log(saveMe.lists[$scope.listIndex].clearedTasks)
+          // saveMe.lists[$scope.listIndex].clearedTasks = []
           for(var i = 0; i < $scope.models.toDoList.length; i++){
             if($scope.models.toDoList[i].task_completed === false){
                 console.log($scope.models.toDoList[i])
@@ -363,8 +398,8 @@
         };
 
         $scope.hideCompletedList = function(){
-          $scope.showHideButton = false;
-          $scope.models.completedList = []
+          $scope.showHideButton = !$scope.showHideButton;
+          // $scope.models.completedList = []
         };
 
       }
