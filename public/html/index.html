@@ -24,16 +24,16 @@
                   <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
                       href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      <span ng-show="listss.length ===1">{{ listss.length }} Todo List</span>
-                      <span ng-show="listss.length > 1">{{ listss.length }} Todo Lists</span>
-                      <span>Todo Lists</span>
+                      <!-- <span ng-show="listNumbers.todo === 1">{{ listNumbers.todo }} Todo List</span>
+                      <span ng-show="listNumbers.todo > 1">{{ listNumbers.todo }} Todo Lists</span> -->
+                      <span> Todo Lists</span>
                   </a>
                 </div>
               </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
               <todo-master view-type="viewType" list-type="todo"
-                          change-date="changeDate" ></todo-master>
+                          change-date="changeDate" all-tasks="allTasks" ></todo-master>
             </div>
           </div>
 
@@ -48,16 +48,16 @@
                   <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
                       href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                      <span ng-show="listss.length ===1">{{ listss.length }} Shopping List</span>
-                      <span ng-show="listss.length > 1">{{ listss.length }} Shopping Lists</span>
-                      <span >Shopping Lists</span>
+                      <!-- <span ng-show="listNumbers.shopping === 1">{{ listNumbers.shopping }} Shopping List</span>
+                      <span ng-show="listNumbers.shopping > 1">{{ listNumbers.shopping }} Shopping Lists</span> -->
+                      <span >Shopping Lists </span>
                   </a>
                 </div>
               </h4>
             </div>
             <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
               <todo-master view-type="viewType" list-type="shopping"
-                          change-date="changeDate" "></todo-master>
+                          change-date="changeDate" all-tasks="allTasks"></todo-master>
             </div>
           </div>
 

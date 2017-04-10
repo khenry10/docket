@@ -43,10 +43,12 @@
         $scope.shoppingPurchased = 0;
 
         if($scope.element == undefined){
-          var initialized = true
+          var initialized = true;
         } else {
           var initialized = false;
         }
+
+        console.log("initialized = " + initialized)
 
         $scope.$watch("data", function(newD, oldD){
           console.log("$watch data envoked")
@@ -77,11 +79,11 @@
         };
 
         var budgetProgressBar = function(){
-          // console.log(price)
-          // console.log(quantity)
-          // $scope.totalShoppingList = $scope.totalShoppingList+(quantity * price);
           console.log($scope.totalShoppingList)
           console.log($scope.data.budget)
+          console.log($scope.shoppingPurchased)
+          $scope.shoppingPurchased = !$scope.shoppingPurchased? 0:$scope.shoppingPurchased;
+          console.log($scope.shoppingPurchased)
           $scope.totalShoppingListPercent = round($scope.totalShoppingList-$scope.shoppingPurchased/$scope.data.budget*100, 2);
           console.log($scope.totalShoppingListPercent)
           console.log($scope.remainingBudgetPercent)
@@ -168,13 +170,19 @@
 
         var allTaskRailDataFunction = function(){
           console.log("allTaskRailDataFunction")
+          console.log($scope.models.toDoList)
           $scope.models.toDoList = [];
+          console.log($scope.models.toDoList)
+          console.log($scope.data)
+          console.log($scope.data.length)
+          // $scope.data is depenedency that gets injected in from master_tasks, comes through the allTasks parameter in master_tasks
           $scope.data.forEach(function(list, index){
             console.log(list)
-            // processTasksForList(list, index)
+
             $scope.nonBindedTask = {
               name: list.tasks.name,
               list_date: list.list,
+              listType: list.listType,
               rank: index,
               task_completed: list.tasks.task_completed
             }
@@ -211,7 +219,7 @@
 
         }
 
-        $scope.update = function(task, index){
+        $scope.update = function(task, index, listOrigin){
           console.log($scope.data)
           console.log(task)
           console.log($scope.models)
@@ -271,21 +279,31 @@
               console.log($scope.listIndex)
               var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
               console.log(updateTask)
+
+              if(listOrigin === 'clearedTasks'){
+                updateTask.lists[$scope.listIndex].clearedTasks[index] = {
+                  name: task.name,
+                  task_completed: task.task_completed,
+                  time_completed: completedTime
+                }
+              } else {
+                updateTask.lists[$scope.listIndex].tasks[index] = {
+                  name: task.name,
+                  task_completed: task.task_completed,
+                  time_completed: completedTime
+                }
+              }
               console.log(updateTask.lists[$scope.listIndex].tasks[index])
 
               console.log($scope.data)
-              // if($scope.data.list === 'todo')
-              updateTask.lists[$scope.listIndex].tasks[index] = {
-                name: task.name,
-                task_completed: task.task_completed,
-                time_completed: completedTime
-              }
 
               if($scope.listType === 'shopping'){
                 updateTask.lists[$scope.listIndex].tasks[index].price = task.price;
                 updateTask.lists[$scope.listIndex].tasks[index].quantity = task.quantity;
                 if(updateTask.lists[$scope.listIndex].tasks[index].task_completed){
                   console.log(task.quantity * task.price)
+                  $scope.shoppingPurchased = $scope.shoppingPurchased+(task.quantity * task.price);
+                } else if(updateTask.lists[$scope.listIndex].clearedTasks && updateTask.lists[$scope.listIndex].clearedTasks[index].task_completed){
                   $scope.shoppingPurchased = $scope.shoppingPurchased+(task.quantity * task.price);
                 } else {
                   $scope.shoppingPurchased = $scope.shoppingPurchased-(task.quantity * task.price);

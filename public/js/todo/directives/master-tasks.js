@@ -9,7 +9,8 @@
       scope: {
         viewType: "=",
         listType: "@",
-        changeDate: "="
+        changeDate: "=",
+        allTasks:"="
       },
       link: function($scope){
         console.log("masterTask aks todoMaster $scope below")
@@ -25,6 +26,8 @@
           var listsToAdd = []
           lists = [];
           $scope.listss = [];
+          $scope.allTasks = [];
+
           if(newV != oldV){
             $scope.getMasters("viewType")
           }
@@ -60,19 +63,21 @@
           $scope.allTasks = []
           console.log("loopThroughWeekAggs envoked ")
           console.log(visibleLists)
-
-          visibleLists.forEach(function(visible){
-            console.log(visible)
-            var name = visible.name
-            visible.lists.forEach(function(list){
-              console.log(list)
-              var listName = list.date
-              list.tasks.forEach(function(task){
-                console.log(task)
-                $scope.allTasks.push({name: name, list: listName, tasks: task})
+          console.log(visibleLists.length)
+          if($scope.listType === 'todo'){
+            visibleLists.forEach(function(visible){
+              console.log(visible)
+              var name = visible.name
+              visible.lists.forEach(function(list){
+                console.log(list)
+                var listName = list.date
+                list.tasks.forEach(function(task){
+                  console.log(task)
+                  $scope.allTasks.push({name: name, list: listName, tasks: task, listType: visible.list_type})
+                })
               })
             })
-          })
+          }
 
         }
 
@@ -90,9 +95,9 @@
             }
           }
           pullOutAllTasks(reallyNewList)
-          if($scope.listType === 'shopping'){
-            $scope.shoppingList = reallyNewList
-          }
+          console.log(reallyNewList[0])
+
+          console.log($scope.listNumbers)
           $scope.listss = reallyNewList
           console.log($scope.listss)
           console.log($scope)

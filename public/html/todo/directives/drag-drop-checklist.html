@@ -109,11 +109,12 @@
           >
           <table style="width: 100%">
             <!-- todo row -->
-            <tr ng-if="listType === 'todo' ">
-              <td>
+            <!-- {{ item.name }} ~~ {{ item.listType }}  {{ item.task_completed}} -->
+            <tr ng-if="listType == 'todo' || item.listType == 'todo' ">
+              <td style="width: 25%">
                 <md-checkbox ng-change="update(item, $index)" ng-model="item.task_completed"></md-checkbox>
               </td>
-              <td>
+              <td style="width: 75%">
                 <span ng-if="!item.task_completed">
                   {{ item.name }}
                 </span>
@@ -183,7 +184,7 @@
           <table>
             <tr>
               <td>
-                <md-checkbox ng-change="update(item, $index)" ng-model="item.task_completed"></md-checkbox>
+                <md-checkbox ng-change="update(item, $index, 'clearedTasks')" ng-model="item.task_completed"></md-checkbox>
               </td>
               <td>
                 <span ng-if="!item.task_completed" >
