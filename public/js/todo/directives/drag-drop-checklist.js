@@ -41,6 +41,7 @@
         $scope.totalShoppingList = 0;
         $scope.completedText = $scope.listType === 'shopping'? "Clear Purchased" : "Clear Completed";
         $scope.shoppingPurchased = 0;
+        $scope.allHaveBeenUpdated = false;
 
         if($scope.element == undefined){
           var initialized = true;
@@ -200,6 +201,7 @@
         }
 
         var updateAll = function(task){
+          $scope.allHaveBeenUpdated = true;
           // $scope.listName isn't available when updating from the left rail, which is why eash task has it's list name included
           console.log("$scope.element = " + $scope.element)
           for(var z = 0; z < $scope.models.toDoList.length; z++){
@@ -211,10 +213,10 @@
             console.log($scope.models.toDoList)
             console.log($scope.date)
             console.log(task)
-            var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
-            saveMe.lists[$scope.listIndex] = {date: $scope.date, tasks: $scope.models.toDoList, clearedTasks: $scope.models.completedList}
-            console.log(saveMe)
-            Todo.update({list_name: $scope.listName},   {todo: saveMe}, function(task){
+            var saveAllOfUs = {list_name: $scope.listName, lists: $scope.data.lists}
+            saveAllOfUs.lists[$scope.listIndex] = {date: $scope.date, tasks: $scope.models.toDoList, clearedTasks: $scope.models.completedList}
+            console.log(saveAllOfUs)
+            Todo.update({list_name: $scope.listName},   {todo: saveAllOfUs}, function(task){
             })
 
         }
@@ -339,15 +341,21 @@
             }
             console.log($scope.data)
             console.log($scope.data.list_type)
+            console.log(JSON.stringify(saveMe))
+            console.log("$scope.listIndex = " + $scope.listIndex)
 
             if($scope.data.list_type === 'todo' || $scope.listType === 'todo'){
+              console.log(!$scope.allHaveBeenUpdated)
+              if(!$scope.allHaveBeenUpdated){
+                // adding a new task after updateAll invoked was causing the new item to be saved 2 to the db, this prevents that
+                $scope.models.toDoList.push({name: $scope.newTask.name, task_completed: false, listType: 'todo'})
+              }
               // below finds the correct date list and pushes the new Task into it
               saveMe.lists[$scope.listIndex].tasks.push({
                 name: $scope.newTask.name, task_completed: false})
               // faking ajax like functionality
-              $scope.models.toDoList.push({name: $scope.newTask.name, task_completed: false, listType: 'todo'})
             }
-            console.log(saveMe)
+            console.log(JSON.stringify(saveMe))
 
             if($scope.data.list_type === 'shopping' || $scope.listType === 'shopping'){
               $scope.totalShoppingList = $scope.totalShoppingList+($scope.shopping.productQuantity * $scope.shopping.productPrice)
@@ -361,15 +369,17 @@
               }
               console.log(shoppingListItem)
               saveMe.lists[$scope.listIndex].tasks.push(shoppingListItem)
-              $scope.models.toDoList.push({
-                name: $scope.shopping.productName,
-                quantity: $scope.shopping.productQuantity,
-                price: $scope.shopping.productPrice,
-                totalCost: $scope.shopping.productQuantity * $scope.shopping.productPrice,
-                listType: 'shopping',
-                task_completed: false})
+              $scope.models.toDoList.push(
+                {
+                  name: $scope.shopping.productName,
+                  quantity: $scope.shopping.productQuantity,
+                  price: $scope.shopping.productPrice,
+                  totalCost: $scope.shopping.productQuantity * $scope.shopping.productPrice,
+                  listType: 'shopping',
+                  task_completed: false
+                })
+              budgetProgressBar()
             }
-            budgetProgressBar()
             console.log(saveMe)
             Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
             $scope.newTask.name = ""
