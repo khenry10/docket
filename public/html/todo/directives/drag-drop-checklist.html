@@ -112,7 +112,7 @@
             <!-- {{ item.name }} ~~ {{ item.listType }}  {{ item.task_completed}} -->
             <tr ng-if="listType == 'todo' || item.listType == 'todo' ">
               <td style="width: 25%">
-                <md-checkbox ng-change="update(item, $index)" ng-model="item.task_completed"></md-checkbox>
+                <md-checkbox ng-change="update(item, $index)" ng-model="item.task_completed" aria-label="checkbox"></md-checkbox>
               </td>
               <td style="width: 75%">
                 <span ng-if="!item.task_completed">

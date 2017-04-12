@@ -5,8 +5,6 @@ angular.module('app').service('DateService', [ function () {
   }
 
   this.stringToDate = function(date, monthType){
-    console.log("date in DateService = " + date)
-    console.log(typeof date)
     if(typeof date === 'string'){
       var year = date.substring(0,4)
       var month = date.length === 9? date.substring(5,6):date.substring(5,7)
@@ -17,12 +15,8 @@ angular.module('app').service('DateService', [ function () {
       var day = date.getDate()
     }
     if(monthType == 'regMonth'){
-      console.log("I'm in here")
     month = month-1
     }
-    console.log("month in DateService = " + month)
-    // var date =
-    console.log("date in DateService = " + date)
     return new Date(year, month, day)
   }
 
@@ -124,8 +118,6 @@ angular.module('app').service('DateService', [ function () {
   }
 
   this.stringDateSplit = function(date){
-    console.log(date)
-    console.log(typeof date)
     // var year = date.substring(0,4)
     // var month = date.substring(5,7)
     // var date = date.substring(8,10)

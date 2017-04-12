@@ -202,7 +202,7 @@
                         console.log("made it into daily masters")
                         checkWeeklyLists(listDate, index, list)
                       }
-                    } // end of if statement with a bunch of conditinals
+                    } // end of if statement with a bunch of conditionals
               }
 
               console.log(timesLooped)

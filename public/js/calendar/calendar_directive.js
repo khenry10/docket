@@ -303,16 +303,17 @@
             }
         }
 
-        var loopThroughLastDateArray = function(listDay, date, list){
-          console.log("loopThroughLastDateArray FUNCTION")
-            for(var v = scope.lastDate.length-1; v > scope.lastDate.length-8; v--){
-              console.log(listDay === scope.lastDate[v])
-              if(listDay === scope.lastDate[v]){
-                console.log("putting on calendar")
-                checkDates(date, list)
-              }
-            }
-        }
+        // this isn't being called anywhere to afraid to delete -- 5/12/17
+        // var loopThroughLastDateArray = function(listDay, date, list){
+        //   console.log("loopThroughLastDateArray FUNCTION")
+        //     for(var v = scope.lastDate.length-1; v > scope.lastDate.length-8; v--){
+        //       console.log(listDay === scope.lastDate[v])
+        //       if(listDay === scope.lastDate[v]){
+        //         console.log("putting on calendar")
+        //         checkDates(date, list)
+        //       }
+        //     }
+        // }
 
         var checkWeeklyDate = function(listDay, date, list, listYear, listMonth){
           console.log("checkWeeklyDate function.  listDay = " + listDay + " date (below) = " + date + " listYear = " + listYear + " listMonth = "  + listMonth)
@@ -357,15 +358,12 @@
       // scope.checkLists function recieves the full todoList loops the first, and all of the date lists within to determine if it should be displayed on the calendar
         var local = []
         scope.checkLists = function(message, listArray){
-
           // console.log("scope.checkLists message = " + message)
           // console.log(JSON.stringify(listArray))
           // console.log(JSON.stringify(local))
           // console.log(local.length)
 
-
           if(listArray){
-
             if(local.length && message != 'newList'){
               console.log("pushing to listArray")
               local.forEach(function(loc){
@@ -435,18 +433,14 @@
         var addNewModal = function(e, month, year, index){
           // HERE
           console.log(e)
-          console.log(startTime)
-          console.log(index)
-          console.log(e.srcElement.nodeName)
+
           if(e.srcElement.nodeName === 'TD'){
             // need to add in logic so this function can handle both MONTHLY & WEEKLY views, messed up the monthly stuff while adding weekly
               console.log(e.srcElement.className)
-              console.log(e)
 
               if(scope.newView === 'week'){
                 console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells)
-                console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].attributes[0].nodeValue)
-                console.log(e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].id)
+
                 var startTime = e.srcElement.className
                 var date = e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].id
                 var date = date.split("/")
