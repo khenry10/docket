@@ -28,13 +28,17 @@
       </md-input-container>
 
     </li>
-    <!-- <li>
-      <md-radio-group ng-model="entryType"
+    <li>
+      <md-radio-group ng-model="listType"
         style="display: flex; justify-content: space-between; width: 95%; margin-top: 4%">
-        <md-radio-button style="padding-left: 2%;" value="Event">Event</md-radio-button>
-        <md-radio-button value="List">List</md-radio-button>
+        <md-radio-button style="padding-left: 2%;" value="todo">Todo List</md-radio-button>
+        <md-radio-button value="shopping">Shopping List</md-radio-button>
       </md-radio-group>
-    </li> -->
+    </li>
+
+    <li>
+      <input input="text" ng-if="listType === 'shopping' " ng-model="newEntry.budget" placeholder="Budget"/>
+    </li>
 
     <li ng-show="name">
       <md-input-container style="background-color: white; color: black">

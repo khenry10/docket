@@ -1,0 +1,205 @@
+<!-- start of todo list D&D  -->
+<div>
+<div>
+  <div class="task-list-workspace" >
+    <div ng-init="todoVM.fetchData()" class="simpleDemo" style="">
+      <!-- <div ng-if="listType === 'shopping' " style="margin-top: 0px">
+        <p style="margin-top: 0px"> Budget: {{ data.budget | currency }} </p>
+        <p style="margin-top: 0px"> Remaining: {{ data.budget - totalShoppingList | currency }} </p>
+        <p style="margin-top: 0px"> Shopping List Total: {{ totalShoppingList | currency }} </p>
+      </div> -->
+
+      <div class="container"
+        style="background-color: rgba(0, 0, 0, 0.7); width: 100%; margin-top: 0px; color: white; border: 1px; border-radius: 15px;">
+        <div ng-if="listType === 'shopping' "
+             style="margin-top: 10px; display: flex; justify-content: space-between; margin-right: 10px;">
+
+          <span style="width: 10%">
+            <p style=" margin-bottom: 0px"> Purchased: </p>
+            <p> {{ shoppingPurchased | currency }} </p>
+          </span>
+
+          <!-- <span style="margin-top: 0px width: 33%">
+            <p style=" margin-bottom: 0px"> Remaining Budget: </p>
+            <p> {{ data.budget - totalShoppingList | currency }} </p>
+          </span> -->
+
+          <span style="margin-top: 0px width: 33%">
+            <p style=" margin-bottom: 0px"> List Total: </p>
+            <p> {{ totalShoppingList | currency }} </p>
+          </span>
+
+          <span style="width: 10%">
+            <p style=" margin-bottom: 0px"> Budget: </p>
+            <p> {{ data.budget | currency }} </p>
+          </span>
+
+        </div>
+        <div ng-if="listType === 'shopping' " class="progress" id="progress-container" style="margin-top: 10px; height: 22.5px" >
+          <div class="progress-bar progress-bar" style=" background-color: red;"
+                ng-style="{'width': shoppingPurchasedPercent+'%'}"
+               role="progressbar"
+               ng-model="shoppingPurchased">
+               <md-tooltip style="z-index: 5000 ">Purchased {{ shoppingPurchasedPercent }}%</md-tooltip>
+          </div>
+          <div class="progress-bar progress-bar progress-bar-striped"
+                ng-style="{'width': totalShoppingListPercent+'%'}"
+               role="progressbar"
+               md-tooltip="Shopping List Total {{ totalShoppingListPercent }}%"
+               ng-model="totalShoppingListPercent">
+               <md-tooltip style="z-index: 5000 ">Shopping List Total {{ totalShoppingListPercent }}%</md-tooltip>
+          </div>
+
+          <div class="progress-bar" style=" background-color: white;"
+                ng-style="{'width': remainingBudgetPercent+'%'}"
+               role="progressbar"
+               ng-model="remainingBudgetPercent">
+               <span style="color: black"> Remaining Budget {{ data.budget - totalShoppingList | currency }} </span>
+               <md-tooltip style="z-index: 5000 ">Remaining Budget {{ remainingBudgetPercent }}%</md-tooltip>
+          </div>
+
+          <!-- <span style="color: black">
+            <md-tooltip style="z-index: 5000 ">Remaining Budget {{ remainingBudgetPercent }}%</md-tooltip>
+              Remaining Budget {{ data.budget - totalShoppingList | currency }}
+          </span> -->
+
+        </div>
+
+        <!-- <div style="display: flex">
+          <span style="margin-top: 0px width: 50%">
+            <p style=" margin-bottom: 0px"> Remaining Budget: {{ data.budget - totalShoppingList | currency }}</p>
+
+          </span>
+          <span style="width: 50%">
+            <p style=" margin-bottom: 10px"> Budget: {{ data.budget | currency }} </p>
+          </span>
+        </div> -->
+      </div>
+
+      <li style="list-style: none; padding-bottom: 2%; margin-top: 20px;">
+        <div ng-if="listType === 'todo' ">
+          <input class="new-todo-input" type="text" ng-model="newTask.name"  placeholder="Add new task">
+          <button type="button" ng-click="addNewTodo()" class="btn btn-default" > + </button>
+        </div>
+        <div ng-if="listType === 'shopping'">
+          <input class="shopping-list-inputs" style="width:35%" ng-model="shopping.productName" placeholder="Item">
+          <input class="shopping-list-inputs" style="width:20%" ng-model="shopping.productQuantity" placeholder="Quantity">
+          <input class="shopping-list-inputs" style="width:20%" ng-model="shopping.productPrice" placeholder="Price">
+          <button type="button" ng-click="addNewTodo()" class="btn btn-default" > + </button>
+        </div>
+
+      </li>
+      <ul dnd-list="models.toDoList">
+        <table ng-if="listType === 'shopping' && models.toDoList.length " style="width: 100%">
+          <tr>
+            <th class="shopping-list-head">  </th>
+            <th class="shopping-list-head"> Product </th>
+            <th class="shopping-list-head"> Quantity </th>
+            <th class="shopping-list-head"> Unit Price </th>
+          </tr>
+        </table>
+        <li ng-repeat="item in models.toDoList "
+          style="height: 50px; font-size: 16px; color: black"
+          class="todo"
+          ng-class="{todoComplete: item.completed}"
+          dnd-draggable="item"
+          dnd-moved="models.toDoList.splice($index, 1)"
+          dnd-dragend="update(models.toDoList)"
+          dnd-effect-allowed="move"
+          >
+          <table style="width: 100%">
+            <!-- todo row -->
+            <!-- {{ item.name }} ~~ {{ item.listType }}  {{ item.task_completed}} -->
+            <tr ng-if="listType == 'todo' || item.listType == 'todo' ">
+              <td style="width: 25%">
+                <md-checkbox ng-change="update(item, $index)" ng-model="item.task_completed"></md-checkbox>
+              </td>
+              <td style="width: 75%">
+                <span ng-if="!item.task_completed">
+                  {{ item.name }}
+                </span>
+                <span ng-if="item.task_completed" class="todoComplete">
+                  {{ item.name }}
+                </span>
+              </td>
+            </tr>
+
+            <tr ng-if="listType === 'shopping' " ng-class=" item.task_completed? 'todoComplete': '' ">
+              <td style="width: 15%">
+                <md-checkbox ng-change="update(item, $index)" ng-model="item.task_completed"></md-checkbox>
+              </td>
+              <td style="width: 35%"> {{ item.name }} </td>
+              <td style="width: 25%"> {{ item.quantity }} </td>
+              <td style="width: 25%">
+                <md-tooltip md-direction="top" style="z-index: 5000; ">
+                  {{ item.name }} totals {{ item.quantity * item.price | currency  }}
+                </md-tooltip>
+                {{ item.price | currency }}
+              </td>
+              <!-- <td> *{{item.task_completed}} </td> -->
+
+            </tr>
+          </table>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- end of D&D -->
+
+<button type="button" ng-click="clearComplete()"
+        style="margin: 2%"
+        ng-if="showClearCompleted"
+        class="btn btn-primary"> {{ completedText }} </button>
+
+<!-- start of completedList  -->
+
+<button type="button"
+        ng-if="list.clearedTasks.length && !showHideButton"
+        ng-click="showCompletedList()"
+        style="margin: 2%"
+        class="btn btn-default" > Show Cleared </button>
+
+<button type="button"
+        ng-if="showHideButton"
+        ng-click="hideCompletedList()"
+        style="margin: 2%"
+        class="btn btn-default" > Hide Cleared </button>
+<div>
+  <div class="task-list-workspace" ng-show="showHideButton">
+    <div  class="simpleDemo" style="">
+
+      <ul dnd-list="list.completedList">
+        <li ng-repeat="item in models.completedList "
+          style="height: 50px; font-size: 16px;"
+          class="todo"
+          ng-class="{todoComplete: item.completed}"
+          dnd-draggable="item"
+          dnd-moved="models.completedList.splice($index, 1)"
+          dnd-dragend="update(models.toDoList)"
+          dnd-effect-allowed="move"
+          dnd-selected="todoVM.models.selected = item"
+          ng-class="{'selected': todoVM.models.selected === item}">
+          <table>
+            <tr>
+              <td>
+                <md-checkbox ng-change="update(item, $index, 'clearedTasks')" ng-model="item.task_completed"></md-checkbox>
+              </td>
+              <td>
+                <span ng-if="!item.task_completed" >
+                  {{ item.name }}
+                </span>
+                <span ng-if="item.task_completed" class="todoComplete">
+                  {{ item.name }}
+                </span>
+              </td>
+            </tr>
+          </table>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- end of completedList -->
+</div>

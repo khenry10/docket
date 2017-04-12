@@ -31,38 +31,76 @@
         $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly']
 
         $scope.changeEndTimeArray = function(){
-
-          var start = $scope.times.indexOf($scope.startTime)
+          console.log("changeEndTimeArray envoked")
+          if($scope.startTime){
+            var start = $scope.times.indexOf($scope.startTime)
+          } else {
+            var start = $scope.times.indexOf($scope.data.date.startTime);
+          }
           $scope.endTime = $scope.times[start+1]
           $scope.newTimes = []
           for(var t = start+1; t < $scope.times.length; t++){
-            console.log(($scope.times[t]))
             $scope.newTimes.push($scope.times[t])
           }
+        }
 
+        if($scope.data){
+          $scope.changeEndTimeArray()
         }
 
         // not being used yet, ran into too many other bugs 3/18/2017
-          var createRepeater = function(year, month, count, lastDay, increment){
-            console.log(year)
-            console.log(month)
-            console.log(count)
-            console.log(lastDay)
-            console.log(increment)
-            while(count < lastDay){
-              count = count + increment
-              var list = year+"-"+month+"-"+count
-              $scope.newMasterLists.push( { date: list, tasks: [] } )
-               var date = $scope.firstDay
+          // var createRepeater = function(year, month, count, lastDay, increment){
+          //   console.log(year)
+          //   console.log(month)
+          //   console.log(count)
+          //   console.log(lastDay)
+          //   console.log(increment)
+          //   while(count < lastDay){
+          //     count = count + increment
+          //     var list = year+"-"+month+"-"+count
+          //     $scope.newMasterLists.push( { date: list, tasks: [] } )
+          //      var date = $scope.firstDay
+          //   }
+          // }
+
+          var getHours = function(){
+            console.log("$scope.startTime = " + $scope.startTime)
+            console.log("$scope.endTime = " + $scope.endTime)
+
+            if($scope.newTodoList.start_time){
+              $scope.startTime = $scope.newTodoList.start_time
             }
+            console.log($scope.startTime)
+            var startTime = $scope.startTime.split(":")
+            var startTimeAmOrPm = startTime[1].substr(2,4)
+            var startTime = startTime[0]
+
+            var endTime = $scope.endTime.split(":")
+            var endTimeAmOrPm = endTime[1].substr(2,4)
+            var endTime = endTime[0]
+
+            var timeDifference = endTime - startTime
+            // below is to account for when something starts in the am and ends in the pm
+            if(timeDifference < 0){
+              var time = 12 - startTime
+              var timeDifference = time + endTime
+            }
+            console.log("timeDifference = " + timeDifference)
+            $scope.newTodoList.duration = timeDifference
+            // if(startTimeAmOrPm === endTimeAmOrPm ){
+            //   $scope.newTodoList.duration = timeDifference
+            // } else if(startTimeAmOrPm != endTimeAmOrPm){
+            //
+            // }
           }
 
-        $scope.newMasterLists = []
+        var createListOfLists = []
+
+        $scope.newEntry = {}
 
         $scope.create = function(){
           console.log($scope)
           $scope.newTodoList = new Todo();
-
 
           console.log("name = "+ $scope.name)
           if($scope.data){
@@ -75,12 +113,15 @@
           var date = $scope.firstDay.getDate();
           var numberOfDaysInMonth = new Date(year, month, 0).getDate()
             console.log($scope.firstDay)
+            console.log($scope.newEntry)
 
             if($scope.name && $scope.firstDay || $scope.view === 'modal'){
-
-                console.log($scope.repeatInterval)
-
+                console.log($scope.listType)
                 $scope.newTodoList.list_name = $scope.name
+                $scope.newTodoList.list_type = $scope.listType
+                if($scope.listType === 'shopping'){
+                  $scope.newTodoList.budget = $scope.newEntry.budget;
+                }
                 $scope.newTodoList.list_created_on = new Date()
 
                 $scope.newTodoList.first_day = $scope.firstDay
@@ -92,17 +133,25 @@
                 console.log($scope.newTodoList.start_time)
 
                 $scope.newTodoList.end_time = $scope.endTime
+                if($scope.firstDay && $scope.endTime){
+                  getHours()
+                }
 
                 console.log($scope.newTodoList)
+                console.log($scope.newTodoList.duration)
 
                 if($scope.repeatInterval){
                     $scope.newTodoList.list_reocurring = $scope.repeatInterval
+                    console.log($scope.reoccurEnds)
                     $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
                 }
 
                 var date = $scope.firstDay
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
-                $scope.newMasterLists.push( {date: newDate, tasks: []} )
+                console.log($scope)
+                console.log(createListOfLists)
+                createListOfLists.push( {date: newDate, tasks: []} )
+                console.log(createListOfLists)
                 var count = date.getDate();
 
                 var lastDay = numberOfDaysInMonth
@@ -133,7 +182,7 @@
                     console.log(lastDay)
                     count = count + 1
                     var list = year+"-"+month+"-"+count
-                    $scope.newMasterLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push( { date: list, tasks: [] } )
                      var date = $scope.firstDay
                   }
                 }
@@ -141,12 +190,14 @@
                 if($scope.repeatInterval === 'Weekly'){
                   // count = count+7
                   // createRepeater(year, month, count, lastDay, 7)
+                  console.log(JSON.stringify(createListOfLists))
                   while(count+7 <= lastDay){
                     count = count + 7
                     var list = year+"-"+month+"-"+count
-                    $scope.newMasterLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push( { date: list, tasks: [] } )
                      var date = $scope.firstDay
                   }
+                  console.log(JSON.stringify(createListOfLists))
                 }
 
                 if($scope.repeatInterval === 'Monthly'){
@@ -155,51 +206,61 @@
                   while(month < 12){
                     month = month+1
                     var list = year+"-"+month+"-"+count
-                    $scope.newMasterLists.push( { date: list, tasks: [] } )
-                    console.log($scope.newMasterLists)
+                    createListOfLists.push( { date: list, tasks: [] } )
+                    console.log(createListOfLists)
                   }
                 }
                 // I recreated the new object to get rid of new Todo() junk which I thought was causing issues
                 // $scope.newCalTodoLists is a dependency that gets injected into the calendar directive
-                $scope.newCalTodoLists = [{list_name: $scope.name, lists: $scope.newMasterLists}]
+                console.log(JSON.stringify(createListOfLists))
+                $scope.newCalTodoLists = [{list_name: $scope.name, lists: createListOfLists}]
                 $scope.newCalTodoLists[0].first_day = $scope.firstDay
                 $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
-                $scope.newCalTodoLists[0].list_recur_end =$scope.newTodoList.list_recur_end
+                $scope.newCalTodoLists[0].list_recur_end = $scope.newTodoList.list_recur_end
+                $scope.newCalTodoLists[0].list_type = $scope.newTodoList.list_type
+                $scope.newCalTodoLists[0].budget = $scope.newTodoList.budget
 
                 console.log("$scope.newCalTodoLists below: ")
                 console.log($scope.newCalTodoLists)
+                console.log(JSON.stringify(createListOfLists))
 
                 // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
-                $scope.newTodoList.lists = $scope.newMasterLists
+                $scope.newTodoList.lists = createListOfLists
 
                 $scope.newCalTodoLists[0].start_time =  $scope.newTodoList.start_time
                 $scope.newCalTodoLists[0].end_time =  $scope.endTime
                 // newCal is scoped to newCalTodoLists, which is $watched in calendar directive.  Has to be sent in array because that is what is expected in calednar directive
 
-                console.log($scope.data)
-                // $scope.data is only passed in when the modal is being used
-                if($scope.data){
-                  // new events trough the modal all go use methods provided by $scope.data
-                  $scope.data.checkLists("from add-new-cal-item",[$scope.newCalTodoLists[0]])
-                  $scope.data.newMaster($scope.newCalTodoLists[0])
-                } else {
-                  // new events from side rail use isolated directive scope
-                  $scope.newCal = [$scope.newCalTodoLists[0]]
-                  // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
-                  // since below function is from an external controller, we have to pass the parameter as an object literal, they key must match the parameter name in index.html
-                  $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
-                }
-
                 // got an error that this wasn't defined when adding by modal
                 // $scope.newCal = [$scope.newCalTodoLists[0]]
 
                 console.log($scope.newTodoList)
+                console.log($scope.newTodoList.list_recur_end)
+                console.log($scope.newTodoList.lists[5])
                 $scope.newTodoList.$save().then(function(res){
                   console.log("$scope.newTodoList.$save success")
                   if($scope.data){
                     $scope.saved = true
                   }
                 })
+
+                console.log($scope.data)
+                // $scope.data is only passed in when the modal is being used
+                if($scope.data){
+                  // new events through the modal all use methods provided by $scope.data
+
+                  $scope.data.checkLists("newList",[$scope.newCalTodoLists[0]])
+                  // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
+                  // $scope.data.newMaster($scope.newCalTodoLists[0])
+                } else {
+                  // new events from side rail use isolated directive scope
+                  $scope.newCal = [$scope.newCalTodoLists[0]]
+                  console.log($scope.newCalTodoLists[0])
+                  // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
+                  // since below function is from an external controller, we have to pass the parameter as an object literal, the key must match the parameter name in index.html
+                  // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
+                  $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
+                }
 
                 // clears the input fields for new additions
                 $scope.name = ""
