@@ -19,72 +19,115 @@
         current: '=currentMonth',
         todoList: '=list',
         newtodoLists: '=new',
-        newView: "=view"
+        newView: "=view",
+        listForCal: "=listForCal"
       },
       link: function(scope){
         console.log(scope)
       console.log("view = " + scope.newView)
 
-      var pullTodo = function (){
-        console.log("pullTodo called")
-        console.log(scope.todoList)
-        scope.pulledTodoList = Todo.all
-        if(scope.isThereANewTodo && scope.todoList && scope.todoList.length === 1){
-          scope.pulledTodoList.push(scope.todoList[0])
-        }
-        console.log(scope.pulledTodoList)
-        scope.checkLists('new pullTodo function', scope.pulledTodoList)
-      }
+      // var pullTodo = function (){
+      //   console.log("pullTodo called")
+      //   console.log(scope.todoList)
+      //   scope.pulledTodoList = Todo.all
+      //   if(scope.isThereANewTodo && scope.todoList && scope.todoList.length === 1){
+      //     scope.pulledTodoList.push(scope.todoList[0])
+      //   }
+      //   console.log(scope.pulledTodoList)
+      //   // scope.checkLists('new pullTodo function', scope.pulledTodoList)
+      // }
 
-      scope.$watch('newView', function(newView, oldView){
-        console.log("newView = " + newView)
-        console.log(date.getMonth()+1)
-        console.log(scope.date)
-        var dayCountLength = scope.date.dayCount.length-1;
-        if(scope.date.twoMonthsWeekly && newView === 'week'){
-          // looks to see if the month view is made up more of the current or next month to decide which to show on monthly view
-          console.log(scope.date.dayCount[dayCountLength-3])
-          if(scope.date.dayCount[dayCountLength-3] < 7){
-            monthSelector(scope.date.monthCount)
-            scope.checkLists('newView $watch', scope.pulledTodoList)
-          } else {
-            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            monthSelector(scope.date.monthCount)
-            scope.checkLists('newView $watch WEEK', scope.pulledTodoList)
-            // monthSelector(scope.date.monthCount-1)
-            // scope.checkLists('newView $watch', scope.pulledTodoList)
-            // scope.date.monthCount = scope.date.monthCount-1
-          }
-        } else {
-          monthSelector(date.getMonth()+1)
-          scope.checkLists('newView $watch', scope.pulledTodoList)
-        }
-        if(newView === 'month'){
-          console.log("TRIGGERED")
-          // scope.date.weekCount = 0;
-          // scope.date.twoMonthsWeekly = false;
-          // scope.date.dayCount = [];
-          monthSelector(scope.date.monthCount)
-          scope.checkLists('newView $watch MONTH', scope.pulledTodoList)
-        }
-      }, true)
+      scope.$watch('listForCal', function(todosForCal, oldList){
+        console.log(todosForCal)
+        console.log(oldList)
+        console.log(scope.date.monthCount)
+        monthSelector(scope.date.monthCount)
+        console.log(todosForCal)
+        if(todosForCal.length){
+          console.log('Made it in ')
+          // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]
+          todosForCal.forEach(function(todoForCal){
+            console.log('Made it in here too ;) ')
+            console.log(todoForCal)
+            // todoForCal --> {origin: 'database' , todo: list}
+            // todoForCal --> {origin: 'newClone' , todo: list, modifiedDateList: newList}
 
-      scope.$watch('date', function(newDate, oldValue){
-        console.log("month $watch called. newDate below: ")
-        console.log(newDate)
-        var todoList = scope.todolist
-        monthSelector(newDate.monthCount)
-        pullTodo()
+            console.log(todoForCal.todo.lists)
+            console.log(todoForCal.modifiedDateList)
+            if(todoForCal.todo.lists || todoForCal.modifiedDateList){
+              console.log('Made it in here three ;) ')
+              if(todoForCal.origin === 'database'){
+                console.log('database')
+
+                todoForCal.modifiedDateList.forEach(function(dateList){
+                  console.log(dateList)
+                  var date = dateList.date;
+                  scope.pickCorrectDateForCal(date, todoForCal.todo)
+                })
+
+              } else if (todoForCal.origin === 'newClone'){
+                console.log('newClone')
+                todoForCal.modifiedDateList.forEach(function(dateList){
+                  var date = dateList.date;
+                  scope.pickCorrectDateForCal(date, todoForCal.todo)
+                })
+              }
+
+            }
+
+          })
+        }
       }, true);
 
-      scope.$watch('current', function(newValue, oldValue){
-        console.log("current $watch called")
-        // console.log(newValue)
-        if(newValue){
-          var currentMonth = date.getMonth()+1
-          var currentYear = date.getFullYear()
-        }
-      }, true);
+      // scope.$watch('newView', function(newView, oldView){
+      //   console.log("newView = " + newView)
+      //   console.log(date.getMonth()+1)
+      //   console.log(scope.date)
+      //   var dayCountLength = scope.date.dayCount.length-1;
+      //   if(scope.date.twoMonthsWeekly && newView === 'week'){
+      //     // looks to see if the month view is made up more of the current or next month to decide which to show on monthly view
+      //     console.log(scope.date.dayCount[dayCountLength-3])
+      //     if(scope.date.dayCount[dayCountLength-3] < 7){
+      //       monthSelector(scope.date.monthCount)
+      //       scope.checkLists('newView $watch', scope.pulledTodoList)
+      //     } else {
+      //       console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+      //       monthSelector(scope.date.monthCount)
+      //       scope.checkLists('newView $watch WEEK', scope.pulledTodoList)
+      //       // monthSelector(scope.date.monthCount-1)
+      //       // scope.checkLists('newView $watch', scope.pulledTodoList)
+      //       // scope.date.monthCount = scope.date.monthCount-1
+      //     }
+      //   } else {
+      //     monthSelector(date.getMonth()+1)
+      //     scope.checkLists('newView $watch', scope.pulledTodoList)
+      //   }
+      //   if(newView === 'month'){
+      //     console.log("TRIGGERED")
+      //     // scope.date.weekCount = 0;
+      //     // scope.date.twoMonthsWeekly = false;
+      //     // scope.date.dayCount = [];
+      //     monthSelector(scope.date.monthCount)
+      //     scope.checkLists('newView $watch MONTH', scope.pulledTodoList)
+      //   }
+      // }, true)
+
+      // scope.$watch('date', function(newDate, oldValue){
+      //   console.log("month $watch called. newDate below: ")
+      //   console.log(newDate)
+      //   var todoList = scope.todolist
+      //   monthSelector(newDate.monthCount)
+      //   pullTodo()
+      // }, true);
+
+      // scope.$watch('current', function(newValue, oldValue){
+      //   console.log("current $watch called")
+      //   // console.log(newValue)
+      //   if(newValue){
+      //     var currentMonth = date.getMonth()+1
+      //     var currentYear = date.getFullYear()
+      //   }
+      // }, true);
 
       // I do not think this is neeeded, but I'm scared to delete 3/18/2017
       // scope.$watch('todoList', function(newValue, oldValue){
@@ -99,19 +142,19 @@
       //   }
       // }, true);
 
-      scope.$watch('newtodoLists', function(newValue, oldValue){
-        console.log("newtodoLists $watch called")
-        console.log(scope.todoList)
-        console.log(newValue)
-        scope.isThereANewTodo = newValue
-        console.log(scope.isThereANewTodo)
-        if(newValue){
-          console.log("newValue conditional true in newTodoLists ")
-            scope.checkLists('newTodoList $watch', newValue)
-            // we have to push to scope.todoList because that array is what gets used when user flips between weekly and monthly views
-            scope.todoList.push(newValue[0])
-        }
-      }, false);
+      // scope.$watch('newtodoLists', function(newValue, oldValue){
+      //   console.log("newtodoLists $watch called")
+      //   console.log(scope.todoList)
+      //   console.log(newValue)
+      //   scope.isThereANewTodo = newValue
+      //   console.log(scope.isThereANewTodo)
+      //   if(newValue){
+      //     console.log("newValue conditional true in newTodoLists ")
+      //       scope.checkLists('newTodoList $watch', newValue)
+      //       // we have to push to scope.todoList because that array is what gets used when user flips between weekly and monthly views
+      //       scope.todoList.push(newValue[0])
+      //   }
+      // }, false);
 
       scope.testModal = function (list, date){
         ModalService.showModal({
@@ -143,12 +186,12 @@
           // creates and appends the new calendar items to the calendar
           var bigTdContainer = document.getElementsByClassName(time)
           var pForBigTd = document.createElement('p')
-          pForBigTd.setAttribute("id", list._id+date.date)
+          pForBigTd.setAttribute("id", list._id+date)
           if(timeStructure === 'startTime'){
             pForBigTd.innerHTML = list.list_name
           }
           if(list.list_reocurring === 'Monthly'){
-            var fullDateObj = DateService.stringDateSplit(date.date)
+            var fullDateObj = DateService.stringDateSplit(date)
             console.log(fullDateObj)
             var listDay = fullDateObj.day
             bigTdContainer = bigTdContainer[listDay+1]
@@ -158,7 +201,7 @@
           }
           bigTdContainer.addEventListener("click", function(e) {
             console.log(e)
-            scope.testModal(list, date.date)
+            scope.testModal(list, date)
           })
           bigTdContainer.setAttribute("id", "time-with-entry")
           pForBigTd.setAttribute("class", timeStructure)
@@ -241,17 +284,19 @@
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul){
           console.log(date)
-          var exists = document.getElementById(list._id+date.date)
+          console.log(ul)
+          console.log(JSON.stringify(ul))
+          var exists = document.getElementById(list._id+date)
           if(!exists){
             var li = document.createElement("li")
             console.log(listDay)
             li.setAttribute("class",'a'+listDay)
-            li.setAttribute("id", list._id+date.date)
+            li.setAttribute("id", list._id+date)
             var url = document.createElement("a")
             url.innerHTML = list.list_name;
             li.addEventListener("click", function(e) {
               console.log(e)
-              scope.testModal(list, date.date)
+              scope.testModal(list, date)
             })
             li.append(url)
             if(scope.newView === 'week' && list.start_time){
@@ -261,9 +306,9 @@
               ul[0].appendChild(li)
             }
           } else {
-            console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR " + list._id+date.date)
+            console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR " + list._id+date)
           }
-        }
+        };
 
         var dateSplit = function(listDate, date, list){
           var listDay = listDate[2].substring(0,2)
@@ -274,19 +319,19 @@
           appendToCalendar(listDay, date, list, realListDate)
         }
 
-        var checkDates = function(date, list){
-          // console.log("checkDates function envoked. list and then date below:")
-          // console.log(date)
-          // console.log(list)
+        scope.pickCorrectDateForCal = function(date, list){
+          // console.log("scope.scope.pickCorrectDateForCal function envoked. list and then date below:")
+          console.log(date)
+          console.log(list)
           if(scope.newView === 'month'){
-            var listDates = date.date.split("-")
+            var listDates = date.split("-")
             var listDay = parseInt(listDates[2].substr(0,2))
             var ul = document.getElementsByClassName("u"+listDay)
             appendToCalendar(listDay, date, list, undefined, ul)
           } else if(scope.newView === 'week') {
             // we need to use the actual date, as opposed to list.first_day like below, since it's Daily recurring
             if(list.list_reocurring === 'Daily') {
-              var listDate = date.date.split("-")
+              var listDate = date.split("-")
               dateSplit(listDate, date, list)
             } else {
               if(typeof list.first_day == "object"){
@@ -310,125 +355,130 @@
         //       console.log(listDay === scope.lastDate[v])
         //       if(listDay === scope.lastDate[v]){
         //         console.log("putting on calendar")
-        //         checkDates(date, list)
+        //         scope.scope.pickCorrectDateForCal(date, list)
         //       }
         //     }
         // }
 
-        var checkWeeklyDate = function(listDay, date, list, listYear, listMonth){
-          console.log("checkWeeklyDate function.  listDay = " + listDay + " date (below) = " + date + " listYear = " + listYear + " listMonth = "  + listMonth)
-          console.log(date)
-          var dateArrayLength = scope.lastDate.length
-          var firstWeeklyDate = scope.lastDate[dateArrayLength-7]
-          var lastWeeklyDate = scope.lastDate[dateArrayLength-1]
-
-          // conditional to see if the week spans two different months
-          if(scope.date.twoMonthsWeekly){
-            console.log(scope.date)
-            if(listMonth === scope.date.twoMonthsWeeklyDate.newMonthDate.month){
-              scope.date.twoMonthsWeeklyDate.newMonthDate.date.forEach(function(newMD){
-                console.log(newMD)
-                if(newMD == listDay){
-                  checkDates(date, list)
-                }
-              })
-
-            } else if(listMonth === scope.date.twoMonthsWeeklyDate.oldMonthDate.month){
-              scope.date.twoMonthsWeeklyDate.oldMonthDate.date.forEach(function(oldMD){
-                console.log(oldMD)
-                if(oldMD == listDay){
-                  checkDates(date, list)
-                }
-              })
-            }
-          } else {
-            console.log("in the ELSE of checkWeeklyDate")
-            console.log(listDay >= firstWeeklyDate && listDay <= lastWeeklyDate)
-            console.log(listYear === year && listMonth === scope.date.monthCount)
-            if(listDay >= firstWeeklyDate && listDay <= lastWeeklyDate){
-              if(listYear === year && listMonth === scope.date.monthCount){
-                console.log(date)
-                console.log(list)
-                checkDates(date, list)
-              }
-            }
-          }
-        };
+        // var checkWeeklyDate = function(listDay, date, list, listYear, listMonth){
+        //   console.log("checkWeeklyDate function.  listDay = " + listDay + " date (below) = " + date + " listYear = " + listYear + " listMonth = "  + listMonth)
+        //   console.log(date)
+        //   var dateArrayLength = scope.lastDate.length
+        //   var firstWeeklyDate = scope.lastDate[dateArrayLength-7]
+        //   var lastWeeklyDate = scope.lastDate[dateArrayLength-1]
+        //
+        //   // conditional to see if the week spans two different months
+        //   if(scope.date.twoMonthsWeekly){
+        //     console.log(scope.date)
+        //     if(listMonth === scope.date.twoMonthsWeeklyDate.newMonthDate.month){
+        //       scope.date.twoMonthsWeeklyDate.newMonthDate.date.forEach(function(newMD){
+        //         console.log(newMD)
+        //         if(newMD == listDay){
+        //           scope.pickCorrectDateForCal(date, list)
+        //         }
+        //       })
+        //
+        //     } else if(listMonth === scope.date.twoMonthsWeeklyDate.oldMonthDate.month){
+        //       scope.date.twoMonthsWeeklyDate.oldMonthDate.date.forEach(function(oldMD){
+        //         console.log(oldMD)
+        //         if(oldMD == listDay){
+        //           scope.pickCorrectDateForCal(date, list)
+        //         }
+        //       })
+        //     }
+        //   } else {
+        //     console.log("in the ELSE of checkWeeklyDate")
+        //     console.log(listDay >= firstWeeklyDate && listDay <= lastWeeklyDate)
+        //     console.log(listYear === year && listMonth === scope.date.monthCount)
+        //     if(listDay >= firstWeeklyDate && listDay <= lastWeeklyDate){
+        //       if(listYear === year && listMonth === scope.date.monthCount){
+        //         console.log(date)
+        //         console.log(list)
+        //         scope.pickCorrectDateForCal(date, list)
+        //       }
+        //     }
+        //   }
+        // };
 
       // scope.checkLists function recieves the full todoList loops the first, and all of the date lists within to determine if it should be displayed on the calendar
-        var local = []
-        scope.checkLists = function(message, listArray){
-          // console.log("scope.checkLists message = " + message)
-          // console.log(JSON.stringify(listArray))
-          // console.log(JSON.stringify(local))
-          // console.log(local.length)
-
-          if(listArray){
-            if(local.length && message != 'newList'){
-              console.log("pushing to listArray")
-              local.forEach(function(loc){
-                listArray.push(loc)
-              })
-            }
-
-            if(message == 'newList'){
-              local.push(listArray[0])
-            }
-            // console.log(local)
-            // console.log(listArray)
-            // console.log(listArray.length)
-            if(listArray.length){
-              for(var k = 0; k < listArray.length; k++){
-                var list = listArray[k]
-                if(listArray[k] != undefined){
-                    // console.log(list)
-                    // console.log("list = " + list.list_name + " index = " + k)
-                    var reocurringDates = list.lists
-                    // need to access all of the recurring lists which are nested in reocurringDates, which is done below
-                    // console.log(scope.date)
-                    reocurringDates.forEach(function(date, index){
-                      // console.log(date)
-                      var listDates = date.date.split("-")
-
-                      var listYear = parseInt(listDates[0])
-                      var listMonth = parseInt(listDates[1])
-                      var listDay = parseInt(listDates[2].substr(0,2))
-                      var lastMonth = scope.date.monthCount-1
-
-                      // console.log( scope.date )
-                      // console.log(date)
-                      // console.log(listMonth)
-                      // console.log(scope.date.twoMonthsWeekly && listMonth === scope.date.monthCount+1)
-                      if(scope.newView === 'week' &&
-                      scope.date.monthCount === listMonth ||
-                      scope.newView === 'week' && listMonth === lastMonth ||
-                      (scope.date.twoMonthsWeekly && listMonth === scope.date.monthCount+1 && scope.newView === 'week')){
-                          console.log("sending to checkWeeklyDate()")
-                        // console.log("listMonth = " + listMonth)
-                        // we send the full broken out full date date, the list itself and the full date to process further
-                        checkWeeklyDate(listDay, date, list, listYear, listMonth)
-
-                      } else {
-                        if(listYear === year && listMonth === scope.date.monthCount){
-                            console.log("sending to checkDates()")
-                            checkDates(date, list)
-                        }
-                      }
-
-                    }) //end of recourringDates forEach
-                  } // end of listArray loop
-                }
-            } else if(listArray[0]) {
-              list = listArray[0];
-              console.log(list)
-              if(list.dates){
-                list.dates.forEach(function(date){
-                  checkDates(date, list)
-                })
-              }
-            }
-          }
-        };
+        // var local = []
+        // scope.checkLists = function(message, listArray){
+        //   // console.log("scope.checkLists message = " + message)
+        //   // console.log(JSON.stringify(listArray))
+        //   // console.log(JSON.stringify(local))
+        //   // console.log(local.length)
+        //
+        //   if(listArray){
+        //     if(local.length && message != 'newList'){
+        //       console.log("pushing to listArray")
+        //       local.forEach(function(loc){
+        //         listArray.push(loc)
+        //       })
+        //     }
+        //
+        //     if(message == 'newList'){
+        //       local.push(listArray[0])
+        //     }
+        //     // console.log(local)
+        //     // console.log(listArray)
+        //     // console.log(listArray.length)
+        //     if(listArray.length){
+        //       for(var k = 0; k < listArray.length; k++){
+        //         var list = listArray[k]
+        //         if(listArray[k] != undefined){
+        //             // console.log(list)
+        //             // console.log("list = " + list.list_name + " index = " + k)
+        //             var reocurringDates = list.lists
+        //             // need to access all of the recurring lists which are nested in reocurringDates, which is done below
+        //             // console.log(scope.date)
+        //             reocurringDates.forEach(function(date, index){
+        //               console.log(date)
+        //
+        //               var date = date.date
+        //               var listDates = date.split("-")
+        //
+        //               var listYear = parseInt(listDates[0])
+        //               var listMonth = parseInt(listDates[1])
+        //               var listDay = parseInt(listDates[2].substr(0,2))
+        //               var lastMonth = scope.date.monthCount-1
+        //
+        //               // console.log( scope.date )
+        //               // console.log(date)
+        //               // console.log(listMonth)
+        //               // console.log(scope.date.twoMonthsWeekly && listMonth === scope.date.monthCount+1)
+        //
+        //
+        //
+        //               if(scope.newView === 'week' &&
+        //               scope.date.monthCount === listMonth ||
+        //               scope.newView === 'week' && listMonth === lastMonth ||
+        //               (scope.date.twoMonthsWeekly && listMonth === scope.date.monthCount+1 && scope.newView === 'week')){
+        //                   console.log("sending to checkWeeklyDate()")
+        //                 // console.log("listMonth = " + listMonth)
+        //                 // we send the full broken out full date date, the list itself and the full date to process further
+        //                 checkWeeklyDate(listDay, date, list, listYear, listMonth)
+        //
+        //               } else {
+        //                 if(listYear === year && listMonth === scope.date.monthCount){
+        //                     console.log("sending to scope.scope.pickCorrectDateForCal()")
+        //                     scope.pickCorrectDateForCal(date, list)
+        //                 }
+        //               }
+        //
+        //             }) //end of recourringDates forEach
+        //           } // end of listArray loop
+        //         }
+        //     } else if(listArray[0]) {
+        //       list = listArray[0];
+        //       console.log(list)
+        //       if(list.dates){
+        //         list.dates.forEach(function(date){
+        //           scope.pickCorrectDateForCal(date, list)
+        //         })
+        //       }
+        //     }
+        //   }
+        // };
 
         var addNewModal = function(e, month, year, index){
           // HERE
@@ -547,6 +597,7 @@
               if(scope.newView === 'month'){
                 td.innerHTML = scope.count;
               }
+              console.log("~~~~~~~~~************* UL has been created ********** ~~~~~~~~~~~~~~~~~~")
               var ul = document.createElement("ul");
               ul.setAttribute("class", "u"+scope.count)
               p.appendChild(ul)

@@ -257,7 +257,7 @@
                   $scope.newCal = [$scope.newCalTodoLists[0]]
                   console.log($scope.newCalTodoLists[0])
                   // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
-                  // since below function is from an external controller, we have to pass the parameter as an object literal, the key must match the parameter name in index.html
+                  // since below function is from an external directive, we have to pass the parameter as an object literal, the key must match the parameter name in index.html
                   // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
                   $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
                 }

@@ -32,8 +32,8 @@
               </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-              <todo-master view-type="viewType" list-type="todo"
-                          change-date="changeDate" all-tasks="allTasks" ></todo-master>
+              <!-- <todo-master view-type="viewType" list-type="todo"
+                          change-date="changeDate" all-tasks="allTasks" ></todo-master> -->
             </div>
           </div>
 
@@ -56,8 +56,8 @@
               </h4>
             </div>
             <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-              <todo-master view-type="viewType" list-type="shopping"
-                          change-date="changeDate" all-tasks="allTasks"></todo-master>
+              <!-- <todo-master view-type="viewType" list-type="shopping"
+                          change-date="changeDate" all-tasks="allTasks"></todo-master> -->
             </div>
           </div>
 
@@ -129,7 +129,8 @@
             <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive" >
 
               <!-- <ul> -->
-                <dd-checklist  data="allTasks" element=" 'rail' " ></dd-checklist>
+              
+                <!-- <dd-checklist  data="allTasks" element=" 'rail' " ></dd-checklist> -->
 
                   <!-- <li ng-repeat="task in allTasks track by $index">
                     {{ task.name }} - {{ task.list }} - {{ task.tasks.name}}
@@ -207,7 +208,7 @@
 
   <div>
     <monthly-calendar change-date="changeDate" current-month="currentMonth.count" list="todoLists"
-      new="newCalTodoLists" view="viewType"
+      new="newCalTodoLists" view="viewType" list-for-cal="listForCal"
     ></monthly-directive>
   </div>
 </div>

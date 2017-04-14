@@ -39,6 +39,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   $scope.entryType = 'Event';
   $scope.reoccurEnds = 'Never';
   $scope.reoccurEndsDate = new Date();
+  var listForCal = [];
 
   // testing this for add-new-call directive, but not working yet
   $scope.$watch("allTodoLists", function(newValue, oldValue){
@@ -84,11 +85,25 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     });
   };
 
-  var checkLastList = function(lastDateList, list){
+  var evaluateDateListsForCal = function(list, evaluate){
+    //evaluate = true when the date list doesn't go through checkLastList or $scope.cloneList
+    // still need to loop through ALL lists date-lists in order to overright and ONLY send the datelists that go on the calendar
+    if(evaulate){
+
+    }else{
+      // still need to check dates if it's weekly view
+    }
+  }
+
+  var checkLastList = function(lastDateList, list, index){
     var monthOfLastDateList = DateService.stringToDate(lastDateList.date, 'regMonth').getMonth();
+    console.log(monthOfLastDateList)
     var appsCurrentMonth = $scope.changeDate.monthCount;
+    console.log(appsCurrentMonth)
     var firstDateofAppsCurrentMonth = new Date($scope.changeYear.year, appsCurrentMonth-1, 1);
+    console.log(firstDateofAppsCurrentMonth)
     var recurEnd = list.list_recur_end;
+    console.log(recurEnd)
 
     if(recurEnd === "Never"){
       var recurEnd = "Never"
@@ -98,33 +113,66 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       DateService.stringToDate(recurEnd, 'regMonth')
     }
 
+    console.log(recurEnd > firstDateofAppsCurrentMonth)
+
     if(recurEnd > firstDateofAppsCurrentMonth || recurEnd === "Never"){
       if(monthOfLastDateList < appsCurrentMonth){
         console.log("CLONE ME BISH!!!")
-        $scope.listClone(list)
+        $scope.listClone(list, index)
       }
     }
   };
 
   $scope.verifyCloneList = function(){
     console.log("verifyCloneList called")
-    $scope.allTodoLists.forEach(function(list){
-      console.log(list)
-      var lastDateList = list.lists[list.lists.length-1]
+    console.log($scope.changeDate)
+    console.log($scope.allTodoLists.length)
+    console.log(listForCal)
 
+    $scope.allTodoLists.forEach(function(list, index){
+      console.log(list)
+      console.log(index)
+      var lastDateList = list.lists[list.lists.length-1]
+      var dateListsInCurrentMonth = [];
       // loop checks to see if the date already exists within the list, in which case, we don't send to checkLastList which doesn't send to listClone
+      console.log(list.lists.length)
       for(var l = 0 ; l < list.lists.length; l++){
         var fullListDate = DateService.stringDateSplit(list.lists[l].date)
-        if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
-          console.log("ALREADY EXISTS")
+        console.log(fullListDate)
+        console.log($scope.changeDate)
+
+        if($scope.changeDate.lastMove === 'increment' && fullListDate.month == $scope.changeDate.monthCount
+            && fullListDate.year == $scope.changeDate.year){
+              dateListsInCurrentMonth.push(list.lists[l])
+              var exists = true;
+        } else if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
+
+          dateListsInCurrentMonth.push(list.lists[l])
+          // listForCal.push(list)
+          // evaluateDateListsForCal(list)
+          // console.log($scope.listForCal)
+
+          console.log("date-list ALREADY EXISTS so we don't need to clone")
           var exists = true;
-          l = list.lists.length
+          // l = list.lists.length
         }
-      }
+      }; //end of for loop
+
       if(!exists){
-        checkLastList(lastDateList, list)
+        console.log("sending to checkLastList")
+        checkLastList(lastDateList, list, index)
+      } else {
+        // list.lists = dateListsInCurrentMonth;
+        console.log(list)
+        listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
       }
-    })
+    }) // end of $scope.allTodoLists forEach
+
+    console.log(JSON.stringify(listForCal))
+    // this won't stay here when complete, we'll only want to assign to $scope.listForCal after ALL lists have been processed through all different logic routes
+    $scope.listForCal = listForCal
+    console.log($scope.listForCal)
+
   };
 
   // logic for weekly calendar view days when user is "flipping" through calendar view, invoked in $scope.changeDate.increment and decrement
@@ -301,6 +349,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     dayCount: [],
     twoMonthsWeekly: false,
     increment: function(){
+      $scope.listForCal = [];
+      listForCal = [];
+      console.log($scope.listForCal)
+      console.log(listForCal)
       if($scope.viewType === 'week'){
         if(!$scope.changeDate.dayCount.length){
           $scope.intializeDayCount()
@@ -313,6 +365,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           $scope.changeYear.increment()
         } else {
           if(!$scope.changeDate.dayCount.length){
+            console.log("INIATILIZING $scope.intializeDayCount()")
             $scope.intializeDayCount()
           }
           console.log("I've been incremented")
@@ -406,8 +459,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     }
   };
 
-  $scope.listClone = function(masterList){
+  $scope.listClone = function(masterList, index){
     console.log(masterList)
+    console.log(index)
+    console.log($scope.allTodoLists.length)
     var appsCurrentMonth = $scope.changeDate.monthCount-1
     var appsCurrentYear = $scope.changeYear.year
     var firstListDay = DateService.stringToDate(masterList.first_day, 'regMonth').getDay()
@@ -453,6 +508,8 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     }
 
     console.log(last)
+
+    var newlyCreatedDateLists = [];
     while(count <= last){
       if(count > 0){
         if(count <= last){
@@ -469,15 +526,28 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
               })
             })
           }
-          listsInMasterList.push( { date: listDate, tasks: masterTasksToAdd } )
+          listsInMasterList.push( { date: listDate, tasks: masterTasksToAdd } );
+          newlyCreatedDateLists.push( { date: listDate, tasks: masterTasksToAdd } );
         }
       }
       count = count + repeater
     }
+      console.log(newlyCreatedDateLists)
+      console.log(listsInMasterList)
       console.log(masterList)
+      console.log(JSON.stringify(masterList))
+
       Todo.update({list_name: masterList.list_name}, {todo: masterList}, function(task){
+        console.log("------- Todo/List UPDATED!!! -----")
         console.log(task)
       })
+
+      console.log($scope.listForCal)
+      listForCal.push({origin: 'newClone', todo: masterList, modifiedDateList: newlyCreatedDateLists})
+      // listForCal = [{origin: 'newClone', todo: masterList, modifiedDateList: newlyCreatedDateLists}]
+      $scope.listForCal = [listForCal];
+      console.log($scope.listForCal)
+
   }; // end of $scope.listClone
 
 
