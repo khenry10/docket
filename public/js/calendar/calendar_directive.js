@@ -40,6 +40,7 @@
       scope.$watch('listForCal', function(todosForCal, oldList){
         console.log(todosForCal)
         console.log(oldList)
+        console.log(scope.date)
         console.log(scope.date.monthCount)
         monthSelector(scope.date.monthCount)
         console.log(todosForCal)
@@ -346,19 +347,7 @@
                 }
               }
             }
-        }
-
-        // this isn't being called anywhere to afraid to delete -- 5/12/17
-        // var loopThroughLastDateArray = function(listDay, date, list){
-        //   console.log("loopThroughLastDateArray FUNCTION")
-        //     for(var v = scope.lastDate.length-1; v > scope.lastDate.length-8; v--){
-        //       console.log(listDay === scope.lastDate[v])
-        //       if(listDay === scope.lastDate[v]){
-        //         console.log("putting on calendar")
-        //         scope.scope.pickCorrectDateForCal(date, list)
-        //       }
-        //     }
-        // }
+        };
 
         // var checkWeeklyDate = function(listDay, date, list, listYear, listMonth){
         //   console.log("checkWeeklyDate function.  listDay = " + listDay + " date (below) = " + date + " listYear = " + listYear + " listMonth = "  + listMonth)

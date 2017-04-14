@@ -68,6 +68,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     } else if(view === 'month'){
       $scope.viewType = 'month'
     }
+    $scope.verifyCloneList()
   };
 
   $scope.testModal = function (){
@@ -128,6 +129,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     console.log($scope.changeDate)
     console.log($scope.allTodoLists.length)
     console.log(listForCal)
+    console.log($scope.viewType)
 
     $scope.allTodoLists.forEach(function(list, index){
       console.log(list)
@@ -148,9 +150,6 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         } else if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
 
           dateListsInCurrentMonth.push(list.lists[l])
-          // listForCal.push(list)
-          // evaluateDateListsForCal(list)
-          // console.log($scope.listForCal)
 
           console.log("date-list ALREADY EXISTS so we don't need to clone")
           var exists = true;
@@ -377,6 +376,8 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
     },
     decrement: function(){
+      $scope.listForCal = [];
+      listForCal = [];
       // $scope.verifyCloneList()
       if($scope.viewType === 'week'){
         weeklyMove('decrement')
