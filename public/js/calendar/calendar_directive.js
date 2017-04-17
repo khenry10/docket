@@ -63,6 +63,7 @@
                 todoForCal.modifiedDateList.forEach(function(dateList){
                   console.log(dateList)
                   var date = dateList.date;
+                  console.log(date)
                   scope.pickCorrectDateForCal(date, todoForCal.todo)
                 })
 
@@ -70,6 +71,7 @@
                 console.log('newClone')
                 todoForCal.modifiedDateList.forEach(function(dateList){
                   var date = dateList.date;
+                  console.log(date)
                   scope.pickCorrectDateForCal(date, todoForCal.todo)
                 })
               }
@@ -180,8 +182,8 @@
         var year = date.getFullYear()
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure){
-          // console.log("date = ")
-          // console.log(date)
+          console.log("date = ")
+          console.log(date)
           console.log("realListDate = " + realListDate)
           console.log(time)
           // creates and appends the new calendar items to the calendar
