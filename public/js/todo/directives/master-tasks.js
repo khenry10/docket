@@ -78,7 +78,7 @@
               })
             })
           }
-
+          console.log($scope.allTasks)
         }
 
         // looks to see if there are any lists embedded in each Todo, if yes, put it on calendar

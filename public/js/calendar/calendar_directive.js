@@ -50,32 +50,11 @@
           todosForCal.forEach(function(todoForCal){
             console.log('Made it in here too ;) ')
             console.log(todoForCal)
-            // todoForCal --> {origin: 'database' , todo: list}
-            // todoForCal --> {origin: 'newClone' , todo: list, modifiedDateList: newList}
-
-            console.log(todoForCal.todo.lists)
-            console.log(todoForCal.modifiedDateList)
             if(todoForCal.todo.lists || todoForCal.modifiedDateList){
-              console.log('Made it in here three ;) ')
-              if(todoForCal.origin === 'database'){
-                console.log('database')
-
-                todoForCal.modifiedDateList.forEach(function(dateList){
-                  console.log(dateList)
-                  var date = dateList.date;
-                  console.log(date)
-                  scope.pickCorrectDateForCal(date, todoForCal.todo)
-                })
-
-              } else if (todoForCal.origin === 'newClone'){
-                console.log('newClone')
-                todoForCal.modifiedDateList.forEach(function(dateList){
-                  var date = dateList.date;
-                  console.log(date)
-                  scope.pickCorrectDateForCal(date, todoForCal.todo)
-                })
-              }
-
+              todoForCal.modifiedDateList.forEach(function(dateList){
+                var date = dateList.date;
+                scope.pickCorrectDateForCal(date, todoForCal.todo)
+              })
             }
 
           })

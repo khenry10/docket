@@ -40,6 +40,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   $scope.reoccurEnds = 'Never';
   $scope.reoccurEndsDate = new Date();
   var listForCal = [];
+  var allTasks = [];
 
   // testing this for add-new-call directive, but not working yet
   $scope.$watch("allTodoLists", function(newValue, oldValue){
@@ -89,7 +90,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   };
 
   var evaluateDateListsForWeekCal = function(fullListDate, dateList){
-    console.log("evaluateDateListsForWeekCal invoked. dateList is below ")
+    console.log("evaluateDateListsForWeekCal invoked. dateList is below & date === " + dateList.date)
     console.log(dateList)
     console.log($scope.changeDate)
     console.log(fullListDate)
@@ -171,6 +172,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       if(monthOfLastDateList < appsCurrentMonth){
         console.log("CLONE ME BISH!!!")
         $scope.listClone(list, index)
+
       }
     }
   };
@@ -192,7 +194,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       console.log(list.lists.length)
 
       for(var l = 0 ; l < list.lists.length; l++){
-
+        console.log(list.lists[l])
         var fullListDate = DateService.stringDateSplit(list.lists[l].date)
         console.log(fullListDate)
         console.log($scope.changeDate)
@@ -207,19 +209,11 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
           console.log(dateListsInCurrentMonth)
         } else if($scope.viewType === 'month'){
 
-          if($scope.changeDate.lastMove === 'increment' &&
-          fullListDate.month == $scope.changeDate.monthCount &&
-          fullListDate.year == $scope.changeDate.year){
-
-            dateListsInCurrentMonth.push(list.lists[l]);
-            $scope.exists = true;
-          } else if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
-
+          if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
             dateListsInCurrentMonth.push(list.lists[l])
-
+            allTasks.push({name: list.list_name, listDate: list.lists[l].date, listType: list.list_type, tasks: list.lists[l].tasks})
             console.log("date-list ALREADY EXISTS so we don't need to clone")
             $scope.exists = true;
-            // l = list.lists.length
           }
         } // end of month else if
 
@@ -234,6 +228,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         console.log(dateListsInCurrentMonth)
         listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
         console.log(listForCal)
+        console.log(allTasks)
       }
     }) // end of $scope.allTodoLists forEach
 
@@ -317,10 +312,11 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       } else {
         date = actionDate
       }
+      date = date-8
       console.log(date)
-      for(var e = 1; e <= 7; e++){
+      for(var e = 7; e >= 1; e--){
         $scope.changeDate.lastMove = "decrement"
-        var date = date - 1
+        var date = date + 1
         console.log(date)
         if(date <= 0){
           $scope.changeDate.monthCount--
@@ -598,7 +594,19 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
             })
           }
           listsInMasterList.push( { date: listDate, tasks: masterTasksToAdd } );
-          newlyCreatedDateLists.push( { date: listDate, tasks: masterTasksToAdd } );
+          console.log($scope.viewType)
+          if ($scope.viewType === 'week'){
+            console.log("we're in $scope.view === week in ListClone")
+            var correctDateFormat = DateService.stringDateSplit(listDate);
+            console.log(correctDateFormat)
+            var newlyCreatedDateListsForWeekly = evaluateDateListsForWeekCal(correctDateFormat, { date: listDate, tasks: masterTasksToAdd })
+            console.log(newlyCreatedDateListsForWeekly)
+            if(newlyCreatedDateListsForWeekly){
+              newlyCreatedDateLists.push(newlyCreatedDateListsForWeekly)
+            };
+          } else if ($scope.viewType === 'month'){
+            newlyCreatedDateLists.push( { date: listDate, tasks: masterTasksToAdd } );
+          }
         }
       }
       count = count + repeater
