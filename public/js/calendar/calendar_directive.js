@@ -473,7 +473,7 @@
                   var date = {date: e.srcElement.attributes[0].ownerElement.childNodes[0].data, month: month, year: year}
               }
 
-              var data = {view: 'modal', date, newCal: scope.newtodoLists, dateTracker: scope.date}
+              var data = {view: 'modal', date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope}
               data.checkLists = scope.checkLists
               data.newMaster = scope.$parent.newMasterListAddition
 

@@ -16,7 +16,8 @@
         data: "=data",
         date: "=date",
         element: "=element",
-        listType: "="
+        listType: "=",
+        allTasks: "="
       },
       link: function($scope){
 
@@ -27,6 +28,7 @@
         console.log($scope.data)
         console.log($scope)
         console.log($scope.element)
+        console.log($scope.allTasks)
 
         $scope.models = {
           selected: null,
@@ -181,11 +183,11 @@
             console.log(list)
 
             $scope.nonBindedTask = {
-              name: list.tasks.name,
-              list_date: list.list,
+              name: list.taskName,
+              list_date: list.listDate,
               listType: list.listType,
               rank: index,
-              task_completed: list.tasks.task_completed
+              task_completed: list.taskCompleted
             }
             console.log($scope.nonBindedTask)
             $scope.models.toDoList.push($scope.nonBindedTask)

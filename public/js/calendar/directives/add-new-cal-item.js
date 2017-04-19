@@ -245,21 +245,25 @@
                 })
 
                 console.log($scope.data)
-                // $scope.data is only passed in when the modal is being used
-                if($scope.data){
-                  // new events through the modal all use methods provided by $scope.data
+                var pushNew = {
+                  origin: 'add-new-call-item-directive',
+                  todo: $scope.newCalTodoLists[0],
+                  modifiedDateList: $scope.newCalTodoLists[0].lists
+                };
 
-                  $scope.data.checkLists("newList",[$scope.newCalTodoLists[0]])
-                  // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
-                  // $scope.data.newMaster($scope.newCalTodoLists[0])
+                // $scope.data is only passed in when the add new MODAL is being used, comes from the calendar directive
+                if($scope.data){
+                  // in the calendar directive I pass the entire scope into the data object, which inherits it's scope from the IndexController
+                    // decided to it this way because scope.pickCorrectDateForCal puts EVERYTING you send it on the calendar and I didn't want to duplicate logic already in IndexController
+                  $scope.data.scope.$parent.verifyCloneList($scope.newCalTodoLists[0]);
+
                 } else {
                   // new events from side rail use isolated directive scope
                   $scope.newCal = [$scope.newCalTodoLists[0]]
                   console.log($scope.newCalTodoLists[0])
-                  // below function is in master-tasks.js, which may be causing the scoping issue with clearing input fields
-                  // since below function is from an external directive, we have to pass the parameter as an object literal, the key must match the parameter name in index.html
-                  // for some reason, the below was triggering "Converting circular structure to JSON" error.  the entire list object was being pushed into list.lists
-                  $scope.newMaster({newMaster: $scope.newCalTodoLists[0]})
+
+                  $scope.$parent.listForCal.push(pushNew)
+
                 }
 
                 // clears the input fields for new additions

@@ -40,7 +40,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   $scope.reoccurEnds = 'Never';
   $scope.reoccurEndsDate = new Date();
   var listForCal = [];
-  var allTasks = [];
+  $scope.allTasks = [];
 
   // testing this for add-new-call directive, but not working yet
   $scope.$watch("allTodoLists", function(newValue, oldValue){
@@ -88,6 +88,22 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       });
     });
   };
+
+  var parseAllTasks = function(dateList, list){
+    console.log(dateList)
+    console.log(list)
+    dateList.tasks.forEach(function(task){
+      console.log(task)
+      $scope.allTasks.push({
+        taskName: task.name,
+        listName: list.list_name,
+        listDate: dateList.date,
+        listType: list.list_type,
+        taskCompleted: task.task_completed
+      })
+    })
+    console.log($scope.allTasks)
+  }
 
   var evaluateDateListsForWeekCal = function(fullListDate, dateList){
     console.log("evaluateDateListsForWeekCal invoked. dateList is below & date === " + dateList.date)
@@ -177,9 +193,12 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     }
   };
 
-  $scope.verifyCloneList = function(){
+  $scope.verifyCloneList = function(addNew){
     $scope.exists = false;
     console.log("verifyCloneList called")
+    if(addNew){
+      $scope.allTodoLists.push(addNew)
+    }
     console.log($scope.changeDate)
     console.log($scope.allTodoLists.length)
     console.log(listForCal)
@@ -211,7 +230,10 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
 
           if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
             dateListsInCurrentMonth.push(list.lists[l])
-            allTasks.push({name: list.list_name, listDate: list.lists[l].date, listType: list.list_type, tasks: list.lists[l].tasks})
+            console.log(list.lists[l].tasks.length)
+            if(list.lists[l].tasks.length && list.list_type == 'todo'){
+              parseAllTasks(list.lists[l], list)
+            }
             console.log("date-list ALREADY EXISTS so we don't need to clone")
             $scope.exists = true;
           }
@@ -228,7 +250,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         console.log(dateListsInCurrentMonth)
         listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
         console.log(listForCal)
-        console.log(allTasks)
+        console.log($scope.allTasks)
       }
     }) // end of $scope.allTodoLists forEach
 
