@@ -28,18 +28,20 @@
 
           console.log(todosForCal)
           if(todosForCal.length){
+            $scope.listss = [];
             console.log('Made it in ')
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]
             todosForCal.forEach(function(todoForLeftRail){
               console.log('Made it in here too ;) ')
               console.log(todoForLeftRail)
               console.log($scope.listType)
-              if(todoForLeftRail.todo.list_type === $scope.listType){
+              if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
                 console.log('Made it in here 3 ;) ')
                 $scope.listss.push({
                   name: todoForLeftRail.todo.list_name,
                   master_tasks: todoForLeftRail.todo.master_tasks,
-                  listType: todoForLeftRail.todo.list_type
+                  listType: todoForLeftRail.todo.list_type,
+                  todo: todoForLeftRail.todo
                  })
               }
 
@@ -292,18 +294,21 @@
           console.log(list)
 
           list.master_tasks.push({name: master, created_on: today})
-          console.log(list)
-          list.lists.forEach(function(list){
+          console.log(list.todo)
+          list.todo.lists.forEach(function(list){
             console.log(list)
             list.tasks.push(saveMe)
           })
 
           list.list_name = list.name
           console.log(list)
-          Todo.update({list_name: list.list_name}, {todo: list}, function(task){
+          Todo.update({list_name: list.list_name}, {todo: list.todo}, function(task){
             console.log(task)
 
           })
+
+          $scope.listForCal[0].origin = 'master-task'
+
           $scope.newMasterInDirective.name = "";
           $scope.newMasterInDirective.price = "";
           $scope.newMasterInDirective.quantity = "";

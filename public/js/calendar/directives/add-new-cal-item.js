@@ -273,6 +273,7 @@
                 $scope.entryType = ""
                 $scope.startTime = ""
                 $scope.endTime = ""
+                $scope.newEntry.budget = ""
               // } this is needed when the conditional is in place to see if it's a List or Event (event deprecated on 3/19)
             }
           }

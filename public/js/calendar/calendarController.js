@@ -105,7 +105,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     console.log($scope.allTasks)
   }
 
-  var evaluateDateListsForWeekCal = function(fullListDate, dateList){
+  var evaluateDateListsForWeekCal = function(fullListDate, dateList, list){
     console.log("evaluateDateListsForWeekCal invoked. dateList is below & date === " + dateList.date)
     console.log(dateList)
     console.log($scope.changeDate)
@@ -151,6 +151,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       if(fullListDate.date >= firstWeeklyDate && fullListDate.date <= lastWeeklyDate){
         if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
           console.log(dateList)
+          parseAllTasks(dateList, list)
           $scope.exists = true;
           var dateListsInCurrentMonth = dateList;
         }
@@ -197,18 +198,20 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
     $scope.exists = false;
     console.log("verifyCloneList called")
     if(addNew){
+      $scope.allTodoLists = [];
       $scope.allTodoLists.push(addNew)
     }
     console.log($scope.changeDate)
     console.log($scope.allTodoLists.length)
     console.log(listForCal)
     console.log($scope.viewType)
-
+    $scope.allTasks = [];
     $scope.allTodoLists.forEach(function(list, index){
       console.log(list)
       console.log(index)
       var lastDateList = list.lists[list.lists.length-1]
       var dateListsInCurrentMonth = [];
+
       // loop checks to see if the date already exists within the list, in which case, we don't send to checkLastList which doesn't send to listClone
       console.log(list.lists.length)
 
@@ -219,7 +222,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
         console.log($scope.changeDate)
 
         if($scope.viewType === 'week'){
-          var weeklyDate = evaluateDateListsForWeekCal(fullListDate, list.lists[l])
+          var weeklyDate = evaluateDateListsForWeekCal(fullListDate, list.lists[l], list)
           console.log(weeklyDate)
           if(weeklyDate){
             console.log("pushing into")

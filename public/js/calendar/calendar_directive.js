@@ -24,7 +24,7 @@
       },
       link: function(scope){
         console.log(scope)
-      console.log("view = " + scope.newView)
+        console.log("view = " + scope.newView)
 
       // var pullTodo = function (){
       //   console.log("pullTodo called")
@@ -42,7 +42,10 @@
         console.log(oldList)
         console.log(scope.date)
         console.log(scope.date.monthCount)
-        monthSelector(scope.date.monthCount)
+        console.log(todosForCal[0].origin)
+        if(todosForCal[0].origin != 'master-task'){
+          monthSelector(scope.date.monthCount)
+
         console.log(todosForCal)
         if(todosForCal.length){
           console.log('Made it in ')
@@ -50,14 +53,16 @@
           todosForCal.forEach(function(todoForCal){
             console.log('Made it in here too ;) ')
             console.log(todoForCal)
-            if(todoForCal.todo.lists || todoForCal.modifiedDateList){
+            if(todoForCal.todo.lists || todoForCal.modifiedDateList ){
+
               todoForCal.modifiedDateList.forEach(function(dateList){
                 var date = dateList.date;
                 scope.pickCorrectDateForCal(date, todoForCal.todo)
               })
             }
-
           })
+
+          }
         }
       }, true);
 
