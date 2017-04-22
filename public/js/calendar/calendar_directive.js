@@ -145,12 +145,16 @@
       // }, false);
 
       scope.testModal = function (list, date){
+        console.log(scope)
+        console.log(scope.$parent)
+        console.log(scope.$parent.allTasks)
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
           inputs: {
             data: list,
-            date: date
+            date: date,
+            allTasks: scope.$parent.allTasks
           }
         }).then(function(modal) {
           //it's a bootstrap element, use 'modal' to show it

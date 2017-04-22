@@ -276,6 +276,7 @@
         $scope.addNewMasterTask = function (list){
           $scope.show = false;
           console.log($scope)
+          console.log($scope.$parent)
           console.log(JSON.stringify($scope.newMasterInDirective))
           var master = $scope.newMasterInDirective.name
 
@@ -306,6 +307,8 @@
             console.log(task)
 
           })
+          // this works but isn't a great solution. has to process everything just in order to add a new master task to all
+          $scope.$parent.verifyCloneList();
 
           $scope.listForCal[0].origin = 'master-task'
 

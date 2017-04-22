@@ -19,7 +19,7 @@ angular.module('app')
 ])
 
 function IndexController($scope, Events, Todo, $window, ModalService, DateService){
-  console.log("IndexController slash calendarController below")
+  console.log("IndexController / calendarController below")
   console.log($scope)
 
   $scope.showTodayButton = false;
@@ -60,6 +60,11 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       $scope.verifyCloneList();
     }
   });
+
+  $scope.$watch("allTasks", function(newThing, oldThink){
+    console.log(newThing)
+    $scope.allTasks = newThing;
+  }, true)
 
   $scope.changeView = function(view){
     if(view === 'week'){
@@ -272,6 +277,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
   // logic for weekly calendar view days when user is "flipping" through calendar view, invoked in $scope.changeDate.increment and decrement
   var weeklyMove = function(move){
     console.log($scope.changeDate)
+
     if(move === "increment"){
       $scope.changeDate.weekCount++
       if($scope.changeDate.twoMonthsWeekly){
@@ -283,6 +289,7 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       $scope.changeDate.weekCount--
     }
     var date = $scope.changeDate.dayCount[$scope.changeDate.dayCount.length-1]
+    console.log(date)
     var newMonth = $scope.date.getMonth()
     var lastDayOfMonth = new Date($scope.calendarYear, $scope.calendarMonth+1, 0).getDate()
     var lastDayPlusOfMonth = new Date($scope.calendarYear, newMonth+1, 0).getDate()
@@ -343,7 +350,12 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       } else {
         date = actionDate
       }
-      date = date-8
+      console.log(date)
+      if($scope.changeDate.weekCount == -1){
+        date = date-8
+      } else {
+        date = date-15
+      }
       console.log(date)
       for(var e = 7; e >= 1; e--){
         $scope.changeDate.lastMove = "decrement"
@@ -494,20 +506,18 @@ function IndexController($scope, Events, Todo, $window, ModalService, DateServic
       monthContext()
       $scope.verifyCloneList()
     },
-    current_month: function(){
+    currentMonth: function(){
       console.log("current_month called")
-      this.monthCount = $scope.date.getMonth()+1;
+      var today = new Date()
+      this.monthCount = today.getMonth()+1
+      $scope.listForCal = [];
+      listForCal = [];
+      $scope.exists = false;
+      $scope.verifyCloneList()
+      console.log($scope.changeDate)
       $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
     }
   };
-
-  $scope.currentMonth = {
-    count: function(){
-      console.log("$scope.currentMonth.count")
-      $scope.count = $scope.date
-      $scope.changeDate.current_month()
-    }
-  }
 
   // adds the dates of the current week to $scope.changeDate.dayCount array upon page load
   $scope.intializeDayCount = function(){

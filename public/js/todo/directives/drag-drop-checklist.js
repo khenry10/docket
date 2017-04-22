@@ -179,6 +179,7 @@
           console.log($scope.data)
           console.log($scope.data.length)
           // $scope.data is depenedency that gets injected in from master_tasks, comes through the allTasks parameter in master_tasks
+          console.log($scope.allTasks)
           $scope.data.forEach(function(list, index){
             console.log(list)
 
@@ -356,6 +357,17 @@
               saveMe.lists[$scope.listIndex].tasks.push({
                 name: $scope.newTask.name, task_completed: false})
               // faking ajax like functionality
+
+              var taskForAllTasks = {
+                taskName: $scope.newTask.name,
+                listName: $scope.listName,
+                listDate: $scope.data.lists[$scope.listIndex].date,
+                listType: $scope.data.list_type,
+                taskCompleted: false
+              };
+              console.log(taskForAllTasks)
+              $scope.allTasks.push(taskForAllTasks)
+              console.log($scope.allTasks)
             }
             console.log(JSON.stringify(saveMe))
 
