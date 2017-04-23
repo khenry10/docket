@@ -20,21 +20,9 @@
         allTasks: "="
       },
       link: function($scope){
-
         console.log("ddChecklist")
-        console.log($scope.listType)
-
-        // the data from the list that gets clicked gets passed through to hear via $scope.data
-        console.log($scope.data)
         console.log($scope)
-        console.log($scope.element)
-        console.log($scope.allTasks)
 
-        $scope.models = {
-          selected: null,
-          toDoList: [],
-          completedList: []
-        };
         $scope.shopping = {};
         var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -45,18 +33,21 @@
         $scope.shoppingPurchased = 0;
         $scope.allHaveBeenUpdated = false;
 
+        $scope.models = {
+          selected: null,
+          toDoList: [],
+          completedList: []
+        };
+
         if($scope.element == undefined){
           var initialized = true;
         } else {
           var initialized = false;
         }
 
-        console.log("initialized = " + initialized)
-
         $scope.$watch("data", function(newD, oldD){
           console.log("$watch data envoked")
           console.log(newD)
-          console.log(oldD)
           // below condition fixes the problem where clicking on a list on the calendar doesn't show tasks, but it also doesn't update the left rail to have to driven off what is on the calendar
           if($scope.element === "rail" && newD != undefined){
             console.log("calling allTaskRailDataFunction")
@@ -82,17 +73,10 @@
         };
 
         var budgetProgressBar = function(){
-          console.log($scope.totalShoppingList)
-          console.log($scope.data.budget)
-          console.log($scope.shoppingPurchased)
           $scope.shoppingPurchased = !$scope.shoppingPurchased? 0:$scope.shoppingPurchased;
-          console.log($scope.shoppingPurchased)
           $scope.totalShoppingListPercent = round($scope.totalShoppingList-$scope.shoppingPurchased/$scope.data.budget*100, 2);
-          console.log($scope.totalShoppingListPercent)
-          console.log($scope.remainingBudgetPercent)
-          $scope.shoppingPurchasedPercent = round($scope.shoppingPurchased/$scope.data.budget*100,2)
+          $scope.shoppingPurchasedPercent = round($scope.shoppingPurchased/$scope.data.budget*100,2);
           $scope.remainingBudgetPercent = round(100 - $scope.totalShoppingListPercent - $scope.shoppingPurchasedPercent, 2);
-
         }
 
         var processTasksForList = function(list, index){
@@ -100,8 +84,8 @@
           $scope.listIndex = index
           $scope.list = list
           console.log($scope.list)
-          // need to loop through cleared lists to correctly tabulate budget
 
+          // need to loop through cleared lists to correctly tabulate budget
           if(list.clearedTasks){
             list.clearedTasks.forEach(function(cleared){
               console.log(cleared)
@@ -145,20 +129,6 @@
         }
 
         var modalDataFunction = function(){
-
-          // thought this would update the modal data after making a change in the left rail, wouldn't work though
-          // var allTodos  = Todo.all
-          // if(allTodos && allTodos.length){
-          //   allTodos.forEach(function(todo){
-          //     if(todo){
-          //       console.log(todo)
-          //       if(todo.list_name === $scope.data.list_name){
-          //         console.log("locked it in")
-          //         $scope.data.lists = todo.lists;
-          //       }
-          //     }
-          //   })
-          // }
           console.log($scope.data.lists)
           $scope.data.lists.forEach(function(list, index){
             console.log(list.date)
@@ -173,27 +143,20 @@
 
         var allTaskRailDataFunction = function(){
           console.log("allTaskRailDataFunction")
-          console.log($scope.models.toDoList)
           $scope.models.toDoList = [];
-          console.log($scope.models.toDoList)
-          console.log($scope.data)
-          console.log($scope.data.length)
           // $scope.data is depenedency that gets injected in from master_tasks, comes through the allTasks parameter in master_tasks
-          console.log($scope.allTasks)
+          console.log($scope.data)
           $scope.data.forEach(function(list, index){
-            console.log(list)
-
             $scope.nonBindedTask = {
               name: list.taskName,
               list_date: list.listDate,
               listType: list.listType,
               rank: index,
               task_completed: list.taskCompleted
-            }
-            console.log($scope.nonBindedTask)
+            };
             $scope.models.toDoList.push($scope.nonBindedTask)
           })
-        }
+        };
 
         if(initialized){
           if($scope.element === "rail"){

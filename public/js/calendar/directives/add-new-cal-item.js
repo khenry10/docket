@@ -14,7 +14,6 @@
       templateUrl: "/assets/html/calendar/directives/add-new-cal-item.html",
       scope: {
         data: "=data",
-        newMaster: "&",
         saved: "=saved",
         newCal: "=newCal",
         dateTracker: "=dateTracker"
@@ -47,22 +46,6 @@
         if($scope.data){
           $scope.changeEndTimeArray()
         }
-
-        // not being used yet, ran into too many other bugs 3/18/2017
-          // var createRepeater = function(year, month, count, lastDay, increment){
-          //   console.log(year)
-          //   console.log(month)
-          //   console.log(count)
-          //   console.log(lastDay)
-          //   console.log(increment)
-          //   while(count < lastDay){
-          //     count = count + increment
-          //     var list = year+"-"+month+"-"+count
-          //     $scope.newMasterLists.push( { date: list, tasks: [] } )
-          //      var date = $scope.firstDay
-          //   }
-          // }
-
           var getHours = function(){
             console.log("$scope.startTime = " + $scope.startTime)
             console.log("$scope.endTime = " + $scope.endTime)
