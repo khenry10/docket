@@ -4,14 +4,13 @@
   angular
   .module("app")
   .directive("monthlyCalendar", [
-    "Events",
     "Todo",
     "ModalService",
     "DateService",
     calendarDirectiveFunction
   ])
 
-  function calendarDirectiveFunction(Events, Todo, ModalService, DateService){
+  function calendarDirectiveFunction(Todo, ModalService, DateService){
     return {
       templateUrl: "/assets/html/_calendar.html",
       scope: {
@@ -69,10 +68,6 @@
         var year = date.getFullYear()
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure){
-          console.log("date = ")
-          console.log(date)
-          console.log("realListDate = " + realListDate)
-          console.log(time)
           // creates and appends the new calendar items to the calendar
           var bigTdContainer = document.getElementsByClassName(time)
           var pForBigTd = document.createElement('p')
@@ -86,8 +81,7 @@
             var listDay = fullDateObj.day
             bigTdContainer = bigTdContainer[listDay+1]
           } else {
-            bigTdContainer = bigTdContainer[realListDate.getDay()+1]
-            console.log(bigTdContainer)
+            bigTdContainer = bigTdContainer[realListDate.getDay()+1];
           }
           bigTdContainer.addEventListener("click", function(e) {
             console.log(e)
@@ -100,8 +94,6 @@
 
         var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate){
           // addMiddleTimeCalItems function is to determine how many hours between start and end time need to be appended to teh calendar for each item
-          console.log(startTime)
-          console.log(endTime)
           for(var t = startTime; t <= endTime; t++){
             var time = t + ":00" + amOrpm
             createHourlyCalItem(list, time, date, realListDate, "middleTime")

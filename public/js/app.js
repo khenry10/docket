@@ -3,7 +3,6 @@
 (function(){
   angular
   .module("app", ["ngResource", "ui.router", "ngMaterial", "xeditable", "dndLists", "angularModalService"])
-  .factory("Events", ["$resource",Events])
   .factory("Lists", ["$resource",Lists])
   .factory("Todo", ["$resource", Todo])
 
@@ -29,23 +28,23 @@
     return Lists
   };
 
-  function Events($resource){
-    console.log("events factory envoked")
-    var Events = $resource("/api/event/:name",
-    { query:  {method:'GET', isArray: true} },
-    { update: {method: "PUT"} })
-
-    Events.all = Events.query();
-    // Events.find = function(property, value, callback){
-    //   // console.log("property = "+property)
-    //   // console.log("value = " + value)
-    //   // Events.all.$promise.then(function(){
-    //   //   Events.all.forEach(function(event){
-    //   //     if(event[property] == value) callback(event);
-    //   //   });
-    //   // });
-    // };
-    return Events
-  };
+  // function Events($resource){
+  //   console.log("events factory envoked")
+  //   var Events = $resource("/api/event/:name",
+  //   { query:  {method:'GET', isArray: true} },
+  //   { update: {method: "PUT"} })
+  //
+  //   Events.all = Events.query();
+  //   // Events.find = function(property, value, callback){
+  //   //   // console.log("property = "+property)
+  //   //   // console.log("value = " + value)
+  //   //   // Events.all.$promise.then(function(){
+  //   //   //   Events.all.forEach(function(event){
+  //   //   //     if(event[property] == value) callback(event);
+  //   //   //   });
+  //   //   // });
+  //   // };
+  //   return Events
+  // };
 
 })();
