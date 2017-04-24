@@ -33,6 +33,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
   $scope.allTodoLists = [];
   var listForCal = [];
   $scope.allTasks = [];
+  $scope.numberOfTodoLists = 0;
+  $scope.numberOfShoppingLists = 0;
 
   // $scope.$watch("allTasks", function(newThing, oldThink){
   //   console.log(newThing)
@@ -50,15 +52,24 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
     }
   });
 
+  var resetDataForVerifyClone = function(){
+    console.log("resetDataForVerifyClone")
+    $scope.listForCal = [];
+    listForCal = [];
+    $scope.exists = false;
+    $scope.numberOfTodoLists = 0;
+    $scope.numberOfShoppingLists = 0;
+    $scope.verifyCloneList();
+    monthContext();
+  };
+
   $scope.changeView = function(view){
     if(view === 'week'){
       $scope.viewType = 'week'
     } else if(view === 'month'){
       $scope.viewType = 'month'
     }
-    $scope.listForCal = [];
-    listForCal = [];
-    $scope.verifyCloneList()
+    resetDataForVerifyClone();
   };
 
   var parseAllTasks = function(dateList, list){
@@ -75,6 +86,16 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
     }
   };
 
+  var noLoopListCounter = function(list, dateListsInCurrentMonth){
+    console.log(list)
+    console.log(dateListsInCurrentMonth)
+    if(list.list_type == 'todo' && dateListsInCurrentMonth.length > 0){
+      $scope.numberOfTodoLists = $scope.numberOfTodoLists + 1;
+    } else if(list.list_type == 'shopping' && dateListsInCurrentMonth.length > 0){
+      $scope.numberOfShoppingLists = $scope.numberOfShoppingLists + 1;
+    }
+  }
+
   var evaluateDateListsForWeekCal = function(fullListDate, dateList, list){
     console.log("evaluateDateListsForWeekCal invoked. dateList is below & date === " + dateList.date)
     var dateArrayLength = $scope.changeDate.dayCount.length;
@@ -87,6 +108,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
             parseAllTasks(dateList, list)
             $scope.exists = true;
             dateListsInCurrentMonth = dateList;
+
           }
         })
       } else if(fullListDate.month == $scope.changeDate.twoMonthsWeeklyDate.oldMonthDate.month){
@@ -95,6 +117,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
             parseAllTasks(dateList, list)
             $scope.exists = true;
             dateListsInCurrentMonth = dateList;
+
           }
         })
       }
@@ -104,6 +127,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
           parseAllTasks(dateList, list)
           $scope.exists = true;
           var dateListsInCurrentMonth = dateList;
+
         }
       }
     } // end of NOT $scope.changeDate.twoMonthsWeekly
@@ -113,6 +137,17 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
       console.log("I am returning you ")
       return dateListsInCurrentMonth;
     }
+    console.log(!dateListsInCurrentMonth)
+    console.log(dateListsInCurrentMonth == undefined)
+    if(!dateListsInCurrentMonth){
+      console.log("pushing to new date to listForCal")
+      listForCal.push(
+        {origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
+        todo: list,
+        modifiedDateList: []
+      })
+    }
+    console.log(listForCal)
   }; // end of evaluateDateListsForWeekCal()
 
   var checkLastList = function(lastDateList, list, index){
@@ -133,6 +168,13 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
         console.log("CLONE ME BISH!!!")
         $scope.listClone(list, index)
       }
+    } else {
+      console.log('pushing to update the date')
+      listForCal.push(
+        {origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
+        todo: list,
+        modifiedDateList: []
+      })
     }
   };
 
@@ -179,7 +221,13 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
         console.log("sending to checkLastList")
         checkLastList(lastDateList, list, index)
       } else {
-        listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
+
+        if($scope.viewType == 'month'){
+          listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
+        } else if ($scope.viewType == 'week'){
+          listForCal[index] = {origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth}
+        }
+        noLoopListCounter(list, dateListsInCurrentMonth)
       }
     }) // end of $scope.allTodoLists forEach
     if(!listForCal.length){
@@ -205,15 +253,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
         days: new Date($scope.changeDate.year, month+1, 0).getDate()
       }
     }
-  };
-
-  var resetDataForVerifyClone = function(){
-    console.log("resetDataForVerifyClone")
-    $scope.listForCal = [];
-    listForCal = [];
-    $scope.exists = false;
-    $scope.verifyCloneList();
-    monthContext();
   };
 
   var splitTwoMonthsWeeklyIntoOldAndNew = function(){
@@ -347,9 +386,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
       console.log("date = " + date)
 
       if(date <= 0){
-        $scope.changeDate.monthCount--;
         date = $scope.changeDate.months.thisMonth.days + date +1;
-        $scope.changeDate.twoMonthsWeekly = true;
       }
       console.log("date = " + date)
 
@@ -368,6 +405,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
             $scope.changeDate.twoMonthsWeekly = true;
           }
         } else if (date > $scope.changeDate.months.previousMonth.days){
+          $scope.changeDate.monthCount--;
+          $scope.changeDate.twoMonthsWeekly = true;
           date = 1;
         }
         console.log("date that gets pushed = " + date)

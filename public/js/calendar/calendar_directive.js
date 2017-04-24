@@ -25,7 +25,7 @@
 
         scope.$watch('listForCal', function(todosForCal, oldList){
           console.log("listForCal $watch called")
-          // console.log(todosForCal)
+          console.log(todosForCal)
           // console.log(scope.date.monthCount)
           if(todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
