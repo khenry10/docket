@@ -135,6 +135,16 @@ angular.module('app').service('DateService', [ function () {
     var fullDate = new Date(year, month-1, date)
 
     return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}
+  };
+
+  var dataStoreForTasks = [];
+  this.saveUpdatesFromLeftRail = function(updatedTask){
+    console.log(updatedTask)
+    if(updatedTask){
+      dataStoreForTasks.push(updatedTask)
+    }
+    console.log(dataStoreForTasks)
+    return dataStoreForTasks
   }
 
 }]);

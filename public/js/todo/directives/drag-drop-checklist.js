@@ -80,6 +80,7 @@
         }
 
         var processTasksForList = function(list, index){
+          console.log(list)
           $scope.models.toDoList = [];
           $scope.listIndex = index
           $scope.list = list
@@ -130,15 +131,36 @@
 
         var modalDataFunction = function(){
           console.log($scope.data.lists)
-          $scope.data.lists.forEach(function(list, index){
-            console.log(list.date)
-            // console.log(date)
-            console.log(index)
-            console.log(list.date === $scope.date)
-            if(list.date === $scope.date){
-              processTasksForList(list, index)
-            }
-          })
+          console.log($scope)
+          console.log($scope.$parent)
+          console.log($scope.$parent.updatesFromAllTasks)
+          var allTodos = Todo.all
+          console.log(allTodos)
+          var checkDateService = DateService.saveUpdatesFromLeftRail();
+          console.log(checkDateService)
+          if(checkDateService.length){
+
+            checkDateService.forEach(function(list){
+              list.lists.forEach(function(dateList){
+
+                console.log(dateList)
+                console.log(dateList.date)
+                console.log($scope.date)
+                if(dateList.date == $scope.date){
+                  processTasksForList(dateList, 0)
+                }
+              })
+            })
+          } else {
+            $scope.data.lists.forEach(function(list, index){
+              console.log(list.date)
+              console.log(index)
+              console.log(list.date === $scope.date)
+              if(list.date === $scope.date){
+                processTasksForList(list, index)
+              }
+            })
+          }
         }
 
         var allTaskRailDataFunction = function(){
@@ -147,8 +169,10 @@
           // $scope.data is depenedency that gets injected in from master_tasks, comes through the allTasks parameter in master_tasks
           console.log($scope.data)
           $scope.data.forEach(function(list, index){
+            console.log(list)
             $scope.nonBindedTask = {
               name: list.taskName,
+              listName: list.listName,
               list_date: list.listDate,
               listType: list.listType,
               rank: index,
@@ -202,19 +226,24 @@
           } else {
             var completedTime = new Date();
             console.log(index)
-            if($scope.element === 'rail'){
-              console.log($scope.data[0])
-              var onlyChangeListUpdated = []
-              // we need to pull and loop through all thes lists within the todo and than only update this task
 
-              var allTodos = Todo.all
+            if($scope.element === 'rail'){
+
+              var onlyChangeListUpdated = []
+
+              // we need to pull and loop through all thes lists within the todo and than only update this task
+              if(!allTodos){
+                var allTodos = Todo.all
+              }
               console.log(allTodos)
 
               var newTaskLists = []
-
               allTodos.forEach(function(todo){
                 console.log(todo)
-                if(todo && todo.list_name === $scope.data[0].name){
+                console.log(todo.list_name == task.listName)
+                console.log(todo.list_name)
+                console.log(task.listName)
+                if(todo && todo.list_name == task.listName){
                   console.log("namematch")
 
                   todo.lists.forEach(function(list){
@@ -241,8 +270,11 @@
                   console.log(newTaskLists)
                 }
               })
-
-              var updateTask = {list_name: $scope.data[0].name, lists: newTaskLists}
+              console.log($scope)
+              var updateTask = {list_name: task.listName, lists: newTaskLists}
+              // $scope.$parent.updatesFromAllTasks.push(updateTask)
+              // console.log($scope.$parent.updatesFromAllTasks)
+              DateService.saveUpdatesFromLeftRail(updateTask)
             } else {
               console.log($scope.listIndex)
               var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
@@ -280,7 +312,7 @@
               }
 
             }
-            console.log(updateTask.lists[$scope.listIndex].tasks[index])
+            // console.log(updateTask.lists[$scope.listIndex].tasks[index])
             console.log(updateTask)
             Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
               console.log(task)
