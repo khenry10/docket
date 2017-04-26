@@ -26,6 +26,7 @@
         scope.$watch('listForCal', function(todosForCal, oldList){
           console.log("listForCal $watch called")
           console.log(todosForCal)
+          console.log(oldList)
           // console.log(scope.date.monthCount)
           if(todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
@@ -42,7 +43,7 @@
           }
         }, true);
 
-      scope.testModal = function (list, date){
+      scope.calendarItemModal = function (list, date){
         console.log("scope.TestModal called")
         console.log(scope)
         ModalService.showModal({
@@ -51,6 +52,7 @@
           inputs: {
             data: list,
             date: date,
+            parseAllTasks: scope.$parent.parseAllTasks,
             allTasks: scope.$parent.allTasks
           }
         }).then(function(modal) {
@@ -85,7 +87,7 @@
           }
           bigTdContainer.addEventListener("click", function(e) {
             console.log(e)
-            scope.testModal(list, date)
+            scope.calendarItemModal(list, date)
           })
           bigTdContainer.setAttribute("id", "time-with-entry")
           pForBigTd.setAttribute("class", timeStructure)
@@ -173,7 +175,7 @@
             var url = document.createElement("a")
             url.innerHTML = list.list_name;
             li.addEventListener("click", function(e) {
-              scope.testModal(list, date)
+              scope.calendarItemModal(list, date)
             })
             li.append(url)
             if(scope.newView === 'week' && list.start_time){
@@ -238,7 +240,7 @@
                   var date = {date: e.srcElement.attributes[0].ownerElement.childNodes[0].data, month: month, year: year}
               }
 
-              var data = {view: 'modal', date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope}
+              var data = {view: 'modal', date: date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope}
               data.checkLists = scope.checkLists
               data.newMaster = scope.$parent.newMasterListAddition
 

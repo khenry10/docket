@@ -17,7 +17,8 @@
         date: "=date",
         element: "=element",
         listType: "=",
-        allTasks: "="
+        allTasks: "=",
+        parseAllTasks: "="
       },
       link: function($scope){
         console.log("ddChecklist")
@@ -39,7 +40,7 @@
           completedList: []
         };
 
-        if($scope.element == undefined){
+        if($scope.element != 'rail'){
           var initialized = true;
         } else {
           var initialized = false;
@@ -56,7 +57,11 @@
           } else {
             var initialized = false;
           }
-        })
+        }, true)
+
+        $scope.$watch("allTasks", function(newAllTasks,OldAllTask){
+          console.log(newAllTasks)
+        }, true)
 
         if($scope.element != "rail"){
           var splitDate = $scope.date.split("-")
@@ -130,10 +135,10 @@
         }
 
         var modalDataFunction = function(){
-          console.log($scope.data.lists)
           console.log($scope)
-          console.log($scope.$parent)
-          console.log($scope.$parent.updatesFromAllTasks)
+          console.log($scope.data)
+          console.log($scope.data.lists)
+          console.log($scope.element)
           var allTodos = Todo.all
           console.log(allTodos)
           var checkDateService = DateService.saveUpdatesFromLeftRail();
@@ -141,6 +146,7 @@
           if(checkDateService.length){
 
             checkDateService.forEach(function(list){
+              console.log(list)
               list.lists.forEach(function(dateList){
 
                 console.log(dateList)
@@ -272,10 +278,9 @@
               })
               console.log($scope)
               var updateTask = {list_name: task.listName, lists: newTaskLists}
-              // $scope.$parent.updatesFromAllTasks.push(updateTask)
-              // console.log($scope.$parent.updatesFromAllTasks)
+
               DateService.saveUpdatesFromLeftRail(updateTask)
-            } else {
+            } else if($scope.element === 'cal-entry-modal') {
               console.log($scope.listIndex)
               var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
               console.log(updateTask)
@@ -293,6 +298,13 @@
                   time_completed: completedTime
                 }
               }
+              DateService.saveUpdatesFromLeftRail(updateTask)
+
+              var taskDataForParseAllTasks = updateTask.lists[$scope.listIndex].tasks[index];
+              taskDataForParseAllTasks.date = task.list_date;
+              $scope.parseAllTasks(taskDataForParseAllTasks,
+                {list_name: $scope.listName, list_type: 'todo'} , $scope.element)
+
               console.log(updateTask.lists[$scope.listIndex].tasks[index])
 
               console.log($scope.data)

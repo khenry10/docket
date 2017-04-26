@@ -137,14 +137,14 @@ angular.module('app').service('DateService', [ function () {
     return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}
   };
 
-  var dataStoreForTasks = [];
+  this.dataStoreForTasks = [];
   this.saveUpdatesFromLeftRail = function(updatedTask){
     console.log(updatedTask)
     if(updatedTask){
-      dataStoreForTasks.push(updatedTask)
+      this.dataStoreForTasks.push(updatedTask)
     }
-    console.log(dataStoreForTasks)
-    return dataStoreForTasks
+    console.log(this.dataStoreForTasks)
+    return this.dataStoreForTasks
   }
 
 }]);

@@ -6,10 +6,11 @@ angular.module("app").controller("modalController", [
   "data",
   "date",
   "allTasks",
+  "parseAllTasks",
   modalController
 ])
 
-function modalController(Todo, $scope, data, date, allTasks){
+function modalController(Todo, $scope, data, date, allTasks, parseAllTasks){
   console.log("modal controller")
   console.log($scope)
   $scope.allTasks = allTasks;
@@ -17,6 +18,7 @@ function modalController(Todo, $scope, data, date, allTasks){
   $scope.listType = $scope.list_type;
   $scope.data = data;
   $scope.date = date;
+  $scope.parseAllTasks = parseAllTasks;
   var splitDate = date.split("-");
   $scope.$parent.updatedTasks = [];
   $scope.updatesFromAllTasks = [];
