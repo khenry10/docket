@@ -142,20 +142,17 @@
           var allTodos = Todo.all
           console.log(allTodos)
           var checkDateService = DateService.saveUpdatesFromLeftRail();
+          console.log("DateService.saveUpdatesFromLeftRail(); below: ")
           console.log(checkDateService)
           if(checkDateService.length){
 
             checkDateService.forEach(function(list){
               console.log(list)
-              list.lists.forEach(function(dateList){
 
-                console.log(dateList)
-                console.log(dateList.date)
-                console.log($scope.date)
-                if(dateList.date == $scope.date){
-                  processTasksForList(dateList, 0)
+                if(list.dateList.date == $scope.date){
+                  processTasksForList(list.dateList, 0)
                 }
-              })
+
             })
           } else {
             $scope.data.lists.forEach(function(list, index){
@@ -242,6 +239,8 @@
                 var allTodos = Todo.all
               }
               console.log(allTodos)
+              var listName = ""
+              var dateList = ""
 
               var newTaskLists = []
               allTodos.forEach(function(todo){
@@ -251,14 +250,15 @@
                 console.log(task.listName)
                 if(todo && todo.list_name == task.listName){
                   console.log("namematch")
-
+                  listName = todo.listName;
                   todo.lists.forEach(function(list){
                     console.log(list)
                     if(list.date === task.list_date){
                       var updatingListTasks = {date: task.list_date, tasks: []}
 
-                      list.tasks.forEach(function(originTask){
+                      list.tasks.forEach(function(originTask, index){
                         console.log(originTask)
+                        console.log(index)
                         if(originTask.name === task.name ){
                           updatingListTasks.tasks.push({name: task.name, task_completed: task.task_completed})
                         } else {
@@ -267,7 +267,7 @@
                         console.log("end of list.tasks forEach")
                         console.log(updatingListTasks)
                       })
-
+                      dateList = updatingListTasks;
                       newTaskLists.push(updatingListTasks)
                     } else {
                       newTaskLists.push(list)
@@ -277,9 +277,20 @@
                 }
               })
               console.log($scope)
-              var updateTask = {list_name: task.listName, lists: newTaskLists}
+              var updateTask = {
+                list_name: task.listName,
+                name: task.name,
+                task_completed: task.task_completed,
+                lists: newTaskLists
+              }
 
-              DateService.saveUpdatesFromLeftRail(updateTask)
+              // DateService.saveUpdatesFromLeftRail(updateTask)
+
+              var listData = {list_name: listName, list_type: 'todo'};
+              var dataServiceObj = { updatedTask: taskDataForParseAllTasks, wholeDateList: updateTask, dateList: dateList }
+              DateService.saveUpdatesFromLeftRail(dataServiceObj)
+
+
             } else if($scope.element === 'cal-entry-modal') {
               console.log($scope.listIndex)
               var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
@@ -298,12 +309,17 @@
                   time_completed: completedTime
                 }
               }
-              DateService.saveUpdatesFromLeftRail(updateTask)
 
               var taskDataForParseAllTasks = updateTask.lists[$scope.listIndex].tasks[index];
+              var dateList = updateTask.lists[$scope.listIndex]
+
               taskDataForParseAllTasks.date = task.list_date;
-              $scope.parseAllTasks(taskDataForParseAllTasks,
-                {list_name: $scope.listName, list_type: 'todo'} , $scope.element)
+              var listData = {list_name: $scope.listName, list_type: 'todo'};
+
+              $scope.parseAllTasks(taskDataForParseAllTasks,listData , $scope.element)
+
+              var dataServiceObj = { updatedTask: taskDataForParseAllTasks, wholeDateList: updateTask, dateList: dateList }
+              DateService.saveUpdatesFromLeftRail(dataServiceObj)
 
               console.log(updateTask.lists[$scope.listIndex].tasks[index])
 

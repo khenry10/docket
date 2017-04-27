@@ -138,10 +138,11 @@ angular.module('app').service('DateService', [ function () {
   };
 
   this.dataStoreForTasks = [];
-  this.saveUpdatesFromLeftRail = function(updatedTask){
-    console.log(updatedTask)
-    if(updatedTask){
-      this.dataStoreForTasks.push(updatedTask)
+  this.saveUpdatesFromLeftRail = function(storeUpdatedTask, param2, datelist){
+    console.log(storeUpdatedTask)
+    console.log(param2)
+    if(storeUpdatedTask){
+      this.dataStoreForTasks.push(storeUpdatedTask)
     }
     console.log(this.dataStoreForTasks)
     return this.dataStoreForTasks

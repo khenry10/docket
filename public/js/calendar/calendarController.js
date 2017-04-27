@@ -76,26 +76,41 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
     console.log(origin)
     console.log(dateList)
     console.log(list)
-    console.log(DateService.saveUpdatesFromLeftRail())
+    var taskObjsInDS = DateService.saveUpdatesFromLeftRail()
+    console.log(taskObjsInDS)
     console.log($scope.allTasks)
+    var lastIndex = taskObjsInDS.length-1
 
     if(list.list_type === 'todo'){
-      if(origin === 'cal-entry-modal'){
-        $scope.allTasks.forEach(function(task, index){
-          console.log(task)
-          console.log(task.taskName == dateList.name)
-          // need add date conditional too 
-          if(task.taskName == dateList.name){
-            console.log($scope.allTasks[index])
-            $scope.allTasks[index] = {
-              taskName: task.taskName,
-              listName: list.list_name,
+      if(origin === 'cal-entry-modal' && taskObjsInDS.length){
+        var mostRecentDateList = taskObjsInDS[lastIndex].dateList
+        $scope.allTasks = [];
+        mostRecentDateList.tasks.forEach(function(dateList){
+            $scope.allTasks.push({
+              taskName: dateList.name,
+              listName: taskObjsInDS[lastIndex].wholeDateList.list_name,
               listDate: dateList.date,
-              listType: list.list_type,
+              listType: 'todo',
               taskCompleted: dateList.task_completed
-            }
-          }
+            })
         })
+
+
+        // $scope.allTasks.forEach(function(task, index){
+        //   console.log(task)
+        //   console.log(task.taskName == dateList.name)
+        //   // need add date conditional too
+        //   if(task.taskName == dateList.name){
+        //     console.log($scope.allTasks[index])
+        //     $scope.allTasks[index] = {
+        //       taskName: task.taskName,
+        //       listName: list.list_name,
+        //       listDate: dateList.date,
+        //       listType: list.list_type,
+        //       taskCompleted: dateList.task_completed
+        //     }
+        //   }
+        // })
       } else {
         dateList.tasks.forEach(function(task){
           console.log(task)
