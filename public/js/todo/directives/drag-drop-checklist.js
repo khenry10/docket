@@ -316,10 +316,10 @@
               taskDataForParseAllTasks.date = task.list_date;
               var listData = {list_name: $scope.listName, list_type: 'todo'};
 
-              $scope.parseAllTasks(taskDataForParseAllTasks,listData , $scope.element)
-
               var dataServiceObj = { updatedTask: taskDataForParseAllTasks, wholeDateList: updateTask, dateList: dateList }
               DateService.saveUpdatesFromLeftRail(dataServiceObj)
+              $scope.parseAllTasks(taskDataForParseAllTasks,listData , $scope.element)
+
 
               console.log(updateTask.lists[$scope.listIndex].tasks[index])
 

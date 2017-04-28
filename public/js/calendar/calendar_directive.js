@@ -28,7 +28,7 @@
           console.log(todosForCal)
           console.log(oldList)
           // console.log(scope.date.monthCount)
-          if(todosForCal[0] && todosForCal[0].origin != 'master-task'){
+          if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){

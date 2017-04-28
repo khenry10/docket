@@ -72,27 +72,38 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
     resetDataForVerifyClone();
   };
 
-  $scope.parseAllTasks = function(dateList, list, origin){
+  $scope.parseAllTasks = function(dateList, list, origin, other){
     console.log(origin)
     console.log(dateList)
     console.log(list)
+    console.log(other)
     var taskObjsInDS = DateService.saveUpdatesFromLeftRail()
     console.log(taskObjsInDS)
     console.log($scope.allTasks)
     var lastIndex = taskObjsInDS.length-1
 
     if(list.list_type === 'todo'){
-      if(origin === 'cal-entry-modal' && taskObjsInDS.length){
+      if( taskObjsInDS.length){
         var mostRecentDateList = taskObjsInDS[lastIndex].dateList
-        $scope.allTasks = [];
+        // $scope.allTasks = [];
         mostRecentDateList.tasks.forEach(function(dateList){
-            $scope.allTasks.push({
-              taskName: dateList.name,
-              listName: taskObjsInDS[lastIndex].wholeDateList.list_name,
-              listDate: dateList.date,
-              listType: 'todo',
-              taskCompleted: dateList.task_completed
-            })
+          console.log(dateList)
+
+          $scope.allTasks.forEach(function(task, index){
+            console.log(task)
+            if(task.listDate == dateList.date && task.taskName == dateList.name){
+
+              $scope.allTasks[index] = {
+                taskName: dateList.name,
+                listName: taskObjsInDS[lastIndex].wholeDateList.list_name,
+                listDate: dateList.date,
+                listType: 'todo',
+                taskCompleted: dateList.task_completed
+              }
+
+            }
+          })
+
         })
 
 
