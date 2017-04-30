@@ -19,9 +19,6 @@
         dateTracker: "=dateTracker"
       },
       link: function($scope){
-        console.log($scope)
-        console.log($scope.data)
-
         console.log("this is addNewCalItem directive")
         $scope.times = ["1:00am", "2:00am", "3:00am", "4:00am", "5:00am", "6:00am", "7:00am",
         "8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", "1:00pm", "2:00pm", "3:00pm", "4:00pm",
@@ -47,13 +44,9 @@
           $scope.changeEndTimeArray()
         }
           var getHours = function(){
-            console.log("$scope.startTime = " + $scope.startTime)
-            console.log("$scope.endTime = " + $scope.endTime)
-
             if($scope.newTodoList.start_time){
               $scope.startTime = $scope.newTodoList.start_time
             }
-            console.log($scope.startTime)
             var startTime = $scope.startTime.split(":")
             var startTimeAmOrPm = startTime[1].substr(2,4)
             var startTime = startTime[0]
@@ -68,13 +61,7 @@
               var time = 12 - startTime
               var timeDifference = time + endTime
             }
-            console.log("timeDifference = " + timeDifference)
             $scope.newTodoList.duration = timeDifference
-            // if(startTimeAmOrPm === endTimeAmOrPm ){
-            //   $scope.newTodoList.duration = timeDifference
-            // } else if(startTimeAmOrPm != endTimeAmOrPm){
-            //
-            // }
           }
 
         var createListOfLists = []
@@ -82,24 +69,19 @@
         $scope.newEntry = {}
 
         $scope.create = function(){
-          console.log($scope)
+          console.log("create")
           $scope.newTodoList = new Todo();
 
-          console.log("name = "+ $scope.name)
           if($scope.data){
-            console.log($scope.data)
             $scope.firstDay = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
           }
-          console.log($scope.firstDay)
+
           var year = $scope.firstDay.getFullYear();
           var month = $scope.firstDay.getMonth()+1;
           var date = $scope.firstDay.getDate();
           var numberOfDaysInMonth = new Date(year, month, 0).getDate()
-            console.log($scope.firstDay)
-            console.log($scope.newEntry)
 
             if($scope.name && $scope.firstDay || $scope.view === 'modal'){
-                console.log($scope.listType)
                 $scope.newTodoList.list_name = $scope.name
                 $scope.newTodoList.list_type = $scope.listType
                 if($scope.listType === 'shopping'){
@@ -113,28 +95,20 @@
                 if($scope.data && $scope.data.date.startTime){
                   $scope.newTodoList.start_time = $scope.data.date.startTime
                 }
-                console.log($scope.newTodoList.start_time)
 
                 $scope.newTodoList.end_time = $scope.endTime
                 if($scope.firstDay && $scope.endTime){
                   getHours()
                 }
 
-                console.log($scope.newTodoList)
-                console.log($scope.newTodoList.duration)
-
                 if($scope.repeatInterval){
                     $scope.newTodoList.list_reocurring = $scope.repeatInterval
-                    console.log($scope.reoccurEnds)
                     $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
                 }
 
                 var date = $scope.firstDay
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
-                console.log($scope)
-                console.log(createListOfLists)
                 createListOfLists.push( {date: newDate, tasks: []} )
-                console.log(createListOfLists)
                 var count = date.getDate();
 
                 var lastDay = numberOfDaysInMonth
@@ -143,7 +117,6 @@
                   if($scope.reoccurEnds === "SelectDate"){
 
                     var calendar = $scope.dateTracker? $scope.dateTracker : $scope.data.dateTracker
-                    console.log(calendar)
 
                     var endDateMonth = $scope.reoccurEndsDate.getMonth()+1
                     var endDateYear = $scope.reoccurEndsDate.getFullYear()
@@ -156,13 +129,11 @@
 
                   }
                 }
-                console.log("lastDay = " + lastDay)
 
                 if($scope.repeatInterval === 'Daily'){
                   // createRepeater(year, month, count, lastDay, 1)
 
                   while(count < lastDay){
-                    console.log(lastDay)
                     count = count + 1
                     var list = year+"-"+month+"-"+count
                     createListOfLists.push( { date: list, tasks: [] } )
@@ -171,41 +142,30 @@
                 }
 
                 if($scope.repeatInterval === 'Weekly'){
-                  // count = count+7
-                  // createRepeater(year, month, count, lastDay, 7)
-                  console.log(JSON.stringify(createListOfLists))
                   while(count+7 <= lastDay){
                     count = count + 7
                     var list = year+"-"+month+"-"+count
                     createListOfLists.push( { date: list, tasks: [] } )
                      var date = $scope.firstDay
                   }
-                  console.log(JSON.stringify(createListOfLists))
                 }
 
                 if($scope.repeatInterval === 'Monthly'){
-                  console.log("Monthly")
-                  // createRepeater(year, count, month, lastDay, 1)
                   while(month < 12){
                     month = month+1
                     var list = year+"-"+month+"-"+count
                     createListOfLists.push( { date: list, tasks: [] } )
-                    console.log(createListOfLists)
                   }
                 }
                 // I recreated the new object to get rid of new Todo() junk which I thought was causing issues
                 // $scope.newCalTodoLists is a dependency that gets injected into the calendar directive
-                console.log(JSON.stringify(createListOfLists))
+
                 $scope.newCalTodoLists = [{list_name: $scope.name, lists: createListOfLists}]
                 $scope.newCalTodoLists[0].first_day = $scope.firstDay
                 $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
                 $scope.newCalTodoLists[0].list_recur_end = $scope.newTodoList.list_recur_end
                 $scope.newCalTodoLists[0].list_type = $scope.newTodoList.list_type
                 $scope.newCalTodoLists[0].budget = $scope.newTodoList.budget
-
-                console.log("$scope.newCalTodoLists below: ")
-                console.log($scope.newCalTodoLists)
-                console.log(JSON.stringify(createListOfLists))
 
                 // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
                 $scope.newTodoList.lists = createListOfLists
@@ -214,12 +174,6 @@
                 $scope.newCalTodoLists[0].end_time =  $scope.endTime
                 // newCal is scoped to newCalTodoLists, which is $watched in calendar directive.  Has to be sent in array because that is what is expected in calednar directive
 
-                // got an error that this wasn't defined when adding by modal
-                // $scope.newCal = [$scope.newCalTodoLists[0]]
-
-                console.log($scope.newTodoList)
-                console.log($scope.newTodoList.list_recur_end)
-                console.log($scope.newTodoList.lists[5])
                 $scope.newTodoList.$save().then(function(res){
                   console.log("$scope.newTodoList.$save success")
                   if($scope.data){
@@ -227,7 +181,6 @@
                   }
                 })
 
-                console.log($scope.data)
                 var pushNew = {
                   origin: 'add-new-call-item-directive',
                   todo: $scope.newCalTodoLists[0],
@@ -238,13 +191,12 @@
                 if($scope.data){
                   // in the calendar directive I pass the entire scope into the data object, which inherits it's scope from the IndexController
                     // decided to it this way because scope.pickCorrectDateForCal puts EVERYTING you send it on the calendar and I didn't want to duplicate logic already in IndexController
+                    // console.log($scope.newCalTodoLists)
                   $scope.data.scope.$parent.verifyCloneList($scope.newCalTodoLists[0]);
 
                 } else {
                   // new events from side rail use isolated directive scope
                   $scope.newCal = [$scope.newCalTodoLists[0]]
-                  console.log($scope.newCalTodoLists[0])
-
                   $scope.$parent.listForCal.push(pushNew)
 
                 }

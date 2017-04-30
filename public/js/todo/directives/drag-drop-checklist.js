@@ -21,9 +21,6 @@
         parseAllTasks: "="
       },
       link: function($scope){
-        console.log("ddChecklist")
-        console.log($scope)
-
         $scope.shopping = {};
         var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -48,19 +45,17 @@
 
         $scope.$watch("data", function(newD, oldD){
           console.log("$watch data envoked")
-          console.log(newD)
           // below condition fixes the problem where clicking on a list on the calendar doesn't show tasks, but it also doesn't update the left rail to have to driven off what is on the calendar
           if($scope.element === "rail" && newD != undefined){
-            console.log("calling allTaskRailDataFunction")
             allTaskRailDataFunction()
             var initialized = true;
           } else {
+            modalDataFunction()
             var initialized = false;
           }
         }, true)
 
         $scope.$watch("allTasks", function(newAllTasks,OldAllTask){
-          console.log(newAllTasks)
         }, true)
 
         if($scope.element != "rail"){
@@ -85,22 +80,19 @@
         }
 
         var processTasksForList = function(list, index){
-          console.log(list)
+          console.log("processTasksForList")
           $scope.models.toDoList = [];
           $scope.listIndex = index
           $scope.list = list
-          console.log($scope.list)
 
           // need to loop through cleared lists to correctly tabulate budget
           if(list.clearedTasks){
             list.clearedTasks.forEach(function(cleared){
-              console.log(cleared)
               $scope.shoppingPurchased = $scope.shoppingPurchased+(cleared.quantity * cleared.price);
             })
           }
 
           list.tasks.forEach(function(task, index){
-            console.log(task)
             task.rank = index
 
             if(task.task_completed){
@@ -120,45 +112,27 @@
               $scope.nonBindedTask.price = task.price;
               $scope.totalShoppingList = $scope.totalShoppingList+(task.quantity * task.price);
               if(task.task_completed){
-                console.log(task.quantity * task.price)
                 $scope.shoppingPurchased = $scope.shoppingPurchased+(task.quantity * task.price);
               }
             }
-            console.log($scope.nonBindedTask)
             $scope.models.toDoList.push($scope.nonBindedTask)
           })
           budgetProgressBar()
-          console.log(list.tasks)
-
-          console.log($scope.models.toDoList)
           $scope.nonBindedList = list.tasks
         }
 
         var modalDataFunction = function(){
-          console.log($scope)
-          console.log($scope.data)
-          console.log($scope.data.lists)
-          console.log($scope.element)
           var allTodos = Todo.all
-          console.log(allTodos)
           var checkDateService = DateService.saveUpdatesFromLeftRail();
-          console.log("DateService.saveUpdatesFromLeftRail(); below: ")
-          console.log(checkDateService)
-          if(checkDateService.length){
-
-            checkDateService.forEach(function(list){
-              console.log(list)
-
-                if(list.dateList.date == $scope.date){
-                  processTasksForList(list.dateList, 0)
+          var mostRecentObjFromDateService = checkDateService[checkDateService.length-1]
+          if(checkDateService.length && mostRecentObjFromDateService.wholeDateList.list_name == $scope.data.list_name){
+              mostRecentObjFromDateService.wholeDateList.lists.forEach(function(list){
+                if(list.date == $scope.date){
+                  processTasksForList(list, 0)
                 }
-
             })
           } else {
             $scope.data.lists.forEach(function(list, index){
-              console.log(list.date)
-              console.log(index)
-              console.log(list.date === $scope.date)
               if(list.date === $scope.date){
                 processTasksForList(list, index)
               }
@@ -170,9 +144,7 @@
           console.log("allTaskRailDataFunction")
           $scope.models.toDoList = [];
           // $scope.data is depenedency that gets injected in from master_tasks, comes through the allTasks parameter in master_tasks
-          console.log($scope.data)
           $scope.data.forEach(function(list, index){
-            console.log(list)
             $scope.nonBindedTask = {
               name: list.taskName,
               listName: list.listName,
@@ -196,76 +168,53 @@
         var updateAll = function(task){
           $scope.allHaveBeenUpdated = true;
           // $scope.listName isn't available when updating from the left rail, which is why eash task has it's list name included
-          console.log("$scope.element = " + $scope.element)
+          console.log("update all.  $scope.element = " + $scope.element)
           for(var z = 0; z < $scope.models.toDoList.length; z++){
             $scope.models.toDoList[z].rank = z;
-            console.log($scope.models.toDoList[z])
-            console.log($scope.models.toDoList)
           }
-            console.log($scope.listName)
-            console.log($scope.models.toDoList)
-            console.log($scope.date)
-            console.log(task)
             var saveAllOfUs = {list_name: $scope.listName, lists: $scope.data.lists}
             saveAllOfUs.lists[$scope.listIndex] = {date: $scope.date, tasks: $scope.models.toDoList, clearedTasks: $scope.models.completedList}
-            console.log(saveAllOfUs)
             Todo.update({list_name: $scope.listName},   {todo: saveAllOfUs}, function(task){
             })
 
         }
 
         $scope.update = function(task, index, listOrigin){
-          console.log($scope.data)
-          console.log(task)
-          console.log($scope.models)
-
+          console.log("$scope.update")
           if(task.task_completed){
             $scope.completedText = $scope.listType === 'shopping'? "Clear Purchased" : "Clear Completed"
             $scope.showClearCompleted = true;
           }
-
           if(task.length){
             updateAll(task);
           } else {
             var completedTime = new Date();
-            console.log(index)
 
             if($scope.element === 'rail'){
-
               var onlyChangeListUpdated = []
 
               // we need to pull and loop through all thes lists within the todo and than only update this task
               if(!allTodos){
                 var allTodos = Todo.all
               }
-              console.log(allTodos)
+
               var listName = ""
               var dateList = ""
 
               var newTaskLists = []
               allTodos.forEach(function(todo){
-                console.log(todo)
-                console.log(todo.list_name == task.listName)
-                console.log(todo.list_name)
-                console.log(task.listName)
                 if(todo && todo.list_name == task.listName){
-                  console.log("namematch")
                   listName = todo.listName;
                   todo.lists.forEach(function(list){
-                    console.log(list)
                     if(list.date === task.list_date){
                       var updatingListTasks = {date: task.list_date, tasks: []}
 
                       list.tasks.forEach(function(originTask, index){
-                        console.log(originTask)
-                        console.log(index)
                         if(originTask.name === task.name ){
                           updatingListTasks.tasks.push({name: task.name, task_completed: task.task_completed})
                         } else {
                           updatingListTasks.tasks.push(originTask)
                         }
-                        console.log("end of list.tasks forEach")
-                        console.log(updatingListTasks)
                       })
                       dateList = updatingListTasks;
                       newTaskLists.push(updatingListTasks)
@@ -273,10 +222,9 @@
                       newTaskLists.push(list)
                     }
                   }) //end of todo.lists.forEach
-                  console.log(newTaskLists)
                 }
               })
-              console.log($scope)
+
               var updateTask = {
                 list_name: task.listName,
                 name: task.name,
@@ -289,12 +237,8 @@
               var listData = {list_name: listName, list_type: 'todo'};
               var dataServiceObj = { updatedTask: taskDataForParseAllTasks, wholeDateList: updateTask, dateList: dateList }
               DateService.saveUpdatesFromLeftRail(dataServiceObj)
-
-
             } else if($scope.element === 'cal-entry-modal') {
-              console.log($scope.listIndex)
               var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
-              console.log(updateTask)
 
               if(listOrigin === 'clearedTasks'){
                 updateTask.lists[$scope.listIndex].clearedTasks[index] = {
@@ -320,16 +264,10 @@
               DateService.saveUpdatesFromLeftRail(dataServiceObj)
               $scope.parseAllTasks(taskDataForParseAllTasks,listData , $scope.element)
 
-
-              console.log(updateTask.lists[$scope.listIndex].tasks[index])
-
-              console.log($scope.data)
-
               if($scope.listType === 'shopping'){
                 updateTask.lists[$scope.listIndex].tasks[index].price = task.price;
                 updateTask.lists[$scope.listIndex].tasks[index].quantity = task.quantity;
                 if(updateTask.lists[$scope.listIndex].tasks[index].task_completed){
-                  console.log(task.quantity * task.price)
                   $scope.shoppingPurchased = $scope.shoppingPurchased+(task.quantity * task.price);
                 } else if(updateTask.lists[$scope.listIndex].clearedTasks && updateTask.lists[$scope.listIndex].clearedTasks[index].task_completed){
                   $scope.shoppingPurchased = $scope.shoppingPurchased+(task.quantity * task.price);
@@ -340,23 +278,14 @@
               }
 
             }
-            // console.log(updateTask.lists[$scope.listIndex].tasks[index])
-            console.log(updateTask)
             Todo.update({list_name: updateTask.name}, {todo: updateTask}, function(task){
-              console.log(task)
             });
-
           }
         };
-
 
         $scope.newTask = {};
         $scope.addNewTodo = function (index){
           console.log("NEW")
-          console.log($scope)
-          console.log($scope.shopping.productName)
-          console.log($scope.newTask.name)
-          console.log($scope.listType)
 
           if($scope.newTask.name || $scope.shopping.productName){
             var timeCreated = new Date();
@@ -365,13 +294,8 @@
             if(!$scope.data.list_type){
               saveMe.list_type = $scope.listType
             }
-            console.log($scope.data)
-            console.log($scope.data.list_type)
-            console.log(JSON.stringify(saveMe))
-            console.log("$scope.listIndex = " + $scope.listIndex)
 
             if($scope.data.list_type === 'todo' || $scope.listType === 'todo'){
-              console.log(!$scope.allHaveBeenUpdated)
               if(!$scope.allHaveBeenUpdated){
                 // adding a new task after updateAll invoked was causing the new item to be saved 2 to the db, this prevents that
                 $scope.models.toDoList.push({name: $scope.newTask.name, task_completed: false, listType: 'todo'})
@@ -388,11 +312,8 @@
                 listType: $scope.data.list_type,
                 taskCompleted: false
               };
-              console.log(taskForAllTasks)
               $scope.allTasks.push(taskForAllTasks)
-              console.log($scope.allTasks)
             }
-            console.log(JSON.stringify(saveMe))
 
             if($scope.data.list_type === 'shopping' || $scope.listType === 'shopping'){
               $scope.totalShoppingList = $scope.totalShoppingList+($scope.shopping.productQuantity * $scope.shopping.productPrice)
@@ -404,7 +325,7 @@
                 total_cost: $scope.shopping.productQuantity * $scope.shopping.productPrice,
                 task_completed: false
               }
-              console.log(shoppingListItem)
+
               saveMe.lists[$scope.listIndex].tasks.push(shoppingListItem)
               $scope.models.toDoList.push(
                 {
@@ -417,13 +338,11 @@
                 })
               budgetProgressBar()
             }
-            console.log(saveMe)
             Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
             $scope.newTask.name = ""
             $scope.shopping.productName = ""
             $scope.shopping.productQuantity = ""
             $scope.shopping.productPrice = ""
-            console.log($scope.newTask)
           }
         }
 
@@ -433,27 +352,18 @@
           $scope.showClearCompleted = false;
           var newTodoList = [];
           var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
-          console.log(saveMe)
-          console.log($scope.listIndex)
           saveMe.lists[$scope.listIndex].clearedTasks = $scope.list.clearedTasks? $scope.list.clearedTasks : [];
-          console.log(saveMe.lists[$scope.listIndex].clearedTasks)
+
           // saveMe.lists[$scope.listIndex].clearedTasks = []
           for(var i = 0; i < $scope.models.toDoList.length; i++){
             if($scope.models.toDoList[i].task_completed === false){
-                console.log($scope.models.toDoList[i])
                 newTodoList.push($scope.models.toDoList[i])
             } else {
-              console.log($scope.models.toDoList[i])
-              console.log(saveMe.lists)
-              console.log($scope.listIndex)
               saveMe.lists[$scope.listIndex].clearedTasks.push($scope.models.toDoList[i])
             }
           }
           saveMe.lists[$scope.listIndex].tasks = newTodoList
-          console.log(saveMe)
           Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
-
-          console.log(newTodoList)
           $scope.models.toDoList = newTodoList;
         };
 

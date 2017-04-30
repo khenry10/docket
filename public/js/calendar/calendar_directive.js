@@ -20,14 +20,8 @@
         listForCal: "=listForCal"
       },
       link: function(scope){
-        console.log("calendar directive")
-        console.log(scope)
 
         scope.$watch('listForCal', function(todosForCal, oldList){
-          console.log("listForCal $watch called")
-          console.log(todosForCal)
-          console.log(oldList)
-          // console.log(scope.date.monthCount)
           if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
@@ -44,8 +38,6 @@
         }, true);
 
       scope.calendarItemModal = function (list, date){
-        console.log("scope.TestModal called")
-        console.log(scope)
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
@@ -59,7 +51,6 @@
           //it's a bootstrap element, use 'modal' to show it
           modal.element.modal();
           modal.close.then(function(result) {
-            console.log(result);
           });
         });
       }
@@ -79,14 +70,12 @@
           }
           if(list.list_reocurring === 'Monthly'){
             var fullDateObj = DateService.stringDateSplit(date)
-            console.log(fullDateObj)
             var listDay = fullDateObj.day
             bigTdContainer = bigTdContainer[listDay+1]
           } else {
             bigTdContainer = bigTdContainer[realListDate.getDay()+1];
           }
           bigTdContainer.addEventListener("click", function(e) {
-            console.log(e)
             scope.calendarItemModal(list, date)
           })
           bigTdContainer.setAttribute("id", "time-with-entry")
@@ -103,8 +92,6 @@
         }
 
         var putHourlyItemsOnWeeklyCalendar = function(list, date, realListDate){
-          console.log("list.start_time = " + list.start_time)
-          console.log("list.end_time = " + list.end_time)
           // this function processes the calendar item's details, like start and end end time am/pm and how many hours, and calls createHourlyCalItem and addMiddleTimeCalItems functions
           createHourlyCalItem(list, list.start_time, date, realListDate, "startTime")
 
@@ -123,14 +110,12 @@
             var time = 12 - startTime
             var timeDifference = time + endTime
           }
-          console.log("timeDifference = " + timeDifference)
 
           if(startTimeAmOrPm === endTimeAmOrPm && timeDifference === 2){
             var endTime = endTime -1
             var endTime = endTime + ":00" + endTimeAmOrPm
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime")
           } else if(startTimeAmOrPm != endTimeAmOrPm && timeDifference === 2 && list.end_time === "12:00am"){
-            console.log(realListDate)
             var endTime = endTime -1
             var endTime = endTime + ":00pm"
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime")
@@ -139,21 +124,13 @@
             var startTime = startTime >= 12? 12: startTime
             var endTime = parseInt(endTime)-1
             var endTime = endTime >= 12? 12: endTime
-            console.log(endTime)
-            console.log(startTimeAmOrPm)
-            console.log(endTimeAmOrPm)
+
             if(startTimeAmOrPm === endTimeAmOrPm){
-              console.log(startTime)
-              console.log(endTime)
               if(startTime === 12){
-                // startTime = startTime +":00"+startTimeAmOrPm
-                // createHourlyCalItem(list, startTime, date, realListDate, "middleTime")
                 startTime = 1
               }
               addMiddleTimeCalItems(startTime, endTime, startTimeAmOrPm, list, date, realListDate)
             } else if(startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "am"){
-              console.log(startTime)
-              console.log(endTime)
               addMiddleTimeCalItems(startTime, 11, "am", list, date, realListDate)
               addMiddleTimeCalItems(12, 12, "pm", list, date, realListDate)
               if(originalEndTime != 12 && endTimeAmOrPm === 'pm'){
@@ -229,7 +206,6 @@
           if(e.srcElement.nodeName === 'TD'){
             // need to add in logic so this function can handle both MONTHLY & WEEKLY views, messed up the monthly stuff while adding weekly
               if(scope.newView === 'week'){
-                console.log(e)
                 var startTime = e.srcElement.className;
                 var date = e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].id;
                 var date = date.split("/");
@@ -251,15 +227,9 @@
                   data: data
                 }
               }).then(function(modal) {
-                console.log(".then in modal")
-                console.log(modal)
-                console.log(modal.scope)
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
-                console.log(modal.element)
                 modal.close.then(function(result) {
-                  console.log(result);
-
                 });
               });
 
@@ -267,14 +237,10 @@
         }
 
         var buildTimeTable = function(tr, addTimes, index, year){
-          console.log("buildTimeTable")
           var bigTd = tr === td? tr:document.createElement("td");
-          console.log(index)
-
           if(scope.todayDay === index && scope.date.weekCount === 0){
             bigTd.setAttribute("class", "today")
           }
-          // bigTd.setAttribute('class', "w"+index)
           for(var y = 0; y <= 1; y++){
             // we create 1 large TD that makes up the column, only the first time creates the big TD
             if(y === 0){
@@ -290,7 +256,6 @@
               var tr2 = document.createElement("tr");
               var td = document.createElement("td");
               td.setAttribute("id", "time")
-              console.log("addTimes = " +addTimes)
               if(z === 12){
                 var amOrpm = y === 0? 'pm':'am'
               } else {
@@ -298,14 +263,9 @@
               }
               td.setAttribute("class", z+":00"+amOrpm)
               td.addEventListener("click", function(e){
-                console.log(e)
-
                 if(e.srcElement.nodeName === "TD" && e.srcElement.nodeName != "P"){
                   addNewModal(e, undefined, year, index)
-                } else {
-
                 }
-
               })
               if(addTimes){
                 td.innerHTML = z + amOrpm
@@ -322,7 +282,6 @@
         function createTDsInRows(table, td, p, tr, numberOfDays, month, year, index){
             if(scope.newView === "week"){
               var td = document.createElement("td")
-              console.log("calling buildTimeTable from createTDsInRows!!!!!")
               buildTimeTable(tr, false, index, year)
             } else {
               var td = document.createElement("td");
@@ -344,19 +303,16 @@
           }
           if(scope.newView === 'month'){
             td.addEventListener("click", function(e){
-              console.log(e)
               addNewModal(e, month, year)
             })
           }
         };
 
         var dyanmicRowCreator = function(rows, table, td, p, tr, numberOfDays, month, year){
-          console.log("dyanmicRowCreator td = " + td)
           // we pass the number of rows to create through rows parameter to distinguish between month and weekly view. And months with 5 or 6 rows
           for(var t = 0; t < rows; t++){
             var tr = document.createElement("tr")
             if(scope.newView === 'week'){
-              console.log("calling buildTimeTable from dynamicRowCreator")
               buildTimeTable(tr, true, undefined, year)
             }
             tr.setAttribute("class", "date-row-"+t)
@@ -423,25 +379,18 @@
             // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
 
           } else if (daysAwayMinusTodayDate > 0 && (daysAwayMinusTodayDate < scope.daysInMonth)){
-            console.log("here 1")
-            console.log(date)
               scope.lastDate.push(date)
           } else if(daysAwayMinusTodayDate > scope.daysInMonth){
-            console.log("here 2")
-            console.log(date)
             date = daysAwayMinusTodayDate - scope.daysInMonth
             scope.lastDate.push(date)
             var month = month + 1
           } else {
-            console.log("here 3")
-            console.log("date = " + date)
 
             if(scope.date.lastMove === 'increment'){
               var date = scope.date.months.previousMonth.days
             } else {
               var date = scope.date.months.thisMonth.days
             }
-            console.log(date)
             scope.lastDate.push(date)
           }
           th.innerHTML = daysOfWeek[i] + "  " + date
@@ -456,7 +405,6 @@
         }
 
         function createTableHeadingRow(table, tr, count){
-          console.log("createTableHeadingRow called. count = " + count)
           // week gets a start of 0, becuase we need an extra column to add the times of the day
           if(scope.newView === 'month'){
             var start = 1
@@ -479,7 +427,6 @@
         };
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
-          console.log("makeCalendar function envoked. firstDayOfMonth = " + firstDayOfMonth + ", numberOfDays = "+ numberOfDays + ", month = " + month + ", year = " + year)
           document.getElementById("calendar-month-year").innerHTML = monthName[month] + " " + year
           var table = document.createElement("table");
           table.className = 'calendar';
@@ -536,7 +483,6 @@
         var monthHistory = []
 
         var monthSelector = function(month){
-          console.log("monthSelector function called. month = " + month)
           var firstDayOfMonth = new Date(year, month-1, 1).getDay()
           var numberOfDays = new Date(year, month, 0).getDate()
           //since this function  creates a new calendar with a different month, we need to delete the original calendar HTML table first

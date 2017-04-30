@@ -11,8 +11,7 @@
         listForCal: "="
       },
       link: function($scope){
-        console.log("masterTask aks todoMaster $scope below")
-        console.log($scope)
+        console.log("masterTask aka todoMaster")
         $scope.taskButton = false;
         var lists = [];
         $scope.listss = [];
@@ -20,7 +19,7 @@
         $scope.newMasterInDirective = {};
 
         $scope.$watch('listForCal', function(todosForCal, oldList){
-          console.log('listForCal $watch called')
+          console.log(todosForCal)
           if(todosForCal && todosForCal.length){
             $scope.listss = [];
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]
@@ -34,16 +33,13 @@
                  })
               }
             })
-            console.log($scope.listss)
           }
         }, true);
 
         $scope.addNewMasterTask = function (list){
-          console.log("$scope.addNewMasterTask")
-          console.log($scope)
           $scope.show = false;
           var master = $scope.newMasterInDirective.name;
-
+          $scope.listss = [];
           var today = new Date();
           var saveMe = {
             name: master,
@@ -65,7 +61,7 @@
             console.log(task)
           })
           // this works but isn't a great solution. has to process everything just in order to add a new master task to all
-          $scope.$parent.verifyCloneList();
+          // $scope.$parent.verifyCloneList();
           $scope.listForCal[0].origin = 'master-task';
           $scope.newMasterInDirective.name = "";
           $scope.newMasterInDirective.price = "";
