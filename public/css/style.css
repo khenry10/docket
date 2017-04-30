@@ -53,7 +53,13 @@ table {
     border-spacing: 0;
 }
 
+a {
+  text-decoration: none;
+}
 
+a:hover {
+  text-decoration: none;
+}
 
 /** {
   outline: 1px solid black;
@@ -74,7 +80,8 @@ table {
 }
 
 .calendar table {
-  margin: 0 auto;
+  /*margin: 0 auto;*/
+  margin-top: 1%;
 }
 
 .month {
@@ -184,9 +191,55 @@ div#time.endTimeTd {
   height: 20px;
 }*/
 
+.header {
+  height: 55px;
+  position: fixed;
+  width: 100%;
+  background-color: white;
+  z-index: 1000;
+  outline: 1px solid #4264fb;
+  display: flex;
+  justify-content: space-between;
+  /*background-color: #4264fb;*/
+  color: rgba(66, 100, 251, 0.85)
+}
+
+.left-header {
+  color: #4264fb;
+  margin-top: -10px;
+  margin-left: 10px;
+}
+
+.right-header {
+  margin-right: 15px;
+  margin-top: -25px;
+}
+
+.list-header {
+  background-color: #4264fb;
+  color: white;
+  height: 65px;
+}
+
+.header a {
+  color: rgba(66, 100, 251, 0.85);
+}
+
+.header a:hover {
+  text-decoration: none;
+}
+
+.list-header a:hover {
+  text-decoration: none;
+}
+
+.list-header.left-header {
+  margin-top: -15px;
+}
 
 .events-panel {
   background-color: rgb(48, 49, 56);
+  margin-top: 55px;
   color: white;
   position: fixed;
   float: left;
@@ -199,6 +252,7 @@ div#time.endTimeTd {
 }
 
 .calendar {
+  margin-top: 55px;
   top: 0;
   width: 89%;
   float: right;
@@ -207,6 +261,7 @@ div#time.endTimeTd {
   margin-bottom: 0;
   margin-right: 5px;
   min-height: 580px;
+  height: 610px;
 }
 
 .protocol-table {
@@ -242,8 +297,10 @@ li {
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
-  width: 50%;
-  margin: 1% 0% 1% 25%;
+  width: 47%;
+  /*margin: 1% 0% 1% 0%;*/
+  padding: 1%;
+  background-color: rgba(66, 100, 251, 0.85);
 }
 
 

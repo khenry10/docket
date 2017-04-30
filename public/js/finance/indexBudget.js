@@ -1,13 +1,13 @@
 'use strict';
 
-angular.module("app").controller("listController", [
+angular.module("app").controller("budgetController", [
   "Lists",
   "$window",
   "$scope",
-  listController
+  budgetController
 ])
 
-function listController(Lists, $window){
+function budgetController(Lists, $window){
   var finances = [];
   var variableExpenses = [];
   var fixedExpenses = [];

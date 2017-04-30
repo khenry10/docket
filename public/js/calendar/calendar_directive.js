@@ -22,6 +22,7 @@
       link: function(scope){
 
         scope.$watch('listForCal', function(todosForCal, oldList){
+          console.log(scope.date)
           if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
@@ -364,45 +365,21 @@
 
         var weeklyTableHeadingRow = function(th, i){
           var daysAwayFromDate = i - scope.todayDay;
-          daysAwayFromDate = daysAwayFromDate -1;
-          var daysAwayMinusTodayDate = daysAwayFromDate + scope.TodayDate;
-          var date = daysAwayMinusTodayDate;
-          var month = new Date (scope.TodaysYear, scope.TodaysMonth+2, 0).getMonth()
-          if(daysAwayMinusTodayDate < 0 ){
-            if(date < 0){
-              var lastMonth = new Date (scope.TodaysYear, scope.TodaysMonth, 0)
-              var lastDayOfLastMonth = lastMonth.getDate()
-              var date = lastDayOfLastMonth + date
-              var month = month-1
-              scope.lastDate.push(date)
-            }
-            // when scope.date.weekCount doesn't equal 0, we are increment/decrementing from the current week
+          var month = scope.date.months.thisMonth.count;
+          var day = scope.date.dayCount[i-1];
 
-          } else if (daysAwayMinusTodayDate > 0 && (daysAwayMinusTodayDate < scope.daysInMonth)){
-              scope.lastDate.push(date)
-          } else if(daysAwayMinusTodayDate > scope.daysInMonth){
-            date = daysAwayMinusTodayDate - scope.daysInMonth
-            scope.lastDate.push(date)
-            var month = month + 1
-          } else {
-
-            if(scope.date.lastMove === 'increment'){
-              var date = scope.date.months.previousMonth.days
-            } else {
-              var date = scope.date.months.thisMonth.days
-            }
-            scope.lastDate.push(date)
+          if(scope.date.dayCount.length > 7){
+            day = scope.date.dayCount[scope.date.dayCount.length-8+i];
           }
-          th.innerHTML = daysOfWeek[i] + "  " + date
+
+          th.innerHTML = daysOfWeek[i] + "  " + day
           if(daysAwayFromDate === 0){
             th.setAttribute("class", "todayInWeeklyView")
-            // th.setAttribute("id", i)
-            th.setAttribute("id", month +"/"+ date)
+            th.setAttribute("id", month +"/"+ day)
             scope.daysAwayFromDate = i
           }
-          th.setAttribute("id", month +"/"+ date)
-
-        }
+          th.setAttribute("id", month +"/"+ day)
+        };
 
         function createTableHeadingRow(table, tr, count){
           // week gets a start of 0, becuase we need an extra column to add the times of the day
