@@ -53,9 +53,9 @@
           </th>
       </tr>
     </thead>
-    **{{ sortType }}
+    
     <tr ng-repeat="list in lists | orderBy:sortType:sortReverse | filter:searchFilter " >
-      <td>  <md-checkbox ng-model="list.task_completed" aria-label="checkbox"></md-checkbox> </td>
+      <td>  <md-checkbox ng-click="update(list)" ng-model="list.task_completed" aria-label="checkbox"></md-checkbox> </td>
       <td> {{ list.task_name }} </td>
       <td> {{ list.dateList }} </td>
       <td> {{ list.list_name }} </td>

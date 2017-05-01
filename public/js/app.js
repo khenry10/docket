@@ -8,14 +8,28 @@
 
   function Todo($resource){
     console.log("Todo factory envoked")
+    console.log($resource)
+    // below was commented out as the 2nd params in $resource function
+    // { query:  {method:"GET", isArray: true}
     var Todo = $resource("api/todo/:name",
-    {
-      // query:  {method:'GET', isArray: true}
-   },
-    { update: {method: "PUT"} }
-  )
+      { query:  {method:"GET", params: {list_name: '@name'}} },
+      { update: {method: "PUT"} },
+      { find:  {method:"GET", params: {list_name: '@name'}} },
+      { get: {method: "GET", isArray: false} }
+    )
     Todo.all = Todo.query();
+    // Todo.find = Todo.find();
+    Todo.findWithGet = Todo.query()
 
+
+    // Todo.find = Todo.get();
+
+    // Todo.find = function(param){
+    //   console.log(param)
+    //   Todo.get()
+    // };
+
+    console.log(Todo)
     return Todo
   };
 

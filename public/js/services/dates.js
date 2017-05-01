@@ -48,7 +48,7 @@ angular.module('app').service('DateService', [ function () {
     return day
   }
 
-  var monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  this.monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
   var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
   this.getNiceDate = function(date){
@@ -57,7 +57,7 @@ angular.module('app').service('DateService', [ function () {
     var dayDate = date.getDate()
     var year = date.getFullYear()
 
-    return daysOfWeek[day] +" "+ monthName[month] + " " + dayDate + ", "+ year
+    return daysOfWeek[day] +" "+ this.monthName[month] + " " + dayDate + ", "+ year
   }
 
   this.percentageOfYearPassed = function(){
@@ -86,7 +86,7 @@ angular.module('app').service('DateService', [ function () {
       }
       totalDays = totalDays + daysInMonth
 
-      data.months.push({month: monthName[i-1], days_in_month: daysInMonth, fridays: fridays})
+      data.months.push({month: this.monthName[i-1], days_in_month: daysInMonth, fridays: fridays})
 
       if(month+1 > i){
         daysPassed = daysPassed + daysInMonth
@@ -111,17 +111,29 @@ angular.module('app').service('DateService', [ function () {
     return data
   }
 
-  this.monthName = function(date){
-    var month = date.getMonth()
-    var nameOfMonth = monthName[month]
-    return nameOfMonth
+  // this.monthName = function(date){
+  //   var month = date.getMonth()
+  //   var nameOfMonth = monthName[month]
+  //   return nameOfMonth
+  // }
+
+  this.dateSplit = function(fullDate){
+    var year = fullDate.getFullYear();
+    var monthNumber = fullDate.getMonth();
+    console.log(this.monthName)
+    var monthName = this.monthName[monthNumber];
+    var date = fullDate.getDate();
+    var dayNumber = fullDate.getDay();
+    var dayName = daysOfWeek[dayNumber];
+    return {year: year, monthNumber: monthNumber, monthName: monthName, date: date, dayNumber: dayNumber, dayName: dayName, fullDate: fullDate}
   }
 
   this.stringDateSplit = function(date){
     // var year = date.substring(0,4)
     // var month = date.substring(5,7)
     // var date = date.substring(8,10)
-    // console.log(month)
+    console.log(date)
+    console.log(typeof date)
     var date = date.split("-")
 
     var year = date[0]

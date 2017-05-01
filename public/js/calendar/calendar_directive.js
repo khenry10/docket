@@ -360,7 +360,7 @@
           scope.TodaysMonth = scope.todayFullDate.getMonth()
           scope.TodaysYear = scope.todayFullDate.getFullYear()
           scope.daysInMonth = new Date(scope.todayFullDate.getFullYear(), scope.todayFullDate.getMonth()+1, 0).getDate()
-          document.getElementById("calendar-month-year").innerHTML = monthName[scope.TodaysMonth+1] + " " + scope.TodaysYear
+          document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthName + " " + scope.date.today.date + ", " + year;
         }
 
         var weeklyTableHeadingRow = function(th, i){
@@ -404,7 +404,8 @@
         };
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
-          document.getElementById("calendar-month-year").innerHTML = monthName[month] + " " + year
+          console.log(scope.date)
+          document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + monthName[month] + " " + scope.date.today.date + ", " + year;
           var table = document.createElement("table");
           table.className = 'calendar';
           table.setAttribute("id", "calendar-table");
