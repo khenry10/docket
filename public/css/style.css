@@ -195,17 +195,18 @@ div#time.endTimeTd {
   height: 55px;
   position: fixed;
   width: 100%;
-  background-color: white;
+  /*background-color: white;*/
   z-index: 1000;
   outline: 1px solid #4264fb;
   display: flex;
   justify-content: space-between;
-  /*background-color: #4264fb;*/
+  background-color: #4264fb;
   color: rgba(66, 100, 251, 0.85)
 }
 
 .left-header {
-  color: #4264fb;
+  /*color: #4264fb;*/
+  color: white;
   margin-top: -10px;
   margin-left: 10px;
 }
@@ -222,7 +223,7 @@ div#time.endTimeTd {
 }
 
 .header a {
-  color: rgba(66, 100, 251, 0.85);
+  color: white;
 }
 
 .header a:hover {

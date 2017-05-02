@@ -360,12 +360,18 @@
           scope.TodaysMonth = scope.todayFullDate.getMonth()
           scope.TodaysYear = scope.todayFullDate.getFullYear()
           scope.daysInMonth = new Date(scope.todayFullDate.getFullYear(), scope.todayFullDate.getMonth()+1, 0).getDate()
-          document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthName + " " + scope.date.today.date + ", " + year;
+          if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
+            document.getElementById("calendar-month-year").innerHTML =
+            monthName[scope.date.monthCount] + " " + scope.date.dayCount[scope.date.dayCount.length-7] + " - "+ scope.date.dayCount[scope.date.dayCount.length-1]+ ", " + year;
+          } else {
+            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthName + " " + scope.date.today.date + ", " + year;
+          }
         }
 
         var weeklyTableHeadingRow = function(th, i){
           var daysAwayFromDate = i - scope.todayDay;
           var month = scope.date.months.thisMonth.count;
+          console.log(scope.date)
           var day = scope.date.dayCount[i-1];
 
           if(scope.date.dayCount.length > 7){
@@ -405,7 +411,11 @@
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
           console.log(scope.date)
-          document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + monthName[month] + " " + scope.date.today.date + ", " + year;
+          if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
+            document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
+          } else {
+            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthName + " " + scope.date.today.date + ", " + year;
+          }
           var table = document.createElement("table");
           table.className = 'calendar';
           table.setAttribute("id", "calendar-table");

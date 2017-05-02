@@ -356,29 +356,36 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
         $scope.changeDate.dayCount.push(date)
       }
     } else if(move === "decrement") {
+      console.log($scope.changeDate.lastMove)
+      console.log(date)
       if($scope.changeDate.lastMove === "increment"){
         if(date - 6 <= 0){
           $scope.changeDate.monthCount--
           // this is needed to account for when the date is less than 6 to move to the previous month and not generate negative dates
           var lastDayOfEarlierMonth = new Date($scope.calendarYear, $scope.changeDate.monthCount-1, 0)
           var lastDayOfEarlierMonth = lastDayOfEarlierMonth.getDate()
-          var date = lastDayOfEarlierMonth + (date - 6)
+          console.log(lastDayOfEarlierMonth)
+          console.log($scope.changeDate)
+          console.log($scope.changeDate.months.previousMonth.days + " " + $scope.changeDate.months.previousMonth.count) 
+          var date = $scope.changeDate.months.previousMonth.days + (date - 6)
         } else {
           var date = actionDate-6
         }
       } else if($scope.changeDate.lastMove === "decrement"){
         date = actionDate
       }
+      console.log(date)
       if($scope.changeDate.weekCount == -1){
         date = date-8
       } else {
         date = date-14
       }
+      console.log(date)
 
       if(date <= 0){
         date = $scope.changeDate.months.thisMonth.days + date +1;
       }
-
+      console.log(date)
       for(var e = 7; e >= 1; e--){
         $scope.changeDate.lastMove = "decrement";
         var date = date + 1;
@@ -466,7 +473,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
     $scope.changeDate.monthCount = $scope.calendarMonth+1;
     var date = $scope.date.getDate()
     var day = $scope.date.getDay()
-
+    monthContext()
     if(date == 1){
       var lastMonth = new Date ($scope.changeDate.year, $scope.changeDate.monthCount-1, 0)
       var lastDay = lastMonth.getDate();
@@ -476,17 +483,26 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
       date = date-1
       var lastDay = new Date($scope.changeDate.year, $scope.changeDate.monthCount+2, 0).getDate()
     };
-
+    console.log(date)
+    console.log(lastDay)
+    console.log($scope.changeDate)
     for(var d = 1; d <= 7; d++ ){
-      var date = date + 1
-      if(date > lastDay){
+      console.log(date)
+      var date = date + 1;
+      console.log(date)
+      if(date <= 0){
+        date = $scope.changeDate.months.previousMonth.days
+      }
+      console.log(date)
+      if(date > $scope.changeDate.months.previousMonth.days){
         date = 1
         $scope.changeDate.twoMonthsWeekly = true;
         // $scope.changeDate.monthCount++
       }
+      console.log(date)
       $scope.changeDate.dayCount.push(date)
     };
-    monthContext()
+
     if($scope.changeDate.twoMonthsWeekly){
       splitTwoMonthsWeeklyIntoOldAndNew()
     }

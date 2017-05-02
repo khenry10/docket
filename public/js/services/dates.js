@@ -48,7 +48,7 @@ angular.module('app').service('DateService', [ function () {
     return day
   }
 
-  this.monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  this.monthName = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
   var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
   this.getNiceDate = function(date){
@@ -119,7 +119,7 @@ angular.module('app').service('DateService', [ function () {
 
   this.dateSplit = function(fullDate){
     var year = fullDate.getFullYear();
-    var monthNumber = fullDate.getMonth();
+    var monthNumber = fullDate.getMonth()+1;
     console.log(this.monthName)
     var monthName = this.monthName[monthNumber];
     var date = fullDate.getDate();

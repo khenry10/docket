@@ -34,6 +34,12 @@
               <i ng-show="sortType === 'list.list_name' " ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
             </h4>
           </th>
+          <th ng-click="sortType = 'list.fullDate' ; sortReverse = !sortReverse " style="text-align: center">
+            <h4>
+              Full Date
+              <i ng-show="sortType === 'list.fullDate' " ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
           <th ng-click="sortType = 'list.list_type' ; sortReverse = !sortReverse " style="text-align: center">
             <h4>
               List Type
@@ -53,12 +59,13 @@
           </th>
       </tr>
     </thead>
-    
+
     <tr ng-repeat="list in lists | orderBy:sortType:sortReverse | filter:searchFilter " >
       <td>  <md-checkbox ng-click="update(list)" ng-model="list.task_completed" aria-label="checkbox"></md-checkbox> </td>
       <td> {{ list.task_name }} </td>
       <td> {{ list.dateList }} </td>
       <td> {{ list.list_name }} </td>
+      <td> {{ list.fullDate }} </td>
       <td> {{ list.list_type }} </td>
       <td> {{ list.list_reocurring }} </td>
       <td> {{ list.list_recur_end }} </td>
