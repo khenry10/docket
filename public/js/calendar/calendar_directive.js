@@ -65,6 +65,15 @@
           // creates and appends the new calendar items to the calendar
           var bigTdContainer = document.getElementsByClassName(time)
           var pForBigTd = document.createElement('p')
+          pForBigTd.setAttribute("draggable", true)
+          var handleDragStart = function(e){
+            scope.listGrabbed = list;
+            console.log(scope.listGrabbed)
+            scope.dragSrcEl = this;
+            e.dataTransfer.effectAllowed = 'move';
+            // e.dataTransfer.setData('text/html', this.innerHTML);
+          };
+          pForBigTd.addEventListener('dragstart', handleDragStart, false);
           pForBigTd.setAttribute("id", list._id+date)
           if(timeStructure === 'startTime'){
             pForBigTd.innerHTML = list.list_name
@@ -80,6 +89,7 @@
             scope.calendarItemModal(list, date)
           })
           bigTdContainer.setAttribute("id", "time-with-entry")
+          // bigTdContainer.addEventListener('dragover', scope.handleDragOver, false);
           pForBigTd.setAttribute("class", timeStructure)
           bigTdContainer.appendChild(pForBigTd)
         }
@@ -148,8 +158,102 @@
           var exists = document.getElementById(list._id+date)
           if(!exists){
             var li = document.createElement("li")
+
+            li.setAttribute("draggable", true)
+
+            var dragSrcEl = null;
+
+            var handleDragStart = function(e){
+              scope.listGrabbed = list;
+              scope.dragSrcEl = this;
+              // console.log(list)
+              // console.log(e)
+              // console.log("im being dragged")
+              // console.log(dragSrcEl)
+              e.dataTransfer.effectAllowed = 'move';
+              // e.dataTransfer.setData('text/html', this.innerHTML);
+            };
+
+            scope.handleDragOver = function(e) {
+              // console.log("handleDragOver")
+              // console.log(e.preventDefault)
+              console.log(this)
+              this.style.outline = "1px solid red"
+
+              if (e.preventDefault) {
+                e.preventDefault(); // Necessary. Allows us to drop.
+              }
+              e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+              return false;
+            };
+
+            scope.handleDrop = function(e){
+              console.log("DROPPED")
+              e.preventDefault();
+              var getData = event.dataTransfer.getData("text")
+
+              if (e.stopPropagation) {
+                e.stopPropagation(); // Stops some browsers from redirecting.
+              }
+
+              // Don't do anything if dropping the same column we're dragging.
+              var splitDraggedEl = scope.dragSrcEl.id.split("&")
+              console.log(splitDraggedEl)
+              scope.listGrabbed.lists.forEach(function(dateList, index){
+                console.log(dateList)
+                if(dateList.date == splitDraggedEl[1]){
+                  console.log("name match.  index = " + index)
+                  console.log(dateList)
+                  scope.listGrabbed.lists[index].date = date;
+                  console.log(scope.listGrabbed.lists[index])
+                  Todo.update({list_name: scope.listGrabbed.list_name}, {todo: scope.listGrabbed})
+                }
+              })
+              console.log(splitDraggedEl)
+              console.log(e.target)
+              console.log(list)
+              console.log(date)
+
+              // e.target.after(scope.dragSrcEl)
+              // e.target.append(scope.dragSrcEl)
+              e.target.appendChild(scope.dragSrcEl)
+              if (dragSrcEl != this) {
+                // Set the source column's HTML to the HTML of the column we dropped on.
+                // dragSrcEl.innerHTML = this.innerHTML;
+                // this.innerHTML = e.dataTransfer.getData('text/html');
+              }
+            };
+
+            function handleDragEnter(e){
+              console.log(this)
+              this.style.outline = "1px solid red"
+            }
+
+            function handleDragEnd(e){
+               e.preventDefault();
+              console.log("handleDragEnd")
+              console.log(e)
+            };
+
+            function ulDrop(e){
+              console.log(e)
+            }
+            li.addEventListener('dragstart', handleDragStart, false);
+            li.addEventListener('dragover', scope.handleDragOver, false);
+            // li.addEventListener('drop', handleDrop, false);
+            li.addEventListener('dragend', handleDragEnd, false);
+            if(scope.newView== 'week'){
+
+            } else if (scope.newView == 'month'){
+              ul.addEventListener('dragEnter', handleDragEnter, false);
+              ul.addEventListener('dragover', scope.handleDragOver, false);
+              ul.addEventListener('drop', scope.handleDrop, false);
+            }
+            // console.log(ul)
+
+
             li.setAttribute("class",'a'+listDay)
-            li.setAttribute("id", list._id+date)
+            li.setAttribute("id", list._id+"&"+date)
             var url = document.createElement("a")
             url.innerHTML = list.list_name;
             li.addEventListener("click", function(e) {
@@ -160,7 +264,7 @@
               putHourlyItemsOnWeeklyCalendar(list, date, realListDate)
             }
             if(scope.newView === 'month'){
-              ul[0].appendChild(li)
+              ul.appendChild(li)
             }
           } else {
             console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR " + list._id+date)
@@ -181,6 +285,8 @@
             var listDates = date.split("-")
             var listDay = parseInt(listDates[2].substr(0,2))
             var ul = document.getElementsByClassName("u"+listDay)
+            console.log(ul[0].nodeType)
+            ul = ul[0];
             appendToCalendar(listDay, date, list, undefined, ul)
           } else if(scope.newView === 'week') {
             // we need to use the actual date, as opposed to list.first_day like below, since it's Daily recurring
@@ -257,6 +363,8 @@
               var tr2 = document.createElement("tr");
               var td = document.createElement("td");
               td.setAttribute("id", "time")
+              td.addEventListener('dragover', scope.handleDragOver, false);
+              td.addEventListener('drop', scope.handleDrop, false);
               if(z === 12){
                 var amOrpm = y === 0? 'pm':'am'
               } else {
@@ -288,12 +396,18 @@
               var td = document.createElement("td");
               td.setAttribute("class", scope.newView)
               var p = document.createElement("p")
+              p.style.height = "100%"
+              // p.style.outline = "1px solid black"
               p.setAttribute("class",  "a"+scope.count)
               if(scope.newView === 'month'){
                 td.innerHTML = scope.count;
               }
               var ul = document.createElement("ul");
+              ul.addEventListener('dragover', scope.handleDragOver, false);
+              ul.addEventListener('drop', scope.handleDrop, false);
               ul.setAttribute("class", "u"+scope.count)
+              ul.style.height = "100%"
+              // p.style.outline = "1px solid red"
               p.appendChild(ul)
               td.appendChild(p);
               tr.appendChild(td);

@@ -65,7 +65,8 @@
                       href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                       <!-- <span ng-show="listNumbers.todo === 1">{{ listNumbers.todo }} Todo List</span>
                       <span ng-show="listNumbers.todo > 1">{{ listNumbers.todo }} Todo Lists</span> -->
-                      <span> {{ numberOfTodoLists }} Todo Lists </span>
+                      <span ng-if="numberOfTodoLists === 1"> {{ numberOfTodoLists }} Todo List </span>
+                      <span ng-if="numberOfTodoLists > 1"> {{ numberOfTodoLists }} Todo Lists </span>
                   </a>
                 </div>
               </h4>
@@ -88,7 +89,8 @@
                       href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                       <!-- <span ng-show="listNumbers.shopping === 1">{{ listNumbers.shopping }} Shopping List</span>
                       <span ng-show="listNumbers.shopping > 1">{{ listNumbers.shopping }} Shopping Lists</span> -->
-                      <span > {{ numberOfShoppingLists }} Shopping Lists </span>
+                      <span ng-if="numberOfShoppingLists === 1" > {{ numberOfShoppingLists }} Shopping List </span>
+                      <span ng-if="numberOfShoppingLists > 1" > {{ numberOfShoppingLists }} Shopping Lists </span>
                   </a>
                 </div>
               </h4>
