@@ -108,7 +108,11 @@
 
                 var date = $scope.firstDay
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
-                createListOfLists.push( {date: newDate, tasks: []} )
+                createListOfLists.push( {
+                  date: newDate,
+                  start_time: $scope.newTodoList.start_time,
+                  end_time: $scope.newTodoList.end_time,
+                  tasks: []} )
                 var count = date.getDate();
 
                 var lastDay = numberOfDaysInMonth
@@ -136,7 +140,12 @@
                   while(count < lastDay){
                     count = count + 1
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push(
+                      { date: list,
+                        start_time: $scope.newTodoList.start_time,
+                        end_time: $scope.newTodoList.end_time,
+                        tasks: []
+                      })
                      var date = $scope.firstDay
                   }
                 }
@@ -145,7 +154,11 @@
                   while(count+7 <= lastDay){
                     count = count + 7
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push( {
+                      date: list,
+                      start_time: $scope.newTodoList.start_time,
+                      end_time: $scope.newTodoList.end_time,
+                      tasks: [] } )
                      var date = $scope.firstDay
                   }
                 }
@@ -154,7 +167,10 @@
                   while(month < 12){
                     month = month+1
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push( { date: list,
+                      start_time: $scope.newTodoList.start_time,
+                      end_time: $scope.newTodoList.end_time,
+                      tasks: [] } )
                   }
                 }
                 // I recreated the new object to get rid of new Todo() junk which I thought was causing issues

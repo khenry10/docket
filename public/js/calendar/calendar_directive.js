@@ -21,12 +21,15 @@
       },
       link: function(scope){
 
+      scope.pastDragSrcEl = [];
+
         scope.$watch('listForCal', function(todosForCal, oldList){
           console.log(scope.date)
           if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){
+                console.log(todoForCal)
                 if(todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
                     var date = dateList.date;
@@ -61,20 +64,55 @@
         var date = new Date()
         var year = date.getFullYear()
 
+        var listsWithHourlyItems = [];
+
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure){
+          console.log(list)
+          console.log("time = " + time)
+          console.log("realListDate = " + realListDate)
+          console.log(timeStructure)
+          console.log(date)
+
+          if(timeStructure === 'middleTime'){
+            listsWithHourlyItems.push({listName: list.list_name, date: date})
+          }
+
           // creates and appends the new calendar items to the calendar
           var bigTdContainer = document.getElementsByClassName(time)
+
           var pForBigTd = document.createElement('p')
           pForBigTd.setAttribute("draggable", true)
+
+
+          scope.dragSrcEl = [];
           var handleDragStart = function(e){
+            var thisElement = this;
+            console.log(thisElement)
+            var thisElsSplit = thisElement.id.split("&")
+            var thisElsDate = thisElsSplit[1]
+            var moveMeToo = document.getElementsByClassName("middleTime")
+
+            // we loop through all the TD's that have middleTime as a class name and find ones that belong
+              //to the TD that has been clicked and is being moved to inform the number of middleTime TDs should be moved
+            for(var i = 0; i < moveMeToo.length; i++){
+              console.log(moveMeToo[i])
+              var middleTimeElementsSplit = moveMeToo[i].id.split("&")
+              var middleTimeElementsDate = middleTimeElementsSplit[1]
+              if(middleTimeElementsDate === thisElsDate){
+                 scope.dragSrcEl.push({element: moveMeToo[i]})
+              }
+            }
             scope.listGrabbed = list;
             console.log(scope.listGrabbed)
-            scope.dragSrcEl = this;
-            e.dataTransfer.effectAllowed = 'move';
+            scope.dragSrcEl.push({element: this, list: list, date: date});
+            // e.dataTransfer.effectAllowed = 'move';
             // e.dataTransfer.setData('text/html', this.innerHTML);
-          };
+          }; // end of dragstart
+
+
           pForBigTd.addEventListener('dragstart', handleDragStart, false);
-          pForBigTd.setAttribute("id", list._id+date)
+          pForBigTd.setAttribute("id", list._id+"&"+date)
+          pForBigTd.setAttribute("class", list._id+date)
           if(timeStructure === 'startTime'){
             pForBigTd.innerHTML = list.list_name
           }
@@ -90,9 +128,26 @@
           })
           bigTdContainer.setAttribute("id", "time-with-entry")
           // bigTdContainer.addEventListener('dragover', scope.handleDragOver, false);
+
+
+          var hourlyUl = document.getElementsByClassName(list.list_name + "-" + date)
+          console.log(list.list_name+"-"+date)
+          console.log(hourlyUl)
+          console.log(scope.hourlyUl)
+          // var hourlyUl = document.createElement('ul')
+          // hourlyUl.setAttribute("class", list.list_name)
+          // hourlyUl.appendChild(pForBigTd)
+          // console.log(hourlyUl)
           pForBigTd.setAttribute("class", timeStructure)
+
+          // hourlyUl.append(pForBigTd)
+
+          // hourlyUl.appendChild(pForBigTd)
+          // bigTdContainer.appendChild(hourlyUl)
           bigTdContainer.appendChild(pForBigTd)
-        }
+          // scope.hourlyUl.append(bigTdContainer)
+          console.log(listsWithHourlyItems)
+        };
 
         var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate){
           // addMiddleTimeCalItems function is to determine how many hours between start and end time need to be appended to teh calendar for each item
@@ -103,6 +158,9 @@
         }
 
         var putHourlyItemsOnWeeklyCalendar = function(list, date, realListDate){
+          console.log(list)
+          console.log(date)
+          console.log(realListDate)
           // this function processes the calendar item's details, like start and end end time am/pm and how many hours, and calls createHourlyCalItem and addMiddleTimeCalItems functions
           createHourlyCalItem(list, list.start_time, date, realListDate, "startTime")
 
@@ -177,8 +235,8 @@
             scope.handleDragOver = function(e) {
               // console.log("handleDragOver")
               // console.log(e.preventDefault)
-              console.log(this)
-              this.style.outline = "1px solid red"
+              // console.log(this)
+              // this.style.outline = "1px solid red"
 
               if (e.preventDefault) {
                 e.preventDefault(); // Necessary. Allows us to drop.
@@ -189,6 +247,7 @@
 
             scope.handleDrop = function(e){
               console.log("DROPPED")
+              console.log(e)
               e.preventDefault();
               var getData = event.dataTransfer.getData("text")
 
@@ -197,26 +256,75 @@
               }
 
               // Don't do anything if dropping the same column we're dragging.
-              var splitDraggedEl = scope.dragSrcEl.id.split("&")
-              console.log(splitDraggedEl)
-              scope.listGrabbed.lists.forEach(function(dateList, index){
-                console.log(dateList)
-                if(dateList.date == splitDraggedEl[1]){
-                  console.log("name match.  index = " + index)
-                  console.log(dateList)
-                  scope.listGrabbed.lists[index].date = date;
-                  console.log(scope.listGrabbed.lists[index])
-                  Todo.update({list_name: scope.listGrabbed.list_name}, {todo: scope.listGrabbed})
-                }
-              })
-              console.log(splitDraggedEl)
+              console.log(scope.dragSrcEl)
+              // var splitDraggedEl = scope.dragSrcEl.id.split("&")
+              // console.log(splitDraggedEl)
+              // scope.listGrabbed.lists.forEach(function(dateList, index){
+              //   console.log(dateList)
+              //   if(dateList.date == splitDraggedEl[1]){
+              //     console.log("name match.  index = " + index)
+              //     console.log(dateList)
+              //     scope.listGrabbed.lists[index].date = date;
+              //     console.log(scope.listGrabbed.lists[index])
+              //     Todo.update({list_name: scope.listGrabbed.list_name}, {todo: scope.listGrabbed})
+              //   }
+              // })
+              // console.log(splitDraggedEl)
               console.log(e.target)
+              console.log(e.target.parentElement.parentElement)
+              console.log($(e.target).closest('tr').next().children())
               console.log(list)
               console.log(date)
 
+              var arrayOfTargets = [];
+              for(var p = scope.dragSrcEl.length-1; p >= 0; p--){
+                console.log("***************************** START  *****************************")
+                console.log(p)
+                console.log(scope.dragSrcEl[p])
+                if(p === scope.dragSrcEl.length-1 ){
+                  console.log(e.target)
+                  scope.dragSrcEl[p].element.addEventListener("click", function(e) {
+                    console.log(scope.dragSrcEl[p])
+                    console.log(this)
+                    console.log(this.id)
+                    var clickedElement = this;
+                    console.log(clickedElement.id)
+                    console.log(e)
+                    console.log(scope.pastDragSrcEl)
+                    scope.pastDragSrcEl.forEach(function(drug){
+                      if(drug.element.id === clickedElement.id){
+                        scope.calendarItemModal(drug.list, drug.date)
+                      }
+                    })
+                  })
+                  e.target.appendChild(scope.dragSrcEl[p].element)
+                  arrayOfTargets.push(e.target)
+                } else {
+                  console.log(arrayOfTargets)
+                  console.log($(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0])
+                  var newTarget = $(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0]
+                  console.log(newTarget)
+
+                  scope.dragSrcEl[p].element.addEventListener("click", function(e) {
+                    scope.calendarItemModal(scope.dragSrcEl[p].list, scope.dragSrcEl[p].date)
+                  })
+                  console.log(scope.dragSrcEl[p].element)
+                  newTarget.appendChild(scope.dragSrcEl[p].element)
+                  arrayOfTargets.push(newTarget)
+                }
+                console.log(scope.dragSrcEl[p])
+                console.log("***************************** end  *****************************")
+              }
+              scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
+              scope.dragSrcEl = [];
               // e.target.after(scope.dragSrcEl)
               // e.target.append(scope.dragSrcEl)
-              e.target.appendChild(scope.dragSrcEl)
+
+              // scope.dragSrcEl.forEach(function(el){
+              // e.target.appendChild(el)
+              // })
+
+              // e.target.appendChild(scope.dragSrcEl)
               if (dragSrcEl != this) {
                 // Set the source column's HTML to the HTML of the column we dropped on.
                 // dragSrcEl.innerHTML = this.innerHTML;
@@ -226,7 +334,7 @@
 
             function handleDragEnter(e){
               console.log(this)
-              this.style.outline = "1px solid red"
+              // this.style.outline = "1px solid red"
             }
 
             function handleDragEnd(e){
@@ -281,6 +389,10 @@
         }
 
         scope.pickCorrectDateForCal = function(date, list){
+          console.log(list)
+          scope.hourlyUl = document.createElement("ul")
+          scope.hourlyUl.className = list.list_name + "-" + date
+          console.log(scope.hourlyUl)
           if(scope.newView === 'month'){
             var listDates = date.split("-")
             var listDay = parseInt(listDates[2].substr(0,2))
