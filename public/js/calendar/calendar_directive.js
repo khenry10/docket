@@ -33,7 +33,8 @@
                 if(todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
                     var date = dateList.date;
-                    scope.pickCorrectDateForCal(date, todoForCal.todo)
+                    var times = {start_time: dateList.start_time, end_time: dateList.end_time}
+                    scope.pickCorrectDateForCal(date, todoForCal.todo, times)
                   })
                 }
               })
@@ -42,6 +43,8 @@
         }, true);
 
       scope.calendarItemModal = function (list, date){
+        console.log(list)
+        console.log(date)
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
@@ -67,11 +70,6 @@
         var listsWithHourlyItems = [];
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure){
-          console.log(list)
-          console.log("time = " + time)
-          console.log("realListDate = " + realListDate)
-          console.log(timeStructure)
-          console.log(date)
 
           if(timeStructure === 'middleTime'){
             listsWithHourlyItems.push({listName: list.list_name, date: date})
@@ -79,10 +77,10 @@
 
           // creates and appends the new calendar items to the calendar
           var bigTdContainer = document.getElementsByClassName(time)
+          console.log(bigTdContainer)
 
           var pForBigTd = document.createElement('p')
           pForBigTd.setAttribute("draggable", true)
-
 
           scope.dragSrcEl = [];
           var handleDragStart = function(e){
@@ -93,13 +91,13 @@
             var moveMeToo = document.getElementsByClassName("middleTime")
 
             // we loop through all the TD's that have middleTime as a class name and find ones that belong
-              //to the TD that has been clicked and is being moved to inform the number of middleTime TDs should be moved
+              //to the TD that has been clicked and is being moved to inform the number of middleTime TDs that should be moved
             for(var i = 0; i < moveMeToo.length; i++){
               console.log(moveMeToo[i])
               var middleTimeElementsSplit = moveMeToo[i].id.split("&")
-              var middleTimeElementsDate = middleTimeElementsSplit[1]
-              if(middleTimeElementsDate === thisElsDate){
-                 scope.dragSrcEl.push({element: moveMeToo[i]})
+              var middleTimeElementsDate = middleTimeElementsSplit[1];
+              if(middleTimeElementsSplit[0] == list._id){
+                 scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
               }
             }
             scope.listGrabbed = list;
@@ -121,7 +119,13 @@
             var listDay = fullDateObj.day
             bigTdContainer = bigTdContainer[listDay+1]
           } else {
-            bigTdContainer = bigTdContainer[realListDate.getDay()+1];
+            console.log(realListDate)
+            console.log(realListDate.getDay()+1)
+            console.log(list)
+            console.log(date)
+            var findDate = DateService.stringDateSplit(date)
+            console.log(findDate)
+            bigTdContainer = bigTdContainer[findDate.day+1];
           }
           bigTdContainer.addEventListener("click", function(e) {
             scope.calendarItemModal(list, date)
@@ -129,23 +133,12 @@
           bigTdContainer.setAttribute("id", "time-with-entry")
           // bigTdContainer.addEventListener('dragover', scope.handleDragOver, false);
 
-
+          // i dont think this is being used, please delete if not... 5/7/17
           var hourlyUl = document.getElementsByClassName(list.list_name + "-" + date)
-          console.log(list.list_name+"-"+date)
-          console.log(hourlyUl)
-          console.log(scope.hourlyUl)
-          // var hourlyUl = document.createElement('ul')
-          // hourlyUl.setAttribute("class", list.list_name)
-          // hourlyUl.appendChild(pForBigTd)
-          // console.log(hourlyUl)
+
           pForBigTd.setAttribute("class", timeStructure)
-
-          // hourlyUl.append(pForBigTd)
-
-          // hourlyUl.appendChild(pForBigTd)
-          // bigTdContainer.appendChild(hourlyUl)
           bigTdContainer.appendChild(pForBigTd)
-          // scope.hourlyUl.append(bigTdContainer)
+
           console.log(listsWithHourlyItems)
         };
 
@@ -157,18 +150,17 @@
           }
         }
 
-        var putHourlyItemsOnWeeklyCalendar = function(list, date, realListDate){
+        var putHourlyItemsOnWeeklyCalendar = function(list, date, realListDate, times){
           console.log(list)
-          console.log(date)
-          console.log(realListDate)
+          console.log(times)
           // this function processes the calendar item's details, like start and end end time am/pm and how many hours, and calls createHourlyCalItem and addMiddleTimeCalItems functions
-          createHourlyCalItem(list, list.start_time, date, realListDate, "startTime")
+          createHourlyCalItem(list, times.start_time, date, realListDate, "startTime")
 
-          var startTime = list.start_time.split(":")
+          var startTime = times.start_time.split(":")
           var startTimeAmOrPm = startTime[1].substr(2,4)
           var startTime = startTime[0]
 
-          var endTime = list.end_time.split(":")
+          var endTime = times.end_time.split(":")
           var endTimeAmOrPm = endTime[1].substr(2,4)
           var endTime = endTime[0]
           var originalEndTime = endTime
@@ -184,7 +176,7 @@
             var endTime = endTime -1
             var endTime = endTime + ":00" + endTimeAmOrPm
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime")
-          } else if(startTimeAmOrPm != endTimeAmOrPm && timeDifference === 2 && list.end_time === "12:00am"){
+          } else if(startTimeAmOrPm != endTimeAmOrPm && timeDifference === 2 && times.end_time === "12:00am"){
             var endTime = endTime -1
             var endTime = endTime + ":00pm"
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime")
@@ -212,7 +204,8 @@
           }
         }
 
-        var appendToCalendar = function(listDay, date, list, realListDate, ul){
+        var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
+          console.log(times)
           var exists = document.getElementById(list._id+date)
           if(!exists){
             var li = document.createElement("li")
@@ -248,6 +241,8 @@
             scope.handleDrop = function(e){
               console.log("DROPPED")
               console.log(e)
+              console.log(e.srcElement.childNodes)
+
               e.preventDefault();
               var getData = event.dataTransfer.getData("text")
 
@@ -257,20 +252,13 @@
 
               // Don't do anything if dropping the same column we're dragging.
               console.log(scope.dragSrcEl)
-              // var splitDraggedEl = scope.dragSrcEl.id.split("&")
-              // console.log(splitDraggedEl)
-              // scope.listGrabbed.lists.forEach(function(dateList, index){
-              //   console.log(dateList)
-              //   if(dateList.date == splitDraggedEl[1]){
-              //     console.log("name match.  index = " + index)
-              //     console.log(dateList)
-              //     scope.listGrabbed.lists[index].date = date;
-              //     console.log(scope.listGrabbed.lists[index])
-              //     Todo.update({list_name: scope.listGrabbed.list_name}, {todo: scope.listGrabbed})
-              //   }
-              // })
-              // console.log(splitDraggedEl)
+
               console.log(e.target)
+              var targetsChildren = e.target.childNodes
+              console.log(targetsChildren)
+              console.log(targetsChildren[0])
+
+              e.target.id = "time-with-entry"
               console.log(e.target.parentElement.parentElement)
               console.log($(e.target).closest('tr').next().children())
               console.log(list)
@@ -283,48 +271,79 @@
                 console.log(scope.dragSrcEl[p])
                 if(p === scope.dragSrcEl.length-1 ){
                   console.log(e.target)
+                  var newStartTime = e.target.className
+                  console.log(newStartTime)
+                  console.log(this)
+
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     console.log(scope.dragSrcEl[p])
-                    console.log(this)
                     console.log(this.id)
                     var clickedElement = this;
                     console.log(clickedElement.id)
                     console.log(e)
                     console.log(scope.pastDragSrcEl)
-                    scope.pastDragSrcEl.forEach(function(drug){
-                      if(drug.element.id === clickedElement.id){
-                        scope.calendarItemModal(drug.list, drug.date)
-                      }
-                    })
+
+                    var pastDragSrcElLength = scope.pastDragSrcEl.length-1;
+
+                    scope.calendarItemModal(scope.pastDragSrcEl[pastDragSrcElLength].list, scope.pastDragSrcEl[pastDragSrcElLength].date)
+
                   })
                   e.target.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(e.target)
                 } else {
-                  console.log(arrayOfTargets)
-                  console.log($(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0])
+
                   var newTarget = $(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0]
                   console.log(newTarget)
-
+                  newTarget.id = "time-with-entry"
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
-                    scope.calendarItemModal(scope.dragSrcEl[p].list, scope.dragSrcEl[p].date)
+                    scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date)
                   })
-                  console.log(scope.dragSrcEl[p].element)
+
                   newTarget.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(newTarget)
+
+                  //if index = 0, this is the NEW end time, which we want to store so we can update the db
+                  if(p === 0){
+                    var newEndTime = newTarget.className;
+                    console.log(newEndTime)
+                  }
+
                 }
                 console.log(scope.dragSrcEl[p])
                 console.log("***************************** end  *****************************")
               }
+
+              var thisTdsRow = $(this).closest('tr')
+              var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
+              console.log(tdsHeadingIndex)
+
+              console.log(document.getElementsByClassName("row-headings"))
+              var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
+              console.log(newElementsDate)
+
+              console.log(scope.dragSrcEl)
+              var elementsOldDate = scope.dragSrcEl[0].date;
+              console.log(elementsOldDate)
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
               scope.dragSrcEl = [];
-              // e.target.after(scope.dragSrcEl)
-              // e.target.append(scope.dragSrcEl)
+              var updateObject = {start_time: newStartTime, endTime: newEndTime, list: list, oldDate: elementsOldDate}
+              console.log(updateObject)
 
-              // scope.dragSrcEl.forEach(function(el){
-              // e.target.appendChild(el)
-              // })
+              for(var k = 0; k < list.lists.length; k++){
+                console.log(list.lists[k])
+                if(list.lists[k].date == elementsOldDate ){
+                  console.log("found it")
+                  list.lists[k].date = newElementsDate;
+                  list.lists[k].start_time = newStartTime;
+                  list.lists[k].end_time = newEndTime;
+                  console.log(list.lists[k])
+                  k = list.lists.length;
+                }
+              }
+              console.log(list)
+              Todo.update({list_name: list.list_name}, {todo: list})
 
-              // e.target.appendChild(scope.dragSrcEl)
+
               if (dragSrcEl != this) {
                 // Set the source column's HTML to the HTML of the column we dropped on.
                 // dragSrcEl.innerHTML = this.innerHTML;
@@ -369,7 +388,7 @@
             })
             li.append(url)
             if(scope.newView === 'week' && list.start_time){
-              putHourlyItemsOnWeeklyCalendar(list, date, realListDate)
+              putHourlyItemsOnWeeklyCalendar(list, date, realListDate, times)
             }
             if(scope.newView === 'month'){
               ul.appendChild(li)
@@ -379,17 +398,18 @@
           }
         };
 
-        var dateSplit = function(listDate, date, list){
+        var dateSplit = function(listDate, date, list, times){
           var listDay = listDate[2].substring(0,2)
           var listMonth = listDate[1]
           listMonth = listMonth-1
           var listYear = listDate[0]
           var realListDate = new Date(listYear, listMonth, listDay)
-          appendToCalendar(listDay, date, list, realListDate)
+          appendToCalendar(listDay, date, list, realListDate, undefined, times)
         }
 
-        scope.pickCorrectDateForCal = function(date, list){
+        scope.pickCorrectDateForCal = function(date, list, times){
           console.log(list)
+          console.log(times)
           scope.hourlyUl = document.createElement("ul")
           scope.hourlyUl.className = list.list_name + "-" + date
           console.log(scope.hourlyUl)
@@ -404,7 +424,7 @@
             // we need to use the actual date, as opposed to list.first_day like below, since it's Daily recurring
             if(list.list_reocurring === 'Daily') {
               var listDate = date.split("-")
-              dateSplit(listDate, date, list)
+              dateSplit(listDate, date, list, times)
             } else {
               if(typeof list.first_day == "object"){
                 var realListDate = list.first_day
@@ -414,7 +434,7 @@
               } else {
                   // we use list.first_day so that the calendar items appear on the correct day of the week when is recurrs weekly, monthly, yearly
                   var listDate = list.first_day.split("-")
-                  dateSplit(listDate, date, list)
+                  dateSplit(listDate, date, list, times)
                 }
               }
             }
@@ -459,7 +479,10 @@
           var bigTd = tr === td? tr:document.createElement("td");
           if(scope.todayDay === index && scope.date.weekCount === 0){
             bigTd.setAttribute("class", "today")
+          } else {
+            bigTd.setAttribute("class", index)
           }
+
           for(var y = 0; y <= 1; y++){
             // we create 1 large TD that makes up the column, only the first time creates the big TD
             if(y === 0){
@@ -473,6 +496,7 @@
             // big TD then get's the times by the below looping twice
             for(var z = 1; z <= 12; z++){
               var tr2 = document.createElement("tr");
+              tr2.setAttribute("class", index)
               var td = document.createElement("td");
               td.setAttribute("id", "time")
               td.addEventListener('dragover', scope.handleDragOver, false);
@@ -607,10 +631,10 @@
           th.innerHTML = daysOfWeek[i] + "  " + day
           if(daysAwayFromDate === 0){
             th.setAttribute("class", "todayInWeeklyView")
-            th.setAttribute("id", month +"/"+ day)
+            th.setAttribute("id", scope.date.year +"-"+ month +"-"+ day)
             scope.daysAwayFromDate = i
           }
-          th.setAttribute("id", month +"/"+ day)
+          th.setAttribute("id", scope.date.year +"-"+ month +"-"+ day)
         };
 
         function createTableHeadingRow(table, tr, count){
