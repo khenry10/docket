@@ -89,7 +89,7 @@
             var thisElsSplit = thisElement.id.split("&")
             var thisElsDate = thisElsSplit[1]
             var moveMeToo = document.getElementsByClassName("middleTime")
-
+            console.log(moveMeToo)
             // we loop through all the TD's that have middleTime as a class name and find ones that belong
               //to the TD that has been clicked and is being moved to inform the number of middleTime TDs that should be moved
             for(var i = 0; i < moveMeToo.length; i++){
@@ -103,6 +103,7 @@
             scope.listGrabbed = list;
             console.log(scope.listGrabbed)
             scope.dragSrcEl.push({element: this, list: list, date: date});
+
             // e.dataTransfer.effectAllowed = 'move';
             // e.dataTransfer.setData('text/html', this.innerHTML);
           }; // end of dragstart
@@ -217,6 +218,7 @@
             var handleDragStart = function(e){
               scope.listGrabbed = list;
               scope.dragSrcEl = this;
+
               // console.log(list)
               // console.log(e)
               // console.log("im being dragged")
@@ -229,7 +231,8 @@
               // console.log("handleDragOver")
               // console.log(e.preventDefault)
               // console.log(this)
-              // this.style.outline = "1px solid red"
+              console.log(e)
+              this.style.backgroundColor = "grey"
 
               if (e.preventDefault) {
                 e.preventDefault(); // Necessary. Allows us to drop.
@@ -237,6 +240,11 @@
               e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
               return false;
             };
+
+            scope.handleDragLeave = function(e) {
+              console.log(e.target)
+              this.style.backgroundColor = "#F2F3F4";  // this / e.target is previous target element.
+            }
 
             scope.handleDrop = function(e){
               console.log("DROPPED")
@@ -272,6 +280,7 @@
                 if(p === scope.dragSrcEl.length-1 ){
                   console.log(e.target)
                   var newStartTime = e.target.className
+                  console.log("newStartTime = " + JSON.stringify(newStartTime))
                   console.log(newStartTime)
                   console.log(this)
 
@@ -306,6 +315,7 @@
                   if(p === 0){
                     var newEndTime = newTarget.className;
                     console.log(newEndTime)
+                    console.log("NEW END TIME" + JSON.stringify(newEndTime))
                   }
 
                 }
@@ -329,6 +339,47 @@
               var updateObject = {start_time: newStartTime, endTime: newEndTime, list: list, oldDate: elementsOldDate}
               console.log(updateObject)
 
+              var newStartTimeSplit = newStartTime.split(":")
+              if(!newEndTime){
+                var newEndTimeSplit =  parseInt(newStartTimeSplit[0]) + parseInt(list.duration) + ":" + newStartTimeSplit[1]
+                newEndTimeSplit.split(":")
+              } else {
+                var newEndTimeSplit = newEndTime.split(":")
+              }
+
+              console.log(newStartTimeSplit)
+              console.log(newEndTimeSplit)
+              // I couldn't figure out how/where endTime was beig over-ridden so I created this logic to compare against list.duration
+              if(newEndTimeSplit[1].substring(2,4) === newStartTimeSplit[1].substring(2,4)){
+                var newDuration = newEndTimeSplit[0] - newStartTimeSplit[0];
+                console.log(newDuration)
+              } else {
+                var newDuration = 12 - parseInt(newStartTimeSplit[0]) + parseInt(newEndTimeSplit[0])
+                console.log(newDuration)
+              }
+
+              if(newDuration < list.duration){
+                newEndTime = parseInt(newStartTimeSplit) + list.duration
+                console.log(newEndTime)
+                var amOrPm = ":" + newStartTimeSplit[1];
+                console.log(amOrPm)
+                console.log(newStartTimeSplit[0] != 12)
+                if(newEndTime > 12 && newStartTimeSplit[0] != 12){
+                  newEndTime = newEndTime -12
+                  var amOrPm = amOrPm === ":00pm"? ":00am": ":00pm";
+                } else if(newEndTime > 12) {
+                  console.log("hereeeeeeeee")
+                  newEndTime = newEndTime -12
+                }
+                console.log(amOrPm)
+                newEndTime = newEndTime + amOrPm
+                console.log(newEndTime)
+              }
+
+              console.log(newDuration)
+              console.log(list.duration)
+
+
               for(var k = 0; k < list.lists.length; k++){
                 console.log(list.lists[k])
                 if(list.lists[k].date == elementsOldDate ){
@@ -342,7 +393,6 @@
               }
               console.log(list)
               Todo.update({list_name: list.list_name}, {todo: list})
-
 
               if (dragSrcEl != this) {
                 // Set the source column's HTML to the HTML of the column we dropped on.
@@ -369,6 +419,7 @@
             li.addEventListener('dragover', scope.handleDragOver, false);
             // li.addEventListener('drop', handleDrop, false);
             li.addEventListener('dragend', handleDragEnd, false);
+            li.addEventListener('dragleave', scope.handleDragLeave, false);
             if(scope.newView== 'week'){
 
             } else if (scope.newView == 'month'){
@@ -500,6 +551,7 @@
               var td = document.createElement("td");
               td.setAttribute("id", "time")
               td.addEventListener('dragover', scope.handleDragOver, false);
+              td.addEventListener('dragleave', scope.handleDragLeave, false);
               td.addEventListener('drop', scope.handleDrop, false);
               if(z === 12){
                 var amOrpm = y === 0? 'pm':'am'
