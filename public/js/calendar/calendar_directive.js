@@ -86,6 +86,18 @@
           var handleDragStart = function(e){
             var thisElement = this;
             console.log(thisElement)
+            console.log(e.srcElement.childNodes)
+            e.srcElement.childNodes[0].parentElement.className = "time"
+            thisElement.className = "startTime"
+            console.log(e.srcElement.childNodes[0].parentElement)
+            // thisElement.className = "time";
+            // thisElement.innerHTML = "";
+            console.log(thisElement.class)
+            console.log(thisElement)
+            console.log($(thisElement).parent())
+            console.log($(thisElement).parent()[0])
+            $(thisElement).parent()[0].id = 'time'
+            console.log($(thisElement).parent()[0])
             var thisElsSplit = thisElement.id.split("&")
             var thisElsDate = thisElsSplit[1]
             var moveMeToo = document.getElementsByClassName("middleTime")
@@ -97,6 +109,10 @@
               var middleTimeElementsSplit = moveMeToo[i].id.split("&")
               var middleTimeElementsDate = middleTimeElementsSplit[1];
               if(middleTimeElementsSplit[0] == list._id){
+                console.log(moveMeToo[i])
+                // moveMeToo[i].style.backgroundColor = "red"
+                // moveMeToo[i].style.border = "1px solid white"
+                // moveMeToo[i].style.innerHTML =
                  scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
               }
             }
@@ -104,7 +120,7 @@
             console.log(scope.listGrabbed)
             scope.dragSrcEl.push({element: this, list: list, date: date});
 
-            // e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.effectAllowed = 'move';
             // e.dataTransfer.setData('text/html', this.innerHTML);
           }; // end of dragstart
 
@@ -205,6 +221,37 @@
           }
         }
 
+        scope.drugOverElements = [];
+
+        scope.handleDragOver = function(e) {
+          console.log("handleDragOver")
+          // console.log(e.preventDefault)
+          // console.log(this)
+          console.log(e)
+          console.log(e.target)
+          // console.log(scope.dragSrcEl[0].element.className)
+          if(scope.dragSrcEl.length){
+            if(scope.dragSrcEl[0].element.className == "middleTime"){
+              console.log("run loop")
+              for(var i = 0; i < scope.dragSrcEl.length; i++){
+                console.log(scope.dragSrcEl[i])
+                scope.dragSrcEl[i].element.className = "time"
+              }
+            }
+          }
+
+          //this is for montly view
+          this.style.backgroundColor = "grey"
+          scope.drugOverElements.push(this)
+
+          if (e.preventDefault) {
+            e.preventDefault(); // Necessary. Allows us to drop.
+          }
+          e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+          return false;
+        };
+
+        scope.monthlyDraggedItem = [];
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
           console.log(times)
           var exists = document.getElementById(list._id+date)
@@ -217,39 +264,48 @@
 
             var handleDragStart = function(e){
               scope.listGrabbed = list;
+              // scope.dragSrcEl is the element that has been clicked and is being dragged
               scope.dragSrcEl = this;
+              console.log("im being dragged")
+              console.log(scope.dragSrcEl)
+              console.log(scope.newView)
+              if(scope.newView === 'month'){
+                scope.monthlyDraggedItem.push(scope.dragSrcEl);
+              }
 
-              // console.log(list)
-              // console.log(e)
-              // console.log("im being dragged")
-              // console.log(dragSrcEl)
               e.dataTransfer.effectAllowed = 'move';
               // e.dataTransfer.setData('text/html', this.innerHTML);
             };
 
-            scope.handleDragOver = function(e) {
-              // console.log("handleDragOver")
-              // console.log(e.preventDefault)
-              // console.log(this)
-              console.log(e)
-              this.style.backgroundColor = "grey"
-
-              if (e.preventDefault) {
-                e.preventDefault(); // Necessary. Allows us to drop.
-              }
-              e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-              return false;
-            };
-
             scope.handleDragLeave = function(e) {
               console.log(e.target)
+              if(scope.dragSrcEl.length){
+                if(scope.dragSrcEl[0].className === 'time'){
+                  for(var i = 0; i < scope.dragSrcEl.length; i++){
+                    console.log(scope.dragSrcEl[i])
+                    scope.dragSrcEl[i].element.className = "middleTime"
+                  }
+                }
+              }
               this.style.backgroundColor = "#F2F3F4";  // this / e.target is previous target element.
+              if(scope.newView === 'month'){
+                console.log(scope.drugOverElements)
+                scope.drugOverElements.forEach(function(element){
+                  console.log(element)
+                  console.log(element.nodeName)
+                  if(element.nodeName === 'UL'){
+            // #F2F3F4
+                    console.log(element.style.backgroundColor)
+                    element.style.backgroundColor = "red";
+                    console.log(element.style.backgroundColor)
+                  }
+                })
+
+              }
             }
 
             scope.handleDrop = function(e){
               console.log("DROPPED")
-              console.log(e)
-              console.log(e.srcElement.childNodes)
 
               e.preventDefault();
               var getData = event.dataTransfer.getData("text")
@@ -258,51 +314,24 @@
                 e.stopPropagation(); // Stops some browsers from redirecting.
               }
 
-              // Don't do anything if dropping the same column we're dragging.
-              console.log(scope.dragSrcEl)
-
-              console.log(e.target)
               var targetsChildren = e.target.childNodes
-              console.log(targetsChildren)
-              console.log(targetsChildren[0])
 
               e.target.id = "time-with-entry"
-              console.log(e.target.parentElement.parentElement)
-              console.log($(e.target).closest('tr').next().children())
-              console.log(list)
-              console.log(date)
 
               var arrayOfTargets = [];
               for(var p = scope.dragSrcEl.length-1; p >= 0; p--){
-                console.log("***************************** START  *****************************")
-                console.log(p)
-                console.log(scope.dragSrcEl[p])
                 if(p === scope.dragSrcEl.length-1 ){
-                  console.log(e.target)
                   var newStartTime = e.target.className
-                  console.log("newStartTime = " + JSON.stringify(newStartTime))
-                  console.log(newStartTime)
-                  console.log(this)
 
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
-                    console.log(scope.dragSrcEl[p])
-                    console.log(this.id)
                     var clickedElement = this;
-                    console.log(clickedElement.id)
-                    console.log(e)
-                    console.log(scope.pastDragSrcEl)
-
                     var pastDragSrcElLength = scope.pastDragSrcEl.length-1;
-
                     scope.calendarItemModal(scope.pastDragSrcEl[pastDragSrcElLength].list, scope.pastDragSrcEl[pastDragSrcElLength].date)
-
                   })
                   e.target.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(e.target)
                 } else {
-
-                  var newTarget = $(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0]
-                  console.log(newTarget)
+                  var newTarget = $(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0];
                   newTarget.id = "time-with-entry"
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date)
@@ -314,30 +343,17 @@
                   //if index = 0, this is the NEW end time, which we want to store so we can update the db
                   if(p === 0){
                     var newEndTime = newTarget.className;
-                    console.log(newEndTime)
-                    console.log("NEW END TIME" + JSON.stringify(newEndTime))
                   }
-
                 }
-                console.log(scope.dragSrcEl[p])
-                console.log("***************************** end  *****************************")
               }
 
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
-              console.log(tdsHeadingIndex)
-
-              console.log(document.getElementsByClassName("row-headings"))
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
-              console.log(newElementsDate)
-
-              console.log(scope.dragSrcEl)
               var elementsOldDate = scope.dragSrcEl[0].date;
-              console.log(elementsOldDate)
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
               scope.dragSrcEl = [];
               var updateObject = {start_time: newStartTime, endTime: newEndTime, list: list, oldDate: elementsOldDate}
-              console.log(updateObject)
 
               var newStartTimeSplit = newStartTime.split(":")
               if(!newEndTime){
@@ -347,51 +363,34 @@
                 var newEndTimeSplit = newEndTime.split(":")
               }
 
-              console.log(newStartTimeSplit)
-              console.log(newEndTimeSplit)
               // I couldn't figure out how/where endTime was beig over-ridden so I created this logic to compare against list.duration
               if(newEndTimeSplit[1].substring(2,4) === newStartTimeSplit[1].substring(2,4)){
                 var newDuration = newEndTimeSplit[0] - newStartTimeSplit[0];
-                console.log(newDuration)
               } else {
                 var newDuration = 12 - parseInt(newStartTimeSplit[0]) + parseInt(newEndTimeSplit[0])
-                console.log(newDuration)
               }
 
               if(newDuration < list.duration){
                 newEndTime = parseInt(newStartTimeSplit) + list.duration
-                console.log(newEndTime)
                 var amOrPm = ":" + newStartTimeSplit[1];
-                console.log(amOrPm)
-                console.log(newStartTimeSplit[0] != 12)
                 if(newEndTime > 12 && newStartTimeSplit[0] != 12){
                   newEndTime = newEndTime -12
                   var amOrPm = amOrPm === ":00pm"? ":00am": ":00pm";
                 } else if(newEndTime > 12) {
-                  console.log("hereeeeeeeee")
                   newEndTime = newEndTime -12
                 }
-                console.log(amOrPm)
                 newEndTime = newEndTime + amOrPm
-                console.log(newEndTime)
               }
 
-              console.log(newDuration)
-              console.log(list.duration)
-
-
               for(var k = 0; k < list.lists.length; k++){
-                console.log(list.lists[k])
                 if(list.lists[k].date == elementsOldDate ){
-                  console.log("found it")
                   list.lists[k].date = newElementsDate;
                   list.lists[k].start_time = newStartTime;
                   list.lists[k].end_time = newEndTime;
-                  console.log(list.lists[k])
                   k = list.lists.length;
                 }
               }
-              console.log(list)
+
               Todo.update({list_name: list.list_name}, {todo: list})
 
               if (dragSrcEl != this) {
@@ -425,6 +424,7 @@
             } else if (scope.newView == 'month'){
               ul.addEventListener('dragEnter', handleDragEnter, false);
               ul.addEventListener('dragover', scope.handleDragOver, false);
+              ul.addEventListener('dragleave', scope.handleDragLeave, false);
               ul.addEventListener('drop', scope.handleDrop, false);
             }
             // console.log(ul)
@@ -524,6 +524,16 @@
               });
 
           }
+        };
+
+        scope.handleMonthlyDrop = function(e){
+          console.log("monthlyDrop")
+          console.log(e.target)
+          console.log(this)
+          console.log(scope.monthlyDraggedItem)
+          e.target.appendChild(scope.monthlyDraggedItem[0])
+          scope.monthlyDraggedItem[0].style.backgroundColor = "#4FF427"
+          e.target.style.backgroundColor = "#F2F3F4";
         }
 
         var buildTimeTable = function(tr, addTimes, index, year){
@@ -552,7 +562,11 @@
               td.setAttribute("id", "time")
               td.addEventListener('dragover', scope.handleDragOver, false);
               td.addEventListener('dragleave', scope.handleDragLeave, false);
-              td.addEventListener('drop', scope.handleDrop, false);
+              if(scope.newView === 'week'){
+                td.addEventListener('drop', scope.handleDrop, false);
+              } else {
+                td.addEventListener('drop', scope.handleMonthlyDrop, false);
+              }
               if(z === 12){
                 var amOrpm = y === 0? 'pm':'am'
               } else {
@@ -592,7 +606,12 @@
               }
               var ul = document.createElement("ul");
               ul.addEventListener('dragover', scope.handleDragOver, false);
-              ul.addEventListener('drop', scope.handleDrop, false);
+
+              console.log(scope.newView)
+              if(scope.newView === 'month'){
+                ul.addEventListener('drop', scope.handleMonthlyDrop, false);
+                ul.addEventListener('dragleave', scope.handleDragLeave, false);
+              }
               ul.setAttribute("class", "u"+scope.count)
               ul.style.height = "100%"
               // p.style.outline = "1px solid red"
