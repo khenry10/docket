@@ -82,8 +82,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
     console.log("parseAllTasks")
     var taskObjsInDS = DateService.saveUpdatesFromLeftRail()
     var lastIndex = taskObjsInDS.length-1
-
-    if(list.list_type === 'todo'){
+    console.log(list)
+    if(list && list.list_type === 'todo'){
       if( taskObjsInDS.length){
         var mostRecentDateList = taskObjsInDS[lastIndex].dateList
         // $scope.allTasks = [];
@@ -349,7 +349,18 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
         console.log(date)
         if(date > thisMonthsLastDay){
           console.log("INCREMENTINGGGGGGGGG")
+          console.log($scope.viewType)
           $scope.changeDate.monthCount++
+          // if($scope.viewType === 'week'){
+          //   console.log($scope.changeDate)
+          //   console.log($scope.changeDate.dayCount[$scope.changeDate.dayCount.length-4])
+          //   console.log($scope.changeDate.dayCount[$scope.changeDate.dayCount.length-4] > 4)
+          //   if($scope.changeDate.dayCount[$scope.changeDate.dayCount.length-4] < 4){
+          //     console.log("increment month")
+          //   }
+          // } else {
+          //   $scope.changeDate.monthCount++
+          // }
           date = 1
           $scope.changeDate.twoMonthsWeekly = true
         }
@@ -366,7 +377,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService){
           var lastDayOfEarlierMonth = lastDayOfEarlierMonth.getDate()
           console.log(lastDayOfEarlierMonth)
           console.log($scope.changeDate)
-          console.log($scope.changeDate.months.previousMonth.days + " " + $scope.changeDate.months.previousMonth.count) 
+          console.log($scope.changeDate.months.previousMonth.days + " " + $scope.changeDate.months.previousMonth.count)
           var date = $scope.changeDate.months.previousMonth.days + (date - 6)
         } else {
           var date = actionDate-6

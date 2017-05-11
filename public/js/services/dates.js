@@ -132,8 +132,6 @@ angular.module('app').service('DateService', [ function () {
     // var year = date.substring(0,4)
     // var month = date.substring(5,7)
     // var date = date.substring(8,10)
-    console.log(date)
-    console.log(typeof date)
     var date = date.split("-")
 
     var year = date[0]

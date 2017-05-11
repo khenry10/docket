@@ -22,6 +22,7 @@
       link: function(scope){
 
       scope.pastDragSrcEl = [];
+      scope.monthlyDraggedItem = [];
 
         scope.$watch('listForCal', function(todosForCal, oldList){
           console.log(scope.date)
@@ -29,7 +30,6 @@
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){
-                console.log(todoForCal)
                 if(todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
                     var date = dateList.date;
@@ -43,8 +43,6 @@
         }, true);
 
       scope.calendarItemModal = function (list, date){
-        console.log(list)
-        console.log(date)
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
@@ -60,70 +58,41 @@
           modal.close.then(function(result) {
           });
         });
-      }
+      };
 
         var monthName = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         var date = new Date()
         var year = date.getFullYear()
 
-        var listsWithHourlyItems = [];
-
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure){
-
-          if(timeStructure === 'middleTime'){
-            listsWithHourlyItems.push({listName: list.list_name, date: date})
-          }
-
           // creates and appends the new calendar items to the calendar
           var bigTdContainer = document.getElementsByClassName(time)
-          console.log(bigTdContainer)
-
           var pForBigTd = document.createElement('p')
           pForBigTd.setAttribute("draggable", true)
 
           scope.dragSrcEl = [];
           var handleDragStart = function(e){
             var thisElement = this;
-            console.log(thisElement)
-            console.log(e.srcElement.childNodes)
             e.srcElement.childNodes[0].parentElement.className = "time"
             thisElement.className = "startTime"
-            console.log(e.srcElement.childNodes[0].parentElement)
-            // thisElement.className = "time";
-            // thisElement.innerHTML = "";
-            console.log(thisElement.class)
-            console.log(thisElement)
-            console.log($(thisElement).parent())
-            console.log($(thisElement).parent()[0])
             $(thisElement).parent()[0].id = 'time'
-            console.log($(thisElement).parent()[0])
             var thisElsSplit = thisElement.id.split("&")
             var thisElsDate = thisElsSplit[1]
             var moveMeToo = document.getElementsByClassName("middleTime")
-            console.log(moveMeToo)
             // we loop through all the TD's that have middleTime as a class name and find ones that belong
               //to the TD that has been clicked and is being moved to inform the number of middleTime TDs that should be moved
             for(var i = 0; i < moveMeToo.length; i++){
-              console.log(moveMeToo[i])
               var middleTimeElementsSplit = moveMeToo[i].id.split("&")
               var middleTimeElementsDate = middleTimeElementsSplit[1];
-              if(middleTimeElementsSplit[0] == list._id){
-                console.log(moveMeToo[i])
-                // moveMeToo[i].style.backgroundColor = "red"
-                // moveMeToo[i].style.border = "1px solid white"
-                // moveMeToo[i].style.innerHTML =
+              if(middleTimeElementsSplit[0] == list._id && middleTimeElementsSplit[1] == thisElsDate){
                  scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
               }
             }
             scope.listGrabbed = list;
-            console.log(scope.listGrabbed)
             scope.dragSrcEl.push({element: this, list: list, date: date});
-
             e.dataTransfer.effectAllowed = 'move';
-            // e.dataTransfer.setData('text/html', this.innerHTML);
           }; // end of dragstart
-
 
           pForBigTd.addEventListener('dragstart', handleDragStart, false);
           pForBigTd.setAttribute("id", list._id+"&"+date)
@@ -136,27 +105,16 @@
             var listDay = fullDateObj.day
             bigTdContainer = bigTdContainer[listDay+1]
           } else {
-            console.log(realListDate)
-            console.log(realListDate.getDay()+1)
-            console.log(list)
-            console.log(date)
             var findDate = DateService.stringDateSplit(date)
-            console.log(findDate)
             bigTdContainer = bigTdContainer[findDate.day+1];
           }
           bigTdContainer.addEventListener("click", function(e) {
             scope.calendarItemModal(list, date)
           })
-          bigTdContainer.setAttribute("id", "time-with-entry")
-          // bigTdContainer.addEventListener('dragover', scope.handleDragOver, false);
+          bigTdContainer.setAttribute("id", "time-with-entry");
+          pForBigTd.setAttribute("class", timeStructure);
 
-          // i dont think this is being used, please delete if not... 5/7/17
-          var hourlyUl = document.getElementsByClassName(list.list_name + "-" + date)
-
-          pForBigTd.setAttribute("class", timeStructure)
-          bigTdContainer.appendChild(pForBigTd)
-
-          console.log(listsWithHourlyItems)
+          bigTdContainer.appendChild(pForBigTd);
         };
 
         var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate){
@@ -168,8 +126,6 @@
         }
 
         var putHourlyItemsOnWeeklyCalendar = function(list, date, realListDate, times){
-          console.log(list)
-          console.log(times)
           // this function processes the calendar item's details, like start and end end time am/pm and how many hours, and calls createHourlyCalItem and addMiddleTimeCalItems functions
           createHourlyCalItem(list, times.start_time, date, realListDate, "startTime")
 
@@ -219,30 +175,22 @@
               addMiddleTimeCalItems(1, endTime, "am", list, date, realListDate)
             }
           }
-        }
+        };
 
         scope.drugOverElements = [];
 
         scope.handleDragOver = function(e) {
-          console.log("handleDragOver")
-          // console.log(e.preventDefault)
-          // console.log(this)
-          console.log(e)
-          console.log(e.target)
-          // console.log(scope.dragSrcEl[0].element.className)
           if(scope.dragSrcEl.length){
             if(scope.dragSrcEl[0].element.className == "middleTime"){
-              console.log("run loop")
               for(var i = 0; i < scope.dragSrcEl.length; i++){
-                console.log(scope.dragSrcEl[i])
                 scope.dragSrcEl[i].element.className = "time"
               }
             }
           }
 
-          //this is for montly view
-          this.style.backgroundColor = "grey"
-          scope.drugOverElements.push(this)
+          if(scope.newView === 'week'){
+            this.style.backgroundColor = "grey"
+          }
 
           if (e.preventDefault) {
             e.preventDefault(); // Necessary. Allows us to drop.
@@ -251,24 +199,20 @@
           return false;
         };
 
-        scope.monthlyDraggedItem = [];
+
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
-          console.log(times)
+
           var exists = document.getElementById(list._id+date)
           if(!exists){
             var li = document.createElement("li")
-
             li.setAttribute("draggable", true)
-
             var dragSrcEl = null;
 
             var handleDragStart = function(e){
               scope.listGrabbed = list;
               // scope.dragSrcEl is the element that has been clicked and is being dragged
               scope.dragSrcEl = this;
-              console.log("im being dragged")
-              console.log(scope.dragSrcEl)
-              console.log(scope.newView)
+
               if(scope.newView === 'month'){
                 scope.monthlyDraggedItem.push(scope.dragSrcEl);
               }
@@ -278,47 +222,27 @@
             };
 
             scope.handleDragLeave = function(e) {
-              console.log(e.target)
               if(scope.dragSrcEl.length){
                 if(scope.dragSrcEl[0].className === 'time'){
                   for(var i = 0; i < scope.dragSrcEl.length; i++){
-                    console.log(scope.dragSrcEl[i])
                     scope.dragSrcEl[i].element.className = "middleTime"
                   }
                 }
               }
               this.style.backgroundColor = "#F2F3F4";  // this / e.target is previous target element.
-              if(scope.newView === 'month'){
-                console.log(scope.drugOverElements)
-                scope.drugOverElements.forEach(function(element){
-                  console.log(element)
-                  console.log(element.nodeName)
-                  if(element.nodeName === 'UL'){
-            // #F2F3F4
-                    console.log(element.style.backgroundColor)
-                    element.style.backgroundColor = "red";
-                    console.log(element.style.backgroundColor)
-                  }
-                })
+            };
 
-              }
-            }
-
-            scope.handleDrop = function(e){
+            scope.handleWeeklyDrop = function(e){
               console.log("DROPPED")
-
               e.preventDefault();
-              var getData = event.dataTransfer.getData("text")
 
               if (e.stopPropagation) {
                 e.stopPropagation(); // Stops some browsers from redirecting.
               }
 
-              var targetsChildren = e.target.childNodes
-
               e.target.id = "time-with-entry"
-
               var arrayOfTargets = [];
+
               for(var p = scope.dragSrcEl.length-1; p >= 0; p--){
                 if(p === scope.dragSrcEl.length-1 ){
                   var newStartTime = e.target.className
@@ -345,15 +269,15 @@
                     var newEndTime = newTarget.className;
                   }
                 }
-              }
+              }; //end of scope.dragSrcEl loop
 
+              var list = scope.listGrabbed;
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
               var elementsOldDate = scope.dragSrcEl[0].date;
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
               scope.dragSrcEl = [];
-              var updateObject = {start_time: newStartTime, endTime: newEndTime, list: list, oldDate: elementsOldDate}
 
               var newStartTimeSplit = newStartTime.split(":")
               if(!newEndTime){
@@ -380,7 +304,7 @@
                   newEndTime = newEndTime -12
                 }
                 newEndTime = newEndTime + amOrPm
-              }
+              };
 
               for(var k = 0; k < list.lists.length; k++){
                 if(list.lists[k].date == elementsOldDate ){
@@ -389,46 +313,20 @@
                   list.lists[k].end_time = newEndTime;
                   k = list.lists.length;
                 }
-              }
+              };
 
               Todo.update({list_name: list.list_name}, {todo: list})
-
-              if (dragSrcEl != this) {
-                // Set the source column's HTML to the HTML of the column we dropped on.
-                // dragSrcEl.innerHTML = this.innerHTML;
-                // this.innerHTML = e.dataTransfer.getData('text/html');
-              }
             };
 
-            function handleDragEnter(e){
-              console.log(this)
-              // this.style.outline = "1px solid red"
-            }
-
-            function handleDragEnd(e){
-               e.preventDefault();
-              console.log("handleDragEnd")
-              console.log(e)
-            };
-
-            function ulDrop(e){
-              console.log(e)
-            }
             li.addEventListener('dragstart', handleDragStart, false);
             li.addEventListener('dragover', scope.handleDragOver, false);
-            // li.addEventListener('drop', handleDrop, false);
-            li.addEventListener('dragend', handleDragEnd, false);
             li.addEventListener('dragleave', scope.handleDragLeave, false);
-            if(scope.newView== 'week'){
 
-            } else if (scope.newView == 'month'){
-              ul.addEventListener('dragEnter', handleDragEnter, false);
+            if(scope.newView == 'month'){
               ul.addEventListener('dragover', scope.handleDragOver, false);
               ul.addEventListener('dragleave', scope.handleDragLeave, false);
-              ul.addEventListener('drop', scope.handleDrop, false);
-            }
-            // console.log(ul)
-
+              ul.addEventListener('drop', scope.handleWeeklyDrop, false);
+            };
 
             li.setAttribute("class",'a'+listDay)
             li.setAttribute("id", list._id+"&"+date)
@@ -459,16 +357,13 @@
         }
 
         scope.pickCorrectDateForCal = function(date, list, times){
-          console.log(list)
-          console.log(times)
           scope.hourlyUl = document.createElement("ul")
           scope.hourlyUl.className = list.list_name + "-" + date
-          console.log(scope.hourlyUl)
+
           if(scope.newView === 'month'){
             var listDates = date.split("-")
             var listDay = parseInt(listDates[2].substr(0,2))
             var ul = document.getElementsByClassName("u"+listDay)
-            console.log(ul[0].nodeType)
             ul = ul[0];
             appendToCalendar(listDay, date, list, undefined, ul)
           } else if(scope.newView === 'week') {
@@ -492,8 +387,7 @@
         };
 
         var addNewModal = function(e, month, year, index){
-          console.log("addNewModal called")
-          if(e.srcElement.nodeName === 'TD'){
+          if(e.srcElement.nodeName === 'TD' || e.srcElement.nodeName === 'UL'){
             // need to add in logic so this function can handle both MONTHLY & WEEKLY views, messed up the monthly stuff while adding weekly
               if(scope.newView === 'week'){
                 var startTime = e.srcElement.className;
@@ -503,7 +397,8 @@
                 var entryDate = date[1];
                 var date = {date: entryDate, month: month, year: year, startTime: e.srcElement.className};
               } else {
-                  var date = {date: e.srcElement.attributes[0].ownerElement.childNodes[0].data, month: month, year: year}
+                  var ulDate = e.srcElement.id.split("-")[2];
+                  var date = {date: ulDate, month: month, year: year}
               }
 
               var data = {view: 'modal', date: date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope}
@@ -527,14 +422,22 @@
         };
 
         scope.handleMonthlyDrop = function(e){
-          console.log("monthlyDrop")
-          console.log(e.target)
-          console.log(this)
-          console.log(scope.monthlyDraggedItem)
           e.target.appendChild(scope.monthlyDraggedItem[0])
           scope.monthlyDraggedItem[0].style.backgroundColor = "#4FF427"
           e.target.style.backgroundColor = "#F2F3F4";
-        }
+
+          var monthlyDraggedSplit = scope.monthlyDraggedItem[0].id.split("&")
+
+          var originalDateOfMovedItem = monthlyDraggedSplit[1];
+          for(var z = 0; z < scope.listGrabbed.lists.length; z++){
+            if(scope.listGrabbed.lists[z].date === originalDateOfMovedItem){
+              scope.listGrabbed.lists[z].date = e.target.id
+              z = scope.listGrabbed.lists.length;
+            }
+          }
+          Todo.update({list_name: scope.listGrabbed.list_name}, {todo: scope.listGrabbed})
+          scope.monthlyDraggedItem = [];
+        };
 
         var buildTimeTable = function(tr, addTimes, index, year){
           var bigTd = tr === td? tr:document.createElement("td");
@@ -563,7 +466,7 @@
               td.addEventListener('dragover', scope.handleDragOver, false);
               td.addEventListener('dragleave', scope.handleDragLeave, false);
               if(scope.newView === 'week'){
-                td.addEventListener('drop', scope.handleDrop, false);
+                td.addEventListener('drop', scope.handleWeeklyDrop, false);
               } else {
                 td.addEventListener('drop', scope.handleMonthlyDrop, false);
               }
@@ -607,12 +510,12 @@
               var ul = document.createElement("ul");
               ul.addEventListener('dragover', scope.handleDragOver, false);
 
-              console.log(scope.newView)
               if(scope.newView === 'month'){
                 ul.addEventListener('drop', scope.handleMonthlyDrop, false);
                 ul.addEventListener('dragleave', scope.handleDragLeave, false);
               }
               ul.setAttribute("class", "u"+scope.count)
+              ul.setAttribute("id", year+"-"+month+"-"+scope.count)
               ul.style.height = "100%"
               // p.style.outline = "1px solid red"
               p.appendChild(ul)
@@ -681,9 +584,18 @@
           scope.TodaysMonth = scope.todayFullDate.getMonth()
           scope.TodaysYear = scope.todayFullDate.getFullYear()
           scope.daysInMonth = new Date(scope.todayFullDate.getFullYear(), scope.todayFullDate.getMonth()+1, 0).getDate()
+          var begOfWeek = scope.date.dayCount[scope.date.dayCount.length-7];
+          var endOfWeek = scope.date.dayCount[scope.date.dayCount.length-1];
+          var currentMonth = monthName[scope.date.monthCount];
           if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
             document.getElementById("calendar-month-year").innerHTML =
-            monthName[scope.date.monthCount] + " " + scope.date.dayCount[scope.date.dayCount.length-7] + " - "+ scope.date.dayCount[scope.date.dayCount.length-1]+ ", " + year;
+            currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
+            if(scope.date.twoMonthsWeekly){
+              var oldMonth = monthName[scope.date.months.previousMonth.count];
+
+              document.getElementById("calendar-month-year").innerHTML =
+              oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
+            }
           } else {
             document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthName + " " + scope.date.today.date + ", " + year;
           }
@@ -692,7 +604,6 @@
         var weeklyTableHeadingRow = function(th, i){
           var daysAwayFromDate = i - scope.todayDay;
           var month = scope.date.months.thisMonth.count;
-          console.log(scope.date)
           var day = scope.date.dayCount[i-1];
 
           if(scope.date.dayCount.length > 7){
@@ -731,7 +642,6 @@
         };
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
-          console.log(scope.date)
           if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
             document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
           } else {

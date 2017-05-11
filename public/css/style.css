@@ -141,6 +141,10 @@ a:hover {
   color: white;
 }
 
+.startTime:hover {
+  cursor: pointer;
+}
+
 .endTime {
   background-color: #4FF427;
   width: 100%;
