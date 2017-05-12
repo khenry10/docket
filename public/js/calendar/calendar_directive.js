@@ -239,6 +239,8 @@
               if (e.stopPropagation) {
                 e.stopPropagation(); // Stops some browsers from redirecting.
               }
+              console.log(e)
+              console.log(e.target)
 
               e.target.id = "time-with-entry"
               var arrayOfTargets = [];
@@ -260,7 +262,7 @@
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date)
                   })
-
+                  console.log(newTarget)
                   newTarget.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(newTarget)
 
@@ -362,8 +364,11 @@
 
           if(scope.newView === 'month'){
             var listDates = date.split("-")
+            console.log(listDates)
             var listDay = parseInt(listDates[2].substr(0,2))
+            console.log(listDay)
             var ul = document.getElementsByClassName("u"+listDay)
+            console.log(ul)
             ul = ul[0];
             appendToCalendar(listDay, date, list, undefined, ul)
           } else if(scope.newView === 'week') {

@@ -1,8 +1,15 @@
 angular.module('app').service('DateService', [ function () {
 
-  var processDate = function(date){
+  this.monthName = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-  }
+  this.dataStoreForTasks = [];
+  this.saveUpdatesFromLeftRail = function(storeUpdatedTask, param2, datelist){
+    if(storeUpdatedTask){
+      this.dataStoreForTasks.push(storeUpdatedTask)
+    }
+    return this.dataStoreForTasks
+  };
 
   this.stringToDate = function(date, monthType){
     if(typeof date === 'string'){
@@ -18,10 +25,9 @@ angular.module('app').service('DateService', [ function () {
     month = month-1
     }
     return new Date(year, month, day)
-  }
+  };
 
   this.stringDaysInAMonth = function(date){
-    console.log("stringDaysInAMonth date = " + date)
     if(typeof date === 'string'){
       var year = date.substring(0,4)
       var month = date.substring(5,7)
@@ -32,24 +38,8 @@ angular.module('app').service('DateService', [ function () {
       var day = date.getDate()
     }
     var numberOfDaysInMonth = new Date(year, month, 0).getDate()
-    console.log(numberOfDaysInMonth)
     return numberOfDaysInMonth
-  }
-
-  this.dateDaysInAMonth = function(date){
-    console.log(date)
-    var numberOfDaysInMonth = new Date(date.getFullYear(), date.getMonth(), 0)
-    return numberOfDaysInMonth.getDate()
-  }
-
-  this.stringDateToDay = function(date){
-    console.log(date)
-    var day = date.getDay()
-    return day
-  }
-
-  this.monthName = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-  var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  };
 
   this.getNiceDate = function(date){
     var month = date.getMonth()
@@ -109,18 +99,11 @@ angular.module('app').service('DateService', [ function () {
       data.months[index].remaining_fridays = totalFridays - month.fridays
     })
     return data
-  }
-
-  // this.monthName = function(date){
-  //   var month = date.getMonth()
-  //   var nameOfMonth = monthName[month]
-  //   return nameOfMonth
-  // }
+  };
 
   this.dateSplit = function(fullDate){
     var year = fullDate.getFullYear();
     var monthNumber = fullDate.getMonth()+1;
-    console.log(this.monthName)
     var monthName = this.monthName[monthNumber];
     var date = fullDate.getDate();
     var dayNumber = fullDate.getDay();
@@ -129,14 +112,10 @@ angular.module('app').service('DateService', [ function () {
   }
 
   this.stringDateSplit = function(date){
-    // var year = date.substring(0,4)
-    // var month = date.substring(5,7)
-    // var date = date.substring(8,10)
-    var date = date.split("-")
-
-    var year = date[0]
-    var month = date[1]
-    var date = date[2]
+    var date = date.split("-");
+    var year = date[0];
+    var month = date[1];
+    var date = date[2];
 
     if(date.length > 2){
       date = date.substring(0,2)
@@ -147,12 +126,5 @@ angular.module('app').service('DateService', [ function () {
     return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}
   };
 
-  this.dataStoreForTasks = [];
-  this.saveUpdatesFromLeftRail = function(storeUpdatedTask, param2, datelist){
-    if(storeUpdatedTask){
-      this.dataStoreForTasks.push(storeUpdatedTask)
-    }
-    return this.dataStoreForTasks
-  }
 
 }]);
