@@ -145,6 +145,51 @@ a:hover {
   cursor: pointer;
 }
 
+li.PersonalProject {
+  background-color: #27f4cc
+}
+
+li.Work {
+  background-color: #f4274f;
+}
+
+li.Health {
+  background-color: #27b6f4;
+}
+
+li.Finance {
+  background-color: #4FF427;
+}
+
+li.Household {
+  background-color: #cd27f4;
+}
+
+#PersonalProject {
+  background-color: #27f4cc;
+  height: 30px;
+}
+
+#Work {
+  background-color: #f4274f;
+  height: 30px;
+}
+
+#Health {
+  background-color: #27b6f4;
+  height: 30px;
+}
+
+#Finance {
+  background-color: #4FF427;
+  height: 30px;
+}
+
+#Household {
+  background-color: #cd27f4;
+  height: 30px;
+}
+
 .endTime {
   background-color: #4FF427;
   width: 100%;
@@ -340,7 +385,7 @@ h2 {
 }
 
 #calendar-dates li {
-  background-color: #4FF427;
+  /*background-color: #4FF427;*/
   color: white;
   padding: 2px;
   border-radius: 3px;

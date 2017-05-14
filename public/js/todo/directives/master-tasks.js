@@ -19,7 +19,6 @@
         $scope.newMasterInDirective = {};
 
         $scope.$watch('listForCal', function(todosForCal, oldList){
-          console.log(todosForCal)
           if(todosForCal && todosForCal.length){
             $scope.listss = [];
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]

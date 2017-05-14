@@ -8,7 +8,6 @@
 
   function Todo($resource){
     console.log("Todo factory envoked")
-    console.log($resource)
     // below was commented out as the 2nd params in $resource function
     // { query:  {method:"GET", isArray: true}
     var Todo = $resource("api/todo/:name",

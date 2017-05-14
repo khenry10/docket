@@ -62,6 +62,15 @@
       </md-datepicker>
     </li>
     <li>
+      <md-input-container style="background-color: white; color: black">
+        <label ng-if="!repeatInterval">Category</label>
+        <label aria-label="select reocurring"> {{ category }} </label>
+        <md-select ng-model="category" aria-label="select reocurring">
+          <md-option ng-repeat="category in categories"> {{ category }}</option>
+        </md-select>
+      </md-input-container>
+    </li>
+    <li>
       <md-button class="md-raised" ng-click="create()" > Add </md-button>
     </li>
   </ul>

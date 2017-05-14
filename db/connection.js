@@ -41,6 +41,7 @@ var TodoSchema = new mongoose.Schema({
   list_recur_end: String,
   master_tasks: [],
   lists: [],
+  listsInMonths: [],
   category: String,
   task_name: String,
   task_completed: Boolean,

@@ -277,6 +277,7 @@
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
+              console.log(newElementsDate)
               var elementsOldDate = scope.dragSrcEl[0].date;
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
               scope.dragSrcEl = [];
@@ -316,6 +317,16 @@
                   k = list.lists.length;
                 }
               };
+
+              var newElementsDateSplit = newElementsDate.split("-")
+
+              for(var m = 1; m < list.listsInMonths.length; m++){
+                if(list.listsInMonths[m].monthNumber === newElementsDateSplit[1] && list.listsInMonths[m].year === newElementsDateSplit[0] ){
+                  console.log(list.listsInMonths[m])
+                  list.listsInMonths[m].numberOfLists = list.listsInMonths[m].numberOfLists+1
+                }
+              }
+              console.log(list.listsInMonths)
 
               Todo.update({list_name: list.list_name}, {todo: list})
             };
@@ -364,11 +375,8 @@
 
           if(scope.newView === 'month'){
             var listDates = date.split("-")
-            console.log(listDates)
             var listDay = parseInt(listDates[2].substr(0,2))
-            console.log(listDay)
             var ul = document.getElementsByClassName("u"+listDay)
-            console.log(ul)
             ul = ul[0];
             appendToCalendar(listDay, date, list, undefined, ul)
           } else if(scope.newView === 'week') {
@@ -591,37 +599,54 @@
           scope.daysInMonth = new Date(scope.todayFullDate.getFullYear(), scope.todayFullDate.getMonth()+1, 0).getDate()
           var begOfWeek = scope.date.dayCount[scope.date.dayCount.length-7];
           var endOfWeek = scope.date.dayCount[scope.date.dayCount.length-1];
-          var currentMonth = monthName[scope.date.monthCount];
+
+          var longMonthNames = DateService.monthNames;
+          var currentMonth = longMonthNames[scope.date.monthCount];
           if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
             document.getElementById("calendar-month-year").innerHTML =
             currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
             if(scope.date.twoMonthsWeekly){
-              var oldMonth = monthName[scope.date.months.previousMonth.count];
-
+              var shortMonthNames = DateService.shortMonthNames;
+              console.log(shortMonthNames)
+              console.log(scope.date.monthsCount)
+              var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
+              var currentMonth = shortMonthNames[scope.date.months.previousMonth.count];
               document.getElementById("calendar-month-year").innerHTML =
               oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
             }
           } else {
-            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthName + " " + scope.date.today.date + ", " + year;
+            console.log(scope.date)
+            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
           }
         }
 
         var weeklyTableHeadingRow = function(th, i){
-          var daysAwayFromDate = i - scope.todayDay;
-          var month = scope.date.months.thisMonth.count;
-          var day = scope.date.dayCount[i-1];
+          console.log(scope.date)
+          if(scope.date.twoMonthsWeekly){
+            console.log(JSON.stringify(scope.date.twoMonthsWeeklyDate.fullDates))
+            th.setAttribute("id", scope.date.twoMonthsWeeklyDate.fullDates[i-1])
+            th.innerHTML = daysOfWeek[i] + "  " + scope.date.twoMonthsWeeklyDate.fullDates[i-1].split("-")[2]
+          } else {
+            var daysAwayFromDate = i - scope.todayDay;
+            var month = scope.date.months.thisMonth.count;
+            var day = scope.date.dayCount[i-1];
 
-          if(scope.date.dayCount.length > 7){
-            day = scope.date.dayCount[scope.date.dayCount.length-8+i];
+            if(scope.date.dayCount.length > 7){
+              day = scope.date.dayCount[scope.date.dayCount.length-8+i];
+            }
+
+            th.innerHTML = daysOfWeek[i] + "  " + day
+            if(daysAwayFromDate === 0){
+              th.setAttribute("class", "todayInWeeklyView")
+              th.setAttribute("id", scope.date.year +"-"+ month +"-"+ day)
+              scope.daysAwayFromDate = i
+            }
+            th.setAttribute("id", scope.date.year +"-"+ month +"-"+ day)
           }
-
-          th.innerHTML = daysOfWeek[i] + "  " + day
           if(daysAwayFromDate === 0){
             th.setAttribute("class", "todayInWeeklyView")
-            th.setAttribute("id", scope.date.year +"-"+ month +"-"+ day)
             scope.daysAwayFromDate = i
           }
-          th.setAttribute("id", scope.date.year +"-"+ month +"-"+ day)
         };
 
         function createTableHeadingRow(table, tr, count){
@@ -647,10 +672,11 @@
         };
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
+          console.log(scope.date)
           if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
             document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
           } else {
-            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthName + " " + scope.date.today.date + ", " + year;
+            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
           }
           var table = document.createElement("table");
           table.className = 'calendar';
