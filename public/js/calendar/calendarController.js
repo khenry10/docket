@@ -25,7 +25,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   $scope.calendarMonth = $scope.date.getMonth();
   $scope.calendarYear = $scope.date.getFullYear();
   $scope.niceDate = DateService.getNiceDate($scope.date);
-  $scope.niceMonth = today.monthName;
+  $scope.niceMonth = today.monthNames;
   $scope.yearStats = DateService.percentageOfYearPassed();
   $scope.monthPercent = $scope.yearStats.months[$scope.calendarMonth].percent_of_year;
   $scope.cumulativeComp = $scope.yearStats.months[$scope.calendarMonth].cumulative_percent_of_year;

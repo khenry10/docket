@@ -43,7 +43,8 @@ angular.module('app').service('DateService', [ function () {
   };
 
   this.getNiceDate = function(date){
-    var month = date.getMonth()
+    console.log(date)
+    var month = date.getMonth()+1
     var day = date.getDay()
     var dayDate = date.getDate()
     var year = date.getFullYear()

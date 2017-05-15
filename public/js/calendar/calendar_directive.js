@@ -25,7 +25,6 @@
       scope.monthlyDraggedItem = [];
 
         scope.$watch('listForCal', function(todosForCal, oldList){
-          console.log(scope.date)
           if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
@@ -113,6 +112,18 @@
           })
           bigTdContainer.setAttribute("id", "time-with-entry");
           pForBigTd.setAttribute("class", timeStructure);
+
+          if(list.category === "Health"){
+            pForBigTd.style.backgroundColor = "#27b6f4"
+          } else if (list.category === "Personal Project"){
+            pForBigTd.style.backgroundColor = "#27f4cc"
+          } else if(list.category === "Work"){
+            pForBigTd.style.backgroundColor = "#f4274f"
+          } else if(list.category === "Finance"){
+            pForBigTd.style.backgroundColor = "#4FF427"
+          }  else if(list.category === "Household" ){
+            pForBigTd.style.backgroundColor = "#cd27f4"
+          }
 
           bigTdContainer.appendChild(pForBigTd);
         };
@@ -239,8 +250,6 @@
               if (e.stopPropagation) {
                 e.stopPropagation(); // Stops some browsers from redirecting.
               }
-              console.log(e)
-              console.log(e.target)
 
               e.target.id = "time-with-entry"
               var arrayOfTargets = [];
@@ -262,7 +271,7 @@
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date)
                   })
-                  console.log(newTarget)
+
                   newTarget.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(newTarget)
 
@@ -277,7 +286,7 @@
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
-              console.log(newElementsDate)
+
               var elementsOldDate = scope.dragSrcEl[0].date;
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
               scope.dragSrcEl = [];
@@ -322,11 +331,9 @@
 
               for(var m = 1; m < list.listsInMonths.length; m++){
                 if(list.listsInMonths[m].monthNumber === newElementsDateSplit[1] && list.listsInMonths[m].year === newElementsDateSplit[0] ){
-                  console.log(list.listsInMonths[m])
                   list.listsInMonths[m].numberOfLists = list.listsInMonths[m].numberOfLists+1
                 }
               }
-              console.log(list.listsInMonths)
 
               Todo.update({list_name: list.list_name}, {todo: list})
             };
@@ -341,7 +348,9 @@
               ul.addEventListener('drop', scope.handleWeeklyDrop, false);
             };
 
-            li.setAttribute("class",'a'+listDay)
+            var category = list.category.split(" ").join("");
+
+            li.setAttribute("class",category)
             li.setAttribute("id", list._id+"&"+date)
             var url = document.createElement("a")
             url.innerHTML = list.list_name;
@@ -607,23 +616,19 @@
             currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
             if(scope.date.twoMonthsWeekly){
               var shortMonthNames = DateService.shortMonthNames;
-              console.log(shortMonthNames)
-              console.log(scope.date.monthsCount)
+
               var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
               var currentMonth = shortMonthNames[scope.date.months.previousMonth.count];
               document.getElementById("calendar-month-year").innerHTML =
               oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
             }
           } else {
-            console.log(scope.date)
             document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
           }
         }
 
         var weeklyTableHeadingRow = function(th, i){
-          console.log(scope.date)
           if(scope.date.twoMonthsWeekly){
-            console.log(JSON.stringify(scope.date.twoMonthsWeeklyDate.fullDates))
             th.setAttribute("id", scope.date.twoMonthsWeeklyDate.fullDates[i-1])
             th.innerHTML = daysOfWeek[i] + "  " + scope.date.twoMonthsWeeklyDate.fullDates[i-1].split("-")[2]
           } else {
@@ -672,7 +677,6 @@
         };
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
-          console.log(scope.date)
           if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
             document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
           } else {
