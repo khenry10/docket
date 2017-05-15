@@ -24,7 +24,9 @@
         "8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", "1:00pm", "2:00pm", "3:00pm", "4:00pm",
         "5:00pm", "6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm", "12:00am"]
 
-        $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly']
+        $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly'];
+
+        $scope.categories = ["Health", "Work", "Finance", "Household", "Personal Project" ]
 
         $scope.changeEndTimeArray = function(){
           console.log("changeEndTimeArray envoked")
@@ -89,7 +91,8 @@
                 }
                 $scope.newTodoList.list_created_on = new Date()
 
-                $scope.newTodoList.first_day = $scope.firstDay
+                $scope.newTodoList.first_day = $scope.firstDay;
+                $scope.newTodoList.category = $scope.category;
 
                 $scope.newTodoList.start_time =  $scope.startTime
                 if($scope.data && $scope.data.date.startTime){
@@ -108,7 +111,11 @@
 
                 var date = $scope.firstDay
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
-                createListOfLists.push( {date: newDate, tasks: []} )
+                createListOfLists.push( {
+                  date: newDate,
+                  start_time: $scope.newTodoList.start_time,
+                  end_time: $scope.newTodoList.end_time,
+                  tasks: []} )
                 var count = date.getDate();
 
                 var lastDay = numberOfDaysInMonth
@@ -136,7 +143,12 @@
                   while(count < lastDay){
                     count = count + 1
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push(
+                      { date: list,
+                        start_time: $scope.newTodoList.start_time,
+                        end_time: $scope.newTodoList.end_time,
+                        tasks: []
+                      })
                      var date = $scope.firstDay
                   }
                 }
@@ -145,7 +157,11 @@
                   while(count+7 <= lastDay){
                     count = count + 7
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push( {
+                      date: list,
+                      start_time: $scope.newTodoList.start_time,
+                      end_time: $scope.newTodoList.end_time,
+                      tasks: [] } )
                      var date = $scope.firstDay
                   }
                 }
@@ -154,21 +170,65 @@
                   while(month < 12){
                     month = month+1
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( { date: list, tasks: [] } )
+                    createListOfLists.push( { date: list,
+                      start_time: $scope.newTodoList.start_time,
+                      end_time: $scope.newTodoList.end_time,
+                      tasks: [] } )
                   }
                 }
                 // I recreated the new object to get rid of new Todo() junk which I thought was causing issues
                 // $scope.newCalTodoLists is a dependency that gets injected into the calendar directive
 
                 $scope.newCalTodoLists = [{list_name: $scope.name, lists: createListOfLists}]
-                $scope.newCalTodoLists[0].first_day = $scope.firstDay
-                $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring
-                $scope.newCalTodoLists[0].list_recur_end = $scope.newTodoList.list_recur_end
-                $scope.newCalTodoLists[0].list_type = $scope.newTodoList.list_type
-                $scope.newCalTodoLists[0].budget = $scope.newTodoList.budget
+                $scope.newCalTodoLists[0].first_day = $scope.firstDay;
+                $scope.newCalTodoLists[0].list_reocurring = $scope.newTodoList.list_reocurring;
+                $scope.newCalTodoLists[0].list_recur_end = $scope.newTodoList.list_recur_end;
+                $scope.newCalTodoLists[0].list_type = $scope.newTodoList.list_type;
+                $scope.newCalTodoLists[0].budget = $scope.newTodoList.budget;
+                $scope.newCalTodoLists[0].category = $scope.newTodoList.category;
+
+                $scope.newCalTodoLists[0].listsInMonths = [];
+                var monthNames = DateService.monthNames;
+
+                if($scope.newTodoList.list_reocurring === "Daily"){
+                  var expectedNumOfList = 30;
+                } else if ($scope.newTodoList.list_reocurring === "Monthly"){
+                  var expectedNumOfList = 1;
+                } else if($scope.newTodoList.list_reocurring === "Weekly"){
+                  var expectedNumOfList = 4;
+                }
+
+                for(var m = 1; m < monthNames.length; m++){
+                  if(m === month){
+                    $scope.newCalTodoLists[0].listsInMonths.push(
+                      { month: monthNames[m],
+                        monthNumber: m,
+                        year: year,
+                        numberOfLists: createListOfLists.length,
+                        expectedNumOfList: expectedNumOfList
+                      })
+                  } else if (m > month) {
+                    $scope.newCalTodoLists[0].listsInMonths.push(
+                      { monthName: monthNames[m],
+                        monthNumber: m,
+                        year: year,
+                        numberOfLists: 0,
+                        expectedNumOfList: expectedNumOfList
+                      })
+                  } else if (m < month){
+                    $scope.newCalTodoLists[0].listsInMonths.push(
+                      { monthName: monthNames[m],
+                        monthNumber: m,
+                        year: year,
+                        numberOfLists: 0,
+                        expectedNumOfList: 0
+                      })
+                  }
+                }
 
                 // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
-                $scope.newTodoList.lists = createListOfLists
+                $scope.newTodoList.listsInMonths = $scope.newCalTodoLists[0].listsInMonths;
+                $scope.newTodoList.lists = createListOfLists;
 
                 $scope.newCalTodoLists[0].start_time =  $scope.newTodoList.start_time
                 $scope.newCalTodoLists[0].end_time =  $scope.endTime

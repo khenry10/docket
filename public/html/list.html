@@ -1,52 +1,75 @@
-<div class="new-finance" ng-controller="newListsController as newVM">
-  <h1> {{listsVM.year}} Budget </h1>
-    <input type="text" ng-model="newVM.newLists.name" placeholder="Name"></input>
-    <input type="number" ng-model="newVM.newLists.amount" placeholder="Amount"></input>
-    <input type="radio" name="type" ng-model="newVM.newLists.type" value="expense"> Expense</input>
-    <input type="radio"  name="type" ng-model="newVM.newLists.type" value="revenue"> Revenue</input>
-    <select ng-model="newVM.newLists.recurring" ng-options="recurring for recurring in newVM.recurring" >
-        <option value='' disabled selected>Recurring </option>
-    </select>
-    <input type="radio" name="expense" ng-model="newVM.newLists.category" value="fixed"> Fixed</input>
-    <input type="radio"  name="expense" ng-model="newVM.newLists.category" value="variable"> Variable</input>
-    <button ng-click="newVM.create()">New</button>
-    <!-- {{newVM.newLists}} -->
+<div class="list-header">
+  <div class="left-header">
+    <a href="/"><h1 style="color: white; margin-top: -5px; width: 0px;">Docket</h1></a>
+  </div>
+</div>
 
+<h1> Lists </h1>
+<input type="text" ng-model="searchFilter" placeholder="Search..."  style="width: 40%; height:45px;">
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+          <th ng-click="sortType = 'list.task_completed' ; sortReverse = !sortReverse " style="text-align: center">
+            <h4>
+              Done
+              <i ng-show="sortType === 'list.task_completed'" ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
+          <th ng-click="sortType = 'list.task_name' ; sortReverse = !sortReverse " style="text-align: center">
+            <h4>
+              List Item
+              <i ng-show="sortType === 'list.task_name'" ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
+          <th ng-click="sortType = 'list.dateList' ; sortReverse = !sortReverse " style="text-align: center">
+            <h4>
+              Date
+              <i ng-show="sortType === 'list.dateList' " ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
+          <th ng-click="sortType = 'list.list_name' ; sortReverse = !sortReverse " style="text-align: center">
+            <h4>
+              List Name
+              <i ng-show="sortType === 'list.list_name' " ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
+          <th ng-click="sortType = 'list.fullDate' ; sortReverse = !sortReverse " style="text-align: center">
+            <h4>
+              Full Date
+              <i ng-show="sortType === 'list.fullDate' " ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
+          <th ng-click="sortType = 'list.list_type' ; sortReverse = !sortReverse " style="text-align: center">
+            <h4>
+              List Type
+              <i ng-show="sortType === 'list.list_type' " ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
+          <th ng-click="sortType = 'list.list_reocurring' ; sortReverse = !sortReverse " style="text-align: center">
+            <h4>
+              Reoccurs
+              <i ng-show="sortType === 'list.list_reocurring' " ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
+          <th ng-click="sortType = 'list.list_recur_end' ; sortReverse = !sortReverse "  style="text-align: center">
+            <h4> Reoccur Ends
+              <i ng-show="sortType === 'list.list_recur_end' " ng-class="{ 'fa fa-caret-up': sortReverse, 'fa fa-caret-down': !sortReverse}"/>
+            </h4>
+          </th>
+      </tr>
+    </thead>
 
-    <button ng-click="listsVM.getRemainingMonths()"> Remaining Months</button>
-    <button ng-click="listsVM.fullYear()"> Full Year</button>
-
-  <table class="finances">
-    <tr>
-      <th><h2>Revenue</h2></th>
-      <th data-ng-repeat="month in listsVM.months">{{month}}</th>
-    </tr>
-    <tr data-ng-repeat="list in listsVM.lists" ng-if="list.type === 'revenue'">
-      <td class="finances-td">{{list.name}}</td>
-      <td class="finances-td" data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
-    </tr>
-    <tr data-ng-repeat="list in listsVM.lists" ng-if="list.type === 'expense' && list.category == 'fixed'">
-      <td class="finances-td">{{list.name}}</td>
-      <td class="finances-td" data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
-    </tr>
-    <tr>
-      <th>Total Fixed Expenses</th>
-      <td class="finances-td">{{listsVM.fixedExpensesTotal | currency }}</td>
-    </tr>
-    <tr data-ng-repeat="list in listsVM.lists" ng-if="list.type === 'expense' && list.category == 'variable'">
-      <td class="finances-td">{{list.name}}</td>
-      <td class="finances-td" data-ng-repeat="month in listsVM.months">{{list.amount | currency}}</td>
-    <tr>
-      <th>Total Variable Expenses</th>
-        <td class="finances-td"> {{listsVM.variableExpensesTotal | currency}}</td>
-    </tr>
-    <tr>
-      <th>Total Expenses </th>
-        <td class="finances-td">{{listsVM.expensesTotal | currency }}</td>
-    </tr>
-    <tr>
-      <th> Revenue - Expenses </th>
-      <td class="finances-td"> {{listsVM.revenueMinusExpenses | currency }}</td>
+    <tr ng-repeat="list in lists | orderBy:sortType:sortReverse | filter:searchFilter " >
+      <td>  <md-checkbox ng-click="update(list)" ng-model="list.task_completed" aria-label="checkbox"></md-checkbox> </td>
+      <td> {{ list.task_name }} </td>
+      <td> {{ list.dateList }} </td>
+      <td> {{ list.list_name }} </td>
+      <td> {{ list.fullDate }} </td>
+      <td> {{ list.list_type }} </td>
+      <td> {{ list.list_reocurring }} </td>
+      <td> {{ list.list_recur_end }} </td>
     </tr>
   </table>
+
 </div>

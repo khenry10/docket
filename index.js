@@ -35,13 +35,6 @@ app.engine(".hbs", hbs({
 //   })
 // })
 
-app.get('/api/todo', function(req, res){
-  console.log("todo get ")
-  Todo.find().then(function(todo){
-    res.json(todo)
-  });
-});
-
 app.get('/api/todo/:name', function(req, res){
   console.log("findOne todo List get")
   console.log(req.params.name)
@@ -49,6 +42,22 @@ app.get('/api/todo/:name', function(req, res){
     res.json(todo)
   })
 })
+
+app.get('/api/todo', function(req, res){
+  console.log("todo get ")
+  console.log(req.query)
+  // console.log(req)
+  if(req.query.list_name){
+    Todo.findOne({list_name: req.query.list_name}).then(function(todo){
+      res.json(todo)
+    })
+  } else {  
+    Todo.find().then(function(todo){
+      res.json(todo)
+    });
+  }
+});
+
 
 app.post("/api/todo", function(req, res){
   console.log("api POST ")

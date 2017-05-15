@@ -18,11 +18,16 @@ function router($stateProvider, $locationProvider){
     controller: "NewEventsController",
     controllerAs: "newVM"
   })
+  .state("budget", {
+    url: "/budget",
+    templateUrl: "/assets/html/budget.html",
+    controller: "budgetController",
+    controllerAs: "listsVM"
+  })
   .state("list", {
     url: "/list",
     templateUrl: "/assets/html/list.html",
-    controller: "listController",
-    controllerAs: "listsVM"
+    controller: "listController"
   })
   .state("new-list", {
     url: "/list/new",
@@ -49,7 +54,7 @@ function router($stateProvider, $locationProvider){
     controllerAs: "todoVM"
   })
   .state("catch", {
-    url: "/collapse1",
+    url: "/#collapse1",
     templateUrl: "/assets/html/index.html",
     controller: "IndexController",
     controllerAs: "indexVM"
