@@ -1,10 +1,21 @@
 'use strict';
 
-angular.module("app").config(["$stateProvider","$locationProvider",router])
+angular.module("app").config(["$stateProvider","$locationProvider", router])
 
 function router($stateProvider, $locationProvider){
-  $locationProvider.html5Mode(true);
+
   console.log("router function")
+
+  var hrefSplit = window.location.href.split("/");
+  var pathName = hrefSplit[3];
+  var regex = /collapse/;
+
+  if(regex.test(pathName)){
+    window.location.href = "/";
+  }
+
+  $locationProvider.html5Mode(true);
+
   $stateProvider
   .state("index", {
     url: "/",
@@ -53,10 +64,10 @@ function router($stateProvider, $locationProvider){
     controller: "todoController",
     controllerAs: "todoVM"
   })
-  .state("catch", {
-    url: "/#collapse1",
-    templateUrl: "/assets/html/index.html",
-    controller: "IndexController",
-    controllerAs: "indexVM"
+  .state("login-reg", {
+    url: "/login",
+    templateUrl: "/assets/html/outside/login.html",
+    controller: "loginReg",
+    controllerAs: "loginVM"
   })
 }

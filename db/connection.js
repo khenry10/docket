@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var bcrypt = require('bcryptjs');
 
 if(process.env.NODE_ENV == "production"){
   mongoose.connect("mongodb://heroku_bqk8fvgm:51ukoeapk76n1hd7n8lq9hj2ar@ds153657.mlab.com:53657/heroku_bqk8fvgm");
@@ -28,6 +29,27 @@ var ExpenseSchema = new mongoose.Schema({
 });
 mongoose.model("Expenses", ExpenseSchema);
 
+var UserSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String
+});
+
+var Users = module.exports = mongoose.model("Users", UserSchema);
+
+Users.createUser = function(newUser, callback){
+  console.log("In connection file")
+  console.log(newUser)
+  console.log(callback)
+  bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.hash(newUser.password, salt, function(err, hash) {
+        newUser.password = hash;
+        console.log(newUser.password)
+        Users.create(newUser).then(callback)
+    });
+  });
+}
+
 var TodoSchema = new mongoose.Schema({
   list_name: String,
   list_type: String,
@@ -54,35 +76,6 @@ var TodoSchema = new mongoose.Schema({
   completed_on: Date,
   deadline: Date
 });
-
-// test code beginning
-
-// {
-//   list_name: String,
-//   list_created_on: Date,
-//   list_recurring_interval: String,
-//   list_recur_end: String,
-//   category: String,
-//   master_tasks: [{
-//     name: String,
-//     created_on: Date
-//   }],
-//   lists: [{
-//     date: Date,
-//     tasks: {
-//       name: String,
-//       completed: Boolean,
-//       rank: Number,
-//       time_estimate: Number,
-//       time_actual: Number,
-//       created_on: Date,
-//       completed_on: Date,
-//       deadline: Date
-//     }
-//   }]
-// }
-
-// test code end
 
 mongoose.model("Todo", TodoSchema);
 

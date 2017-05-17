@@ -1,0 +1,12 @@
+<h1> Login </h1>
+
+<div>
+  <form>
+    <label>Name: <input type="text" ng-model="user.name" /></label><br />
+    <label>E-mail: <input type="email" ng-model="user.email" /></label><br />
+    <label>Password<input type="password" ng-model="user.password" /></label><br />
+    <md-button ng-click="addUser(user)">Submit</md-button>
+  </form>
+
+  ** {{ user }}
+</div>

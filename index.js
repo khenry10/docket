@@ -4,10 +4,13 @@ var mongoose = require("./db/connection.js");
 var hbs      = require("express-handlebars");
 var parser   = require("body-parser");
 var app      = express();
+var passport = require('passport');
+var Strategy = require('passport-local').Strategy;
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
 var Expenses = mongoose.model("Expenses");
 var Todo = mongoose.model("Todo");
+var Users = mongoose.model("Users");
 
 app.use("/assets", express.static("public"));
 app.set("port", process.env.PORT || 3002);
@@ -26,14 +29,28 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
-// thought I would need the below for show functionality but the below /api is working
-// app.get('/api/:name', function(req, res){
-//   console.log("app.get is being used")
-//   Events.findOne({name: req.params.name}).then(function(event){
-//     console.log(event)
-//     res.json(event)
-//   })
-// })
+// app.use(passport.initialize());
+
+app.post('/login',
+  passport.authenticate('local', { successRedirect: "/", failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+});
+
+app.post('/register', function(req, res){
+  console.log(req.body)
+
+  Users.createUser(req.body, function(user, err){
+    console.log("in Users.createUser.  users then error below")
+    console.log(user)
+    console.log(err)
+    if(err){
+      res.json(err)
+    } else {
+      res.json(user)
+    }
+  })
+});
 
 app.get('/api/todo/:name', function(req, res){
   console.log("findOne todo List get")
@@ -51,7 +68,7 @@ app.get('/api/todo', function(req, res){
     Todo.findOne({list_name: req.query.list_name}).then(function(todo){
       res.json(todo)
     })
-  } else {  
+  } else {
     Todo.find().then(function(todo){
       res.json(todo)
     });
@@ -152,5 +169,5 @@ app.get("/*", function(req, res){
 // })
 
 app.listen(app.get("port"), function(){
-  console.log("I'm alive...");
+  console.log("::::::::::::: You have turned me on.  I am alive... :::::::::::::");
 });
