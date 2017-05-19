@@ -50,6 +50,26 @@ Users.createUser = function(newUser, callback){
   });
 }
 
+Users.getUserByUsername = function(email, callback){
+    console.log("Users.getUserByUsername in connection " + email)
+    var query = {email: email};
+    Users.findOne(query, callback)
+}
+
+// Users.comparePassword = function(candidatePassword, hash, callback){
+//   console.log(candidatePassword)
+//   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+//     if(err) throw err;
+//     callback(null, isMatch);
+//   });
+// }
+
+Users.getUserById = function(id, callback){
+    console.log(id)
+    // below "findById" is a mongoose method
+    User.findById(id, callback)
+}
+
 var TodoSchema = new mongoose.Schema({
   list_name: String,
   list_type: String,

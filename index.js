@@ -5,7 +5,8 @@ var hbs      = require("express-handlebars");
 var parser   = require("body-parser");
 var app      = express();
 var passport = require('passport');
-var Strategy = require('passport-local').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
+var bcrypt = require('bcryptjs');
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
 var Expenses = mongoose.model("Expenses");
@@ -31,10 +32,85 @@ app.engine(".hbs", hbs({
 
 // app.use(passport.initialize());
 
-app.post('/login',
-  passport.authenticate('local', { successRedirect: "/", failureRedirect: '/login' }),
-  function(req, res) {
-    res.redirect('/');
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    console.log(username)
+    console.log(password)
+    Users.getUserByUsername(username, function(err, user){
+      console.log("start---- within User.getUserByUsername().  err and user below ---")
+      console.log(err)
+      console.log(user)
+      console.log("end---- within User.getUserByUsername().  ---")
+      if(err) throw err;
+      if(!user){
+        return done(null, false, {message: "Uknown user"});
+      }
+
+      Users.comparePassword(password, user.password, function(err, isMatch){
+        if(err) throw err;
+        if(isMatch){
+          return done(null, user);
+        } else {
+          return done(null, false, {message: "Wrong password"})
+        }
+      })
+    })
+  }));
+
+  // passport.serializeUser(function(user, done) {
+  //   done(null, user.id);
+  // });
+  //
+  // passport.deserializeUser(function(id, done) {
+  //   Users.getuserById(id, function(err, user) {
+  //     done(err, user);
+  //   });
+  // });
+
+// app.post('/auth',
+//   passport.authenticate('local', { successRedirect: "/keith",  failureRedirect: '/prifte2'}),
+//   function(req, res) {
+//     console.log(req.body)
+//     var candidatePassword = req.body.password;
+//
+//     var findOneCallback = function(response){
+//       console.log("successFunction")
+//       console.log(response)
+//       var hash = response.password;
+//       console.log(candidatePassword)
+//       console.log(hash)
+//
+//       bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+//         console.log(err)
+//         console.log(isMatch)
+//         if(err) throw err;
+//         // callback(null, isMatch);
+//       });
+//     };
+//
+//     Users.findOne({email: req.body.email}).then(findOneCallback)
+//     // res.redirect('/');
+//   });
+
+
+app.post('/auth', function(req, res, next) {
+  console.log("in /auth endpoint")
+  console.log(req.body)
+  // console.log(res)
+  console.log(next)
+  passport.authenticate('local', function(err, user, info) {
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ in passport ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    console.log(err)
+    console.log(user)
+    console.log(info)
+    if (err) { return next(err); }
+    if (!user) { return res.redirect('/login'); }
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.redirect('/users/' + user.username);
+    });
+  })(req, res, next);
 });
 
 app.post('/register', function(req, res){
@@ -94,13 +170,6 @@ app.put("/api/todo/", function(req, res){
   Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo){
     res.json(todo)
   })
-
-// below didn't work for master tasks...
-  // Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, {$push: {master_tasks: req.body.todo.master_tasks}})
-  // .then(function(todo){
-  //   res.json(todo)
-  // })
-
 })
 
 app.get('/expenses', function(req, res){
@@ -159,8 +228,7 @@ app.delete("/api/event/:name",function(req, res){
 
 // route that directs to event.hbs, which is where we bootstrap angular
 app.get("/*", function(req, res){
-  console.log("wild card y'all")
-  console.log(req.params.name)
+
   res.render("event")
 })
 

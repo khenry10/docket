@@ -2,11 +2,22 @@
 
 <div>
   <form>
-    <label>Name: <input type="text" ng-model="user.name" /></label><br />
+    <label>Name: <input type="text" ng-model="user.name"  /></label><br />
     <label>E-mail: <input type="email" ng-model="user.email" /></label><br />
     <label>Password<input type="password" ng-model="user.password" /></label><br />
     <md-button ng-click="addUser(user)">Submit</md-button>
   </form>
 
   ** {{ user }}
+</div>
+
+
+<div>
+  <form>
+    <label>E-mail: <input type="email" name="username" ng-model="login.email" /></label><br />
+    <label>Password<input type="password" name="password" ng-model="login.password" /></label><br />
+    <md-button ng-click="auth(login)">Login</md-button>
+  </form>
+
+  ** {{ login }}
 </div>

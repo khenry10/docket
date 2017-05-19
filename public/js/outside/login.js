@@ -20,4 +20,17 @@ function loginReg($scope, $http, DateService){
     $http.post('/register', user).then(successCallback, errorCallback)
   };
 
+  var successLogin = function(response){
+    console.log(response)
+  };
+
+  var failedLogin = function(response){
+    console.log(response)
+  };
+
+  $scope.auth = function(user){
+    console.log(user)
+    $http.post('/auth', user).then(successLogin, failedLogin)
+  };
+
 };
