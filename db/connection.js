@@ -45,6 +45,7 @@ Users.createUser = function(newUser, callback){
     bcrypt.hash(newUser.password, salt, function(err, hash) {
         newUser.password = hash;
         console.log(newUser.password)
+        console.log(callback)
         Users.create(newUser).then(callback)
     });
   });
@@ -56,18 +57,21 @@ Users.getUserByUsername = function(email, callback){
     Users.findOne(query, callback)
 }
 
-// Users.comparePassword = function(candidatePassword, hash, callback){
-//   console.log(candidatePassword)
-//   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-//     if(err) throw err;
-//     callback(null, isMatch);
-//   });
-// }
+Users.comparePassword = function(candidatePassword, hash, callback){
+  console.log(candidatePassword)
+  bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+    console.log("err in brcrypt below:")
+    console.log(err)
+    console.log(isMatch)
+    if(err) throw err;
+    callback(null, isMatch);
+  });
+}
 
 Users.getUserById = function(id, callback){
     console.log(id)
     // below "findById" is a mongoose method
-    User.findById(id, callback)
+    Users.findById(id, callback)
 }
 
 var TodoSchema = new mongoose.Schema({

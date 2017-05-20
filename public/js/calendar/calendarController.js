@@ -8,6 +8,7 @@ angular.module('app')
   "ModalService",
   "DateService",
   "Clone",
+  "$http",
   IndexController
 ])
 .controller("ShowEventsController", [
@@ -16,10 +17,14 @@ angular.module('app')
   ShowEventsController
 ])
 
-function IndexController($scope, Todo, $window, ModalService, DateService, Clone){
+function IndexController($scope, Todo, $window, ModalService, DateService, Clone, $http){
   $scope.showTodayButton = false;
   $scope.viewType = 'month';
   $scope.date = new Date();
+
+  $http.get('/userAuth').then(function(res){
+    console.log(res)
+  })
   // $scope.date = new Date(2017, 3, 30)
   var today = DateService.dateSplit($scope.date)
   $scope.calendarMonth = $scope.date.getMonth();

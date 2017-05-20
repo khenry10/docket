@@ -30,86 +30,117 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
-// app.use(passport.initialize());
+// Global varialbes
+app.use(function(req, res, next){
+  res.locals.user = req.user || null;
+  next();
+})
 
+app.use(passport.initialize());
+
+var verify = function(response){
+  console.log(response)
+}
+
+console.log(passport.use(new LocalStrategy(verify)))
 
 passport.use(new LocalStrategy(
+  // {usernameField:'login',
+  //   passwordField:'password'},
   function(username, password, done) {
     console.log(username)
     console.log(password)
-    Users.getUserByUsername(username, function(err, user){
-      console.log("start---- within User.getUserByUsername().  err and user below ---")
-      console.log(err)
-      console.log(user)
-      console.log("end---- within User.getUserByUsername().  ---")
-      if(err) throw err;
-      if(!user){
-        return done(null, false, {message: "Uknown user"});
-      }
 
+    var candidatePassword = password;
+
+    Users.getUserByUsername(username, function(err, user){
+      if (err) throw err;
+      if(!user){
+        return done(null, false, {message: "Unknown username"})
+      }
       Users.comparePassword(password, user.password, function(err, isMatch){
+        console.log("Users.comparePassword isMatch: ")
+        console.log(isMatch)
         if(err) throw err;
         if(isMatch){
-          return done(null, user);
+          return done(null, user)
         } else {
-          return done(null, false, {message: "Wrong password"})
+          return done(null, false, {message: "Invalid password"})
         }
       })
     })
-  }));
 
-  // passport.serializeUser(function(user, done) {
-  //   done(null, user.id);
-  // });
-  //
-  // passport.deserializeUser(function(id, done) {
-  //   Users.getuserById(id, function(err, user) {
-  //     done(err, user);
-  //   });
-  // });
+        // var findOneCallback = function(response){
+        //   console.log("successFunction")
+        //   console.log(response)
+        //   var hash = response.password;
+        //   console.log(candidatePassword)
+        //   console.log(hash)
+        //
+        //   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+        //     console.log(err)
+        //     console.log(isMatch)
+        //     if(err) throw err;
+        //     // callback(null, isMatch);
+        //   });
+        // };
 
-// app.post('/auth',
-//   passport.authenticate('local', { successRedirect: "/keith",  failureRedirect: '/prifte2'}),
-//   function(req, res) {
-//     console.log(req.body)
-//     var candidatePassword = req.body.password;
-//
-//     var findOneCallback = function(response){
-//       console.log("successFunction")
-//       console.log(response)
-//       var hash = response.password;
-//       console.log(candidatePassword)
-//       console.log(hash)
-//
-//       bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-//         console.log(err)
-//         console.log(isMatch)
-//         if(err) throw err;
-//         // callback(null, isMatch);
-//       });
-//     };
-//
-//     Users.findOne({email: req.body.email}).then(findOneCallback)
-//     // res.redirect('/');
-//   });
+    // Users.findOne({email: username}).then(findOneCallback)
+
+  }, verify));
+
+  passport.serializeUser(function(user, done) {
+    console.log("serializeUser")
+    console.log(user)
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(function(id, done) {
+    console.log("deserializeUser")
+    console.log(id)
+    Users.getuserById(id, function(err, user) {
+      done(err, user);
+    });
+  });
+
+var setUser = function(user){
+  if(user){
+    user = user
+  } else {
+    return user
+  }
+};
+
+app.get('/userAuth', function(req, res, next){
+  console.log(req.body)
+  console.log(setuser())
+  res.json(user)
+})
 
 
-app.post('/auth', function(req, res, next) {
-  console.log("in /auth endpoint")
+app.post('/login', function(req, res, next) {
+  console.log("in /login endpoint")
   console.log(req.body)
   // console.log(res)
   console.log(next)
-  passport.authenticate('local', function(err, user, info) {
+  passport.authenticate('local', {successRedirect: "/", failureRedirect: "/login"},
+  function(err, user, info) {
     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ in passport ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     console.log(err)
     console.log(user)
+    setUser(user)
     console.log(info)
-    if (err) { return next(err); }
-    if (!user) { return res.redirect('/login'); }
+    if (err) { return res.json(user); }
+
+    if (!user) { return res.json({status: "fail", message: info}); }
     req.logIn(user, function(err) {
       if (err) { return next(err); }
-      return res.redirect('/users/' + user.username);
+      return res.json({status: "success"});
     });
+
+    // res.redirect('/')
+
+
   })(req, res, next);
 });
 

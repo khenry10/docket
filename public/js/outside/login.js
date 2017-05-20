@@ -22,6 +22,9 @@ function loginReg($scope, $http, DateService){
 
   var successLogin = function(response){
     console.log(response)
+    if(response.data.status === 'success'){
+      window.location.href = "/";
+    }
   };
 
   var failedLogin = function(response){
@@ -30,7 +33,7 @@ function loginReg($scope, $http, DateService){
 
   $scope.auth = function(user){
     console.log(user)
-    $http.post('/auth', user).then(successLogin, failedLogin)
+    $http.post('/login', user).then(successLogin, failedLogin)
   };
 
 };

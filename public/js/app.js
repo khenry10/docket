@@ -32,6 +32,11 @@
     return Todo
   };
 
+  function User($resource){
+    var User = $resource("/userAuth", {}, {})
+    console.log(User.get())
+  };
+
   function Lists($resource){
     console.log("Lists factory envoked")
     var Lists = $resource("/expenses", {}, {
