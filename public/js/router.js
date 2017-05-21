@@ -70,4 +70,10 @@ function router($stateProvider, $locationProvider){
     controller: "loginReg",
     controllerAs: "loginVM"
   })
+  .state("home", {
+    url: "/home",
+    templateUrl: "/assets/html/outside/home.html",
+    controller: "loginReg",
+    controllerAs: "loginVM"
+  })
 }

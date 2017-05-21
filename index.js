@@ -7,6 +7,7 @@ var app      = express();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
+var session = require('express-session');
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
 var Expenses = mongoose.model("Expenses");
@@ -32,17 +33,25 @@ app.engine(".hbs", hbs({
 
 // Global varialbes
 app.use(function(req, res, next){
+  ("global variable function called.  req is below")
+  console.log(req.user)
   res.locals.user = req.user || null;
   next();
 })
 
+app.use(session({
+  secret: 'secret',
+  saveUnitialized: true,
+  resave: true,
+}));
+
 app.use(passport.initialize());
+app.use(passport.session());
 
 var verify = function(response){
+  console.log("verify function.  response is below")
   console.log(response)
 }
-
-console.log(passport.use(new LocalStrategy(verify)))
 
 passport.use(new LocalStrategy(
   // {usernameField:'login',
@@ -98,7 +107,7 @@ passport.use(new LocalStrategy(
   passport.deserializeUser(function(id, done) {
     console.log("deserializeUser")
     console.log(id)
-    Users.getuserById(id, function(err, user) {
+    Users.getUserById(id, function(err, user) {
       done(err, user);
     });
   });
@@ -112,9 +121,10 @@ var setUser = function(user){
 };
 
 app.get('/userAuth', function(req, res, next){
-  console.log(req.body)
-  console.log(setuser())
-  res.json(user)
+  console.log("userAuth")
+  // console.log(req)
+  // console.log(setuser())
+  // res.json(user)
 })
 
 
@@ -126,10 +136,10 @@ app.post('/login', function(req, res, next) {
   passport.authenticate('local', {successRedirect: "/", failureRedirect: "/login"},
   function(err, user, info) {
     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ in passport ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    console.log(err)
+    console.log("err = " + err)
     console.log(user)
-    setUser(user)
-    console.log(info)
+    // setUser(user)
+    console.log("info = " + JSON.stringify(info))
     if (err) { return res.json(user); }
 
     if (!user) { return res.json({status: "fail", message: info}); }
@@ -137,6 +147,9 @@ app.post('/login', function(req, res, next) {
       if (err) { return next(err); }
       return res.json({status: "success"});
     });
+
+    console.log("~~~~~ IN PASSPORT req.isAuthenticated() is below ~~~~~")
+    console.log(req.isAuthenticated())
 
     // res.redirect('/')
 
@@ -169,22 +182,33 @@ app.get('/api/todo/:name', function(req, res){
 
 app.get('/api/todo', function(req, res){
   console.log("todo get ")
+  console.log(req.user)
   console.log(req.query)
+  console.log("~~~~~ req.isAuthenticated() is below ~~~~~")
+  console.log(req.isAuthenticated())
   // console.log(req)
-  if(req.query.list_name){
-    Todo.findOne({list_name: req.query.list_name}).then(function(todo){
-      res.json(todo)
-    })
+  if(req.user && req.user.id){
+    if(req.query.list_name){
+      Todo.findOne({list_name: req.query.list_name}).then(function(todo){
+        res.json(todo)
+      })
+    } else {
+      Todo.find({user_id: req.user.id}).then(function(todo){
+        res.json(todo)
+      });
+    }
   } else {
-    Todo.find().then(function(todo){
-      res.json(todo)
-    });
+    res.json([])
   }
+
 });
 
 
 app.post("/api/todo", function(req, res){
   console.log("api POST ")
+  console.log(req.body)
+  req.body.user_id = req.user.id
+  console.log(req.body)
   // console.log("api POST " + JSON.stringify(req.body))
   Todo.create(req.body).then(function(){
     res.redirect("/")

@@ -36,4 +36,6 @@ function loginReg($scope, $http, DateService){
     $http.post('/login', user).then(successLogin, failedLogin)
   };
 
+  $scope.redStreakCity = 'red-streak-city.png'
+
 };

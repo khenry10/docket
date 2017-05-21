@@ -22,6 +22,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   $scope.viewType = 'month';
   $scope.date = new Date();
 
+  console.log(document.cookie)
+
   $http.get('/userAuth').then(function(res){
     console.log(res)
   })

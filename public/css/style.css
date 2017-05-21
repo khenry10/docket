@@ -61,6 +61,24 @@ a:hover {
   text-decoration: none;
 }
 
+.homepage-wallpaper {
+  background-image: url('/assets/images/red-streak-city.png');
+  /*height: 500px;
+  width: 500px;*/
+  width: 800px;
+  height:820px;
+  background-size: contain; /* or contain depending on what you want */
+  background-position: center center;
+  background-repeat: no-repeat;
+  text-align:center;
+  margin:auto;
+  padding:0;
+  outline: 1px solid red;
+  margin-left: -55px;
+  overflow: hidden;
+
+}
+
 /** {
   outline: 1px solid black;
 }*/

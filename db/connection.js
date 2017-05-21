@@ -75,6 +75,7 @@ Users.getUserById = function(id, callback){
 }
 
 var TodoSchema = new mongoose.Schema({
+  user_id: String,
   list_name: String,
   list_type: String,
   list_created_on: Date,
