@@ -1,23 +1,26 @@
-<h1> Login </h1>
+<div style="height:100%; width: 100%; overflow-y: hidden;overflow-x: hidden">
+  <div style="width: 100%; height: 70px; background-color:white; color: #4264fb; display: inline-flex; justify-content: space-around">
+    <h1> Docket </h1>
 
-<div>
-  <form>
-    <label>Name: <input type="text" ng-model="user.name"  /></label><br />
-    <label>E-mail: <input type="email" ng-model="user.email" /></label><br />
-    <label>Password<input type="password" ng-model="user.password" /></label><br />
-    <md-button ng-click="addUser(user)">Submit</md-button>
-  </form>
+      <form style="width: 50%; margin-top: 10px">
+        <label>
+          <input style="height: 35px" placeholder="E-mail" type="email" name="username" ng-model="login.username" />
+        </label>
+        <label><input style="height: 35px" placeholder="Password" type="password" name="password" ng-model="login.password" /></label>
+        <md-button ng-click="auth(login)">Login</md-button>
+      </form>
 
-  ** {{ user }}
-</div>
-
-
-<div>
-  <form>
-    <label>E-mail: <input type="email" name="username" ng-model="login.username" /></label><br />
-    <label>Password<input type="password" name="password" ng-model="login.password" /></label><br />
-    <md-button ng-click="auth(login)">Login</md-button>
-  </form>
-
-  ** {{ login }}
+  </div>
+  <div class="homepage-wallpaper">
+    <div class="login-reg-box">
+      <h4>Register</h4>
+      <form>
+        <label><input placeholder="Name" type="text" ng-model="user.name" style="height: 35px"  /></label><br />
+        <label><input placeholder="E-mail" type="email" ng-model="user.email" style="height: 35px" /></label><br />
+        <label><input placeholder="Password" type="password" ng-model="user.password" style="height: 35px" /></label><br />
+        <md-button ng-click="addUser(user)">Submit</md-button>
+      </form>
+      <span style="color: white">{{ user }}</span>
+    </div>
+  </div>
 </div>

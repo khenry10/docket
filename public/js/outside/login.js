@@ -9,10 +9,16 @@ function loginReg($scope, $http, DateService){
 
   var successCallback = function(res){
     console.log(res)
+    if(res.data.status === 'success'){
+      window.location.href = "/";
+    }
   };
 
   var errorCallback = function(res){
     console.log(res)
+    if(res.data.status === 'fail'){
+      alert(res.data.message)
+    }
   };
 
   $scope.addUser = function(user){
@@ -33,7 +39,14 @@ function loginReg($scope, $http, DateService){
 
   $scope.auth = function(user){
     console.log(user)
-    $http.post('/login', user).then(successLogin, failedLogin)
+    $http.post('/login', user).then(function(res){
+      console.log(res)
+      if(res.data.status === 'success'){
+        window.location.href = "/";
+      } else if (res.data.status ==='fail'){
+        alert(res.data.message.message)
+      }
+    })
   };
 
   $scope.redStreakCity = 'red-streak-city.png'

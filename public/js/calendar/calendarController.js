@@ -42,6 +42,16 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   $scope.numberOfTodoLists = 0;
   $scope.numberOfShoppingLists = 0;
 
+  $scope.logout = function(){
+    console.log("log me out please.")
+      $http.get('/logout').then(function(res){
+        console.log(res)
+        if(res.data.status === 'success'){
+          window.location.href = "/login"
+        }
+      })
+  }
+
   Todo.all.$promise.then(function(todos){
     console.log(todos)
     $scope.todoLists = todos
@@ -631,7 +641,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       $scope.listForCal = [listForCal];
   }; // end of $scope.listClone
 
-  document.title = "Docket: " + $scope.changeDate.today.dayName + " " + $scope.changeDate.today.monthName + " " + $scope.changeDate.today.date + ", " + $scope.changeDate.today.year;
+  console.log($scope.changeDate)
+  document.title = "Docket: " + $scope.changeDate.today.dayName + " " + $scope.changeDate.today.monthNames + " " + $scope.changeDate.today.date + ", " + $scope.changeDate.today.year;
 
   // this can almost assuredly be deleted, going to save until I get to delete/update for lists -- 4/12
     // $scope.delete = function(eventName){

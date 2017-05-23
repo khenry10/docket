@@ -157,6 +157,15 @@ app.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
+app.get('/logout', function(req, res){
+  console.log("/logout ")
+  console.log(req.body.user)
+  console.log(res)
+  req.logout();
+  // res.json()
+  res.json({status: "success", message: "Logged out"});
+});
+
 app.post('/register', function(req, res){
   console.log(req.body)
 
@@ -167,7 +176,7 @@ app.post('/register', function(req, res){
     if(err){
       res.json(err)
     } else {
-      res.json(user)
+      res.json({status: "success"})
     }
   })
 });
