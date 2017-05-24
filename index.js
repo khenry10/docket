@@ -8,6 +8,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
 var Expenses = mongoose.model("Expenses");
@@ -41,9 +42,14 @@ app.use(function(req, res, next){
 
 app.use(session({
   secret: 'secret',
-  saveUnitialized: true,
+  rolling: true,
+  // saveUnitialized: true,
   resave: true,
 }));
+
+console.log("**** session start *****")
+console.log(session)
+console.log("**** session end *****")
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -215,7 +221,7 @@ app.get('/api/todo', function(req, res){
 
 app.post("/api/todo", function(req, res){
   console.log("api POST ")
-  console.log(req.body)
+  console.log(req.user)
   req.body.user_id = req.user.id
   console.log(req.body)
   // console.log("api POST " + JSON.stringify(req.body))
@@ -231,7 +237,8 @@ app.put("/api/todo/", function(req, res){
   console.log(req.body.todo.list_name)
   console.log(req.body.todo.master_tasks)
   console.log(req.body.todo.task_name)
-  Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo){
+  Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo, err){
+    console.log(err)
     res.json(todo)
   })
 })

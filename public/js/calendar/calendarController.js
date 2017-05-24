@@ -41,6 +41,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   $scope.allTasks = [];
   $scope.numberOfTodoLists = 0;
   $scope.numberOfShoppingLists = 0;
+  $scope.listForCal = [];
 
   $scope.logout = function(){
     console.log("log me out please.")
@@ -60,6 +61,12 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     })
     if($scope.allTodoLists.length){
       $scope.verifyCloneList();
+    } else {
+      $scope.listForCal.push(
+        {origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
+        todo: {list_type: 'none'},
+        modifiedDateList: []
+      })
     }
   });
 

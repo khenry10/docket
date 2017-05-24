@@ -2,7 +2,7 @@ angular.module('app').service('DateService', [ function () {
 
   this.monthNames = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   this.shortMonthNames = ["", "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-  var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wed", "Thursday", "Friday", "Saturday"]
 
   this.dataStoreForTasks = [];
   this.saveUpdatesFromLeftRail = function(storeUpdatedTask, param2, datelist){

@@ -10,7 +10,7 @@ function loginReg($scope, $http, DateService){
   var successCallback = function(res){
     console.log(res)
     if(res.data.status === 'success'){
-      window.location.href = "/";
+      alert("Your account has been created.  Please login now.")
     }
   };
 
