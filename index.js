@@ -43,6 +43,7 @@ app.use(function(req, res, next){
 app.use(session({
   secret: 'secret',
   rolling: true,
+  store: new MongoStore({mongooseConnection: mongoose.connection}),
   // saveUnitialized: true,
   resave: true,
 }));
@@ -238,7 +239,7 @@ app.put("/api/todo/", function(req, res){
   console.log(req.body.todo.master_tasks)
   console.log(req.body.todo.task_name)
   Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo, err){
-    console.log(err)
+    console.log("todo put err = " + err)
     res.json(todo)
   })
 })

@@ -80,13 +80,20 @@ a:hover {
 
 .login-reg-box {
   background-color: rgba(255, 255, 255, 0.17);
-  height: 25%;
+  height: 29%;
   width: 30%;
   color: black;
   margin-top: 225px;
   margin-left: 20%;
   padding-top: 1%;
   border-radius: 10px;
+}
+
+.reg-input {
+  background-color: white;
+  color: #F9555F;
+  height: 45px;
+  width: 300px;
 }
 
 /** {

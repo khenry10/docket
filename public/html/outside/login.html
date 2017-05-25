@@ -1,5 +1,5 @@
 <div style="height:100%; width: 100%; overflow-y: hidden;overflow-x: hidden">
-  <div style="width: 100%; height: 70px; background-color:white; color: #4264fb; display: inline-flex; justify-content: space-around">
+  <div style="width: 100%; height: 70px; background-color:white; color: #F9555F; display: inline-flex; justify-content: space-around">
     <h1> Docket </h1>
 
       <form style="width: 50%; margin-top: 10px">
@@ -12,15 +12,15 @@
 
   </div>
   <div class="homepage-wallpaper">
-    <div class="login-reg-box">
+    <div style="color: white" class="login-reg-box">
       <h4>Register</h4>
-      <form>
-        <label><input placeholder="Name" type="text" ng-model="user.name" style="height: 35px"  /></label><br />
-        <label><input placeholder="E-mail" type="email" ng-model="user.email" style="height: 35px" /></label><br />
-        <label><input placeholder="Password" type="password" ng-model="user.password" style="height: 35px" /></label><br />
+      <form class="register-form">
+        <label><input class="reg-input" placeholder="Name" type="text" ng-model="user.name" /></label><br />
+        <label><input class="reg-input" placeholder="E-mail" type="email" ng-model="user.email" /></label><br />
+        <label><input class="reg-input" placeholder="Password" type="password" ng-model="user.password" /></label><br />
         <md-button ng-click="addUser(user)">Submit</md-button>
       </form>
-      <span style="color: white">{{ user }}</span>
+      <span style="color: #00FF00; background-color: black">{{ user }}</span>
     </div>
   </div>
 </div>
