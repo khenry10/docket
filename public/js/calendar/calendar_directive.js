@@ -66,7 +66,10 @@
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure){
           // creates and appends the new calendar items to the calendar
+
+          // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
           var bigTdContainer = document.getElementsByClassName(time)
+          // console.log(bigTdContainer)
           var pForBigTd = document.createElement('p')
           pForBigTd.setAttribute("draggable", true)
 
@@ -139,12 +142,18 @@
         var putHourlyItemsOnWeeklyCalendar = function(list, date, realListDate, times){
           // this function processes the calendar item's details, like start and end end time am/pm and how many hours, and calls createHourlyCalItem and addMiddleTimeCalItems functions
           createHourlyCalItem(list, times.start_time, date, realListDate, "startTime")
+          // console.log(list)
+          // console.log(times)
 
           var startTime = times.start_time.split(":")
           var startTimeAmOrPm = startTime[1].substr(2,4)
           var startTime = startTime[0]
 
-          var endTime = times.end_time.split(":")
+          if(times.end_time){
+            var endTime = times.end_time.split(":")
+          } else {
+            var endTime = list.end_time.split(":")
+          }
           var endTimeAmOrPm = endTime[1].substr(2,4)
           var endTime = endTime[0]
           var originalEndTime = endTime
@@ -221,6 +230,8 @@
 
             var handleDragStart = function(e){
               scope.listGrabbed = list;
+              console.log(scope.listGrabbed)
+              console.log(e)
               // scope.dragSrcEl is the element that has been clicked and is being dragged
               scope.dragSrcEl = this;
 
@@ -245,6 +256,7 @@
 
             scope.handleWeeklyDrop = function(e){
               console.log("DROPPED")
+              console.log(e)
               e.preventDefault();
 
               if (e.stopPropagation) {
@@ -254,10 +266,19 @@
               e.target.id = "time-with-entry"
               var arrayOfTargets = [];
 
+              console.log(scope.dragSrcEl)
               for(var p = scope.dragSrcEl.length-1; p >= 0; p--){
                 if(p === scope.dragSrcEl.length-1 ){
-                  var newStartTime = e.target.className
-
+                  console.log(e.target)
+                  console.log(e.target.nodeName)
+                  if(e.target.nodeName === 'P'){
+                    console.log("this target element is a P instead of TD, you need to find the parent element to get the start time")
+                    console.log(e.target.closest('td'))
+                    var newStartTime = e.target.closest('td').className;
+                  } else {
+                    var newStartTime = e.target.className
+                  }
+                  console.log(newStartTime)
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     var clickedElement = this;
                     var pastDragSrcElLength = scope.pastDragSrcEl.length-1;
@@ -267,6 +288,8 @@
                   arrayOfTargets.push(e.target)
                 } else {
                   var newTarget = $(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0];
+                  console.log("newTarget in Drop is below")
+                  console.log(newTarget)
                   newTarget.id = "time-with-entry"
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date)
@@ -618,7 +641,7 @@
               var shortMonthNames = DateService.shortMonthNames;
 
               var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
-              var currentMonth = shortMonthNames[scope.date.months.previousMonth.count];
+              var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
               document.getElementById("calendar-month-year").innerHTML =
               oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
             }
