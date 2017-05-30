@@ -22,11 +22,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   $scope.viewType = 'month';
   $scope.date = new Date();
 
-  console.log(document.cookie)
-
-  $http.get('/userAuth').then(function(res){
-    console.log(res)
-  })
   // $scope.date = new Date(2017, 3, 30)
   var today = DateService.dateSplit($scope.date)
   $scope.calendarMonth = $scope.date.getMonth();
@@ -44,9 +39,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   $scope.listForCal = [];
 
   $scope.logout = function(){
-    console.log("log me out please.")
       $http.get('/logout').then(function(res){
-        console.log(res)
         if(res.data.status === 'success'){
           window.location.href = "/login"
         }
@@ -54,7 +47,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   }
 
   Todo.all.$promise.then(function(todos){
-    console.log(todos)
     $scope.todoLists = todos
     todos.forEach(function(todo){
       $scope.allTodoLists.push(todo)
@@ -259,13 +251,13 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
           }
         } else if($scope.viewType === 'month'){
           if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
-            if(listsInMonths.expectedNumOfList <= listsInMonths.numberOfLists){
+            // if(listsInMonths.numberOfLists <= listsInMonths.expectedNumOfList){
                 dateListsInCurrentMonth.push(list.lists[l])
                 if(list.lists[l].tasks.length && list.list_type == 'todo'){
                 $scope.parseAllTasks(list.lists[l], list)
                 }
               $scope.exists = true;
-            }
+            // }
           }
           if(fullListDate.year == $scope.changeDate.year && fullListDate.month > $scope.changeDate.monthCount){
             var l = list.lists.length;
@@ -324,7 +316,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     var oldMonthDate = {month: oldMonth, date: []};
     var newMonthDate = {month: newMonth, date: []};
     var fullDates = [];
-
     for(var t = dateArrayLength-7; t <= dateArrayLength-1; t++){
       if(firstWeeklyDate === 1){
         if($scope.changeDate.dayCount[t] < 7){
@@ -393,6 +384,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         $scope.changeDate.lastMove = "increment"
 
         var date = date + 1
+
         if(date > thisMonthsLastDay){
           console.log("INCREMENTINGGGGGGGGG")
           $scope.changeDate.monthCount++
@@ -528,7 +520,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       if(date <= 0){
         date = $scope.changeDate.months.previousMonth.days
       }
-      if(date > $scope.changeDate.months.previousMonth.days){
+      if(date > $scope.changeDate.months.thisMonth.days){
         date = 1
         $scope.changeDate.twoMonthsWeekly = true;
         // $scope.changeDate.monthCount++
@@ -648,7 +640,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       $scope.listForCal = [listForCal];
   }; // end of $scope.listClone
 
-  console.log($scope.changeDate)
   document.title = "Docket: " + $scope.changeDate.today.dayName + " " + $scope.changeDate.today.monthNames + " " + $scope.changeDate.today.date + ", " + $scope.changeDate.today.year;
 
   // this can almost assuredly be deleted, going to save until I get to delete/update for lists -- 4/12

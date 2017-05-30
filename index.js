@@ -34,7 +34,6 @@ app.engine(".hbs", hbs({
 
 // Global varialbes
 app.use(function(req, res, next){
-  ("global variable function called.  req is below")
   console.log(req.user)
   res.locals.user = req.user || null;
   next();
@@ -76,7 +75,6 @@ passport.use(new LocalStrategy(
       }
       Users.comparePassword(password, user.password, function(err, isMatch){
         console.log("Users.comparePassword isMatch: ")
-        console.log(isMatch)
         if(err) throw err;
         if(isMatch){
           return done(null, user)
@@ -85,35 +83,15 @@ passport.use(new LocalStrategy(
         }
       })
     })
-
-        // var findOneCallback = function(response){
-        //   console.log("successFunction")
-        //   console.log(response)
-        //   var hash = response.password;
-        //   console.log(candidatePassword)
-        //   console.log(hash)
-        //
-        //   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-        //     console.log(err)
-        //     console.log(isMatch)
-        //     if(err) throw err;
-        //     // callback(null, isMatch);
-        //   });
-        // };
-
-    // Users.findOne({email: username}).then(findOneCallback)
-
   }, verify));
 
   passport.serializeUser(function(user, done) {
     console.log("serializeUser")
-    console.log(user)
     done(null, user.id);
   });
 
   passport.deserializeUser(function(id, done) {
     console.log("deserializeUser")
-    console.log(id)
     Users.getUserById(id, function(err, user) {
       done(err, user);
     });
@@ -127,49 +105,22 @@ var setUser = function(user){
   }
 };
 
-app.get('/userAuth', function(req, res, next){
-  console.log("userAuth")
-  // console.log(req)
-  // console.log(setuser())
-  // res.json(user)
-})
-
-
 app.post('/login', function(req, res, next) {
   console.log("in /login endpoint")
-  console.log(req.body)
-  // console.log(res)
-  console.log(next)
   passport.authenticate('local', {successRedirect: "/", failureRedirect: "/login"},
   function(err, user, info) {
-    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ in passport ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    console.log("err = " + err)
-    console.log(user)
-    // setUser(user)
-    console.log("info = " + JSON.stringify(info))
     if (err) { return res.json(user); }
-
     if (!user) { return res.json({status: "fail", message: info}); }
     req.logIn(user, function(err) {
       if (err) { return next(err); }
       return res.json({status: "success"});
     });
-
-    console.log("~~~~~ IN PASSPORT req.isAuthenticated() is below ~~~~~")
-    console.log(req.isAuthenticated())
-
-    // res.redirect('/')
-
-
   })(req, res, next);
 });
 
 app.get('/logout', function(req, res){
   console.log("/logout ")
-  console.log(req.body.user)
-  console.log(res)
   req.logout();
-  // res.json()
   res.json({status: "success", message: "Logged out"});
 });
 
@@ -178,8 +129,6 @@ app.post('/register', function(req, res){
 
   Users.createUser(req.body, function(user, err){
     console.log("in Users.createUser.  users then error below")
-    console.log(user)
-    console.log(err)
     if(err){
       res.json(err)
     } else {
@@ -190,7 +139,6 @@ app.post('/register', function(req, res){
 
 app.get('/api/todo/:name', function(req, res){
   console.log("findOne todo List get")
-  console.log(req.params.name)
   Todo.findOne({task_name: req.params.name}).then(function(todo){
     res.json(todo)
   })
@@ -198,11 +146,8 @@ app.get('/api/todo/:name', function(req, res){
 
 app.get('/api/todo', function(req, res){
   console.log("todo get ")
-  console.log(req.user)
-  console.log(req.query)
   console.log("~~~~~ req.isAuthenticated() is below ~~~~~")
   console.log(req.isAuthenticated())
-  // console.log(req)
   if(req.user && req.user.id){
     if(req.query.list_name){
       Todo.findOne({list_name: req.query.list_name}).then(function(todo){
@@ -222,10 +167,7 @@ app.get('/api/todo', function(req, res){
 
 app.post("/api/todo", function(req, res){
   console.log("api POST ")
-  console.log(req.user)
   req.body.user_id = req.user.id
-  console.log(req.body)
-  // console.log("api POST " + JSON.stringify(req.body))
   Todo.create(req.body).then(function(){
     res.redirect("/")
   })
@@ -233,13 +175,8 @@ app.post("/api/todo", function(req, res){
 
 app.put("/api/todo/", function(req, res){
   console.log("todo PUT ")
-  // console.log(req.body)
-  console.log(req.body.todo)
-  console.log(req.body.todo.list_name)
-  console.log(req.body.todo.master_tasks)
-  console.log(req.body.todo.task_name)
+
   Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo, err){
-    console.log("todo put err = " + err)
     res.json(todo)
   })
 })

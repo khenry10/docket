@@ -89,6 +89,10 @@ a:hover {
   border-radius: 10px;
 }
 
+.pissing {
+    background-color: red;
+}
+
 .reg-input {
   background-color: white;
   color: #F9555F;
