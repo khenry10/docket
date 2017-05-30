@@ -24,5 +24,7 @@
     "passport-local": "*",
     "passport-strategy": "*",
     "mongoose": "^4.6.2",
+    "node": "5.12",
+    "npm":"3.8.6"
   }
 }
