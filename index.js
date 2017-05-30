@@ -4,10 +4,16 @@ var mongoose = require("./db/connection.js");
 var hbs      = require("express-handlebars");
 var parser   = require("body-parser");
 var app      = express();
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var bcrypt = require('bcryptjs');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
 var Expenses = mongoose.model("Expenses");
 var Todo = mongoose.model("Todo");
+var Users = mongoose.model("Users");
 
 app.use("/assets", express.static("public"));
 app.set("port", process.env.PORT || 3002);
@@ -26,18 +32,113 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
-// thought I would need the below for show functionality but the below /api is working
-// app.get('/api/:name', function(req, res){
-//   console.log("app.get is being used")
-//   Events.findOne({name: req.params.name}).then(function(event){
-//     console.log(event)
-//     res.json(event)
-//   })
-// })
+// Global varialbes
+app.use(function(req, res, next){
+  console.log(req.user)
+  res.locals.user = req.user || null;
+  next();
+})
+
+app.use(session({
+  secret: 'secret',
+  rolling: true,
+  store: new MongoStore({mongooseConnection: mongoose.connection}),
+  // saveUnitialized: true,
+  resave: true,
+}));
+
+console.log("**** session start *****")
+console.log(session)
+console.log("**** session end *****")
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+var verify = function(response){
+  console.log("verify function.  response is below")
+  console.log(response)
+}
+
+passport.use(new LocalStrategy(
+  // {usernameField:'login',
+  //   passwordField:'password'},
+  function(username, password, done) {
+    console.log(username)
+    console.log(password)
+
+    var candidatePassword = password;
+
+    Users.getUserByUsername(username, function(err, user){
+      if (err) throw err;
+      if(!user){
+        return done(null, false, {message: "Unknown username"})
+      }
+      Users.comparePassword(password, user.password, function(err, isMatch){
+        console.log("Users.comparePassword isMatch: ")
+        if(err) throw err;
+        if(isMatch){
+          return done(null, user)
+        } else {
+          return done(null, false, {message: "Invalid password"})
+        }
+      })
+    })
+  }, verify));
+
+  passport.serializeUser(function(user, done) {
+    console.log("serializeUser")
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(function(id, done) {
+    console.log("deserializeUser")
+    Users.getUserById(id, function(err, user) {
+      done(err, user);
+    });
+  });
+
+var setUser = function(user){
+  if(user){
+    user = user
+  } else {
+    return user
+  }
+};
+
+app.post('/login', function(req, res, next) {
+  console.log("in /login endpoint")
+  passport.authenticate('local', {successRedirect: "/", failureRedirect: "/login"},
+  function(err, user, info) {
+    if (err) { return res.json(user); }
+    if (!user) { return res.json({status: "fail", message: info}); }
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.json({status: "success"});
+    });
+  })(req, res, next);
+});
+
+app.get('/logout', function(req, res){
+  console.log("/logout ")
+  req.logout();
+  res.json({status: "success", message: "Logged out"});
+});
+
+app.post('/register', function(req, res){
+  console.log(req.body)
+
+  Users.createUser(req.body, function(user, err){
+    console.log("in Users.createUser.  users then error below")
+    if(err){
+      res.json(err)
+    } else {
+      res.json({status: "success"})
+    }
+  })
+});
 
 app.get('/api/todo/:name', function(req, res){
   console.log("findOne todo List get")
-  console.log(req.params.name)
   Todo.findOne({task_name: req.params.name}).then(function(todo){
     res.json(todo)
   })
@@ -45,23 +146,28 @@ app.get('/api/todo/:name', function(req, res){
 
 app.get('/api/todo', function(req, res){
   console.log("todo get ")
-  console.log(req.query)
-  // console.log(req)
-  if(req.query.list_name){
-    Todo.findOne({list_name: req.query.list_name}).then(function(todo){
-      res.json(todo)
-    })
-  } else {  
-    Todo.find().then(function(todo){
-      res.json(todo)
-    });
+  console.log("~~~~~ req.isAuthenticated() is below ~~~~~")
+  console.log(req.isAuthenticated())
+  if(req.user && req.user.id){
+    if(req.query.list_name){
+      Todo.findOne({list_name: req.query.list_name}).then(function(todo){
+        res.json(todo)
+      })
+    } else {
+      Todo.find({user_id: req.user.id}).then(function(todo){
+        res.json(todo)
+      });
+    }
+  } else {
+    res.json([])
   }
+
 });
 
 
 app.post("/api/todo", function(req, res){
   console.log("api POST ")
-  // console.log("api POST " + JSON.stringify(req.body))
+  req.body.user_id = req.user.id
   Todo.create(req.body).then(function(){
     res.redirect("/")
   })
@@ -69,21 +175,10 @@ app.post("/api/todo", function(req, res){
 
 app.put("/api/todo/", function(req, res){
   console.log("todo PUT ")
-  // console.log(req.body)
-  console.log(req.body.todo)
-  console.log(req.body.todo.list_name)
-  console.log(req.body.todo.master_tasks)
-  console.log(req.body.todo.task_name)
-  Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo){
+
+  Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo, err){
     res.json(todo)
   })
-
-// below didn't work for master tasks...
-  // Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, {$push: {master_tasks: req.body.todo.master_tasks}})
-  // .then(function(todo){
-  //   res.json(todo)
-  // })
-
 })
 
 app.get('/expenses', function(req, res){
@@ -142,8 +237,7 @@ app.delete("/api/event/:name",function(req, res){
 
 // route that directs to event.hbs, which is where we bootstrap angular
 app.get("/*", function(req, res){
-  console.log("wild card y'all")
-  console.log(req.params.name)
+
   res.render("event")
 })
 
@@ -152,5 +246,5 @@ app.get("/*", function(req, res){
 // })
 
 app.listen(app.get("port"), function(){
-  console.log("I'm alive...");
+  console.log("::::::::::::: You have turned me on.  I am alive... :::::::::::::");
 });

@@ -61,6 +61,45 @@ a:hover {
   text-decoration: none;
 }
 
+.homepage-wallpaper {
+  background-image: url('/assets/images/red-streak-city.png');
+  /*height: 500px;
+  width: 500px;*/
+  width: 105%;
+  height:890px;
+  background-size: contain; /* or contain depending on what you want */
+  background-position: center center;
+  background-repeat: no-repeat;
+  text-align:center;
+  /*margin:auto;
+  padding:0;*/
+  margin-left: -5px;
+  overflow: hidden;
+  margin-top: -120px;
+}
+
+.login-reg-box {
+  background-color: rgba(255, 255, 255, 0.17);
+  height: 29%;
+  width: 30%;
+  color: black;
+  margin-top: 225px;
+  margin-left: 20%;
+  padding-top: 1%;
+  border-radius: 10px;
+}
+
+.pissing {
+    background-color: red;
+}
+
+.reg-input {
+  background-color: white;
+  color: #F9555F;
+  height: 45px;
+  width: 300px;
+}
+
 /** {
   outline: 1px solid black;
 }*/
@@ -622,12 +661,12 @@ input[type=text].new-todo-input {
   width: 82%;
 }
 
-input[type=text] {
+/*input[type=text] {
   color: black;
   width: 150px;
   height: 30px;
   border-radius: 4px;
-}
+}*/
 
 .md-select-menu-container md-active md-clickable {
   z-index: 5000;

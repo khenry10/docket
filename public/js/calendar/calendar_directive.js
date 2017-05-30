@@ -25,6 +25,7 @@
       scope.monthlyDraggedItem = [];
 
         scope.$watch('listForCal', function(todosForCal, oldList){
+          console.log("scope.$watch")
           if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
@@ -66,7 +67,10 @@
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure){
           // creates and appends the new calendar items to the calendar
+
+          // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
           var bigTdContainer = document.getElementsByClassName(time)
+          // console.log(bigTdContainer)
           var pForBigTd = document.createElement('p')
           pForBigTd.setAttribute("draggable", true)
 
@@ -125,6 +129,9 @@
             pForBigTd.style.backgroundColor = "#cd27f4"
           }
 
+          if(bigTdContainer.childNodes.length){
+            bigTdContainer.style.display = "flex"
+          }
           bigTdContainer.appendChild(pForBigTd);
         };
 
@@ -144,7 +151,11 @@
           var startTimeAmOrPm = startTime[1].substr(2,4)
           var startTime = startTime[0]
 
-          var endTime = times.end_time.split(":")
+          if(times.end_time){
+            var endTime = times.end_time.split(":")
+          } else {
+            var endTime = list.end_time.split(":")
+          }
           var endTimeAmOrPm = endTime[1].substr(2,4)
           var endTime = endTime[0]
           var originalEndTime = endTime
@@ -212,8 +223,8 @@
 
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
-
-          var exists = document.getElementById(list._id+date)
+          console.log("appendToCalendar envoked")
+          var exists = document.getElementById(list._id+"&"+date)
           if(!exists){
             var li = document.createElement("li")
             li.setAttribute("draggable", true)
@@ -253,25 +264,36 @@
 
               e.target.id = "time-with-entry"
               var arrayOfTargets = [];
+              var doubleEntries = false;
 
               for(var p = scope.dragSrcEl.length-1; p >= 0; p--){
                 if(p === scope.dragSrcEl.length-1 ){
-                  var newStartTime = e.target.className
-
+                  var target = e.target;
+                  if(e.target.nodeName === 'P'){
+                    doubleEntries = true;
+                    scope.dragSrcEl[p].element.style.outline = "1px solid red"
+                    scope.dragSrcEl[p].element.className = "pissing"
+                    var newStartTime = e.target.closest('td').className;
+                    target = e.target.closest('td')
+                    target.style.display = "flex";
+                  } else {
+                    var newStartTime = e.target.className
+                  }
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     var clickedElement = this;
                     var pastDragSrcElLength = scope.pastDragSrcEl.length-1;
                     scope.calendarItemModal(scope.pastDragSrcEl[pastDragSrcElLength].list, scope.pastDragSrcEl[pastDragSrcElLength].date)
                   })
-                  e.target.appendChild(scope.dragSrcEl[p].element)
+
+                  target.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(e.target)
                 } else {
                   var newTarget = $(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0];
+                  scope.dragSrcEl[p].element.style.outline = "1px solid red"
                   newTarget.id = "time-with-entry"
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date)
                   })
-
                   newTarget.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(newTarget)
 
@@ -379,6 +401,7 @@
         }
 
         scope.pickCorrectDateForCal = function(date, list, times){
+          console.log("scope.pickCorrectDateForCal envoked")
           scope.hourlyUl = document.createElement("ul")
           scope.hourlyUl.className = list.list_name + "-" + date
 
@@ -414,9 +437,11 @@
               if(scope.newView === 'week'){
                 var startTime = e.srcElement.className;
                 var date = e.srcElement.attributes[1].ownerElement.offsetParent.offsetParent.children[0].cells[index+1].id;
-                var date = date.split("/");
-                var month = date[0];
-                var entryDate = date[1];
+                var tdRowIndex = $(e.srcElement).closest('tr')[0].className;
+                var date = document.getElementsByClassName("row-headings")[0].childNodes[parseInt($(e.srcElement).closest('tr')[0].className)+1].id;
+                var date = date.split("-");
+                var month = date[1];
+                var entryDate = date[2];
                 var date = {date: entryDate, month: month, year: year, startTime: e.srcElement.className};
               } else {
                   var ulDate = e.srcElement.id.split("-")[2];
@@ -611,17 +636,29 @@
 
           var longMonthNames = DateService.monthNames;
           var currentMonth = longMonthNames[scope.date.monthCount];
-          if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
+
+          if(scope.date.twoMonthsWeekly && scope.newView === 'week' ){
+            var shortMonthNames = DateService.shortMonthNames;
+            if(scope.date.weekCount === 0){
+              var oldMonth = shortMonthNames[scope.date.today.monthNumber];
+              var currentMonth = shortMonthNames[scope.date.today.monthNumber+1];
+            } else {
+              var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
+              var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
+            }
+            document.getElementById("calendar-month-year").innerHTML =
+            oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
+          } else if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
             document.getElementById("calendar-month-year").innerHTML =
             currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
-            if(scope.date.twoMonthsWeekly){
-              var shortMonthNames = DateService.shortMonthNames;
 
-              var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
-              var currentMonth = shortMonthNames[scope.date.months.previousMonth.count];
-              document.getElementById("calendar-month-year").innerHTML =
-              oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
-            }
+            // if(scope.date.twoMonthsWeekly){
+            //   var shortMonthNames = DateService.shortMonthNames;
+            //   var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
+            //   var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
+            //   document.getElementById("calendar-month-year").innerHTML =
+            //   oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
+            // }
           } else {
             document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
           }
