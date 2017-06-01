@@ -3,11 +3,7 @@
 <div>
   <div class="task-list-workspace" >
     <div ng-init="todoVM.fetchData()" class="simpleDemo" style="">
-      <!-- <div ng-if="listType === 'shopping' " style="margin-top: 0px">
-        <p style="margin-top: 0px"> Budget: {{ data.budget | currency }} </p>
-        <p style="margin-top: 0px"> Remaining: {{ data.budget - totalShoppingList | currency }} </p>
-        <p style="margin-top: 0px"> Shopping List Total: {{ totalShoppingList | currency }} </p>
-      </div> -->
+
 
       <div class="container"
         style="background-color: rgba(0, 0, 0, 0.7); width: 100%; margin-top: 0px; color: white; border: 1px; border-radius: 15px;">
@@ -18,11 +14,6 @@
             <p style=" margin-bottom: 0px"> Purchased: </p>
             <p> {{ shoppingPurchased | currency }} </p>
           </span>
-
-          <!-- <span style="margin-top: 0px width: 33%">
-            <p style=" margin-bottom: 0px"> Remaining Budget: </p>
-            <p> {{ data.budget - totalShoppingList | currency }} </p>
-          </span> -->
 
           <span style="margin-top: 0px width: 33%">
             <p style=" margin-bottom: 0px"> List Total: </p>

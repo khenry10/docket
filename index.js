@@ -181,6 +181,13 @@ app.put("/api/todo/", function(req, res){
   })
 })
 
+app.delete("/api/todo/delete/:name",function(req, res){
+  console.log(req.params.name)
+  Todo.findOneAndRemove({name: req.params.name}).then(function(){
+    res.json({success: true})
+  })
+})
+
 app.get('/expenses', function(req, res){
   console.log("expenses api called. 1")
   Expenses.find().then(function(expenses){

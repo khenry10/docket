@@ -227,6 +227,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   };
 
   $scope.verifyCloneList = function(addNew){
+    console.log(addNew)
     $scope.listForCal = [];
     $scope.allTasks = [];
     $scope.exists = false;
@@ -304,10 +305,13 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     console.log("splitTwoMonthsWeeklyIntoOldAndNew")
     var dateArrayLength = $scope.changeDate.dayCount.length;
     var firstWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-7]
+    console.log($scope.changeDate)
     if($scope.changeDate.lastMove === 'increment'){
       var lastDayOfOldMonth = $scope.changeDate.months.thisMonth.days;
-      var oldMonth = $scope.changeDate.months.thisMonth.count;
-      var newMonth = $scope.changeDate.months.nextMonth.count;
+      // June 1st, I changed the below.  oldMonth use to be thisMonth and newMonth was next month,
+      // I have a feeling I keep changing these back and forth to accomdate for beg/end of month and not fixing the core issue
+      var oldMonth = $scope.changeDate.months.previousMonth.count;
+      var newMonth = $scope.changeDate.months.thisMonth.count;
     } else if($scope.changeDate.lastMove === 'decrement') {
       var lastDayOfOldMonth = $scope.changeDate.months.previousMonth.days;
       var oldMonth = $scope.changeDate.monthCount;
@@ -368,7 +372,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
     if(move === "increment"){
       var thisMonthsLastDay = new Date($scope.calendarYear, $scope.changeDate.monthCount, 0).getDate()
-
+      console.log("thisMonthsLastDay = " + thisMonthsLastDay)
       if($scope.changeDate.lastMove === "decrement"){
         // when we go from increment to decrement we need to adjust the date count in order to synchronize correctly
         var date = actionDate+6
@@ -520,7 +524,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       if(date <= 0){
         date = $scope.changeDate.months.previousMonth.days
       }
-      if(date > $scope.changeDate.months.thisMonth.days){
+
+      if(date > lastDay){
         date = 1
         $scope.changeDate.twoMonthsWeekly = true;
         // $scope.changeDate.monthCount++

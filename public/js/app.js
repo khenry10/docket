@@ -14,19 +14,16 @@
       { query:  {method:"GET", params: {list_name: '@name'}} },
       { update: {method: "PUT"} },
       { find:  {method:"GET", params: {list_name: '@name'}} },
-      { get: {method: "GET", isArray: false} }
+      { get: {method: "GET", isArray: false} },
+      { remove: {method: "DELETE"}},
+      {
+        delete_list: {
+          method: 'DELETE'
+        }
+      }
     )
     Todo.all = Todo.query();
-    // Todo.find = Todo.find();
-    Todo.findWithGet = Todo.query()
-
-
-    // Todo.find = Todo.get();
-
-    // Todo.find = function(param){
-    //   console.log(param)
-    //   Todo.get()
-    // };
+    Todo.findWithGet = Todo.query();
 
     console.log(Todo)
     return Todo

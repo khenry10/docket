@@ -30,10 +30,14 @@
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){
+                console.log(todoForCal)
                 if(todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
+                    console.log(dateList)
                     var date = dateList.date;
                     var times = {start_time: dateList.start_time, end_time: dateList.end_time}
+                    console.log("****times****")
+                    console.log(times)
                     scope.pickCorrectDateForCal(date, todoForCal.todo, times)
                   })
                 }
@@ -147,6 +151,7 @@
         }
 
         var putHourlyItemsOnWeeklyCalendar = function(list, date, realListDate, times){
+          console.log(times)
           // this function processes the calendar item's details, like start and end end time am/pm and how many hours, and calls createHourlyCalItem and addMiddleTimeCalItems functions
           createHourlyCalItem(list, times.start_time, date, realListDate, "startTime")
 
@@ -226,6 +231,7 @@
 
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
+          console.log(times)
           console.log("appendToCalendar envoked")
           var exists = document.getElementById(list._id+"&"+date)
           if(!exists){
@@ -428,7 +434,7 @@
                 var realListDate = list.first_day
                 var listDay = list.first_day.getDay()
                 var ul = document.getElementsByClassName("w"+listDay)
-                appendToCalendar(listDay, date, list, realListDate, ul)
+                appendToCalendar(listDay, date, list, realListDate, ul, times)
               } else {
                   // we use list.first_day so that the calendar items appear on the correct day of the week when is recurrs weekly, monthly, yearly
                   var listDate = list.first_day.split("-")
@@ -644,9 +650,10 @@
           var longMonthNames = DateService.monthNames;
           var currentMonth = longMonthNames[scope.date.monthCount];
 
+          console.log(scope.date)
           if(scope.date.twoMonthsWeekly && scope.newView === 'week' ){
             var shortMonthNames = DateService.shortMonthNames;
-            if(scope.date.weekCount === 0){
+            if(scope.date.weekCount === 0  && scope.date.today.date !== 1){
               var oldMonth = shortMonthNames[scope.date.today.monthNumber];
               var currentMonth = shortMonthNames[scope.date.today.monthNumber+1];
             } else {
@@ -672,6 +679,7 @@
         }
 
         var weeklyTableHeadingRow = function(th, i){
+          console.log(scope.date.twoMonthsWeeklyDate)
           if(scope.date.twoMonthsWeekly){
             th.setAttribute("id", scope.date.twoMonthsWeeklyDate.fullDates[i-1])
             th.innerHTML = daysOfWeek[i] + "  " + scope.date.twoMonthsWeeklyDate.fullDates[i-1].split("-")[2]
