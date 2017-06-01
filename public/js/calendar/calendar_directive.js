@@ -117,6 +117,7 @@
           bigTdContainer.setAttribute("id", "time-with-entry");
           pForBigTd.setAttribute("class", timeStructure);
 
+          // weekly calenar items color scheme
           if(list.category === "Health"){
             pForBigTd.style.backgroundColor = "#27b6f4"
           } else if (list.category === "Personal Project"){
@@ -127,6 +128,8 @@
             pForBigTd.style.backgroundColor = "#4FF427"
           }  else if(list.category === "Household" ){
             pForBigTd.style.backgroundColor = "#cd27f4"
+          } else {
+            pForBigTd.style.backgroundColor = "#909487"
           }
 
           if(bigTdContainer.childNodes.length){
@@ -370,7 +373,11 @@
               ul.addEventListener('drop', scope.handleWeeklyDrop, false);
             };
 
-            var category = list.category.split(" ").join("");
+            if(list.category){
+              var category = list.category.split(" ").join("");
+            } else {
+              var category = "Other"
+            }
 
             li.setAttribute("class",category)
             li.setAttribute("id", list._id+"&"+date)

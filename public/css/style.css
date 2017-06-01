@@ -204,6 +204,10 @@ li.Household {
   background-color: #cd27f4;
 }
 
+li.Other {
+  background-color: #909487;
+}
+
 #PersonalProject {
   background-color: #27f4cc;
   height: 30px;
