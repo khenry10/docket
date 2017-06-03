@@ -4,18 +4,26 @@
       <div class="modal-header" style="padding: 10px">
         <button type="button" class="close" ng-click="close(false)" data-dismiss="modal" aria-hidden="true">&times;</button>
 
-        <h3 class="modal-title">{{ data.list_name }} </h3>
+        <h3 class="modal-title" ng-click="edit()" ng-if="!showEdit"> {{ editalbeTitle }} </h3>
+        <h3 class="modal-title" ng-if="showEdit">
+          <i class="fa fa-check"
+              style="color: white; background-color: #489fdf; padding: 1.5%; margin-right: -7px;"
+              ng-click="edit(editalbeTitle)"
+              aria-hidden="true">
+        </i>
+          <input placeholder="{{editalbeTitle}}" ng-model="editalbeTitle" style="width: 35%;">
+        </h3>
         <h5> {{ niceDate }} </h5>
       </div>
       <div class="modal-body" style="background-color: #F2F3F4">
 
         <dd-checklist data="data" date="date" list-type="listType" element=" 'cal-entry-modal' "
                       all-tasks="allTasks" parse-all-tasks="parseAllTasks"></dd-checklist>
-          <md-button class="md-raised md-warn" style='min-width:1%;' ng-click="deleteList()">Delete</md-button>
       </div>
-      <!-- <div class="modal-footer">
+      <div class="modal-footer" style="padding: 0;">
+        <md-button class="md-raised md-warn" style='min-width:1%;' ng-click="deleteList()">Delete</md-button>
 
-      </div> -->
+      </div>
     </div>
   </div>
 </div>

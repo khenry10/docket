@@ -265,9 +265,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     console.log("$scope.verifyCloneList "  + called)
     console.log($scope.allTodoLists)
     console.log(addNew)
-    // listForCal = [];
-    // $scope.listForCal = [];
-    // $scope.allTasks = [];
     $scope.exists = false;
     if(addNew){
       $scope.allTodoLists = [];

@@ -28,6 +28,24 @@ function modalController(Todo, $scope, data, date, allTasks, parseAllTasks, clos
   var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   var newDate = new Date(splitDate[0], splitDate[1]-1, splitDate[2])
   $scope.niceDate = daysOfWeek[newDate.getDay()] + " " + monthName[splitDate[1]-1] +" "+ splitDate[2] + ", " + splitDate[0];
+  $scope.originalListName = $scope.data.list_name;
+  $scope.editalbeTitle = $scope.data.list_name;
+  $scope.showEdit = false;
+
+  $scope.edit = function(newTitle){
+    console.log("edit clicked")
+    console.log(newTitle)
+    $scope.showEdit = !$scope.showEdit;
+    if(newTitle){
+      $scope.editalbeTitle = newTitle;
+        var newList = $scope.data;
+        newList.list_name = newTitle;
+        console.log(newList)
+        Todo.update({list_name: $scope.originalListName}, {todo: newList}, function(res){
+          console.log(res)
+        })
+    }
+  }
   $scope.deleteList = function(){
     console.log("delete")
 
