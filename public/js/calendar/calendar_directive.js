@@ -7,10 +7,11 @@
     "Todo",
     "ModalService",
     "DateService",
+    "$http",
     calendarDirectiveFunction
   ])
 
-  function calendarDirectiveFunction(Todo, ModalService, DateService){
+  function calendarDirectiveFunction(Todo, ModalService, DateService, $http){
     return {
       templateUrl: "/assets/html/_calendar.html",
       scope: {
@@ -26,6 +27,8 @@
 
         scope.$watch('listForCal', function(todosForCal, oldList){
           console.log("scope.$watch")
+          console.log(todosForCal)
+          console.log(oldList)
           if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
@@ -47,6 +50,7 @@
         }, true);
 
       scope.calendarItemModal = function (list, date){
+        console.log("scope.calendarItemModal envoked")
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
@@ -58,8 +62,12 @@
           }
         }).then(function(modal) {
           //it's a bootstrap element, use 'modal' to show it
+          console.log(".then in scope.calendarItemModal")
           modal.element.modal();
           modal.close.then(function(result) {
+
+            scope.$parent.pullTodos('ajax')
+
           });
         });
       };
@@ -231,7 +239,7 @@
 
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
-          console.log(times)
+          console.log(list.list_name)
           console.log("appendToCalendar envoked")
           var exists = document.getElementById(list._id+"&"+date)
           if(!exists){
@@ -654,12 +662,14 @@
           if(scope.date.twoMonthsWeekly && scope.newView === 'week' ){
             var shortMonthNames = DateService.shortMonthNames;
             if(scope.date.weekCount === 0  && scope.date.today.date !== 1){
-              var oldMonth = shortMonthNames[scope.date.today.monthNumber];
-              var currentMonth = shortMonthNames[scope.date.today.monthNumber+1];
+              var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
+              var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
             } else {
               var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
               var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
             }
+            console.log("oldMonth = " + oldMonth)
+            console.log("currentMonth = " + currentMonth)
             document.getElementById("calendar-month-year").innerHTML =
             oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
           } else if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){

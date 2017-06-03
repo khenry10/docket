@@ -181,9 +181,18 @@ app.put("/api/todo/", function(req, res){
   })
 })
 
-app.delete("/api/todo/delete/:name",function(req, res){
+app.delete("/api/todo/:name",function(req, res){
+  console.log("DELETEEEEEEEEEE 2")
+  // console.log(req)
   console.log(req.params.name)
-  Todo.findOneAndRemove({name: req.params.name}).then(function(){
+  console.log(req.body)
+  var error = function(message){
+    console.log("error message")
+    console.log(message)
+  }
+  Todo.findOneAndRemove({list_name: req.params.name}).then(function(response, error){
+    console.log("success message")
+    console.log(response)
     res.json({success: true})
   })
 })

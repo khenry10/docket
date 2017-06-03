@@ -7,10 +7,11 @@ angular.module("app").controller("modalController", [
   "date",
   "allTasks",
   "parseAllTasks",
+  "close",
   modalController
 ])
 
-function modalController(Todo, $scope, data, date, allTasks, parseAllTasks){
+function modalController(Todo, $scope, data, date, allTasks, parseAllTasks, close){
   console.log("modal controller")
   console.log($scope)
   console.log(date)
@@ -29,12 +30,21 @@ function modalController(Todo, $scope, data, date, allTasks, parseAllTasks){
   $scope.niceDate = daysOfWeek[newDate.getDay()] + " " + monthName[splitDate[1]-1] +" "+ splitDate[2] + ", " + splitDate[0];
   $scope.deleteList = function(){
     console.log("delete")
-    console.log($scope.data)
-    console.log(Todo)
-    console.log(Todo.remove())
-    Todo.delete({list_name: $scope.date.list_name}, {todo: $scope.data}, function(res){
-      console.log(res)
-      $scope.close(false)
+
+    // $scope.data.$delete(function(res){
+    //   console.log(res)
+    //   close()
+    //   $('#add-new-modal').modal('hide');
+    //   $('body').removeClass('modal-open');
+    //   $('.modal-backdrop').remove();
+    // })
+
+
+    Todo.remove({name: $scope.data.list_name}, function(res){
+      close()
+      $('#add-new-modal').modal('hide');
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').remove();
     })
   };
 }
