@@ -1,30 +1,31 @@
 'use strict';
 
 angular.module("app").controller("budgetController", [
-  "Lists",
+  "Budget",
   "$window",
   "$scope",
   budgetController
 ])
 
-function budgetController(Lists, $window){
+function budgetController(Budget, $window){
+  console.log("budgetController")
   var finances = [];
   var variableExpenses = [];
   var fixedExpenses = [];
   var revenue = [];
-  Lists.all.$promise.then(function(){
-    Lists.all.forEach(function(list){
+  Budget.all.$promise.then(function(){
+    Budget.all.forEach(function(budget){
+      console.log(budget)
+      finances.push(budget)
 
-      finances.push(list)
-
-      if(list.type === 'expense' && list.category === "variable"){
-        variableExpenses.push(list.amount)
+      if(budget.type === 'expense' && budget.category === "variable"){
+        variableExpenses.push(budget.amount)
       }
-      if(list.type === 'expense' && list.category === "fixed"){
-        fixedExpenses.push(list.amount)
+      if(budget.type === 'expense' && budget.category === "fixed"){
+        fixedExpenses.push(budget.amount)
       }
-      if(list.type === 'revenue'){
-        revenue.push(list.amount)
+      if(budget.type === 'revenue'){
+        revenue.push(budget.amount)
       }
 
       vm.variableExpensesTotal = 0;
@@ -42,7 +43,7 @@ function budgetController(Lists, $window){
   });
 
   var vm = this
-  vm.lists = Lists.all
+  vm.budget = Budget.all
 
   var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
   var date = new Date()
@@ -56,7 +57,7 @@ function budgetController(Lists, $window){
       vm.months.push(month_name[i])
     }
     console.log(vm.months)
-    // $window.location.replace('/list')
+
   };
 
   vm.fullYear = function(){

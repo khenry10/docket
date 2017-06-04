@@ -3,7 +3,7 @@
 (function(){
   angular
   .module("app", ["ngResource", "ui.router", "ngMaterial", "xeditable", "dndLists", "angularModalService"])
-  .factory("Lists", ["$resource",Lists])
+  .factory("Budget", ["$resource",Budget])
   .factory("Todo", ["$resource", Todo])
 
   function Todo($resource){
@@ -34,13 +34,13 @@
     console.log(User.get())
   };
 
-  function Lists($resource){
+  function Budget($resource){
     console.log("Lists factory envoked")
-    var Lists = $resource("/expenses", {}, {
+    var Lists = $resource("/api/budget", {}, {
       update: {method: "PUT"}
     })
-    Lists.all = Lists.query();
-    return Lists
+    Budget.all = Lists.query();
+    return Budget
   };
 
   // function Events($resource){

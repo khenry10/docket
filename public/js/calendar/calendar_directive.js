@@ -605,6 +605,7 @@
           // we pass the number of rows to create through rows parameter to distinguish between month and weekly view. And months with 5 or 6 rows
           for(var t = 0; t < rows; t++){
             var tr = document.createElement("tr")
+
             if(scope.newView === 'week'){
               buildTimeTable(tr, true, undefined, year)
             }
@@ -676,13 +677,6 @@
             document.getElementById("calendar-month-year").innerHTML =
             currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
 
-            // if(scope.date.twoMonthsWeekly){
-            //   var shortMonthNames = DateService.shortMonthNames;
-            //   var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
-            //   var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
-            //   document.getElementById("calendar-month-year").innerHTML =
-            //   oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
-            // }
           } else {
             document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
           }
@@ -763,6 +757,7 @@
             // creates 2nd, 3rd and 4th date rows
             //conditional to determine if the first day of the month starts on Friday AND has 31 days.  They need an extra row, so we need to loop through 4 times
             var td = document.createElement("td");
+
             if((numberOfDays === 31 && firstDayOfMonth === 5) || (numberOfDays === 31 && firstDayOfMonth === 6) || (numberOfDays === 30 && firstDayOfMonth === 6)){
               dyanmicRowCreator(4, table, td, p, tr, numberOfDays, month, year)
 
@@ -772,6 +767,7 @@
             }
             // creates last row (6th row for months that start on Friday and have 31 days & 5th row for all others)
             var tr = document.createElement("tr")
+
             for(var i = 0; i < 7; i++){
               if(scope.count <= numberOfDays){
                 createTDsInRows(table, td, p, tr, numberOfDays, month, year)
@@ -787,9 +783,22 @@
           if(scope.newView === 'week'){
             dyanmicRowCreator(1, table, td, p, tr, numberOfDays, month, year)
           }
-                table.appendChild(tr)
+                table.appendChild(tr);
+                var numberOfRows = table.rows.length;
+                var calHeight = $(".calendar").height();
+
+                for(var i = 0; i < numberOfRows-1; i++){
+                  if(i !== 0 ){
+                    var rowHeight = calHeight/6;
+                    var rowHeight = rowHeight.toString() + "px";
+                    table.rows[i].style.height = rowHeight;
+                  }
+                }
+
                 document.getElementById("calendar-dates").appendChild(table);
                 var p = document.createElement("p")
+
+
         }
         // end ---> of make_calendar function <------//
 

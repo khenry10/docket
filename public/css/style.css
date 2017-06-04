@@ -355,8 +355,7 @@ div#time.endTimeTd {
   color: #34495E;
   margin-bottom: 0;
   margin-right: 5px;
-  min-height: 580px;
-  height: 705px;
+  min-height: 610px;
 }
 
 .protocol-table {
@@ -630,7 +629,7 @@ a {
 }
 
 .create-new-panel {
-  background-color: rgb(78, 80, 89);
+  background-color: rgb(189,189,189);
   margin-top: -7.5px;
   padding: 10px;
   border-radius: 2px;

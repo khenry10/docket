@@ -20,14 +20,14 @@ var EventSchema = new mongoose.Schema(
 );
 mongoose.model("Events", EventSchema);
 
-var ExpenseSchema = new mongoose.Schema({
+var BudgetSchema = new mongoose.Schema({
   name: String,
   amount: Number,
   type: String,
   recurring: String,
   category: String
 });
-mongoose.model("Expenses", ExpenseSchema);
+mongoose.model("Budget", BudgetSchema);
 
 var UserSchema = new mongoose.Schema({
   name: String,
