@@ -10,12 +10,12 @@
     console.log("Todo factory envoked")
     // below was commented out as the 2nd params in $resource function
     // { query:  {method:"GET", isArray: true}
-    var Todo = $resource("api/todo/:name", {list_name: '@name'},
+    var Todo = $resource("api/todo/:name", 
       // { query:  {method:"GET", params: {list_name: '@name'}} },
       { update: {method: "PUT"} },
       // { find:  {method:"GET", params: {list_name: '@name'}} },
       // { get: {method: "GET", isArray: false} },
-      // { delete: {method: "DELETE"}, params: {list_name: '@name'}},
+      { delete: {method: "DELETE"}, params: {list_name: '@name'}},
 
     )
 
