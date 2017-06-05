@@ -33,7 +33,7 @@ function router($stateProvider, $locationProvider){
     url: "/budget",
     templateUrl: "/assets/html/budget.html",
     controller: "budgetController",
-    controllerAs: "listsVM"
+    controllerAs: "budgetVM"
   })
   .state("list", {
     url: "/list",

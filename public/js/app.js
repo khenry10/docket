@@ -3,47 +3,44 @@
 (function(){
   angular
   .module("app", ["ngResource", "ui.router", "ngMaterial", "xeditable", "dndLists", "angularModalService"])
-  .factory("Lists", ["$resource",Lists])
+  .factory("Budget", ["$resource",Budget])
   .factory("Todo", ["$resource", Todo])
 
   function Todo($resource){
     console.log("Todo factory envoked")
     // below was commented out as the 2nd params in $resource function
     // { query:  {method:"GET", isArray: true}
-    var Todo = $resource("api/todo/:name",
-      { query:  {method:"GET", params: {list_name: '@name'}} },
+    var Todo = $resource("api/todo/:name", {list_name: '@name'},
+      // { query:  {method:"GET", params: {list_name: '@name'}} },
       { update: {method: "PUT"} },
-      { find:  {method:"GET", params: {list_name: '@name'}} },
-      { get: {method: "GET", isArray: false} }
+      // { find:  {method:"GET", params: {list_name: '@name'}} },
+      // { get: {method: "GET", isArray: false} },
+      // { delete: {method: "DELETE"}, params: {list_name: '@name'}},
+
     )
+
     Todo.all = Todo.query();
-    // Todo.find = Todo.find();
-    Todo.findWithGet = Todo.query()
+    Todo.findWithGet = Todo.query();
 
-
-    // Todo.find = Todo.get();
-
-    // Todo.find = function(param){
-    //   console.log(param)
-    //   Todo.get()
-    // };
 
     console.log(Todo)
     return Todo
   };
+
+
 
   function User($resource){
     var User = $resource("/userAuth", {}, {})
     console.log(User.get())
   };
 
-  function Lists($resource){
+  function Budget($resource){
     console.log("Lists factory envoked")
-    var Lists = $resource("/expenses", {}, {
+    var Lists = $resource("/api/budget", {}, {
       update: {method: "PUT"}
     })
-    Lists.all = Lists.query();
-    return Lists
+    Budget.all = Lists.query();
+    return Budget
   };
 
   // function Events($resource){

@@ -4,7 +4,7 @@ var expenseSeeds = require("./seeds/expenseSeeds.json");
 var todoSeeds = require("./seeds/todoSeeds.json");
 
 var Event = mongoose.model("Events");
-var Expenses = mongoose.model("Expenses");
+var Budget = mongoose.model("Budget");
 var Todo = mongoose.model("Todo")
 
 console.log("I am seeding the database for you...")
@@ -21,8 +21,8 @@ Event.remove({}).then(function(){
   });
 });
 
-Expenses.remove({}).then(function(){
-  Expenses.collection.insert(expenseSeeds).then(function(){
+Budget.remove({}).then(function(){
+  Budget.collection.insert(expenseSeeds).then(function(){
     process.exit();
   });
 });

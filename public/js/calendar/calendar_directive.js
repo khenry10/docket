@@ -7,10 +7,11 @@
     "Todo",
     "ModalService",
     "DateService",
+    "$http",
     calendarDirectiveFunction
   ])
 
-  function calendarDirectiveFunction(Todo, ModalService, DateService){
+  function calendarDirectiveFunction(Todo, ModalService, DateService, $http){
     return {
       templateUrl: "/assets/html/_calendar.html",
       scope: {
@@ -34,6 +35,7 @@
                   todoForCal.modifiedDateList.forEach(function(dateList){
                     var date = dateList.date;
                     var times = {start_time: dateList.start_time, end_time: dateList.end_time}
+
                     scope.pickCorrectDateForCal(date, todoForCal.todo, times)
                   })
                 }
@@ -54,8 +56,10 @@
           }
         }).then(function(modal) {
           //it's a bootstrap element, use 'modal' to show it
+
           modal.element.modal();
           modal.close.then(function(result) {
+          scope.$parent.pullTodos('ajax')
           });
         });
       };
@@ -226,7 +230,6 @@
 
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
-          console.log("appendToCalendar envoked")
           var exists = document.getElementById(list._id+"&"+date)
           if(!exists){
             var li = document.createElement("li")
@@ -258,7 +261,6 @@
             };
 
             scope.handleWeeklyDrop = function(e){
-              console.log("DROPPED")
               e.preventDefault();
 
               if (e.stopPropagation) {
@@ -428,7 +430,7 @@
                 var realListDate = list.first_day
                 var listDay = list.first_day.getDay()
                 var ul = document.getElementsByClassName("w"+listDay)
-                appendToCalendar(listDay, date, list, realListDate, ul)
+                appendToCalendar(listDay, date, list, realListDate, ul, times)
               } else {
                   // we use list.first_day so that the calendar items appear on the correct day of the week when is recurrs weekly, monthly, yearly
                   var listDate = list.first_day.split("-")
@@ -591,6 +593,7 @@
           // we pass the number of rows to create through rows parameter to distinguish between month and weekly view. And months with 5 or 6 rows
           for(var t = 0; t < rows; t++){
             var tr = document.createElement("tr")
+
             if(scope.newView === 'week'){
               buildTimeTable(tr, true, undefined, year)
             }
@@ -644,28 +647,24 @@
           var longMonthNames = DateService.monthNames;
           var currentMonth = longMonthNames[scope.date.monthCount];
 
+          console.log(scope.date)
           if(scope.date.twoMonthsWeekly && scope.newView === 'week' ){
             var shortMonthNames = DateService.shortMonthNames;
-            if(scope.date.weekCount === 0){
-              var oldMonth = shortMonthNames[scope.date.today.monthNumber];
-              var currentMonth = shortMonthNames[scope.date.today.monthNumber+1];
+            if(scope.date.weekCount === 0  && scope.date.today.date !== 1){
+              var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
+              var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
             } else {
               var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
               var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
             }
+            console.log("oldMonth = " + oldMonth)
+            console.log("currentMonth = " + currentMonth)
             document.getElementById("calendar-month-year").innerHTML =
             oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
           } else if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
             document.getElementById("calendar-month-year").innerHTML =
             currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
 
-            // if(scope.date.twoMonthsWeekly){
-            //   var shortMonthNames = DateService.shortMonthNames;
-            //   var oldMonth = shortMonthNames[scope.date.months.previousMonth.count];
-            //   var currentMonth = shortMonthNames[scope.date.months.thisMonth.count];
-            //   document.getElementById("calendar-month-year").innerHTML =
-            //   oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
-            // }
           } else {
             document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
           }
@@ -745,6 +744,7 @@
             // creates 2nd, 3rd and 4th date rows
             //conditional to determine if the first day of the month starts on Friday AND has 31 days.  They need an extra row, so we need to loop through 4 times
             var td = document.createElement("td");
+
             if((numberOfDays === 31 && firstDayOfMonth === 5) || (numberOfDays === 31 && firstDayOfMonth === 6) || (numberOfDays === 30 && firstDayOfMonth === 6)){
               dyanmicRowCreator(4, table, td, p, tr, numberOfDays, month, year)
 
@@ -754,6 +754,7 @@
             }
             // creates last row (6th row for months that start on Friday and have 31 days & 5th row for all others)
             var tr = document.createElement("tr")
+
             for(var i = 0; i < 7; i++){
               if(scope.count <= numberOfDays){
                 createTDsInRows(table, td, p, tr, numberOfDays, month, year)
@@ -769,9 +770,22 @@
           if(scope.newView === 'week'){
             dyanmicRowCreator(1, table, td, p, tr, numberOfDays, month, year)
           }
-                table.appendChild(tr)
+                table.appendChild(tr);
+                var numberOfRows = table.rows.length;
+                var calHeight = $(".calendar").height();
+
+                for(var i = 0; i < numberOfRows-1; i++){
+                  if(i !== 0 ){
+                    var rowHeight = calHeight/6;
+                    var rowHeight = rowHeight.toString() + "px";
+                    table.rows[i].style.height = rowHeight;
+                  }
+                }
+
                 document.getElementById("calendar-dates").appendChild(table);
                 var p = document.createElement("p")
+
+
         }
         // end ---> of make_calendar function <------//
 

@@ -11,7 +11,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 //  ::end:: dependencies
 var Events   = mongoose.model("Events");
-var Expenses = mongoose.model("Expenses");
+var Budget = mongoose.model("Budget");
 var Todo = mongoose.model("Todo");
 var Users = mongoose.model("Users");
 
@@ -173,24 +173,47 @@ app.post("/api/todo", function(req, res){
   })
 })
 
-app.put("/api/todo/", function(req, res){
+app.put("/api/todo", function(req, res){
   console.log("todo PUT ")
-
-  Todo.findOneAndUpdate({list_name: req.body.todo.list_name}, req.body.todo, {new: false}).then(function(todo, err){
+  console.log(req.params.name)
+  console.log(req.body.todo.list_name)
+  console.log(req.body.todo)
+  Todo.findOneAndUpdate({_id: req.body.todo._id}, req.body.todo, {new: false}).then(function(todo, err){
     res.json(todo)
   })
 })
 
-app.get('/expenses', function(req, res){
-  console.log("expenses api called. 1")
-  Expenses.find().then(function(expenses){
-    res.json(expenses)
+app.delete("/api/todo/:name",function(req, res){
+  console.log("DELETEEEEEEEEEE 2")
+  // console.log(req)
+  console.log(req.params.name)
+  console.log(req.body)
+  var error = function(message){
+    console.log("error message")
+    console.log(message)
+  }
+  Todo.findOneAndRemove({list_name: req.params.name}).then(function(response, error){
+    console.log("success message")
+    console.log(response)
+    res.json({success: true})
+  })
+})
+
+app.get('/api/budget', function(req, res){
+  console.log("Budget api called. 1")
+  Budget.find().then(function(budget){
+    console.log("budget")
+    console.log(budget)
+    res.json(budget)
+  }, function(error){
+    console.log("error")
+    console.log(error)
   });
 });
 
-app.post('/expenses', function(req, res){
-  console.log("expenses post call = " + JSON.stringify(req.body))
-  Expenses.create(req.body).then(function(){
+app.post('/api/budget', function(req, res){
+  console.log("Budget post call = " + JSON.stringify(req.body))
+  Budget.create(req.body).then(function(){
     res.redirect("/")
   })
 })

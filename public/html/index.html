@@ -214,43 +214,14 @@
     </div>
   </div>
 
-<div class="calendar">
-  <div class="calendar-header">
-    <!-- <div class="calendar-navigation">
-      <div class="btn-group">
-        <button class="btn" ng-click="changeView('month')" style="box-shadow: 1px 1px 1px grey; background-color: white">Month</button>
-        <button class="btn" ng-click="changeView('week')" style="box-shadow: 1px 1px 1px grey; background-color: white">Week</button>
+<div style="">
+  <div class="calendar">
+    <div class="calendar-header">
+      <div>
+        <monthly-calendar change-date="changeDate" current-month="currentMonth.count" list="todoLists"
+          new="newCalTodoLists" view="viewType" list-for-cal="listForCal"
+          ></monthly-calendar>
       </div>
-
-      <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-                ng-show="showTodayButton && viewType === 'month' "
-                 ng-click="changeDate.currentMonth()">
-                 Today
-      </md-button>
-
-      <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-                ng-show="changeDate.weekCount != 0 && viewType === 'week' "
-                 ng-click="changeDate.thisWeek()">
-                 Today
-      </md-button>
-
-      <md-button class="md-raised" style="min-width: 1%; background-color: white;"
-                  data-ng-model="changeDate.monthCount"
-                  ng-click="changeDate.decrement()">
-                  <
-      </md-button>
-      <div style="width: 275px;"><h1><span id="calendar-month-year"></span></h1></div>
-      <md-button class="md-accent md-raised md-hue-1" style="min-width: 1%; background-color: white;"
-                 data-ng-model="changeDate.monthCount"
-                 ng-click="changeDate.increment()">
-                 >
-      </md-button>
-    </div> -->
-
-  <div >
-    <monthly-calendar change-date="changeDate" current-month="currentMonth.count" list="todoLists"
-      new="newCalTodoLists" view="viewType" list-for-cal="listForCal"
-    ></monthly-calendar>
+    </div>
   </div>
-</div>
 </div>
