@@ -26,7 +26,7 @@
 
         $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly'];
 
-        $scope.categories = ["Health", "Work", "Finance", "Household", "Personal Project" ]
+        $scope.categories = ["Health", "Work", "Finance", "Household", "Personal Project", "Social" ]
 
         $scope.changeEndTimeArray = function(){
           console.log("changeEndTimeArray envoked")

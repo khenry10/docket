@@ -1,57 +1,68 @@
 <form style="color: black">
   <ul class="create-new-panel">
-    <li style="margin-left: 20%">
-      <input type="text" data-ng-model="name" placeholder="name"/>
+    <li style="margin-left: 0%">
+      <md-input-container style="margin: 15px 0px 0px 0px">
+        <input type="text"
+               style="border-bottom-color: white; color: white"
+               data-ng-model="name"
+               placeholder="Name"/>
+      </md-input-container>
     </li>
     <li style="margin-left: -20px;" ng-if='!data.view'>
       <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder="Date"/></md-datepicker>
     </li>
     <li style="display: inline-flex; justify-content: space-between; ">
       <!-- start time -->
-      <md-input-container style="background-color: white; color: black" ng-hide="data.view && data.date.startTime">
+      <md-input-container ng-hide="data.view && data.date.startTime">
         <label ng-if="!startTime"> Start Time </label>
-        <label ng-if="startTime" aria-label="select reocurring"> {{ startTime }} </label>
-        <md-select ng-model="startTime" aria-label="select reocurring"
-                   ng-change="changeEndTimeArray()"
-                   style="position: relative; z-index: 5000">
-          <md-option ng-repeat="time in times"> {{ time }}</option>
+        <md-select  ng-model="startTime"
+                    aria-label="select reocurring"
+                    style="color:white"
+                    ng-change="changeEndTimeArray()">
+          <md-option ng-value="time"
+                     ng-repeat="time in times"> {{ time }} </md-option>
         </md-select>
+
       </md-input-container>
 
       <!-- end time -->
-      <md-input-container style="background-color: white; color: black">
+      <md-input-container >
         <label ng-if="!endTime"> End Time </label>
-        <label ng-if="endTime" aria-label="select reocurring"> {{ endTime }} </label>
-        <md-select ng-model="endTime" aria-label="select reocurring">
-          <md-option ng-repeat="time in newTimes"> {{ time }}</option>
+
+        <md-select ng-model="endTime"
+                   aria-label="select reocurring">
+          <md-option ng-value="time" ng-repeat="time in newTimes"> {{ time }}</md-option>
         </md-select>
       </md-input-container>
 
     </li>
-    <li>
+    <li style="color: white">
       <md-radio-group ng-model="listType"
-        style="display: flex; justify-content: space-between; width: 95%; margin-top: 4%">
-        <md-radio-button style="padding-left: 2%;" value="todo">Todo List</md-radio-button>
+        style="display: flex; justify-content: space-between; margin-top: 4%; border-color: white">
+        <md-radio-button style="padding-left: 2%;border-color: white" value="todo">Todo List</md-radio-button>
         <md-radio-button value="shopping">Shopping List</md-radio-button>
       </md-radio-group>
     </li>
 
-    <li>
-      <input input="text" ng-if="listType === 'shopping' " ng-model="newEntry.budget" placeholder="Budget"/>
+    <li ng-if="listType === 'shopping' ">
+      <md-input-container style="margin: 0px">
+        <input style="border-bottom-color: white; color: white"
+               input="number"
+               ng-model="newEntry.budget" placeholder="Budget"/>
+      </md-input-container>
     </li>
 
     <li ng-show="name">
-      <md-input-container style="background-color: white; color: black">
-        <label ng-if="!repeatInterval">Reocurring</label>
-        <label ng-if="repeatInterval" aria-label="select reocurring"> {{ repeatInterval }} </label>
+      <md-input-container style="">
+        <label ng-if="!repeatInterval">Repeat</label>
         <md-select ng-model="repeatInterval" aria-label="select reocurring">
-          <md-option ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
+          <md-option ng-value="reoccur" ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
         </md-select>
       </md-input-container>
 
       <md-radio-group ng-model="reoccurEnds"
         ng-show=" repeatInterval.length && repeatInterval != 'None' "
-        style="display: flex; justify-content: space-between; width: 75%; margin-left: 5%; margin-top: 4%">
+        style="display: flex; justify-content: space-between; margin-top: 4%; color: white; border-color: white">
           <md-radio-button value="Never">Never</md-radio-button>
           <md-radio-button value="SelectDate">Select Date</md-radio-button>
       </md-radio-group>
@@ -62,11 +73,11 @@
       </md-datepicker>
     </li>
     <li>
-      <md-input-container style="background-color: white; color: black">
+      <md-input-container style="margin: 0px">
         <label ng-if="!repeatInterval">Category</label>
-        <label aria-label="select reocurring"> {{ category }} </label>
+
         <md-select ng-model="category" aria-label="select reocurring">
-          <md-option ng-repeat="category in categories"> {{ category }}</option>
+          <md-option ng-value="category" ng-repeat="category in categories"> {{ category }}</option>
         </md-select>
       </md-input-container>
     </li>

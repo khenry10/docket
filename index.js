@@ -173,7 +173,7 @@ app.post("/api/todo", function(req, res){
   })
 })
 
-app.put("/api/todo", function(req, res){
+app.put("/api/todo/", function(req, res){
   console.log("todo PUT ")
   console.log(req.params.name)
   console.log(req.body.todo.list_name)

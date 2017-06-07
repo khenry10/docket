@@ -108,6 +108,19 @@ a:hover {
   border: 2px solid white;
 }*/
 
+
+.md-select-value {
+  color: white;
+}
+
+::-webkit-input-placeholder {
+  color: white;
+}
+
+md-radio-button .md-off, md-radio-button .md-on {
+  border-color: white;
+}
+
 .panel-title-custom a:hover {
   color:white;
   text-decoration: none;
@@ -206,6 +219,10 @@ li.Household {
 
 li.Other {
   background-color: #909487;
+}
+
+li.Social {
+  background-color: rgba(255,64,129,0.87);
 }
 
 #PersonalProject {

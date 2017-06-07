@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module("app").controller("listController", [
-  "Lists",
   "Todo",
   "$scope",
   "$http",
@@ -9,7 +8,7 @@ angular.module("app").controller("listController", [
   listController
 ])
 
-function listController(Lists, Todo, $scope, $http, DateService){
+function listController(Todo, $scope, $http, DateService){
   console.log("listController")
   console.log($scope)
   console.log(Todo)

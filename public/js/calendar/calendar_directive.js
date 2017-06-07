@@ -31,8 +31,10 @@
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){
+                console.log(todoForCal)
                 if(todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
+
                     var date = dateList.date;
                     var times = {start_time: dateList.start_time, end_time: dateList.end_time}
 
@@ -45,6 +47,7 @@
         }, true);
 
       scope.calendarItemModal = function (list, date){
+        console.log("scope.calendarItemModal envoked")
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
@@ -56,10 +59,12 @@
           }
         }).then(function(modal) {
           //it's a bootstrap element, use 'modal' to show it
-
+          console.log(".then in scope.calendarItemModal")
           modal.element.modal();
           modal.close.then(function(result) {
-          scope.$parent.pullTodos('ajax')
+
+            scope.$parent.pullTodos('ajax')
+
           });
         });
       };
@@ -130,7 +135,9 @@
             pForBigTd.style.backgroundColor = "#f4274f"
           } else if(list.category === "Finance"){
             pForBigTd.style.backgroundColor = "#4FF427"
-          }  else if(list.category === "Household" ){
+          }  else if(list.category === "Social" ){
+            pForBigTd.style.backgroundColor = "rgba(255,64,129,0.87)"
+          } else if(list.category === "Household" ){
             pForBigTd.style.backgroundColor = "#cd27f4"
           } else {
             pForBigTd.style.backgroundColor = "#909487"
@@ -151,6 +158,7 @@
         }
 
         var putHourlyItemsOnWeeklyCalendar = function(list, date, realListDate, times){
+          console.log(times)
           // this function processes the calendar item's details, like start and end end time am/pm and how many hours, and calls createHourlyCalItem and addMiddleTimeCalItems functions
           createHourlyCalItem(list, times.start_time, date, realListDate, "startTime")
 
@@ -230,6 +238,8 @@
 
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
+          console.log(list.list_name)
+          console.log("appendToCalendar envoked")
           var exists = document.getElementById(list._id+"&"+date)
           if(!exists){
             var li = document.createElement("li")
@@ -261,6 +271,7 @@
             };
 
             scope.handleWeeklyDrop = function(e){
+              console.log("DROPPED")
               e.preventDefault();
 
               if (e.stopPropagation) {
@@ -671,6 +682,7 @@
         }
 
         var weeklyTableHeadingRow = function(th, i){
+          console.log(scope.date.twoMonthsWeeklyDate)
           if(scope.date.twoMonthsWeekly){
             th.setAttribute("id", scope.date.twoMonthsWeeklyDate.fullDates[i-1])
             th.innerHTML = daysOfWeek[i] + "  " + scope.date.twoMonthsWeeklyDate.fullDates[i-1].split("-")[2]
@@ -771,13 +783,17 @@
             dyanmicRowCreator(1, table, td, p, tr, numberOfDays, month, year)
           }
                 table.appendChild(tr);
-                var numberOfRows = table.rows.length;
+                var numberOfRows = table.rows.length-1;
+                console.log(numberOfRows)
                 var calHeight = $(".calendar").height();
+                console.log(calHeight)
 
                 for(var i = 0; i < numberOfRows-1; i++){
                   if(i !== 0 ){
-                    var rowHeight = calHeight/6;
+                    var rowHeight = calHeight/numberOfRows;
+                    rowHeight = rowHeight + 100
                     var rowHeight = rowHeight.toString() + "px";
+                    console.log(rowHeight)
                     table.rows[i].style.height = rowHeight;
                   }
                 }
