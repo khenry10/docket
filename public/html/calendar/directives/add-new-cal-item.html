@@ -8,6 +8,14 @@
                placeholder="Name"/>
       </md-input-container>
     </li>
+    <li style="color: white; outline: 1px solid white; margin-bottom: 10px;">
+      <h5 style="padding: 8px">Monthly Item or Regular Routine</h5>
+      <md-radio-group ng-model="routine"
+        style="display: flex; justify-content: space-between; margin-top: 4%; border-color: white">
+        <md-radio-button style="padding-left: 2%;border-color: white" value="monthly"> Monthly </md-radio-button>
+        <md-radio-button value="weekly-routine">Weekly Routine</md-radio-button>
+      </md-radio-group>
+    </li>
     <li style="margin-left: -20px;" ng-if='!data.view'>
       <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder="Date"/></md-datepicker>
     </li>
@@ -60,6 +68,11 @@
         </md-select>
       </md-input-container>
 
+      ++ {{ repeatInterval }}
+      <div ng-if="repeatInterval === 'Weekly' ">
+        <input type="checkbox" label="Monday"/> 
+      </div>
+
       <md-radio-group ng-model="reoccurEnds"
         ng-show=" repeatInterval.length && repeatInterval != 'None' "
         style="display: flex; justify-content: space-between; margin-top: 4%; color: white; border-color: white">
@@ -72,7 +85,7 @@
         ng-model="reoccurEndsDate">
       </md-datepicker>
     </li>
-    <li>
+    <li ng-show="name">
       <md-input-container style="margin: 0px">
         <label ng-if="!repeatInterval">Category</label>
 

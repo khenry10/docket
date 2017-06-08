@@ -98,6 +98,7 @@
                 if($scope.data && $scope.data.date.startTime){
                   $scope.newTodoList.start_time = $scope.data.date.startTime
                 }
+                $scope.newTodoList.routine = $scope.routine
 
                 $scope.newTodoList.end_time = $scope.endTime
                 if($scope.firstDay && $scope.endTime){
@@ -186,6 +187,7 @@
                 $scope.newCalTodoLists[0].list_type = $scope.newTodoList.list_type;
                 $scope.newCalTodoLists[0].budget = $scope.newTodoList.budget;
                 $scope.newCalTodoLists[0].category = $scope.newTodoList.category;
+                $scope.newCalTodoLists[0].routine = $scope.routine;
 
                 $scope.newCalTodoLists[0].listsInMonths = [];
                 var monthNames = DateService.monthNames;
@@ -269,6 +271,7 @@
                 $scope.startTime = ""
                 $scope.endTime = ""
                 $scope.newEntry.budget = ""
+                $scope.routine = ""
               // } this is needed when the conditional is in place to see if it's a List or Event (event deprecated on 3/19)
             }
           }

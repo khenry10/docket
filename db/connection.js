@@ -99,7 +99,8 @@ var TodoSchema = new mongoose.Schema({
   reocurring: String,
   created_at: Date,
   completed_on: Date,
-  deadline: Date
+  deadline: Date,
+  routine: String,
 });
 
 mongoose.model("Todo", TodoSchema);

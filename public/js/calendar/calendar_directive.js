@@ -238,10 +238,19 @@
 
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
-          console.log(list.list_name)
           console.log("appendToCalendar envoked")
+          console.log(list)
+          console.log(list.routine)
+          console.log(scope.newView)
           var exists = document.getElementById(list._id+"&"+date)
-          if(!exists){
+          if(   list.routine === 'monthly' && scope.newView === 'month'
+             || list.routine === 'weekly-routine' && scope.newView === 'week'){
+               var go = true;
+             } else {
+               var go = false;
+             }
+             console.log("go = " + go)
+          if(!exists && go){
             var li = document.createElement("li")
             li.setAttribute("draggable", true)
             var dragSrcEl = null;
