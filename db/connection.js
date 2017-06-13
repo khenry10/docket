@@ -97,6 +97,7 @@ var TodoSchema = new mongoose.Schema({
   time_estimate: Number,
   time_actual: Number,
   reocurring: String,
+  repeatDays: {},
   created_at: Date,
   completed_on: Date,
   deadline: Date,

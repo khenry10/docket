@@ -73,6 +73,9 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         $scope.todoLists = todos
         todos.forEach(function(todo){
           console.log(todo)
+          if(todo.repeatDays){
+            console.log(todo.repeatDays)
+          }
           $scope.allTodoLists.push(todo)
         })
         $scope.preProcessCheckTodos();
@@ -555,7 +558,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       if(date <= 0){
         date = $scope.changeDate.months.previousMonth.days + date
       }
-      
+
       if(date > lastDay){
         date = 1
         $scope.changeDate.twoMonthsWeekly = true;

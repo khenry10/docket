@@ -26,7 +26,17 @@
 
         $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly'];
 
-        $scope.categories = ["Health", "Work", "Finance", "Household", "Personal Project", "Social" ]
+        $scope.categories = ["Health", "Work", "Finance", "Household", "Personal Project", "Social" ];
+
+        $scope.daysInRepeatWeekly = {
+          sun: false,
+          mon: false,
+          tues: false,
+          wed: false,
+          thurs: false,
+          fri: false,
+          sat: false,
+        };
 
         $scope.changeEndTimeArray = function(){
           console.log("changeEndTimeArray envoked")
@@ -70,6 +80,20 @@
 
         $scope.newEntry = {}
 
+        var repeatAdditionalDays = function(count, incrementor, lastDay, year, month, list, startTime, endTime){
+          while(count+incrementor <= lastDay){
+            count = count + 7
+            var list = year+"-"+month+"-"+count;
+            console.log(list)
+            createListOfLists.push( {
+              date: list,
+              start_time: $scope.newTodoList.start_time,
+              end_time: $scope.newTodoList.end_time,
+              tasks: [] } )
+            //  var date = $scope.firstDay
+          }
+        };
+
         $scope.create = function(){
           console.log("create")
           $scope.newTodoList = new Todo();
@@ -98,9 +122,9 @@
                 if($scope.data && $scope.data.date.startTime){
                   $scope.newTodoList.start_time = $scope.data.date.startTime
                 }
-                $scope.newTodoList.routine = $scope.routine
-
-                $scope.newTodoList.end_time = $scope.endTime
+                $scope.newTodoList.routine = $scope.routine;
+                $scope.newTodoList.repeatDays = $scope.daysInRepeatWeekly;
+                $scope.newTodoList.end_time = $scope.endTime;
                 if($scope.firstDay && $scope.endTime){
                   getHours()
                 }
@@ -110,7 +134,7 @@
                     $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
                 }
 
-                var date = $scope.firstDay
+                var date = $scope.firstDay;
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
                 createListOfLists.push( {
                   date: newDate,
@@ -155,17 +179,34 @@
                 }
 
                 if($scope.repeatInterval === 'Weekly'){
-                  while(count+7 <= lastDay){
-                    count = count + 7
-                    var list = year+"-"+month+"-"+count
-                    createListOfLists.push( {
-                      date: list,
-                      start_time: $scope.newTodoList.start_time,
-                      end_time: $scope.newTodoList.end_time,
-                      tasks: [] } )
-                     var date = $scope.firstDay
+                  var dayOfFirstDay = $scope.firstDay.getDay();
+                  var index = 0;
+                  var additionalDays = [];
+                  for(var property in $scope.daysInRepeatWeekly) {
+                    if ($scope.daysInRepeatWeekly.hasOwnProperty(property)) {
+                        if($scope.daysInRepeatWeekly[property]){
+                          additionalDays.push(index)
+                        }
+                        index = index +1;
+                    }
                   }
-                }
+
+                  if(additionalDays){
+                    additionalDays.forEach(function(day){
+                      var count = date.getDate();
+                      var adjuster = day - dayOfFirstDay;
+                      count = count + adjuster;
+                      var list = year+"-"+month+"-"+count;
+                      createListOfLists.push( {
+                        date: list,
+                        start_time: $scope.newTodoList.start_time,
+                        end_time: $scope.newTodoList.end_time,
+                        tasks: []
+                      })
+                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time)
+                    })
+                  }
+                }//end of weekly conditional
 
                 if($scope.repeatInterval === 'Monthly'){
                   while(month < 12){

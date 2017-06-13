@@ -68,9 +68,27 @@
         </md-select>
       </md-input-container>
 
-      ++ {{ repeatInterval }}
       <div ng-if="repeatInterval === 'Weekly' ">
-        <input type="checkbox" label="Monday"/> 
+        <table style="margin-left: -5px">
+          <tr>
+            <th style="padding: 4px; color: white"> Sun </th>
+            <th style="padding: 4px; color: white"> Mon </th>
+            <th style="padding: 4px; color: white"> Tues </th>
+            <th style="padding: 4px; color: white"> Wed </th>
+            <th style="padding: 4px; color: white"> Thurs </th>
+            <th style="padding: 4px; color: white"> Fri </th>
+            <th style="padding: 4px; color: white"> Sat </th>
+          </tr>
+          <tr>
+            <td><input type="checkbox" ng-model="daysInRepeatWeekly.sun" label="Sunday"/></td>
+            <td><input type="checkbox" ng-model="daysInRepeatWeekly.mon" label="Monday"/></td>
+            <td><input type="checkbox" ng-model="daysInRepeatWeekly.tues" label="Tuesday"/></td>
+            <td><input type="checkbox" ng-model="daysInRepeatWeekly.wed" label="Wednesday"/></td>
+            <td><input type="checkbox" ng-model="daysInRepeatWeekly.thurs" label="Thursday"/></td>
+            <td><input type="checkbox" ng-model="daysInRepeatWeekly.fri" label="Friday"/></td>
+            <td><input type="checkbox" ng-model="daysInRepeatWeekly.sat" label="Saturday"/></td>
+          </tr>
+        </table>
       </div>
 
       <md-radio-group ng-model="reoccurEnds"
