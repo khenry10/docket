@@ -81,6 +81,7 @@
         $scope.newEntry = {}
 
         var repeatAdditionalDays = function(count, incrementor, lastDay, year, month, list, startTime, endTime){
+          console.log("repeatAdditionalDays. count = " + count)
           while(count+incrementor <= lastDay){
             count = count + 7
             var list = year+"-"+month+"-"+count;
@@ -197,6 +198,7 @@
                       var adjuster = day - dayOfFirstDay;
                       count = count + adjuster;
                       var list = year+"-"+month+"-"+count;
+                      // pushed a date list here because repeats in the first week weren't being added
                       createListOfLists.push( {
                         date: list,
                         start_time: $scope.newTodoList.start_time,
@@ -229,6 +231,7 @@
                 $scope.newCalTodoLists[0].budget = $scope.newTodoList.budget;
                 $scope.newCalTodoLists[0].category = $scope.newTodoList.category;
                 $scope.newCalTodoLists[0].routine = $scope.routine;
+                $scope.newCalTodoLists[0].repeatDays = $scope.daysInRepeatWeekly;
 
                 $scope.newCalTodoLists[0].listsInMonths = [];
                 var monthNames = DateService.monthNames;
