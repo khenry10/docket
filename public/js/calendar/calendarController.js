@@ -169,9 +169,14 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   }
 
   var evaluateDateListsForWeekCal = function(fullListDate, dateList, list){
+    console.log("evaluateDateListsForWeekCal")
     var dateArrayLength = $scope.changeDate.dayCount.length;
     var firstWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-7];
     var lastWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-1];
+    console.log($scope.changeDate)
+    console.log("firstWeeklyDate = " + firstWeeklyDate)
+    console.log("lastWeeklyDate = " + lastWeeklyDate)
+    console.log(fullListDate)
     if($scope.changeDate.twoMonthsWeekly){
       if(fullListDate.month == $scope.changeDate.twoMonthsWeeklyDate.newMonthDate.month){
         $scope.changeDate.twoMonthsWeeklyDate.newMonthDate.date.forEach(function(newMD){
@@ -310,10 +315,14 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         checkLastList(lastDateList, list, index)
       } else {
         console.log("else statement")
+        console.log($scope.viewType)
+        console.log("index = " + index)
         if($scope.viewType == 'month'){
           listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
         } else if ($scope.viewType == 'week'){
           listForCal[index] = {origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth}
+          listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
+          console.log(listForCal)
         }
         noLoopListCounter(list, dateListsInCurrentMonth)
       }
@@ -348,12 +357,20 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     console.log("splitTwoMonthsWeeklyIntoOldAndNew")
     var dateArrayLength = $scope.changeDate.dayCount.length;
     var firstWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-7]
+    console.log("firstWeeklyDate = " + firstWeeklyDate)
+    console.log($scope.changeDate)
     if($scope.changeDate.lastMove === 'increment'){
       var lastDayOfOldMonth = $scope.changeDate.months.previousMonth.days;
       // June 1st, I changed the below.  oldMonth use to be thisMonth and newMonth was next month,
       // I have a feeling I keep changing these back and forth to accomdate for beg/end of month and not fixing the core issue
-      var oldMonth = $scope.changeDate.months.previousMonth.count;
-      var newMonth = $scope.changeDate.months.thisMonth.count;
+      // it's now June 16th and I'm incremenitng the weekly view and wanted to change it back
+      if(firstWeeklyDate > 20){
+        var oldMonth = $scope.changeDate.months.thisMonth.count;
+        var newMonth = $scope.changeDate.months.nextMonth.count;
+      } else {
+        var oldMonth = $scope.changeDate.months.previousMonth.count;
+        var newMonth = $scope.changeDate.months.thisMonth.count;
+      }
     } else if($scope.changeDate.lastMove === 'decrement') {
       var lastDayOfOldMonth = $scope.changeDate.months.previousMonth.days;
       var oldMonth = $scope.changeDate.monthCount;
@@ -429,10 +446,13 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         $scope.changeDate.lastMove = "increment"
 
         var date = date + 1
-
+        console.log(thisMonthsLastDay)
+        console.log(date > thisMonthsLastDay)
+        console.log($scope.changeDate)
         if(date > thisMonthsLastDay){
           console.log("INCREMENTINGGGGGGGGG")
           $scope.changeDate.monthCount++
+          console.log($scope.changeDate)
           date = 1
           $scope.changeDate.twoMonthsWeekly = true
         }
@@ -594,10 +614,11 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   };
 
   $scope.listClone = function(masterList, index){
-    console.log("$scope.listClone")
+    console.log("*********** $scope.listClone ************")
     console.log(masterList)
     var appsCurrentMonth = $scope.changeDate.monthCount-1;
     var appsCurrentYear = $scope.changeYear.year;
+    var firstListDate = DateService.stringDateSplit(masterList.first_day);
     var firstListDay = DateService.stringToDate(masterList.first_day, 'regMonth').getDay();
     var firstDateOfMonth = new Date(appsCurrentYear, $scope.changeDate.monthCount-1, 1)
     var firstDayOfMonth = firstDateOfMonth.getDay();
@@ -607,6 +628,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     var last = reoccurEnds === 'Never'? lastDayOfAppsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
     var listsInMasterList = masterList.lists;
     var count = 1;
+    var count = firstListDate.date;
 
     if(reoccurEnds != 'Never'){
       reoccurEnds = DateService.stringToDate(reoccurEnds, "regMonth")
@@ -648,7 +670,12 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         count = 1
       }
     } else {
+      console.log("firstListDay = " + firstListDay)
+      console.log("firstDayOfMonth = " + firstDayOfMonth)
       count = firstListDay - firstDayOfMonth + 1
+      console.log("count 1 = " + count)
+      var count = parseInt(firstListDate.date) + repeater;
+      console.log("count 2 = " + count)
     }
 
     var newlyCreatedDateLists = [];
@@ -662,9 +689,12 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         console.log("count = " + count)
         console.log("firstDayOfMonth = " + firstDayOfMonth)
       }
+      console.log(count <= last)
       while(count <= last){
         if(count > 0){
           console.log("count = " + count)
+          console.log("repeater = " + repeater)
+          console.log("last = " + last)
           if(count <= last){
             count = count.length === 1? "0"+count: count
             var listDate = $scope.changeYear.year+"-"+$scope.changeDate.monthCount+"-"+count
@@ -701,7 +731,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
             }
           }
         }
-        count = count + repeater
+        count = parseInt(count) + repeater
+        console.log("count 3 = " + count)
       }
       looped = looped + 1
     }

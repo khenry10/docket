@@ -32,7 +32,7 @@
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){
                 console.log(todoForCal)
-                if(todoForCal.todo.lists || todoForCal.modifiedDateList ){
+                if(todoForCal.todo && todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
 
                     var date = dateList.date;
@@ -242,6 +242,7 @@
           console.log(list)
           console.log(list.routine)
           console.log(scope.newView)
+          console.log(times)
           var exists = document.getElementById(list._id+"&"+date)
           if(   list.routine === 'monthly' && scope.newView === 'month'
              || list.routine === 'weekly-routine' && scope.newView === 'week'){
@@ -426,6 +427,7 @@
           listMonth = listMonth-1
           var listYear = listDate[0]
           var realListDate = new Date(listYear, listMonth, listDay)
+          console.log(times)
           appendToCalendar(listDay, date, list, realListDate, undefined, times)
         }
 
@@ -433,13 +435,13 @@
           console.log("scope.pickCorrectDateForCal envoked")
           scope.hourlyUl = document.createElement("ul")
           scope.hourlyUl.className = list.list_name + "-" + date
-
+          console.log(times)
           if(scope.newView === 'month'){
             var listDates = date.split("-")
             var listDay = parseInt(listDates[2].substr(0,2))
             var ul = document.getElementsByClassName("u"+listDay)
             ul = ul[0];
-            appendToCalendar(listDay, date, list, undefined, ul)
+            appendToCalendar(listDay, date, list, undefined, ul, times)
           } else if(scope.newView === 'week') {
             // we need to use the actual date, as opposed to list.first_day like below, since it's Daily recurring
             if(list.list_reocurring === 'Daily') {

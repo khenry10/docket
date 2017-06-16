@@ -23,13 +23,16 @@
             $scope.listss = [];
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]
             todosForCal.forEach(function(todoForLeftRail){
-              if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
-                $scope.listss.push({
-                  name: todoForLeftRail.todo.list_name,
-                  master_tasks: todoForLeftRail.todo.master_tasks,
-                  listType: todoForLeftRail.todo.list_type,
-                  todo: todoForLeftRail.todo
-                 })
+              console.log(todoForLeftRail)
+              if(todoForLeftRail.todo){
+                if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
+                  $scope.listss.push({
+                    name: todoForLeftRail.todo.list_name,
+                    master_tasks: todoForLeftRail.todo.master_tasks,
+                    listType: todoForLeftRail.todo.list_type,
+                    todo: todoForLeftRail.todo
+                   })
+                }
               }
             })
           }

@@ -192,8 +192,10 @@
                     }
                   }
 
+                  console.log(additionalDays)
                   if(additionalDays){
                     additionalDays.forEach(function(day){
+                      console.log(day)
                       var count = date.getDate();
                       var adjuster = day - dayOfFirstDay;
                       count = count + adjuster;
