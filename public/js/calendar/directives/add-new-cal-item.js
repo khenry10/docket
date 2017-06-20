@@ -88,6 +88,7 @@
             console.log(list)
             createListOfLists.push( {
               date: list,
+              duration: $scope.newTodoList.duration,
               start_time: $scope.newTodoList.start_time,
               end_time: $scope.newTodoList.end_time,
               tasks: [] } )
@@ -139,6 +140,7 @@
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
                 createListOfLists.push( {
                   date: newDate,
+                  duration: $scope.newTodoList.duration,
                   start_time: $scope.newTodoList.start_time,
                   end_time: $scope.newTodoList.end_time,
                   tasks: []} )
@@ -171,6 +173,7 @@
                     var list = year+"-"+month+"-"+count
                     createListOfLists.push(
                       { date: list,
+                        duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
                         tasks: []
@@ -193,7 +196,8 @@
                   }
 
                   console.log(additionalDays)
-                  if(additionalDays){
+                  console.log(additionalDays.length)
+                  if(additionalDays.length){
                     additionalDays.forEach(function(day){
                       console.log(day)
                       var count = date.getDate();
@@ -203,12 +207,20 @@
                       // pushed a date list here because repeats in the first week weren't being added
                       createListOfLists.push( {
                         date: list,
+                        duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
                         tasks: []
                       })
                       repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time)
                     })
+                  } else {
+                    console.log("count = " + count)
+                    console.log("last day = " + lastDay)
+                    while(count < lastDay){
+                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time)
+                      count = count + 7;
+                    }
                   }
                 }//end of weekly conditional
 
@@ -216,7 +228,9 @@
                   while(month < 12){
                     month = month+1
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( { date: list,
+                    createListOfLists.push( {
+                      date: list,
+                      duration: $scope.newTodoList.duration,
                       start_time: $scope.newTodoList.start_time,
                       end_time: $scope.newTodoList.end_time,
                       tasks: [] } )

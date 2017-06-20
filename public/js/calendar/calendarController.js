@@ -623,12 +623,15 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     var firstDateOfMonth = new Date(appsCurrentYear, $scope.changeDate.monthCount-1, 1)
     var firstDayOfMonth = firstDateOfMonth.getDay();
     var repeatInterval = masterList.list_reocurring;
+    console.log("repeatInterval = " + repeatInterval)
     var reoccurEnds = masterList.list_recur_end;
     var lastDayOfAppsCurrentMonth = new Date(appsCurrentYear, $scope.changeDate.monthCount, 0).getDate();
     var last = reoccurEnds === 'Never'? lastDayOfAppsCurrentMonth:DateService.stringDaysInAMonth(reoccurEnds)
     var listsInMasterList = masterList.lists;
     var count = 1;
     var count = firstListDate.date;
+    // var repeater = 0;
+    var additionalDays = [];
 
     if(reoccurEnds != 'Never'){
       reoccurEnds = DateService.stringToDate(reoccurEnds, "regMonth")
@@ -648,7 +651,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
     if(repeatInterval === 'Weekly'){
       var repeater = 7
-      var additionalDays = [];
       console.log(masterList.repeatDays)
       var index = 0;
       for(var property in masterList.repeatDays) {
@@ -674,6 +676,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       console.log("firstDayOfMonth = " + firstDayOfMonth)
       count = firstListDay - firstDayOfMonth + 1
       console.log("count 1 = " + count)
+      console.log("parseInt(firstListDate.date) = " + parseInt(firstListDate.date))
+      console.log("repeater = " + repeater)
       var count = parseInt(firstListDate.date) + repeater;
       console.log("count 2 = " + count)
     }

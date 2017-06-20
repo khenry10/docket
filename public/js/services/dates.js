@@ -114,6 +114,7 @@ angular.module('app').service('DateService', [ function () {
   }
 
   this.stringDateSplit = function(date){
+    console.log(date)
     var date = date.split("-");
     var year = date[0];
     var month = date[1];
