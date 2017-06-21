@@ -74,18 +74,15 @@
         var date = new Date()
         var year = date.getFullYear()
 
-        var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, lastItem){
+        var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
+          console.log("++++++createHourlyCalItem+++++++")
           console.log("list.list_name = " + list.list_name)
           console.log(list)
           console.log("time = " + time)
           console.log("date = " + date)
           console.log("realListDate = " + realListDate)
           console.log("timeStructure = " + timeStructure)
-          console.log("lastItem = " + lastItem)
-
-          // console.log(list.lists.date[date])
-          // console.log(list.lists.indexOf())
-          //creates and appends the new calendar items to the calendar
+          console.log("times = " + JSON.stringify(times))
 
           // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
           var bigTdContainer = document.getElementsByClassName(time)
@@ -159,16 +156,25 @@
           if(bigTdContainer.childNodes.length){
             bigTdContainer.style.display = "flex"
           }
-          if(lastItem){
+          var realSplitEndTime = times.end_time.split(":")
+          var realEndTime = realSplitEndTime[0] - 1
+          realEndTime = realEndTime + ":" + realSplitEndTime[1]
+          console.log("time = " + time + ": times.end_time = "  + realEndTime)
+          console.log(time === realEndTime)
+          if(time === realEndTime){
             var a = document.createElement('a');
             var linkText = document.createTextNode("+");
             a.style.color = 'white';
             a.appendChild(linkText)
 
-            a.addEventListener("click", function(e, pForBigTd){
-              e.stopPropagation();
-              console.log(e.target.closest('a'))
-              console.log(e.target.closest('td'))
+            var a2 = document.createElement('a');
+            var linkText2 = document.createTextNode("-");
+            a2.style.color = 'white';
+            a2.appendChild(linkText2)
+
+            var adjustCal = function(e, adjust){
+              console.log(e)
+              console.log(adjust)
               e.target.closest('a').remove();
               console.log("original time = " + time)
 
@@ -178,11 +184,14 @@
                   var duration = 0;
                   var splitEndTime = list.lists[i].end_time.split(":")
                   var splitStartTime = list.lists[i].start_time.split(":")
-                  // console.log(splitStartTime)
-                  console.log(splitEndTime)
+
                   var startTimeAmOrPm = splitStartTime[1];
-                  var newTime = parseInt(splitEndTime[0]) + 1;
-                  console.log("newTime = " + newTime)
+                  if(adjust === 'add'){
+                    var newTime = parseInt(splitEndTime[0]) + 1;
+                  } else if (adjust === 'minus'){
+                    var newTime = parseInt(splitEndTime[0]) - 1;
+                  }
+
                   var endTimeAmOrPm = splitEndTime[1];
                   if(newTime === 12){
                     var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
@@ -196,23 +205,13 @@
                   }
 
                   if(startTimeAmOrPm === endTimeAmOrPm){
-                    console.log("duration = " + duration)
-                    console.log("parseInt(splitEndTime[0]) = " + parseInt(splitEndTime[0]) )
-                    console.log("parseInt(splitStartTime[0]) = " + parseInt(splitStartTime[0]))
                     var newDuration = newTime - parseInt(splitStartTime[0]);
-                    console.log(newDuration)
                     duration = duration + newDuration
                   } else {
                     var newDuration = 12 - parseInt(splitStartTime[0]);
-                    console.log("newDuration 1 = " + newDuration)
-                    console.log("newTime = " + newTime )
                     duration = newDuration + newTime;
-                    console.log("duration  = " + duration)
-
                   }
-                  console.log("duration 2 = " + duration)
                   var newTimeBlock = newTime + ":"+ endTimeAmOrPm;
-                  console.log(newTimeBlock)
                   list.lists[i].duration = duration;
                   list.lists[i].end_time = newTimeBlock;
                 }
@@ -220,9 +219,19 @@
               console.log(list)
               scope.adjustedList = list;
               Todo.update({list_name: list.list_name}, {todo: list})
-              // createHourlyCalItem(list, newTimeBlock, date, realListDate, timeStructure, lastItem)
+            }
+
+            a2.addEventListener("click", function(e){
+              e.stopPropagation();
+              adjustCal(e, "minus")
+            })
+
+            a.addEventListener("click", function(e){
+              e.stopPropagation();
+              adjustCal(e, "add")
             })
             pForBigTd.appendChild(a)
+            pForBigTd.appendChild(a2)
           }
           // var newDiv = document.createElement("div")
           // newDiv.style.resize = 'vertical'
@@ -231,14 +240,18 @@
           bigTdContainer.appendChild(pForBigTd);
         };
 
-        var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate){
-          // addMiddleTimeCalItems function is to determine how many hours between start and end time need to be appended to teh calendar for each item
+        var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate, times){
+          console.log("addMiddleTimeCalItems. startTime = " + startTime + " and endTime = " + endTime)
+          // addMiddleTimeCalItems function is to determine how many hours between start and end time need to be appended to the calendar for each item
           for(var t = startTime; t <= endTime; t++){
+            console.log("t = " + t)
+            console.log("endTime = " + endTime)
+
             var time = t + ":00" + amOrpm
             if(t === endTime){
-              createHourlyCalItem(list, time, date, realListDate, "middleTime", true)
+              createHourlyCalItem(list, time, date, realListDate, "middleTime", times)
             } else {
-              createHourlyCalItem(list, time, date, realListDate, "middleTime", false)
+              createHourlyCalItem(list, time, date, realListDate, "middleTime", times)
             }
           }
         }
@@ -247,7 +260,7 @@
           console.log(list.list_name)
           console.log(times)
           // this function processes the calendar item's details, like start and end end time am/pm and how many hours, and calls createHourlyCalItem and addMiddleTimeCalItems functions
-          createHourlyCalItem(list, times.start_time, date, realListDate, "startTime", false)
+          createHourlyCalItem(list, times.start_time, date, realListDate, "startTime", times)
 
           var startTime = times.start_time.split(":")
           var startTimeAmOrPm = startTime[1].substr(2,4)
@@ -275,11 +288,11 @@
           if(startTimeAmOrPm === endTimeAmOrPm && timeDifference === 2){
             var endTime = endTime -1
             var endTime = endTime + ":00" + endTimeAmOrPm
-            createHourlyCalItem(list, endTime, date, realListDate, "middleTime")
+            createHourlyCalItem(list, endTime, date, realListDate, "middleTime", times)
           } else if(startTimeAmOrPm != endTimeAmOrPm && timeDifference === 2 && times.end_time === "12:00am"){
             var endTime = endTime -1
             var endTime = endTime + ":00pm"
-            createHourlyCalItem(list, endTime, date, realListDate, "middleTime")
+            createHourlyCalItem(list, endTime, date, realListDate, "middleTime", times)
           } else {
             var startTime = parseInt(startTime)+1
             var startTime = startTime >= 12? 12: startTime
@@ -291,19 +304,26 @@
                 startTime = 1
               }
               console.log("HERE 1")
-              addMiddleTimeCalItems(startTime, endTime, startTimeAmOrPm, list, date, realListDate)
+              console.log("startTime = " + startTime + " endTime = " + endTime)
+
+              addMiddleTimeCalItems(startTime, endTime, startTimeAmOrPm, list, date, realListDate, times)
             } else if(startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "am"){
               console.log("HERE 2")
               console.log("startTime = " + startTime)
-              addMiddleTimeCalItems(startTime, 11, "am", list, date, realListDate)
-              addMiddleTimeCalItems(12, 12, "pm", list, date, realListDate)
+              console.log("endTime = " + endTime)
+
+              addMiddleTimeCalItems(startTime, 11, "am", list, date, realListDate, times)
+
+              addMiddleTimeCalItems(12, 12, "pm", list, date, realListDate, times)
               if(originalEndTime != 12 && endTimeAmOrPm === 'pm'){
                 console.log("HERE 3")
-                addMiddleTimeCalItems(1, endTime, "pm", list, date, realListDate)
+                addMiddleTimeCalItems(1, endTime, "pm", list, date, realListDate, times)
               }
             } else if (startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "pm") {
-              addMiddleTimeCalItems(startTime, 12, "pm", list, date, realListDate)
-              addMiddleTimeCalItems(1, endTime, "am", list, date, realListDate)
+              var lastItem3 = endTime === 12;
+              console.log("lastItem3 = " + lastItem3 + " endTime = " + endTime)
+              addMiddleTimeCalItems(startTime, 12, "pm", list, date, realListDate, times)
+              addMiddleTimeCalItems(1, endTime, "am", list, date, realListDate, times)
             }
           }
         };
@@ -376,6 +396,7 @@
 
             scope.handleWeeklyDrop = function(e){
               console.log("DROPPED")
+              console.log(e)
               e.preventDefault();
 
               if (e.stopPropagation) {
@@ -427,6 +448,7 @@
               }; //end of scope.dragSrcEl loop
 
               var list = scope.listGrabbed;
+              
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
@@ -467,7 +489,8 @@
                   console.log(list.lists[k])
                   list.lists[k].date = newElementsDate;
                   list.lists[k].start_time = newStartTime;
-                  list.lists[k].end_time = newEndTime;
+
+                  console.log(list)
                   k = list.lists.length;
                 }
               };
@@ -481,7 +504,7 @@
               }
 
               Todo.update({list_name: list.list_name}, {todo: list})
-            };
+            }; //end of drop function
 
             li.addEventListener('dragstart', handleDragStart, false);
             li.addEventListener('dragover', scope.handleDragOver, false);
