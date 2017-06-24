@@ -104,6 +104,7 @@ angular.module('app').service('DateService', [ function () {
   };
 
   this.dateSplit = function(fullDate){
+    console.log(fullDate)
     var year = fullDate.getFullYear();
     var monthNumber = fullDate.getMonth()+1;
     var monthNames = this.monthNames[monthNumber];
@@ -114,19 +115,26 @@ angular.module('app').service('DateService', [ function () {
   }
 
   this.stringDateSplit = function(date){
-    console.log(date)
-    var date = date.split("-");
-    var year = date[0];
-    var month = date[1];
-    var date = date[2];
+    console.log(typeof date)
+    console.log(this)
+    if(typeof date === 'object'){
+      return this.dateSplit(date)
+    } else {
 
-    if(date.length > 2){
-      date = date.substring(0,2)
+      var date = date.split("-");
+      var year = date[0];
+      var month = date[1];
+      var date = date[2];
+
+      if(date.length > 2){
+        date = date.substring(0,2)
+      }
+
+      var fullDate = new Date(year, month-1, date)
+
+      return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}
     }
-
-    var fullDate = new Date(year, month-1, date)
-
-    return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}
+    console.log(date)
   };
 
 

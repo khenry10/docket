@@ -18,8 +18,18 @@
         $scope.show = true;
         $scope.newMasterInDirective = {};
 
+        var lastTodosForCal = [];
+        var called = 0;
         $scope.$watch('listForCal', function(todosForCal, oldList){
-          if(todosForCal && todosForCal.length){
+          console.log("called = " + JSON.stringify(called))
+          called = called + 1
+          console.log(todosForCal)
+          console.log(lastTodosForCal[0])
+          console.log(lastTodosForCal[0] === todosForCal)
+          lastTodosForCal[0] = todosForCal;
+          console.log(oldList)
+          console.log(todosForCal !== oldList)
+          if(todosForCal && todosForCal.length && todosForCal !== oldList){
             $scope.listss = [];
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]
             todosForCal.forEach(function(todoForLeftRail){

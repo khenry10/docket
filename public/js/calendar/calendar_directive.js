@@ -101,13 +101,16 @@
             var thisElsSplit = thisElement.id.split("&")
             var thisElsDate = thisElsSplit[1]
             var moveMeToo = document.getElementsByClassName("middleTime")
+
             // we loop through all the TD's that have middleTime as a class name and find ones that belong
               //to the TD that has been clicked and is being moved to inform the number of middleTime TDs that should be moved
+
             for(var i = 0; i < moveMeToo.length; i++){
               var middleTimeElementsSplit = moveMeToo[i].id.split("&")
               var middleTimeElementsDate = middleTimeElementsSplit[1];
               if(middleTimeElementsSplit[0] == list._id && middleTimeElementsSplit[1] == thisElsDate){
-                 scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
+                console.log(moveMeToo[i].childNodes)
+                scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
               }
             }
             scope.listGrabbed = list;
@@ -156,8 +159,13 @@
           if(bigTdContainer.childNodes.length){
             bigTdContainer.style.display = "flex"
           }
+
           var realSplitEndTime = times.end_time.split(":")
-          var realEndTime = realSplitEndTime[0] - 1
+          if(realSplitEndTime[0] === '12:00am'){
+            var realEndTime = realSplitEndTime[0]
+          } else {
+            var realEndTime = realSplitEndTime[0] - 1
+          }
           realEndTime = realEndTime + ":" + realSplitEndTime[1]
           console.log("time = " + time + ": times.end_time = "  + realEndTime)
           console.log(time === realEndTime)
@@ -165,11 +173,13 @@
             var a = document.createElement('a');
             var linkText = document.createTextNode("+");
             a.style.color = 'white';
+
             a.appendChild(linkText)
 
             var a2 = document.createElement('a');
             var linkText2 = document.createTextNode("-");
             a2.style.color = 'white';
+
             a2.appendChild(linkText2)
 
             var adjustCal = function(e, adjust){
@@ -230,8 +240,13 @@
               e.stopPropagation();
               adjustCal(e, "add")
             })
-            pForBigTd.appendChild(a)
-            pForBigTd.appendChild(a2)
+            var adjustDiv = document.createElement("div")
+            // adjustDiv.setAttribute("class", "middleTime")
+            // adjustDiv.setAttribute("id", list._id + "&" + date)
+            adjustDiv.appendChild(a)
+            adjustDiv.appendChild(a2)
+            // pForBigTd.appendChild(a)
+            pForBigTd.appendChild(adjustDiv)
           }
           // var newDiv = document.createElement("div")
           // newDiv.style.resize = 'vertical'
@@ -290,9 +305,12 @@
             var endTime = endTime + ":00" + endTimeAmOrPm
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime", times)
           } else if(startTimeAmOrPm != endTimeAmOrPm && timeDifference === 2 && times.end_time === "12:00am"){
+            console.log("end time should equal 12am.  endTime = " + times.end_time)
             var endTime = endTime -1
             var endTime = endTime + ":00pm"
+            console.log("endTime being sent to createHourlyCalItem = " + endTime)
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime", times)
+            createHourlyCalItem(list, "12:00am", date, realListDate, "middleTime", times)
           } else {
             var startTime = parseInt(startTime)+1
             var startTime = startTime >= 12? 12: startTime
@@ -331,6 +349,7 @@
         scope.drugOverElements = [];
 
         scope.handleDragOver = function(e) {
+          console.log(scope.dragSrcEl)
           if(scope.dragSrcEl.length){
             if(scope.dragSrcEl[0].element.className == "middleTime"){
               for(var i = 0; i < scope.dragSrcEl.length; i++){
@@ -428,15 +447,12 @@
                   target.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(e.target)
                 } else {
-                  console.log("here ++++++++++++++++++++")
                   var newTarget = $(arrayOfTargets[arrayOfTargets.length-1]).closest('tr').next().children()[0];
                   newTarget.id = "time-with-entry"
-                  console.log(scope.dragSrcEl[p].element)
                   scope.dragSrcEl[p].element.style.resize = 'vertical';
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date)
                   })
-                  console.log(scope.dragSrcEl[p].element.style)
                   newTarget.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(newTarget)
 
@@ -448,7 +464,7 @@
               }; //end of scope.dragSrcEl loop
 
               var list = scope.listGrabbed;
-              
+
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
@@ -456,41 +472,34 @@
               var elementsOldDate = scope.dragSrcEl[0].date;
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
               scope.dragSrcEl = [];
-
+              console.log("newStartTime = " + newStartTime)
               var newStartTimeSplit = newStartTime.split(":")
-              if(!newEndTime){
-                var newEndTimeSplit =  parseInt(newStartTimeSplit[0]) + parseInt(list.duration) + ":" + newStartTimeSplit[1]
-                newEndTimeSplit.split(":")
-              } else {
-                var newEndTimeSplit = newEndTime.split(":")
-              }
 
-              // I couldn't figure out how/where endTime was beig over-ridden so I created this logic to compare against list.duration
-              if(newEndTimeSplit[1].substring(2,4) === newStartTimeSplit[1].substring(2,4)){
-                var newDuration = newEndTimeSplit[0] - newStartTimeSplit[0];
-              } else {
-                var newDuration = 12 - parseInt(newStartTimeSplit[0]) + parseInt(newEndTimeSplit[0])
-              }
+              console.log("newStartTimeSplit = " + newStartTimeSplit)
 
-              if(newDuration < list.duration){
-                newEndTime = parseInt(newStartTimeSplit) + list.duration
-                var amOrPm = ":" + newStartTimeSplit[1];
-                if(newEndTime > 12 && newStartTimeSplit[0] != 12){
-                  newEndTime = newEndTime -12
-                  var amOrPm = amOrPm === ":00pm"? ":00am": ":00pm";
-                } else if(newEndTime > 12) {
-                  newEndTime = newEndTime -12
-                }
-                newEndTime = newEndTime + amOrPm
-              };
               console.log(scope.adjustedList)
+              console.log("newEndTime = " + newEndTime)
               for(var k = 0; k < list.lists.length; k++){
                 if(list.lists[k].date == elementsOldDate ){
                   console.log(list.lists[k])
                   list.lists[k].date = newElementsDate;
                   list.lists[k].start_time = newStartTime;
 
+                  console.log(parseInt(newStartTimeSplit))
+                  newEndTime = parseInt(newStartTimeSplit) + list.lists[k].duration
+                  console.log("newEndTime 1 = " + newEndTime)
+                  var amOrPm = ":" + newStartTimeSplit[1];
+                  if(newEndTime > 12 && newStartTimeSplit[0] != 12){
+                    newEndTime = newEndTime -12
+                    var amOrPm = amOrPm === ":00pm"? ":00am": ":00pm";
+                  } else if(newEndTime > 12) {
+                    newEndTime = newEndTime -12
+                  }
+                  newEndTime = newEndTime + amOrPm
+                  console.log("newEndTime 2 = " + newEndTime)
+                  list.lists[k].end_time = newEndTime;
                   console.log(list)
+
                   k = list.lists.length;
                 }
               };
