@@ -29,24 +29,42 @@
           lastTodosForCal[0] = todosForCal;
           console.log(oldList)
           console.log(todosForCal !== oldList)
-          if(todosForCal && todosForCal.length && todosForCal !== oldList){
+          if(todosForCal && todosForCal.length){
             $scope.listss = [];
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]
             todosForCal.forEach(function(todoForLeftRail){
               console.log(todoForLeftRail)
               if(todoForLeftRail.todo){
                 if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
-                  $scope.listss.push({
-                    name: todoForLeftRail.todo.list_name,
-                    master_tasks: todoForLeftRail.todo.master_tasks,
-                    listType: todoForLeftRail.todo.list_type,
-                    todo: todoForLeftRail.todo
-                   })
+                  console.log($scope.listss)
+                  // if($scope.listss.length){
+                    // $scope.listss.forEach(function(list){
+                      // console.log(list.todo._id)
+                      console.log(todoForLeftRail.todo._id)
+                      // if(list.todo._id !== todoForLeftRail.todo._id){
+                        $scope.listss.push({
+                          name: todoForLeftRail.todo.list_name,
+                          master_tasks: todoForLeftRail.todo.master_tasks,
+                          listType: todoForLeftRail.todo.list_type,
+                          todo: todoForLeftRail.todo
+                        })
+                      // }
+                    // })
+                //   } else {
+                //     $scope.listss.push({
+                //       name: todoForLeftRail.todo.list_name,
+                //       master_tasks: todoForLeftRail.todo.master_tasks,
+                //       listType: todoForLeftRail.todo.list_type,
+                //       todo: todoForLeftRail.todo
+                //     })
+                // }
+
+
                 }
               }
             })
           }
-        }, true);
+        }, false);
 
         $scope.addNewMasterTask = function (list){
           $scope.show = false;

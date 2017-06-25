@@ -93,6 +93,8 @@
           scope.dragSrcEl = [];
           var handleDragStart = function(e){
             var thisElement = this;
+            console.log(this)
+            console.log(e.srcElement)
             console.log(e.srcElement.childNodes)
             // console.log(e.srcElement.childNodes[0])
             e.srcElement.childNodes[0].parentElement.className = "time"
@@ -111,8 +113,22 @@
               if(middleTimeElementsSplit[0] == list._id && middleTimeElementsSplit[1] == thisElsDate){
                 console.log(moveMeToo[i].childNodes)
                 scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
+
+                console.log($(moveMeToo[i]))
+                // if($(moveMeToo[i]).children){
+                //   console.log($(moveMeToo[i]).children("div"))
+                //   // $(moveMeToo[i]).children.remove()
+                // }
+
+                // this codes takes away the div that contains "+" and "-" when the element is being moved
+                if($(moveMeToo[i]).children("div")){
+                  console.log($(moveMeToo[i]).children("div"))
+                  $(moveMeToo[i]).children("div").remove()
+                }
+
               }
             }
+            $(e.srcElement.childNodes).remove();
             scope.listGrabbed = list;
             scope.dragSrcEl.push({element: this, list: list, date: date});
             e.dataTransfer.effectAllowed = 'move';
@@ -822,6 +838,7 @@
         }
 
         var weeklyTableHeadingRow = function(th, i){
+          console.log(scope.date)
           console.log(scope.date.twoMonthsWeeklyDate)
           if(scope.date.twoMonthsWeekly){
             th.setAttribute("id", scope.date.twoMonthsWeeklyDate.fullDates[i-1])

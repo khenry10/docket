@@ -198,6 +198,17 @@
               </h4>
             </div>
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+              <table style="width: 70%; margin-bottom: 25px; outline: 1px solid white; margin-left: 10%">
+                <tr>
+                  <th> Activity </th>
+                  <th style="outline: 1px solid white;" > Hours </th>
+                </tr>
+                <tr ng-repeat="(key, value) in weeklyStats">
+                  <td style="outline: 1px solid white;"> {{ key }}  </td>
+                  <td style="outline: 1px solid white; text-align: center"> {{ value }}  </td>
+                </tr>
+              </table>
+
               <p>
                 As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }}
                 complete with {{ date.getFullYear() }}.  {{ niceMonth }} accounts for {{ monthPercent * 100 | number:2}}% of the year,
