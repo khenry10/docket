@@ -27,6 +27,7 @@
 
         scope.$watch('listForCal', function(todosForCal, oldList){
           console.log("scope.$watch")
+          console.log(todosForCal)
           if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
@@ -210,7 +211,7 @@
                   var duration = 0;
                   var splitEndTime = list.lists[i].end_time.split(":")
                   var splitStartTime = list.lists[i].start_time.split(":")
-
+                  console.log(splitStartTime)
                   var startTimeAmOrPm = splitStartTime[1];
                   if(adjust === 'add'){
                     var newTime = parseInt(splitEndTime[0]) + 1;
