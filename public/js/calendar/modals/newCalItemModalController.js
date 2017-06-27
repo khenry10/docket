@@ -13,6 +13,7 @@ function newCalItemModalController($scope, data, DateService, close, $element){
   console.log("modal controller")
   $scope.data = data;
   var date = new Date(data.date.year, data.date.month-1, data.date.date)
+
   if($scope.data.date.startTime){
     $scope.startTime = $scope.data.date.startTime
   }

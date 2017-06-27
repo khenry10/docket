@@ -13,8 +13,6 @@ angular.module("app").controller("modalController", [
 
 function modalController(Todo, $scope, data, date, allTasks, parseAllTasks, close){
   console.log("modal controller")
-  console.log($scope)
-  console.log(date)
   $scope.allTasks = allTasks;
   $scope.list_type = data.list_type;
   $scope.listType = $scope.list_type;

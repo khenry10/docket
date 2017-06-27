@@ -26,7 +26,17 @@
 
         $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly'];
 
-        $scope.categories = ["Health", "Work", "Finance", "Household", "Personal Project", "Social" ]
+        $scope.categories = ["Health", "Work", "Finance", "Household", "Personal Project", "Social" ];
+
+        $scope.daysInRepeatWeekly = {
+          sun: false,
+          mon: false,
+          tues: false,
+          wed: false,
+          thurs: false,
+          fri: false,
+          sat: false,
+        };
 
         $scope.changeEndTimeArray = function(){
           console.log("changeEndTimeArray envoked")
@@ -52,16 +62,14 @@
             var startTime = $scope.startTime.split(":")
             var startTimeAmOrPm = startTime[1].substr(2,4)
             var startTime = startTime[0]
-
             var endTime = $scope.endTime.split(":")
             var endTimeAmOrPm = endTime[1].substr(2,4)
             var endTime = endTime[0]
-
-            var timeDifference = endTime - startTime
+            var timeDifference = parseInt(endTime) - parseInt(startTime)
             // below is to account for when something starts in the am and ends in the pm
             if(timeDifference < 0){
               var time = 12 - startTime
-              var timeDifference = time + endTime
+              var timeDifference = parseInt(time) + parseInt(endTime)
             }
             $scope.newTodoList.duration = timeDifference
           }
@@ -69,6 +77,20 @@
         var createListOfLists = []
 
         $scope.newEntry = {}
+
+        var repeatAdditionalDays = function(count, incrementor, lastDay, year, month, list, startTime, endTime){
+          while(count+incrementor <= lastDay){
+            count = count + 7
+            var list = year+"-"+month+"-"+count;
+            createListOfLists.push( {
+              date: list,
+              duration: $scope.newTodoList.duration,
+              start_time: $scope.newTodoList.start_time,
+              end_time: $scope.newTodoList.end_time,
+              tasks: [] } )
+            //  var date = $scope.firstDay
+          }
+        };
 
         $scope.create = function(){
           console.log("create")
@@ -98,8 +120,9 @@
                 if($scope.data && $scope.data.date.startTime){
                   $scope.newTodoList.start_time = $scope.data.date.startTime
                 }
-
-                $scope.newTodoList.end_time = $scope.endTime
+                $scope.newTodoList.routine = $scope.routine;
+                $scope.newTodoList.repeatDays = $scope.daysInRepeatWeekly;
+                $scope.newTodoList.end_time = $scope.endTime;
                 if($scope.firstDay && $scope.endTime){
                   getHours()
                 }
@@ -109,13 +132,17 @@
                     $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
                 }
 
-                var date = $scope.firstDay
+                var date = $scope.firstDay;
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
-                createListOfLists.push( {
-                  date: newDate,
-                  start_time: $scope.newTodoList.start_time,
-                  end_time: $scope.newTodoList.end_time,
-                  tasks: []} )
+                if($scope.repeatInterval !== 'Weekly'){
+                  createListOfLists.push( {
+                    date: newDate,
+                    duration: $scope.newTodoList.duration,
+                    start_time: $scope.newTodoList.start_time,
+                    end_time: $scope.newTodoList.end_time,
+                    tasks: []
+                  } )
+                }
                 var count = date.getDate();
 
                 var lastDay = numberOfDaysInMonth
@@ -145,6 +172,7 @@
                     var list = year+"-"+month+"-"+count
                     createListOfLists.push(
                       { date: list,
+                        duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
                         tasks: []
@@ -154,23 +182,56 @@
                 }
 
                 if($scope.repeatInterval === 'Weekly'){
-                  while(count+7 <= lastDay){
-                    count = count + 7
-                    var list = year+"-"+month+"-"+count
-                    createListOfLists.push( {
-                      date: list,
-                      start_time: $scope.newTodoList.start_time,
-                      end_time: $scope.newTodoList.end_time,
-                      tasks: [] } )
-                     var date = $scope.firstDay
+                  var dayOfFirstDay = $scope.firstDay.getDay();
+                  var index = 0;
+                  var additionalDays = [];
+                  for(var property in $scope.daysInRepeatWeekly) {
+                    if ($scope.daysInRepeatWeekly.hasOwnProperty(property)) {
+                        if($scope.daysInRepeatWeekly[property]){
+                          additionalDays.push(index)
+                        }
+                        index = index +1;
+                    }
                   }
-                }
+
+                  if(additionalDays.length){
+                    additionalDays.forEach(function(day){
+                      var count = date.getDate();
+                      var adjuster = day - dayOfFirstDay;
+                      count = count + adjuster;
+                      var list = year+"-"+month+"-"+count;
+                      // pushed a date list here because repeats in the first week weren't being added
+                      createListOfLists.push( {
+                        date: list,
+                        duration: $scope.newTodoList.duration,
+                        start_time: $scope.newTodoList.start_time,
+                        end_time: $scope.newTodoList.end_time,
+                        tasks: []
+                      })
+                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time)
+                    })
+                  } else {
+                      var list = year+"-"+month+"-"+count;
+                      createListOfLists.push( {
+                        date: list,
+                        duration: $scope.newTodoList.duration,
+                        start_time: $scope.newTodoList.start_time,
+                        end_time: $scope.newTodoList.end_time,
+                        tasks: []
+                      })
+                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time)
+                      // count = count + 7;
+                    // }
+                  }
+                }//end of weekly conditional
 
                 if($scope.repeatInterval === 'Monthly'){
                   while(month < 12){
                     month = month+1
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( { date: list,
+                    createListOfLists.push( {
+                      date: list,
+                      duration: $scope.newTodoList.duration,
                       start_time: $scope.newTodoList.start_time,
                       end_time: $scope.newTodoList.end_time,
                       tasks: [] } )
@@ -186,6 +247,8 @@
                 $scope.newCalTodoLists[0].list_type = $scope.newTodoList.list_type;
                 $scope.newCalTodoLists[0].budget = $scope.newTodoList.budget;
                 $scope.newCalTodoLists[0].category = $scope.newTodoList.category;
+                $scope.newCalTodoLists[0].routine = $scope.routine;
+                $scope.newCalTodoLists[0].repeatDays = $scope.daysInRepeatWeekly;
 
                 $scope.newCalTodoLists[0].listsInMonths = [];
                 var monthNames = DateService.monthNames;
@@ -269,6 +332,7 @@
                 $scope.startTime = ""
                 $scope.endTime = ""
                 $scope.newEntry.budget = ""
+                $scope.routine = ""
               // } this is needed when the conditional is in place to see if it's a List or Event (event deprecated on 3/19)
             }
           }

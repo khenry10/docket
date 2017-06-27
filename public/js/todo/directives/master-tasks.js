@@ -18,22 +18,47 @@
         $scope.show = true;
         $scope.newMasterInDirective = {};
 
+        var lastTodosForCal = [];
+        var called = 0;
         $scope.$watch('listForCal', function(todosForCal, oldList){
+          called = called + 1
+          lastTodosForCal[0] = todosForCal;
           if(todosForCal && todosForCal.length){
             $scope.listss = [];
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]
             todosForCal.forEach(function(todoForLeftRail){
-              if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
-                $scope.listss.push({
-                  name: todoForLeftRail.todo.list_name,
-                  master_tasks: todoForLeftRail.todo.master_tasks,
-                  listType: todoForLeftRail.todo.list_type,
-                  todo: todoForLeftRail.todo
-                 })
+              console.log(todoForLeftRail)
+              if(todoForLeftRail.todo){
+                if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
+                  console.log($scope.listss)
+                  // if($scope.listss.length){
+                    // $scope.listss.forEach(function(list){
+                      // console.log(list.todo._id)
+                      console.log(todoForLeftRail.todo._id)
+                      // if(list.todo._id !== todoForLeftRail.todo._id){
+                        $scope.listss.push({
+                          name: todoForLeftRail.todo.list_name,
+                          master_tasks: todoForLeftRail.todo.master_tasks,
+                          listType: todoForLeftRail.todo.list_type,
+                          todo: todoForLeftRail.todo
+                        })
+                      // }
+                    // })
+                //   } else {
+                //     $scope.listss.push({
+                //       name: todoForLeftRail.todo.list_name,
+                //       master_tasks: todoForLeftRail.todo.master_tasks,
+                //       listType: todoForLeftRail.todo.list_type,
+                //       todo: todoForLeftRail.todo
+                //     })
+                // }
+
+
+                }
               }
             })
           }
-        }, true);
+        }, false);
 
         $scope.addNewMasterTask = function (list){
           $scope.show = false;

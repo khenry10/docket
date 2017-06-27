@@ -45,9 +45,7 @@
 
         $scope.$watch("data", function(newD, oldD){
           console.log("$watch data envoked")
-          console.log(newD)
-          console.log(oldD)
-          console.log($scope.element)
+
           // below condition fixes the problem where clicking on a list on the calendar doesn't show tasks, but it also doesn't update the left rail to have to driven off what is on the calendar
           if(newD != oldD){
             if($scope.element === "rail" && newD != undefined){
@@ -78,24 +76,15 @@
         };
 
         var budgetProgressBar = function(){
-          console.log("$scope.shoppingPurchased = " + $scope.shoppingPurchased);
-          console.log("$scope.totalShoppingList =" + $scope.totalShoppingList);
-          console.log("budget = " + $scope.data.budget);
           $scope.shoppingPurchased = !$scope.shoppingPurchased? 0:$scope.shoppingPurchased;
           $scope.totalShoppingListPercent = round($scope.totalShoppingList-$scope.shoppingPurchased/$scope.data.budget*100, 2);
-          console.log("$scope.totalShoppingListPercent = " + $scope.totalShoppingListPercent)
           $scope.shoppingPurchasedPercent = round($scope.shoppingPurchased/$scope.data.budget*100,2);
-          console.log($scope.totalShoppingList-$scope.shoppingPurchased)
           var numerator = $scope.totalShoppingList-$scope.shoppingPurchased;
-          console.log(numerator/$scope.data.budget)
-          console.log($scope.totalShoppingList-$scope.shoppingPurchased/$scope.data.budget)
           $scope.totalShoppingListPercent = round(numerator/$scope.data.budget*100, 2)
-          console.log("$scope.shoppingPurchasedPercent = " + $scope.shoppingPurchasedPercent)
           $scope.remainingBudgetPercent = round(100 - $scope.totalShoppingListPercent - $scope.shoppingPurchasedPercent, 2);
         }
 
         var processTasksForList = function(list, index){
-          console.log("processTasksForList")
           $scope.models.toDoList = [];
           $scope.listIndex = index
           $scope.list = list
