@@ -21,14 +21,8 @@
         var lastTodosForCal = [];
         var called = 0;
         $scope.$watch('listForCal', function(todosForCal, oldList){
-          console.log("called = " + JSON.stringify(called))
           called = called + 1
-          console.log(todosForCal)
-          console.log(lastTodosForCal[0])
-          console.log(lastTodosForCal[0] === todosForCal)
           lastTodosForCal[0] = todosForCal;
-          console.log(oldList)
-          console.log(todosForCal !== oldList)
           if(todosForCal && todosForCal.length){
             $scope.listss = [];
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]

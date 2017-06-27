@@ -62,16 +62,14 @@
             var startTime = $scope.startTime.split(":")
             var startTimeAmOrPm = startTime[1].substr(2,4)
             var startTime = startTime[0]
-
             var endTime = $scope.endTime.split(":")
             var endTimeAmOrPm = endTime[1].substr(2,4)
             var endTime = endTime[0]
-
-            var timeDifference = endTime - startTime
+            var timeDifference = parseInt(endTime) - parseInt(startTime)
             // below is to account for when something starts in the am and ends in the pm
             if(timeDifference < 0){
               var time = 12 - startTime
-              var timeDifference = time + endTime
+              var timeDifference = parseInt(time) + parseInt(endTime)
             }
             $scope.newTodoList.duration = timeDifference
           }
@@ -84,7 +82,6 @@
           while(count+incrementor <= lastDay){
             count = count + 7
             var list = year+"-"+month+"-"+count;
-            console.log("list = "  + list)
             createListOfLists.push( {
               date: list,
               duration: $scope.newTodoList.duration,
@@ -196,8 +193,7 @@
                         index = index +1;
                     }
                   }
-                  console.log(additionalDays)
-                  console.log("additionalDays.length = " + additionalDays.length)
+
                   if(additionalDays.length){
                     additionalDays.forEach(function(day){
                       var count = date.getDate();
@@ -215,11 +211,7 @@
                       repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time)
                     })
                   } else {
-                    console.log("else statement of additionalDays.length ")
-                    // while(count < lastDay){
-                      console.log("count = " + count)
                       var list = year+"-"+month+"-"+count;
-                      console.log("list = " + list)
                       createListOfLists.push( {
                         date: list,
                         duration: $scope.newTodoList.duration,

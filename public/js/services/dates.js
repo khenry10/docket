@@ -43,7 +43,6 @@ angular.module('app').service('DateService', [ function () {
   };
 
   this.getNiceDate = function(date){
-    console.log(date)
     var month = date.getMonth()+1
     var day = date.getDay()
     var dayDate = date.getDate()
@@ -104,7 +103,6 @@ angular.module('app').service('DateService', [ function () {
   };
 
   this.dateSplit = function(fullDate){
-    console.log(fullDate)
     var year = fullDate.getFullYear();
     var monthNumber = fullDate.getMonth()+1;
     var monthNames = this.monthNames[monthNumber];
@@ -115,8 +113,6 @@ angular.module('app').service('DateService', [ function () {
   }
 
   this.stringDateSplit = function(date){
-    console.log(typeof date)
-    console.log(this)
     if(typeof date === 'object'){
       return this.dateSplit(date)
     } else {
@@ -134,7 +130,6 @@ angular.module('app').service('DateService', [ function () {
 
       return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}
     }
-    console.log(date)
   };
 
 

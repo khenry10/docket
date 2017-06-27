@@ -22,8 +22,6 @@
     Todo.all = Todo.query();
     Todo.findWithGet = Todo.query();
 
-
-    console.log(Todo)
     return Todo
   };
 
@@ -31,7 +29,6 @@
 
   function User($resource){
     var User = $resource("/userAuth", {}, {})
-    console.log(User.get())
   };
 
   function Budget($resource){
