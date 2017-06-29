@@ -4,7 +4,6 @@
   <div class="task-list-workspace" >
     <div ng-init="todoVM.fetchData()" class="simpleDemo" style="">
 
-
       <div class="container"
         style="background-color: rgba(0, 0, 0, 0.7); width: 100%; margin-top: 0px; color: white; border: 1px; border-radius: 15px;">
         <div ng-if="listType === 'shopping' "
@@ -26,7 +25,7 @@
           </span>
 
         </div>
-        <div ng-if="listType === 'shopping' " class="progress" id="progress-container" style="margin-top: 10px; height: 22.5px" >
+        <div ng-if="listType === 'shopping' " class="progress" id="progress-container" >
           <div class="progress-bar progress-bar" style=" background-color: red;"
                 ng-style="{'width': shoppingPurchasedPercent+'%'}"
                role="progressbar"
@@ -81,7 +80,7 @@
 
       </li>
       <ul dnd-list="models.toDoList">
-        <table ng-if="listType === 'shopping' && models.toDoList.length " style="width: 100%">
+        <table ng-if="listType === 'shopping' && models.toDoList.length " class="shopping-input-table" style="width: 100%">
           <tr>
             <th class="shopping-list-head">  </th>
             <th class="shopping-list-head"> Product </th>
@@ -90,7 +89,7 @@
           </tr>
         </table>
         <li ng-repeat="item in models.toDoList "
-          style="height: 50px; font-size: 16px; color: black"
+          style="height: 50px; color: black"
           class="todo"
           ng-class="{todoComplete: item.completed}"
           dnd-draggable="item"
