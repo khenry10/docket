@@ -1,4 +1,4 @@
-<div  style="background-color: #F2F3F4;">
+<div class="homepage-container" style="background-color: #F2F3F4;">
   <div class="header" >
     <div class="left-header">
       <h1>Docket</h1>
@@ -22,13 +22,13 @@
                  Today
       </md-button>
 
-      <md-button class="md-raised" style="min-width: 1%; background-color: white;"
+      <md-button class="md-raised" style="background-color: white;"
                   data-ng-model="changeDate.monthCount"
                   ng-click="changeDate.decrement()">
                   <
       </md-button>
-      <div style="width: 50%; color: white"><h2><span id="calendar-month-year"></span></h2></div>
-      <md-button class="md-accent md-raised md-hue-1" style="min-width: 1%; background-color: white;"
+      <div style="color: white"><h2><span id="calendar-month-year"></span></h2></div>
+      <md-button class="md-accent md-raised md-hue-1" style="background-color: white;"
                  data-ng-model="changeDate.monthCount"
                  ng-click="changeDate.increment()">
                  >
@@ -40,6 +40,15 @@
     </div>
     <md-button ng-click="logout()" style="color: white">Logout</md-button>
   </div>
+
+  <div class="calendar">
+    <div class="calendar-header">
+        <monthly-calendar change-date="changeDate" current-month="currentMonth.count" list="todoLists"
+          new="newCalTodoLists" view="viewType" list-for-cal="listForCal"
+          ></monthly-calendar>
+    </div>
+  </div>
+
   <div class="events-panel">
     <div>
       <!-- bootstrap collapsible panel START -->
@@ -225,14 +234,4 @@
     </div>
   </div>
 
-<div style="">
-  <div class="calendar">
-    <div class="calendar-header">
-      <div>
-        <monthly-calendar change-date="changeDate" current-month="currentMonth.count" list="todoLists"
-          new="newCalTodoLists" view="viewType" list-for-cal="listForCal"
-          ></monthly-calendar>
-      </div>
-    </div>
-  </div>
 </div>
