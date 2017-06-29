@@ -856,4 +856,16 @@ input[type=text].new-todo-input {
   #collapseFour {
     font-size: 35px;
   }
+  button.close {
+    font-size: 50px;
+  }
+
+  md-radio-button {
+    padding: 4%;
+  }
+
+  div.md-container.md-ink-ripple {
+    transform: scale(2);
+    padding 1%;
+  }
 }
