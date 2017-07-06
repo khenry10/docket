@@ -787,8 +787,8 @@ input[type=text].new-todo-input {
     margin-top: 65px;
     width: 100%;
     min-height: 610px;
-    height: 950px;
-    font-size: 30px;
+    height: 1000px;
+    font-size: 40px;
   }
   #calendar-dates li a {
     font-size: 35px;
@@ -808,6 +808,8 @@ input[type=text].new-todo-input {
   }
   .calendar-navigation button {
     min-width: 12%;
+    height: 100%;
+    font-size: 35px;
   }
   .panel-group .panel .panel-heading  {
     height: 80px;
@@ -816,13 +818,27 @@ input[type=text].new-todo-input {
     font-size: 35px;
   }
   .create-new-panel {
-    font-size: 35px;
+    font-size: 55px;
+    height: 1200px;
   }
   .create-new-panel button {
     font-size: 30px;
   }
   .create-new-panel h5 {
-    font-size: 35px;
+    font-size: 50px;
+  }
+  .create-new-panel li {
+    margin: 5px;
+  }
+  .create-new-panel .create-new-text-input {
+    height: 50px;
+  }
+  .create-new-panel .create-new-text-input label {
+    display: none;
+  }
+  .create-new-panel button {
+    height: 100px;
+    width: 200px;
   }
   div.modal-content {
     width: 140%;
@@ -830,13 +846,17 @@ input[type=text].new-todo-input {
     margin-top: 25%;
   }
   div.modal-header h5 {
-    font-size: 35px;
+    font-size: 50px;
   }
   div.modal-header h3 {
-    font-size: 40px;
+    font-size: 50px;
   }
   div.modal-body {
     font-size: 30px;
+    height: 1300px;
+  }
+  div.modal-dialog {
+    width: 70%;
   }
   .progress {
     height: 30px;
@@ -857,15 +877,42 @@ input[type=text].new-todo-input {
     font-size: 35px;
   }
   button.close {
-    font-size: 50px;
+    font-size: 70px;
+    height: 50px;
+    width: 70px;
   }
 
-  md-radio-button {
+  /*md-radio-button {
     padding: 4%;
-  }
+  }*/
 
   div.md-container.md-ink-ripple {
     transform: scale(2);
     padding 1%;
   }
+
+  button.btn {
+    font-size: 40px;
+  }
+
+  #calendar-month-year {
+    font-size: 50px;
+  }
+
+  .right-header {
+    display: none;
+  }
+  md-select-menu {
+    max-height: 550px;
+  }
+  ._md md-overflow {
+    max-height: 550px;
+  }
+  .md-content._md {
+    height: 550px;
+  }
+  md-select-menu md-content {
+    max-height: 550px;
+  }
+
 }

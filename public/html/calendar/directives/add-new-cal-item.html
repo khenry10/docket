@@ -1,17 +1,18 @@
 <form style="color: black">
   <ul class="create-new-panel">
     <li style="margin-left: 0%">
-      <md-input-container style="margin: 15px 0px 0px 0px">
+      <md-input-container>
         <input type="text"
+               class="create-new-text-input"
                style="border-bottom-color: white; color: white"
                data-ng-model="name"
                placeholder="Name"/>
       </md-input-container>
     </li>
-    <li style="color: white; outline: 1px solid white; margin-bottom: 10px;">
-      <h5 style="padding: 8px">Monthly Item or Regular Routine</h5>
+    <li style="color: white; outline: 1px solid white; ">
+      <h5>Monthly Item or Regular Routine</h5>
       <md-radio-group ng-model="routine"
-        style="display: flex; justify-content: space-around; margin-top: 4%; border-color: white">
+        style="display: flex; justify-content: space-around; border-color: white">
         <md-radio-button style="padding-left: 2%;border-color: white" value="monthly"> Monthly </md-radio-button>
         <md-radio-button value="weekly-routine">Weekly Routine</md-radio-button>
       </md-radio-group>
