@@ -763,11 +763,20 @@
             document.getElementById("calendar-month-year").innerHTML =
             oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
           } else if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
-            document.getElementById("calendar-month-year").innerHTML =
-            currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
+            if(screen.width < 1000){
+              document.getElementById("calendar-month-year").innerHTML =
+              currentMonth + " " + begOfWeek + " - "+ endOfWeek
+            } else {
+              document.getElementById("calendar-month-year").innerHTML =
+              currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
+            }
 
           } else {
-            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
+            if(screen.width < 1000){
+              document.getElementById("calendar-month-year").innerHTML = scope.date.today.monthNames + " " + year;
+            } else {
+              document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
+            }
           }
         }
 
@@ -784,7 +793,15 @@
               day = scope.date.dayCount[scope.date.dayCount.length-8+i];
             }
 
-            th.innerHTML = daysOfWeek[i] + "  " + day
+            if(screen.width < 1000){
+              // here
+              var shortDayNames = DateService.shortDayNames
+                th.innerHTML = shortDayNames[i] + "  " + day
+            } else {
+              th.innerHTML = daysOfWeek[i] + "  " + day
+            }
+
+            // th.innerHTML = daysOfWeek[i] + "  " + day
             if(daysAwayFromDate === 0){
               th.setAttribute("class", "todayInWeeklyView")
               th.setAttribute("id", scope.date.year +"-"+ month +"-"+ day)
@@ -800,6 +817,7 @@
 
         function createTableHeadingRow(table, tr, count){
           // week gets a start of 0, becuase we need an extra column to add the times of the day
+          console.log(screen.width)
           if(scope.newView === 'month'){
             var start = 1
           } else if(scope.newView === 'week'){
@@ -813,7 +831,13 @@
             if(i > 0 && start === 0){
               weeklyTableHeadingRow(th, i)
             } else {
-              th.innerHTML = daysOfWeek[i]
+              if(screen.width < 1000){
+                // here
+                var shortDayNames = DateService.shortDayNames
+                  th.innerHTML = shortDayNames[i];
+              } else {
+                th.innerHTML = daysOfWeek[i]
+              }
             }
             tr.appendChild(th)
           }
@@ -821,10 +845,14 @@
         };
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
-          if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
+          if(screen.width < 1000){
             document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
           } else {
-            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
+            if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
+              document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
+            } else {
+              document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
+            }
           }
           var table = document.createElement("table");
           table.className = 'calendar';
