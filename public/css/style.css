@@ -543,9 +543,9 @@ a {
 }*/
 
 .todo {
-  height: 30px;
+  height: 45px;
   outline: 1px solid white;
-  padding-top: 2%;
+  padding-top: 10px;
 }
 
 .todo input[type="checkbox"] {

@@ -177,7 +177,9 @@ app.put("/api/todo/", function(req, res){
   console.log("todo PUT ")
   console.log(req.params.name)
   console.log(req.body.todo.list_name)
+  console.log(req.body.todo._id)
   console.log(req.body.todo)
+
   Todo.findOneAndUpdate({_id: req.body.todo._id}, req.body.todo, {new: false}).then(function(todo, err){
     res.json(todo)
   })

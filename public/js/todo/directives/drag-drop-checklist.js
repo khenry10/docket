@@ -290,10 +290,10 @@
         $scope.newTask = {};
         $scope.addNewTodo = function (index){
           console.log("NEW")
-
+          console.log($scope.data)
           if($scope.newTask.name || $scope.shopping.productName){
             var timeCreated = new Date();
-            var saveMe = {list_name: $scope.listName, lists: $scope.data.lists}
+            var saveMe = {_id: $scope.data._id ,list_name: $scope.listName, lists: $scope.data.lists}
 
             if(!$scope.data.list_type){
               saveMe.list_type = $scope.listType
@@ -342,6 +342,7 @@
                 })
               budgetProgressBar()
             }
+
             Todo.update({list_name: $scope.listName}, {todo: saveMe}, function(task){})
             $scope.newTask.name = ""
             $scope.shopping.productName = ""
