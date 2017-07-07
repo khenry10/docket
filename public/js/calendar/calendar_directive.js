@@ -763,11 +763,20 @@
             document.getElementById("calendar-month-year").innerHTML =
             oldMonth + " " + begOfWeek + " - "+ currentMonth + " " + endOfWeek + ", " + year;
           } else if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
-            document.getElementById("calendar-month-year").innerHTML =
-            currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
+            if(screen.width < 1000){
+              document.getElementById("calendar-month-year").innerHTML =
+              currentMonth + " " + begOfWeek + " - "+ endOfWeek
+            } else {
+              document.getElementById("calendar-month-year").innerHTML =
+              currentMonth + " " + begOfWeek + " - "+ endOfWeek + ", " + year;
+            }
 
           } else {
-            document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
+            if(screen.width < 1000){
+              document.getElementById("calendar-month-year").innerHTML = scope.date.today.monthNames + " " + year;
+            } else {
+              document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
+            }
           }
         }
 

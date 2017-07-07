@@ -89,7 +89,6 @@
           </tr>
         </table>
         <li ng-repeat="item in models.toDoList "
-          style="height: 50px; color: black"
           class="todo"
           ng-class="{todoComplete: item.completed}"
           dnd-draggable="item"
@@ -162,7 +161,6 @@
 
       <ul dnd-list="list.completedList">
         <li ng-repeat="item in models.completedList "
-          style="height: 50px; font-size: 16px;"
           class="todo"
           ng-class="{todoComplete: item.completed}"
           dnd-draggable="item"
