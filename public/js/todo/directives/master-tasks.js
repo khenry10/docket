@@ -92,6 +92,17 @@
           $scope.newMasterInDirective.quantity = "";
         }; // end of $scope.addNewMasterTask
 
+        $scope.deleteList = function(list){
+          console.log(list)
+          Todo.remove({name: list.name}, function(res){
+            console.log(res)
+            console.log($scope.listss)
+            console.log($scope.listss.indexOf(list))
+            $scope.listss.splice(1, 1)
+          })
+
+        }
+
       }
     }
   }
