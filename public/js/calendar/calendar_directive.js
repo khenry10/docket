@@ -34,8 +34,9 @@
                 console.log(todoForCal)
                 if(todoForCal.todo && todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
+                    console.log(dateList)
                     var date = dateList.date;
-                    var times = {start_time: dateList.start_time, end_time: dateList.end_time}
+                    var times = {start_time: dateList.start_time, end_time: dateList.end_time, duration: dateList.duration}
 
                     scope.pickCorrectDateForCal(date, todoForCal.todo, times)
                   })
@@ -73,6 +74,8 @@
         var year = date.getFullYear()
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
+          console.log(list)
+          console.log("time in createHourlyCalItem = " + time)
           // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
           var bigTdContainer = document.getElementsByClassName(time)
           // console.log(bigTdContainer)
@@ -117,7 +120,15 @@
           pForBigTd.setAttribute("id", list._id+"&"+date)
           pForBigTd.setAttribute("class", list._id+date)
           if(timeStructure === 'startTime'){
-            pForBigTd.innerHTML = list.list_name
+            console.log(times)
+            var start = times.start_time.split(":")
+            var startTimeAmOrPm = start[1].substr(start[1].length - 2, start[1].length)
+            var end = times.end_time.split(":")
+            var endTimeAmOrPm = end[1].substr(end[1].length - 2, end[1].length)
+            var timeP = document.createElement("p")
+            timeP.innerHTML = start[0] + startTimeAmOrPm +  "-" + end[0] + endTimeAmOrPm
+            // bigTdContainer.appendChild(timeP);
+            pForBigTd.innerHTML =  list.list_name + " (" + times.duration + "hrs)"
           }
           if(list.list_reocurring === 'Monthly'){
             var fullDateObj = DateService.stringDateSplit(date)
@@ -155,12 +166,23 @@
           }
 
           var realSplitEndTime = times.end_time.split(":")
-          if(realSplitEndTime[0] === '12:00am'){
-            var realEndTime = realSplitEndTime[0]
-          } else {
+          console.log(realSplitEndTime)
+          console.log(realSplitEndTime[0] === '12')
+          if(realSplitEndTime[0] === '12'){
             var realEndTime = realSplitEndTime[0] - 1
+            console.log("realSplitEndTime[1] = " + realSplitEndTime[1])
+            var amOrPm =  realSplitEndTime[1] === '00am'? ':00pm': ':00am'
+            console.log("amOrPm " + amOrPm)
+            realEndTime = realEndTime + amOrPm
+            console.log("realEndTime = " + realEndTime)
+          } else if (realSplitEndTime[0] === '1'){
+            realEndTime = '12:' + realSplitEndTime[1]
+          } else {
+            realEndTime = realSplitEndTime[0]-1 + ":" + realSplitEndTime[1]
           }
-          realEndTime = realEndTime + ":" + realSplitEndTime[1]
+          console.log("realEndTime = " + realEndTime)
+          console.log("time = " + time)
+          console.log(time === realEndTime)
           if(time === realEndTime){
             var a = document.createElement('a');
             var linkText = document.createTextNode("+");
@@ -182,33 +204,73 @@
                   var duration = 0;
                   var splitEndTime = list.lists[i].end_time.split(":")
                   var splitStartTime = list.lists[i].start_time.split(":")
+                  console.log(splitEndTime[0])
+                  var originalStartTime = splitEndTime[0];
                   var startTimeAmOrPm = splitStartTime[1];
                   if(adjust === 'add'){
-                    var newTime = parseInt(splitEndTime[0]) + 1;
-                  } else if (adjust === 'minus'){
-                    var newTime = parseInt(splitEndTime[0]) - 1;
-                  }
 
-                  var endTimeAmOrPm = splitEndTime[1];
-                  if(newTime === 12){
-                    var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
-                  } else if(newTime > 12){
-                    newTime = newTime === 13? 1:newTime - 12
                     if(splitEndTime[0] === 12){
-                      var endTimeAmOrPm = endTimeAmOrPm;
+                      newTime = 1
                     } else {
-                      var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                      newTime = parseInt(splitEndTime[0]) + 1;
+                    }
+                  } else if (adjust === 'minus'){
+                    if(splitEndTime[0] == 2){
+                      newTime = 1
+                    } else if (splitEndTime[0] == 1){
+                      newTime = 12
+                    } else {
+                      var newTime = parseInt(splitEndTime[0]) - 1;
                     }
                   }
+                  console.log(newTime)
 
+                  var endTimeAmOrPm = splitEndTime[1];
+                  console.log(newTime === 12)
+                  if(newTime === 11 && originalStartTime == 12){
+                    console.log(endTimeAmOrPm)
+                    var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                  } else if (newTime === 12){
+                    console.log("here 1")
+                    console.log(endTimeAmOrPm)
+                    var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                    console.log(endTimeAmOrPm)
+                  } else if(newTime > 12){
+                    console.log("here 2")
+                    newTime = newTime === 13? 1:newTime - 12
+                    var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                    if(splitEndTime[0] === 12){
+                      console.log("here 3")
+                      var endTimeAmOrPm = endTimeAmOrPm;
+                    } else {
+                      console.log("here 4")
+                      var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                    }
+                  } else {
+
+                  }
+                  console.log("endTimeAmOrPm = " + endTimeAmOrPm)
+
+                  console.log(startTimeAmOrPm === endTimeAmOrPm)
                   if(startTimeAmOrPm === endTimeAmOrPm){
                     var newDuration = newTime - parseInt(splitStartTime[0]);
                     duration = duration + newDuration
                   } else {
-                    var newDuration = 12 - parseInt(splitStartTime[0]);
-                    duration = newDuration + newTime;
+                    console.log(splitStartTime[0])
+                    duration = 12 - parseInt(splitStartTime[0]) ;
+                    var morningDuration = 12 - parseInt(splitStartTime[0]) ;
+                    if(newTime === 12){
+                      var afternoonDuration = 0;
+                    } else {
+                      var afternoonDuration = newTime
+                    }
+                    duration = morningDuration + afternoonDuration
+                    console.log("newTime = " + newTime)
+                    console.log("duration = " + duration)
+                    // duration = newDuration + newTime;
                   }
                   var newTimeBlock = newTime + ":"+ endTimeAmOrPm;
+                  console.log("newTimeBlock = " + newTimeBlock)
                   list.lists[i].duration = duration;
                   list.lists[i].end_time = newTimeBlock;
                 }
@@ -239,15 +301,28 @@
           // newDiv.style.overflow = 'auto'
           // bigTdContainer.appendChild(newDiv);
           bigTdContainer.appendChild(pForBigTd);
+          if(timeP){
+            bigTdContainer.appendChild(timeP);
+            bigTdContainer.style.display = "flex";
+            timeP.style.backgroundColor = pForBigTd.style.backgroundColor
+            // timeP.style.width = "40px"
+            timeP.style.margin = "0px";
+            timeP.style.fontSize = "10px";
+            bigTdContainer.style.flexDirection = "column";
+          }
+
         };
 
         var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate, times){
           // addMiddleTimeCalItems function is to determine how many hours between start and end time need to be appended to the calendar for each item
+          console.log(list.list_name + " startTime = " + startTime + "; endTime = " +endTime)
           for(var t = startTime; t <= endTime; t++){
             var time = t + ":00" + amOrpm
             if(t === endTime){
+              console.log("addMiddleTimeCalItems 1")
               createHourlyCalItem(list, time, date, realListDate, "middleTime", times)
             } else {
+              console.log("addMiddleTimeCalItems 2")
               createHourlyCalItem(list, time, date, realListDate, "middleTime", times)
             }
           }
@@ -280,18 +355,25 @@
           if(startTimeAmOrPm === endTimeAmOrPm && timeDifference === 2){
             var endTime = endTime -1
             var endTime = endTime + ":00" + endTimeAmOrPm
+            console.log("sarah 3")
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime", times)
           } else if(startTimeAmOrPm != endTimeAmOrPm && timeDifference === 2 && times.end_time === "12:00am"){
             var endTime = endTime -1
             var endTime = endTime + ":00pm"
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime", times)
             createHourlyCalItem(list, "12:00am", date, realListDate, "middleTime", times)
+            console.log("sarah 2")
           } else {
             var startTime = parseInt(startTime)+1
             var startTime = startTime >= 12? 12: startTime
-            var endTime = parseInt(endTime)-1
+            console.log("endTime = " + endTime)
+            console.log(endTime != 1)
+            console.log(parseInt(endTime) != 1)
+            if(endTime != 1){
+              var endTime = parseInt(endTime)-1
+            }
             var endTime = endTime >= 12? 12: endTime
-
+            console.log("endTime = " + endTime)
             if(startTimeAmOrPm === endTimeAmOrPm){
               if(startTime === 12){
                 startTime = 1
@@ -299,16 +381,33 @@
 
               addMiddleTimeCalItems(startTime, endTime, startTimeAmOrPm, list, date, realListDate, times)
             } else if(startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "am"){
+              console.log("sarah 1")
               addMiddleTimeCalItems(startTime, 11, "am", list, date, realListDate, times)
-
-              addMiddleTimeCalItems(12, 12, "pm", list, date, realListDate, times)
-              if(originalEndTime != 12 && endTimeAmOrPm === 'pm'){
-                addMiddleTimeCalItems(1, endTime, "pm", list, date, realListDate, times)
+              console.log("endTime = " + endTime)
+              if(endTime != 11){
+                console.log("sarah 1.1")
+                addMiddleTimeCalItems(12, 12, "pm", list, date, realListDate, times)
+              }
+              // if(endTime != 12){
+              //   console.log("sarah 1.2")
+              //   addMiddleTimeCalItems(12, 12, "pm", list, date, realListDate, times)
+              // }
+              console.log("originalEndTime = " + originalEndTime)
+              if(originalEndTime != 1){
+                if( originalEndTime != 12 && endTimeAmOrPm === 'pm'){
+                  console.log("sarah 1.3")
+                  addMiddleTimeCalItems(1, endTime, "pm", list, date, realListDate, times)
+                }
               }
             } else if (startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "pm") {
               var lastItem3 = endTime === 12;
-              addMiddleTimeCalItems(startTime, 12, "pm", list, date, realListDate, times)
-              addMiddleTimeCalItems(1, endTime, "am", list, date, realListDate, times)
+              console.log("sarah")
+              if(endTime === 11){
+                addMiddleTimeCalItems(startTime, 11, "pm", list, date, realListDate, times)
+              } else {
+                addMiddleTimeCalItems(startTime, 12, "pm", list, date, realListDate, times)
+                addMiddleTimeCalItems(1, endTime, "am", list, date, realListDate, times)
+              }
             }
           }
         };

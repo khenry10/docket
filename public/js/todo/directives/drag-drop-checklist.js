@@ -189,6 +189,7 @@
             $scope.completedText = $scope.listType === 'shopping'? "Clear Purchased" : "Clear Completed"
             $scope.showClearCompleted = true;
           }
+          console.log(task)
           if(task.length){
             updateAll(task);
           } else {
@@ -242,7 +243,8 @@
               var dataServiceObj = { updatedTask: taskDataForParseAllTasks, wholeDateList: updateTask, dateList: dateList }
               DateService.saveUpdatesFromLeftRail(dataServiceObj)
             } else if($scope.element === 'cal-entry-modal') {
-              var updateTask = {list_name: $scope.listName, lists: $scope.data.lists}
+              console.log($scope.data)
+              var updateTask = {list_name: $scope.listName, _id: $scope.data, lists: $scope.data.lists}
 
               if(listOrigin === 'clearedTasks'){
                 updateTask.lists[$scope.listIndex].clearedTasks[index] = {
