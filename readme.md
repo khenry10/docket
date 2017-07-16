@@ -1,1 +1,0 @@
-MEAN Stack Calendar App

@@ -283,6 +283,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       $scope.allTodoLists = [];
       $scope.allTodoLists.push(addNew)
     }
+    console.log($scope.allTodoLists)
     $scope.allTodoLists.forEach(function(list, index){
       var lastDateList = list.lists[list.lists.length-1];
       var dateListsInCurrentMonth = [];

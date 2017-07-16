@@ -93,12 +93,19 @@
         }; // end of $scope.addNewMasterTask
 
         $scope.deleteList = function(list){
+          console.log($scope)
           console.log(list)
           Todo.remove({name: list.name}, function(res){
             console.log(res)
             console.log($scope.listss)
             console.log($scope.listss.indexOf(list))
-            $scope.listss.splice(1, 1)
+            console.log($scope.listss.length)
+            if($scope.listss.length !== 1){
+              $scope.listss.splice(1, 1)
+            } else {
+              $scope.listss = [];
+            }
+            $scope.$parent.pullTodos('ajax')
           })
 
         }
