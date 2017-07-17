@@ -48,6 +48,17 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       })
   }
 
+  $scope.navigate = function(){
+    console.log($scope.explore)
+    if($scope.explore === 'tasks-grid'){
+      window.location.href = "/list";
+    } else if ($scope.explore === 'cal-entries'){
+      window.location.href = "/calendar-entries";
+    } else if ($scope.explore === 'logout'){
+      $scope.logout()
+    }
+  }
+
 
   $scope.preProcessCheckTodos = function(){
     if($scope.allTodoLists.length){

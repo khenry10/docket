@@ -36,9 +36,23 @@
     </div>
 
     <div class="right-header">
-      <a href="/list"><h3>Lists</h3></a>
+
+      <md-input-container style="margin-top: 40%">
+        <label>  Explore </label>
+        <md-select  ng-model="explore"
+                    ng-change="navigate()"
+                    aria-label="navigate"
+                    style="color:white">
+          <md-option value="cal-entries"> Cal Entries </md-option>
+          <md-option value="tasks-grid"> Tasks Grid </md-option>
+          <md-option value="logout" > Logout </md-option>
+        </md-select>
+
+      </md-input-container>
+
+
     </div>
-    <md-button ng-click="logout()" style="color: white">Logout</md-button>
+
   </div>
 
   <div class="calendar">

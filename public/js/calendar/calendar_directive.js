@@ -35,9 +35,16 @@
                 if(todoForCal.todo && todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
                     console.log(dateList)
+                    var name = dateList.name? dateList.name : undefined
                     var date = dateList.date;
-                    var times = {start_time: dateList.start_time, end_time: dateList.end_time, duration: dateList.duration}
-
+                    var times = {
+                      date: dateList.date,
+                      start_time: dateList.start_time,
+                      end_time: dateList.end_time,
+                      duration: dateList.duration,
+                      name: name,
+                      tasks: dateList.tasks
+                    }
                     scope.pickCorrectDateForCal(date, todoForCal.todo, times)
                   })
                 }
@@ -46,16 +53,19 @@
           }
         }, true);
 
-      scope.calendarItemModal = function (list, date){
+      scope.calendarItemModal = function (list, date, times){
         console.log("scope.calendarItemModal envoked")
+        console.log(scope.$parent)
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
           inputs: {
             data: list,
+            times: times,
             date: date,
             parseAllTasks: scope.$parent.parseAllTasks,
-            allTasks: scope.$parent.allTasks
+            allTasks: scope.$parent.allTasks,
+            pullTodos: scope.$parent.pullTodos,
           }
         }).then(function(modal) {
           //it's a bootstrap element, use 'modal' to show it
@@ -89,7 +99,10 @@
             e.srcElement.childNodes[0].parentElement.className = "time"
             thisElement.className = "startTime"
             $(thisElement).parent()[0].id = 'time'
+            console.log(thisElement)
             var thisElsSplit = thisElement.id.split("&")
+            console.log(thisElsSplit)
+            console.log(times)
             var thisElsDate = thisElsSplit[1]
             var moveMeToo = document.getElementsByClassName("middleTime")
 
@@ -99,7 +112,8 @@
             for(var i = 0; i < moveMeToo.length; i++){
               var middleTimeElementsSplit = moveMeToo[i].id.split("&")
               var middleTimeElementsDate = middleTimeElementsSplit[1];
-              if(middleTimeElementsSplit[0] == list._id && middleTimeElementsSplit[1] == thisElsDate){
+              if(middleTimeElementsSplit[0] == list._id && middleTimeElementsSplit[1] == thisElsDate
+              && thisElsSplit[2] == times.start_time){
 
                 scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
 
@@ -117,7 +131,7 @@
           }; // end of dragstart
 
           pForBigTd.addEventListener('dragstart', handleDragStart, false);
-          pForBigTd.setAttribute("id", list._id+"&"+date)
+          pForBigTd.setAttribute("id", list._id+"&"+date+"&"+times.start_time)
           pForBigTd.setAttribute("class", list._id+date)
           if(timeStructure === 'startTime'){
             console.log(times)
@@ -139,7 +153,7 @@
             bigTdContainer = bigTdContainer[findDate.day+1];
           }
           bigTdContainer.addEventListener("click", function(e) {
-            scope.calendarItemModal(list, date)
+            scope.calendarItemModal(list, date, times)
           })
           bigTdContainer.setAttribute("id", "time-with-entry");
           pForBigTd.setAttribute("class", timeStructure);
@@ -166,45 +180,74 @@
           }
 
           var realSplitEndTime = times.end_time.split(":")
-          console.log(realSplitEndTime)
-          console.log(realSplitEndTime[0] === '12')
+
           if(realSplitEndTime[0] === '12'){
             var realEndTime = realSplitEndTime[0] - 1
-            console.log("realSplitEndTime[1] = " + realSplitEndTime[1])
             var amOrPm =  realSplitEndTime[1] === '00am'? ':00pm': ':00am'
-            console.log("amOrPm " + amOrPm)
             realEndTime = realEndTime + amOrPm
-            console.log("realEndTime = " + realEndTime)
           } else if (realSplitEndTime[0] === '1'){
             realEndTime = '12:' + realSplitEndTime[1]
           } else {
             realEndTime = realSplitEndTime[0]-1 + ":" + realSplitEndTime[1]
           }
-          console.log("realEndTime = " + realEndTime)
-          console.log("time = " + time)
-          console.log(time === realEndTime)
+
           if(time === realEndTime){
+
             var a = document.createElement('a');
             var linkText = document.createTextNode("+");
             a.style.color = 'white';
-
             a.appendChild(linkText)
 
             var a2 = document.createElement('a');
             var linkText2 = document.createTextNode("-");
             a2.style.color = 'white';
-
             a2.appendChild(linkText2)
+
+            var clone = document.createElement('a');
+            var cloneLinkText = document.createTextNode("Clone");
+            clone.style.color = 'white'
+            clone.appendChild(cloneLinkText)
+
+            var passesTwelve = function(time, adjuster){
+              var timeSplit  = time.split(":")
+              var time = parseInt(timeSplit[0]) + adjuster
+              console.log(time)
+              var amOrpm = timeSplit[1];
+              if(time > 12){
+                time = time - 12
+                var amOrpm = amOrpm == '00am'? '00am' : '00pm'
+                time = time + ":" + amOrpm
+              } else {
+                time = time + ":" + amOrpm
+              }
+              return time
+            }
+
+            var cloneMe = function(e){
+              console.log(e)
+
+              var newStartTime = passesTwelve(times.end_time, 2)
+              var newEndTime = passesTwelve(newStartTime, times.duration)
+
+              console.log(newEndTime)
+              times.start_time = newStartTime;
+              times.end_time = newEndTime;
+              list.lists.push(times)
+              Todo.update({list_name: list.list_name}, {todo: list}, function(){
+                console.log(scope)
+                scope.$parent.pullTodos('ajax')
+              })
+            }
 
             var adjustCal = function(e, adjust){
               e.target.closest('a').remove();
 
               for(var i = 0; i < list.lists.length; i++){
-                if(list.lists[i].date === date){
+                var dateList = list.lists[i]
+                if(dateList.date === date && dateList.start_time === times.start_time){
                   var duration = 0;
                   var splitEndTime = list.lists[i].end_time.split(":")
                   var splitStartTime = list.lists[i].start_time.split(":")
-                  console.log(splitEndTime[0])
                   var originalStartTime = splitEndTime[0];
                   var startTimeAmOrPm = splitStartTime[1];
                   if(adjust === 'add'){
@@ -223,40 +266,30 @@
                       var newTime = parseInt(splitEndTime[0]) - 1;
                     }
                   }
-                  console.log(newTime)
 
                   var endTimeAmOrPm = splitEndTime[1];
-                  console.log(newTime === 12)
+
                   if(newTime === 11 && originalStartTime == 12){
-                    console.log(endTimeAmOrPm)
+
                     var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
                   } else if (newTime === 12){
-                    console.log("here 1")
-                    console.log(endTimeAmOrPm)
                     var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
-                    console.log(endTimeAmOrPm)
                   } else if(newTime > 12){
-                    console.log("here 2")
                     newTime = newTime === 13? 1:newTime - 12
                     var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
                     if(splitEndTime[0] === 12){
-                      console.log("here 3")
                       var endTimeAmOrPm = endTimeAmOrPm;
                     } else {
-                      console.log("here 4")
                       var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
                     }
                   } else {
 
                   }
-                  console.log("endTimeAmOrPm = " + endTimeAmOrPm)
 
-                  console.log(startTimeAmOrPm === endTimeAmOrPm)
                   if(startTimeAmOrPm === endTimeAmOrPm){
                     var newDuration = newTime - parseInt(splitStartTime[0]);
                     duration = duration + newDuration
                   } else {
-                    console.log(splitStartTime[0])
                     duration = 12 - parseInt(splitStartTime[0]) ;
                     var morningDuration = 12 - parseInt(splitStartTime[0]) ;
                     if(newTime === 12){
@@ -265,12 +298,8 @@
                       var afternoonDuration = newTime
                     }
                     duration = morningDuration + afternoonDuration
-                    console.log("newTime = " + newTime)
-                    console.log("duration = " + duration)
-                    // duration = newDuration + newTime;
                   }
                   var newTimeBlock = newTime + ":"+ endTimeAmOrPm;
-                  console.log("newTimeBlock = " + newTimeBlock)
                   list.lists[i].duration = duration;
                   list.lists[i].end_time = newTimeBlock;
                 }
@@ -288,24 +317,24 @@
               e.stopPropagation();
               adjustCal(e, "add")
             })
+
+            clone.addEventListener("click", function(e){
+              e.stopPropagation();
+              cloneMe(e, "add")
+            })
+
             var adjustDiv = document.createElement("div")
-            // adjustDiv.setAttribute("class", "middleTime")
-            // adjustDiv.setAttribute("id", list._id + "&" + date)
             adjustDiv.appendChild(a)
             adjustDiv.appendChild(a2)
-            // pForBigTd.appendChild(a)
+            adjustDiv.appendChild(clone)
             pForBigTd.appendChild(adjustDiv)
           }
-          // var newDiv = document.createElement("div")
-          // newDiv.style.resize = 'vertical'
-          // newDiv.style.overflow = 'auto'
-          // bigTdContainer.appendChild(newDiv);
+
           bigTdContainer.appendChild(pForBigTd);
           if(timeP){
             bigTdContainer.appendChild(timeP);
             bigTdContainer.style.display = "flex";
             timeP.style.backgroundColor = pForBigTd.style.backgroundColor
-            // timeP.style.width = "40px"
             timeP.style.margin = "0px";
             timeP.style.fontSize = "10px";
             bigTdContainer.style.flexDirection = "column";
@@ -438,7 +467,13 @@
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
           console.log("appendToCalendar envoked")
-          var exists = document.getElementById(list._id+"&"+date)
+          console.log(listDay)
+          console.log(date)
+          console.log(list)
+          console.log(realListDate)
+          console.log(times)
+          console.log(list._id+"&"+date)
+          var exists = document.getElementById(list._id+"&"+date+"&"+times.start_time)
           if(   list.routine === 'monthly' && scope.newView === 'month'
              || list.routine === 'weekly-routine' && scope.newView === 'week'){
                var go = true;
@@ -501,7 +536,7 @@
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
                     var clickedElement = this;
                     var pastDragSrcElLength = scope.pastDragSrcEl.length-1;
-                    scope.calendarItemModal(scope.pastDragSrcEl[pastDragSrcElLength].list, scope.pastDragSrcEl[pastDragSrcElLength].date)
+                    scope.calendarItemModal(scope.pastDragSrcEl[pastDragSrcElLength].list, scope.pastDragSrcEl[pastDragSrcElLength].date, times)
                   })
                   scope.dragSrcEl[p].element.style.resize = 'vertical';
                   target.appendChild(scope.dragSrcEl[p].element)
@@ -511,7 +546,7 @@
                   newTarget.id = "time-with-entry"
                   scope.dragSrcEl[p].element.style.resize = 'vertical';
                   scope.dragSrcEl[p].element.addEventListener("click", function(e) {
-                    scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date)
+                    scope.calendarItemModal(scope.pastDragSrcEl[0].list, scope.pastDragSrcEl[0].date, times)
                   })
                   newTarget.appendChild(scope.dragSrcEl[p].element)
                   arrayOfTargets.push(newTarget)
@@ -582,11 +617,15 @@
             }
 
             li.setAttribute("class",category)
-            li.setAttribute("id", list._id+"&"+date)
+            li.setAttribute("id", list._id+"&"+date+"&"+times.start_time)
             var url = document.createElement("a")
-            url.innerHTML = list.list_name;
+            if(times.name){
+              url.innerHTML = times.name + " (" + list.list_name + ")";
+            } else {
+              url.innerHTML = list.list_name;
+            }
             li.addEventListener("click", function(e) {
-              scope.calendarItemModal(list, date)
+              scope.calendarItemModal(list, date, times)
             })
             li.append(url)
             if(scope.newView === 'week' && list.start_time){
@@ -596,7 +635,7 @@
               ul.appendChild(li)
             }
           } else {
-            console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR " + list._id+date)
+            console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR " + list._id+date+"$"+times.start_time)
           }
         };
 

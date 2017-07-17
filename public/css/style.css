@@ -92,6 +92,14 @@ a:hover {
   min-height: 610px;
 }
 
+.md-select-value .md-select-placeholder{
+  color: white;
+}
+
+.right-header #select_value_label_0 {
+  color: white;
+}
+
 .homepage-wallpaper {
   background-image: url('/assets/images/red-streak-city.png');
   /*height: 500px;

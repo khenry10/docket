@@ -122,6 +122,7 @@ angular.module('app').service('DateService', [ function () {
       var year = date[0];
       var month = date[1];
       var date = date[2];
+      var monthName = this.monthNames[month]
 
       if(date.length > 2){
         date = date.substring(0,2)
@@ -129,7 +130,7 @@ angular.module('app').service('DateService', [ function () {
 
       var fullDate = new Date(year, month-1, date)
 
-      return {year: year, month: month, date: date, day: fullDate.getDay(), fullDate: fullDate}
+      return {year: year, month: month, monthName: monthName, date: date, day: fullDate.getDay(), fullDate: fullDate}
     }
   };
 

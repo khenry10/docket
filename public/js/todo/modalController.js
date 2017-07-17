@@ -4,14 +4,16 @@ angular.module("app").controller("modalController", [
   "Todo",
   "$scope",
   "data",
+  "times",
   "date",
   "allTasks",
   "parseAllTasks",
+  "pullTodos",
   "close",
   modalController
 ])
 
-function modalController(Todo, $scope, data, date, allTasks, parseAllTasks, close){
+function modalController(Todo, $scope, data, times, date, allTasks, parseAllTasks, close, pullTodos){
   console.log("modal controller")
   $scope.allTasks = allTasks;
   $scope.list_type = data.list_type;
@@ -31,36 +33,30 @@ function modalController(Todo, $scope, data, date, allTasks, parseAllTasks, clos
   $scope.showEdit = false;
 
   $scope.edit = function(newTitle){
-    console.log("edit clicked")
-    console.log(newTitle)
     $scope.showEdit = !$scope.showEdit;
     if(newTitle){
       $scope.editalbeTitle = newTitle;
         var newList = $scope.data;
         newList.list_name = newTitle;
-        console.log(newList)
         Todo.update({list_name: $scope.originalListName}, {todo: newList}, function(res){
-          console.log(res)
         })
     }
   }
   $scope.deleteList = function(){
-    console.log("delete")
+    for(var i = 0; i < $scope.data.lists.length; i++){
+      var dateList = $scope.data.lists[i];
+      console.log(dateList)
+      console.log(times)
+      if(dateList.date === $scope.date && dateList.start_time === times.start_time){
+        $scope.data.lists.splice(i, 1)
+        i = $scope.data.lists.length
+      }
+    }
 
-    // $scope.data.$delete(function(res){
-    //   console.log(res)
-    //   close()
-    //   $('#add-new-modal').modal('hide');
-    //   $('body').removeClass('modal-open');
-    //   $('.modal-backdrop').remove();
-    // })
-
-
-    Todo.remove({name: $scope.data.list_name}, function(res){
-      close()
-      $('#add-new-modal').modal('hide');
-      $('body').removeClass('modal-open');
+    Todo.update({list_name: $scope.data.list_name}, {todo: $scope.data}, function(res){
+      pullTodos('ajax')
       $('.modal-backdrop').remove();
     })
+
   };
 }

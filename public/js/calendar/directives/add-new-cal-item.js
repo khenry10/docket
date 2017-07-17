@@ -84,6 +84,7 @@
             var list = year+"-"+month+"-"+count;
             createListOfLists.push( {
               date: list,
+              name: $scope.name,
               duration: $scope.newTodoList.duration,
               start_time: $scope.newTodoList.start_time,
               end_time: $scope.newTodoList.end_time,
@@ -137,6 +138,7 @@
                 if($scope.repeatInterval !== 'Weekly'){
                   createListOfLists.push( {
                     date: newDate,
+                    name: $scope.name,
                     duration: $scope.newTodoList.duration,
                     start_time: $scope.newTodoList.start_time,
                     end_time: $scope.newTodoList.end_time,
@@ -172,6 +174,7 @@
                     var list = year+"-"+month+"-"+count
                     createListOfLists.push(
                       { date: list,
+                        name: $scope.name,
                         duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
@@ -203,6 +206,7 @@
                       // pushed a date list here because repeats in the first week weren't being added
                       createListOfLists.push( {
                         date: list,
+                        name: $scope.name,
                         duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
@@ -214,6 +218,7 @@
                       var list = year+"-"+month+"-"+count;
                       createListOfLists.push( {
                         date: list,
+                        name: $scope.name,
                         duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
@@ -231,6 +236,7 @@
                     var list = year+"-"+month+"-"+count
                     createListOfLists.push( {
                       date: list,
+                      name: $scope.name,
                       duration: $scope.newTodoList.duration,
                       start_time: $scope.newTodoList.start_time,
                       end_time: $scope.newTodoList.end_time,
@@ -292,7 +298,6 @@
                 // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
                 $scope.newTodoList.listsInMonths = $scope.newCalTodoLists[0].listsInMonths;
                 $scope.newTodoList.lists = createListOfLists;
-
                 $scope.newCalTodoLists[0].start_time =  $scope.newTodoList.start_time
                 $scope.newCalTodoLists[0].end_time =  $scope.endTime
                 // newCal is scoped to newCalTodoLists, which is $watched in calendar directive.  Has to be sent in array because that is what is expected in calednar directive
