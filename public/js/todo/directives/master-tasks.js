@@ -27,33 +27,15 @@
             $scope.listss = [];
             // todoForCal = [{origin: 'database' , todo: list}, {origin: 'newClone' , todo: list, modifiedDateList: newList}]
             todosForCal.forEach(function(todoForLeftRail){
-              console.log(todoForLeftRail)
               if(todoForLeftRail.todo){
                 if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
-                  console.log($scope.listss)
-                  // if($scope.listss.length){
-                    // $scope.listss.forEach(function(list){
-                      // console.log(list.todo._id)
-                      console.log(todoForLeftRail.todo._id)
-                      // if(list.todo._id !== todoForLeftRail.todo._id){
-                        $scope.listss.push({
-                          name: todoForLeftRail.todo.list_name,
-                          master_tasks: todoForLeftRail.todo.master_tasks,
-                          listType: todoForLeftRail.todo.list_type,
-                          todo: todoForLeftRail.todo
-                        })
-                      // }
-                    // })
-                //   } else {
-                //     $scope.listss.push({
-                //       name: todoForLeftRail.todo.list_name,
-                //       master_tasks: todoForLeftRail.todo.master_tasks,
-                //       listType: todoForLeftRail.todo.list_type,
-                //       todo: todoForLeftRail.todo
-                //     })
-                // }
 
-
+                  $scope.listss.push({
+                    name: todoForLeftRail.todo.list_name,
+                    master_tasks: todoForLeftRail.todo.master_tasks,
+                    listType: todoForLeftRail.todo.list_type,
+                    todo: todoForLeftRail.todo
+                  })
                 }
               }
             })
@@ -63,7 +45,7 @@
         $scope.addNewMasterTask = function (list){
           $scope.show = false;
           var master = $scope.newMasterInDirective.name;
-          $scope.listss = [];
+
           var today = new Date();
           var saveMe = {
             name: master,
@@ -93,18 +75,7 @@
         }; // end of $scope.addNewMasterTask
 
         $scope.deleteList = function(list){
-          console.log($scope)
-          console.log(list)
           Todo.remove({name: list.name}, function(res){
-            console.log(res)
-            console.log($scope.listss)
-            console.log($scope.listss.indexOf(list))
-            console.log($scope.listss.length)
-            if($scope.listss.length !== 1){
-              $scope.listss.splice(1, 1)
-            } else {
-              $scope.listss = [];
-            }
             $scope.$parent.pullTodos('ajax')
           })
 

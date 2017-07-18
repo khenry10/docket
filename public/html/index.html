@@ -36,9 +36,23 @@
     </div>
 
     <div class="right-header">
-      <a href="/list"><h3>Lists</h3></a>
+
+      <md-input-container style="margin-top: 40%">
+        <label>  Explore </label>
+        <md-select  ng-model="explore"
+                    ng-change="navigate()"
+                    aria-label="navigate"
+                    style="color:white">
+          <md-option value="cal-entries"> Cal Entries </md-option>
+          <md-option value="tasks-grid"> Tasks Grid </md-option>
+          <md-option value="logout" > Logout </md-option>
+        </md-select>
+
+      </md-input-container>
+
+
     </div>
-    <md-button ng-click="logout()" style="color: white">Logout</md-button>
+
   </div>
 
   <div class="calendar">
@@ -218,10 +232,12 @@
                 </tr>
               </table>
 
-              <p>
-                As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }}
-                complete with {{ date.getFullYear() }}.  {{ niceMonth }} accounts for {{ monthPercent * 100 | number:2}}% of the year,
-                and we'll be {{ cumulativeComp * 100 | number:2}}% through {{ date.getFullYear() }} when {{ niceMonth }} ends.
+              <p style="margin-left: 15px; height: 200px">
+                <span ng-if="calendarMonth === changeDate.monthCount-1">
+                  As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }} complete with {{ date.getFullYear() }}.
+                </span>
+                {{ niceMonth }} accounts for {{ monthPercent * 100 | number:2}}% of the year,
+                and we'll be {{ cumulativeComp * 100 | number:2}}% through {{ date.getFullYear() }} when {{ niceMonth }} ends.  {{ updatedCumulative(changeDate.monthCount) }}
               </p>
             </div>
           </div>

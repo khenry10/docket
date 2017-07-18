@@ -29,8 +29,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   $scope.niceDate = DateService.getNiceDate($scope.date);
   $scope.niceMonth = today.monthNames;
   $scope.yearStats = DateService.percentageOfYearPassed();
-  $scope.monthPercent = $scope.yearStats.months[$scope.calendarMonth].percent_of_year;
-  $scope.cumulativeComp = $scope.yearStats.months[$scope.calendarMonth].cumulative_percent_of_year;
   $scope.allTodoLists = [];
   var listForCal = [];
   $scope.allTasks = [];
@@ -46,6 +44,16 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
           window.location.href = "/login"
         }
       })
+  }
+
+  $scope.navigate = function(){
+    if($scope.explore === 'tasks-grid'){
+      window.location.href = "/list";
+    } else if ($scope.explore === 'cal-entries'){
+      window.location.href = "/calendar-entries";
+    } else if ($scope.explore === 'logout'){
+      $scope.logout()
+    }
   }
 
 
@@ -72,7 +80,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       Todo.all.$promise.then(function(todos){
         $scope.todoLists = todos
         todos.forEach(function(todo){
-          console.log(todo)
           $scope.allTodoLists.push(todo)
         })
         $scope.preProcessCheckTodos();
@@ -736,6 +743,11 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       $scope.listForCal = [listForCal];
   }; // end of $scope.listClone
 
+  $scope.updatedCumulative = function(monthCount){
+    $scope.monthPercent = $scope.yearStats.months[monthCount-1].percent_of_year;
+    $scope.cumulativeComp = $scope.yearStats.months[monthCount-1].cumulative_percent_of_year;
+    $scope.niceMonth = DateService.monthNames[monthCount]
+  }
   document.title = "Docket: " + $scope.changeDate.today.dayName + " " + $scope.changeDate.today.monthNames + " " + $scope.changeDate.today.date + ", " + $scope.changeDate.today.year;
 
   // this can almost assuredly be deleted, going to save until I get to delete/update for lists -- 4/12
