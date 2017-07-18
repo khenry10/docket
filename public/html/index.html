@@ -232,10 +232,12 @@
                 </tr>
               </table>
 
-              <p>
-                As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }}
-                complete with {{ date.getFullYear() }}.  {{ niceMonth }} accounts for {{ monthPercent * 100 | number:2}}% of the year,
-                and we'll be {{ cumulativeComp * 100 | number:2}}% through {{ date.getFullYear() }} when {{ niceMonth }} ends.
+              <p style="margin-left: 15px; height: 200px">
+                <span ng-if="calendarMonth === changeDate.monthCount-1">
+                  As of today, {{ niceDate }}, we are  {{ yearStats.currentPercent * 100 | number:2}}% {{ date.getFullYear }} complete with {{ date.getFullYear() }}.
+                </span>
+                {{ niceMonth }} accounts for {{ monthPercent * 100 | number:2}}% of the year,
+                and we'll be {{ cumulativeComp * 100 | number:2}}% through {{ date.getFullYear() }} when {{ niceMonth }} ends.  {{ updatedCumulative(changeDate.monthCount) }}
               </p>
             </div>
           </div>

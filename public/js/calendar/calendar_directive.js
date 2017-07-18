@@ -31,10 +31,8 @@
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){
-                console.log(todoForCal)
                 if(todoForCal.todo && todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
-                    console.log(dateList)
                     var name = dateList.name? dateList.name : undefined
                     var date = dateList.date;
                     var times = {
@@ -55,7 +53,6 @@
 
       scope.calendarItemModal = function (list, date, times){
         console.log("scope.calendarItemModal envoked")
-        console.log(scope.$parent)
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
@@ -72,6 +69,8 @@
           modal.element.modal();
           modal.close.then(function(result) {
 
+            $("body").removeClass("modal-open");
+            $('.modal-backdrop').remove();
             scope.$parent.pullTodos('ajax')
 
           });
@@ -84,8 +83,6 @@
         var year = date.getFullYear()
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
-          console.log(list)
-          console.log("time in createHourlyCalItem = " + time)
           // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
           var bigTdContainer = document.getElementsByClassName(time)
           // console.log(bigTdContainer)
@@ -99,10 +96,7 @@
             e.srcElement.childNodes[0].parentElement.className = "time"
             thisElement.className = "startTime"
             $(thisElement).parent()[0].id = 'time'
-            console.log(thisElement)
             var thisElsSplit = thisElement.id.split("&")
-            console.log(thisElsSplit)
-            console.log(times)
             var thisElsDate = thisElsSplit[1]
             var moveMeToo = document.getElementsByClassName("middleTime")
 
@@ -111,10 +105,8 @@
 
             for(var i = 0; i < moveMeToo.length; i++){
               var middleTimeElementsSplit = moveMeToo[i].id.split("&")
-              var middleTimeElementsDate = middleTimeElementsSplit[1];
               if(middleTimeElementsSplit[0] == list._id && middleTimeElementsSplit[1] == thisElsDate
-              && thisElsSplit[2] == times.start_time){
-
+              && middleTimeElementsSplit[2] == times.start_time){
                 scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
 
                 // this codes takes away the div that contains "+" and "-" when the element is being moved
@@ -134,7 +126,6 @@
           pForBigTd.setAttribute("id", list._id+"&"+date+"&"+times.start_time)
           pForBigTd.setAttribute("class", list._id+date)
           if(timeStructure === 'startTime'){
-            console.log(times)
             var start = times.start_time.split(":")
             var startTimeAmOrPm = start[1].substr(start[1].length - 2, start[1].length)
             var end = times.end_time.split(":")
@@ -211,7 +202,6 @@
             var passesTwelve = function(time, adjuster){
               var timeSplit  = time.split(":")
               var time = parseInt(timeSplit[0]) + adjuster
-              console.log(time)
               var amOrpm = timeSplit[1];
               if(time > 12){
                 time = time - 12
@@ -224,17 +214,13 @@
             }
 
             var cloneMe = function(e){
-              console.log(e)
-
               var newStartTime = passesTwelve(times.end_time, 2)
               var newEndTime = passesTwelve(newStartTime, times.duration)
 
-              console.log(newEndTime)
               times.start_time = newStartTime;
               times.end_time = newEndTime;
               list.lists.push(times)
               Todo.update({list_name: list.list_name}, {todo: list}, function(){
-                console.log(scope)
                 scope.$parent.pullTodos('ajax')
               })
             }
@@ -344,14 +330,11 @@
 
         var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate, times){
           // addMiddleTimeCalItems function is to determine how many hours between start and end time need to be appended to the calendar for each item
-          console.log(list.list_name + " startTime = " + startTime + "; endTime = " +endTime)
           for(var t = startTime; t <= endTime; t++){
             var time = t + ":00" + amOrpm
             if(t === endTime){
-              console.log("addMiddleTimeCalItems 1")
               createHourlyCalItem(list, time, date, realListDate, "middleTime", times)
             } else {
-              console.log("addMiddleTimeCalItems 2")
               createHourlyCalItem(list, time, date, realListDate, "middleTime", times)
             }
           }
@@ -384,25 +367,19 @@
           if(startTimeAmOrPm === endTimeAmOrPm && timeDifference === 2){
             var endTime = endTime -1
             var endTime = endTime + ":00" + endTimeAmOrPm
-            console.log("sarah 3")
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime", times)
           } else if(startTimeAmOrPm != endTimeAmOrPm && timeDifference === 2 && times.end_time === "12:00am"){
             var endTime = endTime -1
             var endTime = endTime + ":00pm"
             createHourlyCalItem(list, endTime, date, realListDate, "middleTime", times)
             createHourlyCalItem(list, "12:00am", date, realListDate, "middleTime", times)
-            console.log("sarah 2")
           } else {
             var startTime = parseInt(startTime)+1
             var startTime = startTime >= 12? 12: startTime
-            console.log("endTime = " + endTime)
-            console.log(endTime != 1)
-            console.log(parseInt(endTime) != 1)
             if(endTime != 1){
               var endTime = parseInt(endTime)-1
             }
             var endTime = endTime >= 12? 12: endTime
-            console.log("endTime = " + endTime)
             if(startTimeAmOrPm === endTimeAmOrPm){
               if(startTime === 12){
                 startTime = 1
@@ -410,27 +387,18 @@
 
               addMiddleTimeCalItems(startTime, endTime, startTimeAmOrPm, list, date, realListDate, times)
             } else if(startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "am"){
-              console.log("sarah 1")
               addMiddleTimeCalItems(startTime, 11, "am", list, date, realListDate, times)
-              console.log("endTime = " + endTime)
               if(endTime != 11){
-                console.log("sarah 1.1")
                 addMiddleTimeCalItems(12, 12, "pm", list, date, realListDate, times)
               }
-              // if(endTime != 12){
-              //   console.log("sarah 1.2")
-              //   addMiddleTimeCalItems(12, 12, "pm", list, date, realListDate, times)
-              // }
-              console.log("originalEndTime = " + originalEndTime)
+
               if(originalEndTime != 1){
                 if( originalEndTime != 12 && endTimeAmOrPm === 'pm'){
-                  console.log("sarah 1.3")
                   addMiddleTimeCalItems(1, endTime, "pm", list, date, realListDate, times)
                 }
               }
             } else if (startTimeAmOrPm != endTimeAmOrPm && startTimeAmOrPm === "pm") {
               var lastItem3 = endTime === 12;
-              console.log("sarah")
               if(endTime === 11){
                 addMiddleTimeCalItems(startTime, 11, "pm", list, date, realListDate, times)
               } else {
@@ -444,7 +412,6 @@
         scope.drugOverElements = [];
 
         scope.handleDragOver = function(e) {
-          console.log(scope.dragSrcEl)
           if(scope.dragSrcEl.length){
             if(scope.dragSrcEl[0].element.className == "middleTime"){
               for(var i = 0; i < scope.dragSrcEl.length; i++){
@@ -466,13 +433,6 @@
 
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
-          console.log("appendToCalendar envoked")
-          console.log(listDay)
-          console.log(date)
-          console.log(list)
-          console.log(realListDate)
-          console.log(times)
-          console.log(list._id+"&"+date)
           var exists = document.getElementById(list._id+"&"+date+"&"+times.start_time)
           if(   list.routine === 'monthly' && scope.newView === 'month'
              || list.routine === 'weekly-routine' && scope.newView === 'week'){
@@ -522,6 +482,8 @@
               var arrayOfTargets = [];
               var doubleEntries = false;
 
+              var originalStartTime = scope.dragSrcEl[0].element.id.split("&")[2]
+
               for(var p = scope.dragSrcEl.length-1; p >= 0; p--){
                 if(p === scope.dragSrcEl.length-1 ){
                   var target = e.target;
@@ -563,14 +525,17 @@
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
-
+              // var elementsOriginalId = scope.dragSrcEl[0].element.id
+              // console.log(elementsOriginalId)
               var elementsOldDate = scope.dragSrcEl[0].date;
+
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
               scope.dragSrcEl = [];
               var newStartTimeSplit = newStartTime.split(":")
 
+              // loop looks for correct listDate in order to update time reflect the drap and drop
               for(var k = 0; k < list.lists.length; k++){
-                if(list.lists[k].date == elementsOldDate ){
+                if(list.lists[k].date == elementsOldDate && originalStartTime == list.lists[k].start_time ){
                   list.lists[k].date = newElementsDate;
                   list.lists[k].start_time = newStartTime;
 
@@ -596,7 +561,6 @@
                   list.listsInMonths[m].numberOfLists = list.listsInMonths[m].numberOfLists+1
                 }
               }
-
               Todo.update({list_name: list.list_name}, {todo: list})
             }; //end of drop function
 
@@ -635,7 +599,7 @@
               ul.appendChild(li)
             }
           } else {
-            console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR " + list._id+date+"$"+times.start_time)
+            console.log("EXISTS SO I DIDNT PUT ON THE CALENDAR ")
           }
         };
 
@@ -649,7 +613,6 @@
         }
 
         scope.pickCorrectDateForCal = function(date, list, times){
-          console.log("scope.pickCorrectDateForCal envoked")
           scope.hourlyUl = document.createElement("ul")
           scope.hourlyUl.className = list.list_name + "-" + date
           if(scope.newView === 'month'){
@@ -955,7 +918,6 @@
 
         function createTableHeadingRow(table, tr, count){
           // week gets a start of 0, becuase we need an extra column to add the times of the day
-          console.log(screen.width)
           if(scope.newView === 'month'){
             var start = 1
           } else if(scope.newView === 'week'){

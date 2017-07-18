@@ -13,7 +13,7 @@ angular.module("app").controller("modalController", [
   modalController
 ])
 
-function modalController(Todo, $scope, data, times, date, allTasks, parseAllTasks, close, pullTodos){
+function modalController(Todo, $scope, data, times, date, allTasks, parseAllTasks, pullTodos, close){
   console.log("modal controller")
   $scope.allTasks = allTasks;
   $scope.list_type = data.list_type;
@@ -45,8 +45,6 @@ function modalController(Todo, $scope, data, times, date, allTasks, parseAllTask
   $scope.deleteList = function(){
     for(var i = 0; i < $scope.data.lists.length; i++){
       var dateList = $scope.data.lists[i];
-      console.log(dateList)
-      console.log(times)
       if(dateList.date === $scope.date && dateList.start_time === times.start_time){
         $scope.data.lists.splice(i, 1)
         i = $scope.data.lists.length
@@ -56,6 +54,8 @@ function modalController(Todo, $scope, data, times, date, allTasks, parseAllTask
     Todo.update({list_name: $scope.data.list_name}, {todo: $scope.data}, function(res){
       pullTodos('ajax')
       $('.modal-backdrop').remove();
+      console.log(close)
+      close(false)
     })
 
   };
