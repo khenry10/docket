@@ -8,10 +8,8 @@
 
           <a data-toggle="collapse"
              href="#collapseTask{{listType}}{{$index}}" ng-if="listType == list.listType" >
-            <!-- <span ng-if="listType === 'todo' ">{{ list.name }}  ({{ list.duration }} hrs)</span>
-            <span ng-if="listType === 'shopping' ">{{ list.name }}  ({{ list.budget | currency }})</span> -->
-            <span ng-if="listType == 'todo' ">{{ list.name }}  </span>
-            <span ng-if="listType == 'shopping' ">{{ list.name }}  </span>
+            <span > {{ list.name }}  </span>
+            <!-- <span> {{ list. }} </span> -->
           </a>
 
       </div>
@@ -36,7 +34,8 @@
                 <input type="text" style="color: black; " ng-model="newMasterInDirective.price" placeholder="$">
                 <input type="text" style="color: black; " ng-model="newMasterInDirective.quantity" placeholder="Quantity">
             </td>
-            <td>
+
+            <td ng-if="listType !== 'appointment'">
               <md-button class="md-raised" style="min-width: 40px;" ng-click="addNewMasterTask(list)" > + </md-button>
             </td>
 
@@ -49,6 +48,14 @@
           {{ task.name }}
         </li>
       </ul>
+
+      <li class="list-group"
+          style="color: white; list-style: none"
+          ng-repreat="list in listss"
+          ng-if="listType === 'appointment' ">
+        {{ list.name }} - {{ list.date }}
+      </li>
+
     </div>
   </div>
 </div>

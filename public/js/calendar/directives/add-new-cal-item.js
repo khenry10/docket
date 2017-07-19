@@ -78,7 +78,7 @@
 
         $scope.newEntry = {}
 
-        var repeatAdditionalDays = function(count, incrementor, lastDay, year, month, list, startTime, endTime){
+        var repeatAdditionalDays = function(count, incrementor, lastDay, year, month, list, startTime, endTime, tracker){
           while(count+incrementor <= lastDay){
             count = count + 7
             var list = year+"-"+month+"-"+count;
@@ -88,7 +88,8 @@
               duration: $scope.newTodoList.duration,
               start_time: $scope.newTodoList.start_time,
               end_time: $scope.newTodoList.end_time,
-              tasks: [] } )
+              tasks: [],
+              tracker: tracker} )
             //  var date = $scope.firstDay
           }
         };
@@ -105,6 +106,8 @@
           var month = $scope.firstDay.getMonth()+1;
           var date = $scope.firstDay.getDate();
           var numberOfDaysInMonth = new Date(year, month, 0).getDate()
+          var tracker = {tracking: $scope.newEntry.tracker, quantity: ""};
+          console.log(tracker)
 
             if($scope.name && $scope.firstDay || $scope.view === 'modal'){
                 $scope.newTodoList.list_name = $scope.name
@@ -133,6 +136,7 @@
                     $scope.newTodoList.list_recur_end = $scope.reoccurEnds === 'Never'? 'Never':$scope.reoccurEndsDate;
                 }
 
+
                 var date = $scope.firstDay;
                 var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
                 if($scope.repeatInterval !== 'Weekly'){
@@ -142,7 +146,8 @@
                     duration: $scope.newTodoList.duration,
                     start_time: $scope.newTodoList.start_time,
                     end_time: $scope.newTodoList.end_time,
-                    tasks: []
+                    tasks: [],
+                    tracker: tracker
                   } )
                 }
                 var count = date.getDate();
@@ -178,7 +183,8 @@
                         duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
-                        tasks: []
+                        tasks: [],
+                        tracker: tracker
                       })
                      var date = $scope.firstDay
                   }
@@ -210,9 +216,10 @@
                         duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
-                        tasks: []
+                        tasks: [],
+                        tracker: tracker
                       })
-                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time)
+                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time, tracker)
                     })
                   } else {
                       var list = year+"-"+month+"-"+count;
@@ -222,9 +229,10 @@
                         duration: $scope.newTodoList.duration,
                         start_time: $scope.newTodoList.start_time,
                         end_time: $scope.newTodoList.end_time,
-                        tasks: []
+                        tasks: [],
+                        tracker: tracker
                       })
-                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time)
+                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time, tracker)
                       // count = count + 7;
                     // }
                   }
@@ -240,7 +248,8 @@
                       duration: $scope.newTodoList.duration,
                       start_time: $scope.newTodoList.start_time,
                       end_time: $scope.newTodoList.end_time,
-                      tasks: [] } )
+                      tasks: [],
+                      tracker: tracker } )
                   }
                 }
                 // I recreated the new object to get rid of new Todo() junk which I thought was causing issues
@@ -338,6 +347,7 @@
                 $scope.endTime = ""
                 $scope.newEntry.budget = ""
                 $scope.routine = ""
+                $scope.newEntry.tracker = ""
               // } this is needed when the conditional is in place to see if it's a List or Event (event deprecated on 3/19)
             }
           }

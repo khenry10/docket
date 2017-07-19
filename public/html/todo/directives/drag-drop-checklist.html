@@ -4,6 +4,11 @@
   <div class="task-list-workspace" >
     <div ng-init="todoVM.fetchData()" class="simpleDemo" style="">
 
+      <div ng-if="listType === 'tracker' " style="display: flex; margin-left: 30%; width: 50%; justify-content: space-around" >
+        <h4> {{ tracker.tracking }}:</h4>
+        <input type="number" placeholder="Amount" ng-model="tracker.quantity" ng-change="updateTracker(tracker.index)">
+      </div>
+
       <div class="container"
         style="background-color: rgba(0, 0, 0, 0.7); width: 100%; margin-top: 0px; color: white; border: 1px; border-radius: 15px;">
         <div ng-if="listType === 'shopping' "

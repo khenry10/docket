@@ -29,13 +29,31 @@
             todosForCal.forEach(function(todoForLeftRail){
               if(todoForLeftRail.todo){
                 if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
-
-                  $scope.listss.push({
-                    name: todoForLeftRail.todo.list_name,
-                    master_tasks: todoForLeftRail.todo.master_tasks,
-                    listType: todoForLeftRail.todo.list_type,
-                    todo: todoForLeftRail.todo
-                  })
+                  if($scope.listType === 'appointment'){
+                    todoForLeftRail.modifiedDateList.forEach(function(dateList){
+                      console.log(dateList)
+                      var niceDate = dateList.date.split("-")
+                      var month = parseInt(niceDate[1]) - 1
+                      var fullDate = new Date(niceDate[0], month, niceDate[2])
+                      var day = DateService.daysOfWeek[fullDate.getDay()]
+                      var monthName = DateService.monthNames[parseInt(niceDate[1])]
+                      console.log(fullDate)
+                      console.log(day + " " + monthName + " " + niceDate[2] + " at " + dateList.start_time)
+                      $scope.listss.push({
+                        name: dateList.name,
+                        date: day + " " + monthName + " " + niceDate[2] + " at " + dateList.start_time,
+                        start_time: dateList.start_time,
+                        listType: todoForLeftRail.todo.list_type
+                      })
+                    })
+                  } else {
+                    $scope.listss.push({
+                      name: todoForLeftRail.todo.list_name,
+                      master_tasks: todoForLeftRail.todo.master_tasks,
+                      listType: todoForLeftRail.todo.list_type,
+                      todo: todoForLeftRail.todo
+                    })
+                  }
                 }
               }
             })

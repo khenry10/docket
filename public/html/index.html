@@ -43,13 +43,11 @@
                     ng-change="navigate()"
                     aria-label="navigate"
                     style="color:white">
-          <md-option value="cal-entries"> Cal Entries </md-option>
+          <md-option value="cal-entries"> Calendar Entries </md-option>
           <md-option value="tasks-grid"> Tasks Grid </md-option>
           <md-option value="logout" > Logout </md-option>
         </md-select>
-
       </md-input-container>
-
 
     </div>
 
@@ -175,6 +173,24 @@
             </div>
           </div> -->
           <!-- panel 3 end -->
+
+          <div class="panel panel-default" style="border: none;" >
+            <div class="panel-heading personal-panel" role="tab" id="headingSeven">
+              <h4 class="panel-title">
+                <div class="panel-title-custom" >
+                  <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                      href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" >
+                      Appointments
+                  </a>
+                </div>
+              </h4>
+            </div>
+            <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven" >
+              <todo-master list-type="appointment" list-for-cal="listForCal" ></todo-master>
+              <todo-master list-type="tracker" list-for-cal="listForCal" ></todo-master>
+            </div>
+          </div>
 
 
           <!-- panel 4 Start   -->

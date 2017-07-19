@@ -125,19 +125,43 @@
           $scope.nonBindedList = list.tasks
         }
 
+        var trackerList = function(list, index){
+          list.tracker.trackerIndex = index
+          $scope.tracker = list.tracker
+        }
+
+        $scope.updateTracker = function(index){
+          console.log(index)
+          console.log($scope.tracker)
+          console.log($scope.list)
+          var saveMe = {tracking: $scope.tracker.tracking, quantity: $scope.tracker.quantity}
+          $scope.data.lists[$scope.tracker.trackerIndex].tracker = saveMe
+          console.log($scope.data)
+          Todo.update({list_name: $scope.data.list_name}, {todo: $scope.data})
+        }
+
         var modalDataFunction = function(){
           var allTodos = Todo.all
           var checkDateService = DateService.saveUpdatesFromLeftRail();
           var mostRecentObjFromDateService = checkDateService[checkDateService.length-1]
           if(checkDateService.length && mostRecentObjFromDateService.wholeDateList.list_name == $scope.data.list_name){
+            console.log("here")
               mostRecentObjFromDateService.wholeDateList.lists.forEach(function(list){
+                console.log(list)
                 if(list.date == $scope.date){
                   processTasksForList(list, 0)
                 }
             })
           } else {
+            console.log("here 2")
             $scope.data.lists.forEach(function(list, index){
-              if(list.date === $scope.date){
+              if(list.date === $scope.date && $scope.data.list_type === 'tracker'){
+                console.log(list)
+                console.log($scope.data)
+                console.log(index)
+                trackerList(list, index)
+
+              } else {
                 processTasksForList(list, index)
               }
             })
