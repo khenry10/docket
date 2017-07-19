@@ -41,7 +41,8 @@
                       end_time: dateList.end_time,
                       duration: dateList.duration,
                       name: name,
-                      tasks: dateList.tasks
+                      tasks: dateList.tasks,
+                      tracker: dateList.tracker
                     }
                     scope.pickCorrectDateForCal(date, todoForCal.todo, times)
                   })
@@ -583,8 +584,11 @@
             li.setAttribute("class",category)
             li.setAttribute("id", list._id+"&"+date+"&"+times.start_time)
             var url = document.createElement("a")
-            if(times.name){
+            console.log(times)
+            if(times.name && times.name !== list.list_name){
               url.innerHTML = times.name + " (" + list.list_name + ")";
+            } else if(times.tracker && times.tracker.tracking){
+              url.innerHTML = times.tracker.quantity + " " + times.tracker.tracking + " (" + list.list_name + ")";
             } else {
               url.innerHTML = list.list_name;
             }

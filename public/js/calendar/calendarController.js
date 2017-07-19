@@ -71,6 +71,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
 
   $scope.pullTodos = function(dataExtraction){
+    console.log("$scope.pullTodos")
     $scope.allTodoLists = [];
     $scope.listForCal = [];
     listForCal = [];

@@ -46,11 +46,24 @@
 
     </li>
     <li style="color: white">
-      <md-radio-group ng-model="listType"
+      <!-- <md-radio-group ng-model="listType"
         style="display: flex; justify-content: space-between; margin-top: 4%; border-color: white">
         <md-radio-button style="padding-left: 2%;border-color: white" value="todo">Todo List</md-radio-button>
         <md-radio-button value="shopping">Shopping List</md-radio-button>
-      </md-radio-group>
+      </md-radio-group> -->
+
+      <md-input-container >
+        <label>  Entry Type </label>
+        <md-select  ng-model="listType"
+                    aria-label="navigate"
+                    style="color:white">
+          <md-option value="todo">Todo List </md-option>
+          <md-option value="shopping">Shopping List </md-option>
+          <md-option value="appointment" > Appointment </md-option>
+          <md-option value="tracker" > Tracker </md-option>
+        </md-select>
+      </md-input-container>
+
     </li>
 
     <li ng-if="listType === 'shopping' ">
@@ -58,6 +71,14 @@
         <input style="border-bottom-color: white; color: white"
                input="number"
                ng-model="newEntry.budget" placeholder="Budget"/>
+      </md-input-container>
+    </li>
+
+    <li ng-if="listType === 'tracker'">
+      <md-input-container style="margin: 0px; width: 100%">
+        <input style="border-bottom-color: white; color: white"
+               input="text"
+               ng-model="newEntry.tracker" placeholder="What do you want to track?"/>
       </md-input-container>
     </li>
 
