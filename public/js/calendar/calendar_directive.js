@@ -31,6 +31,7 @@
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){
+                console.log(todoForCal)
                 if(todoForCal.todo && todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
                     var name = dateList.name? dateList.name : undefined
@@ -435,6 +436,7 @@
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
           var exists = document.getElementById(list._id+"&"+date+"&"+times.start_time)
+
           if(   list.routine === 'monthly' && scope.newView === 'month'
              || list.routine === 'weekly-routine' && scope.newView === 'week'){
                var go = true;
@@ -442,7 +444,7 @@
                var go = false;
              }
 
-          if(!exists && go){
+          if( (!exists || exists == null) && go){
             var li = document.createElement("li")
             li.setAttribute("draggable", true)
             var dragSrcEl = null;
@@ -665,7 +667,7 @@
               var data = {view: 'modal', date: date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope}
               data.checkLists = scope.checkLists
               data.newMaster = scope.$parent.newMasterListAddition
-
+              console.log(data)
               ModalService.showModal({
                 templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
                 controller: "newCalItemModalController",

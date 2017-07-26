@@ -185,10 +185,11 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
   var countMe = 0;
   var evaluateDateListsForWeekCal = function(fullListDate, dateList, list){
-    console.log("evaluateDateListsForWeekCal")
+  
     var dateArrayLength = $scope.changeDate.dayCount.length;
     var firstWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-7];
     var lastWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-1];
+
     if($scope.changeDate.twoMonthsWeekly){
       if(fullListDate.month == $scope.changeDate.twoMonthsWeeklyDate.newMonthDate.month){
         $scope.changeDate.twoMonthsWeeklyDate.newMonthDate.date.forEach(function(newMD){
@@ -214,7 +215,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     } else {
       if(fullListDate.date >= firstWeeklyDate && fullListDate.date <= lastWeeklyDate){
         if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
-
+          console.log("keith")
           addActivityTime(list.list_name, dateList.duration);
           $scope.parseAllTasks(dateList, list)
           $scope.exists = true;

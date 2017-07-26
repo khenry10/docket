@@ -10,15 +10,17 @@ angular.module("app").controller("modalController", [
   "parseAllTasks",
   "pullTodos",
   "close",
+  "ModalService",
   modalController
 ])
 
-function modalController(Todo, $scope, data, times, date, allTasks, parseAllTasks, pullTodos, close){
+function modalController(Todo, $scope, data, times, date, allTasks, parseAllTasks, pullTodos, close, ModalService){
   console.log("modal controller")
   $scope.allTasks = allTasks;
   $scope.list_type = data.list_type;
   $scope.listType = $scope.list_type;
   $scope.data = data;
+  console.log($scope.data)
   $scope.date = date;
   $scope.parseAllTasks = parseAllTasks;
   var splitDate = date.split("-");
@@ -42,6 +44,31 @@ function modalController(Todo, $scope, data, times, date, allTasks, parseAllTask
         })
     }
   }
+
+  $scope.editList = function(){
+    console.log("editList")
+    $('.modal-backdrop').remove();
+    close(false)
+
+    var data = $scope.data
+    data.date = $scope.date
+    data.editView = true;
+
+    ModalService.showModal({
+      templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
+      controller: "newCalItemModalController",
+      inputs: {
+        data: data
+      }
+    }).then(function(modal) {
+      //it's a bootstrap element, use 'modal' to show it
+      modal.element.modal();
+      modal.close.then(function(result) {
+      });
+    });
+
+  };
+
   $scope.deleteList = function(){
     for(var i = 0; i < $scope.data.lists.length; i++){
       var dateList = $scope.data.lists[i];
