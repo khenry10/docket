@@ -15,7 +15,7 @@ angular.module("app").controller("modalController", [
 ])
 
 function modalController(Todo, $scope, data, times, date, allTasks, parseAllTasks, pullTodos, close, ModalService){
-  console.log("modal controller")
+  console.log("modal controller modalController")
   $scope.allTasks = allTasks;
   $scope.list_type = data.list_type;
   $scope.listType = $scope.list_type;
@@ -53,12 +53,15 @@ function modalController(Todo, $scope, data, times, date, allTasks, parseAllTask
     var data = $scope.data
     data.date = $scope.date
     data.editView = true;
+    data.dateList = times;
+    console.log(times)
 
     ModalService.showModal({
       templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
       controller: "newCalItemModalController",
       inputs: {
-        data: data
+        data: data,
+        dateList: times
       }
     }).then(function(modal) {
       //it's a bootstrap element, use 'modal' to show it

@@ -3,15 +3,18 @@
 angular.module("app").controller("newCalItemModalController", [
   "$scope",
   "data",
+  "dateList",
   "DateService",
   "close",
   "$element",
   newCalItemModalController
 ])
 
-function newCalItemModalController($scope, data, DateService, close, $element){
-  console.log("modal controller")
+function newCalItemModalController($scope, data, dateList, DateService, close, $element){
+  console.log("modal controller (newCalItemModalController)")
   console.log(data)
+  console.log(dateList)
+  $scope.dateList = dateList
   $scope.data = data;
   var date = new Date(data.date.year, data.date.month-1, data.date.date)
 

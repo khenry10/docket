@@ -21,6 +21,7 @@
       link: function($scope){
         console.log("this is addNewCalItem directive")
         console.log($scope.data)
+        console.log($scope.saved)
         $scope.times = ["1:00am", "2:00am", "3:00am", "4:00am", "5:00am", "6:00am", "7:00am",
         "8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", "1:00pm", "2:00pm", "3:00pm", "4:00pm",
         "5:00pm", "6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm", "12:00am"]
@@ -96,8 +97,14 @@
         };
 
         if($scope.data.editView){
+          console.log($scope.dateList)
+          console.log($scope)
           $scope.name = $scope.data.list_name;
           $scope.routine = $scope.data.routine;
+          $scope.$parent.firstDay = $scope.data.dateList.date;
+          $scope.firstDay = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
+          $scope.startTime = $scope.data.dateList.start_time;
+          $scope.endTime = $scope.data.dateList.end_time;
         }
 
         $scope.create = function(){

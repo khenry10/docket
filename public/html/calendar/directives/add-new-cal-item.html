@@ -17,9 +17,15 @@
         <md-radio-button value="weekly-routine">Weekly Routine</md-radio-button>
       </md-radio-group>
     </li>
-    <li style="margin-left: -20px;" ng-if='!data.view'>
-      <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder="Date"/></md-datepicker>
+    ** {{ $parent.firstDay }} -- {{ $parent.firstDay? $parent.firstDay : 'Date'  }}
+    <li style="margin-left: -20px;" ng-if='!data.view && !$parent.firstDay '>
+      <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder=" {{ $parent.firstDay? $parent.firstDay : 'Date' }}"/></md-datepicker>
     </li>
+
+    <li style="margin-left: -20px;" ng-if='!data.view && $parent.firstDay '>
+      <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder=" {{ $parent.firstDay }}"/></md-datepicker>
+    </li>
+
     <li style="display: inline-flex; justify-content: space-between; ">
       <!-- start time -->
       <md-input-container ng-hide="data.view && data.date.startTime">

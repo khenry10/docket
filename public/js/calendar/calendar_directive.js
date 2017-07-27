@@ -55,6 +55,7 @@
 
       scope.calendarItemModal = function (list, date, times){
         console.log("scope.calendarItemModal envoked")
+        console.log(times)
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
