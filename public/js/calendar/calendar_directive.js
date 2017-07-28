@@ -665,7 +665,8 @@
                   var date = {date: ulDate, month: month, year: year}
               }
 
-              var data = {view: 'modal', date: date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope}
+              var data = {view: 'modal', date: date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope, editView: false}
+
               data.checkLists = scope.checkLists
               data.newMaster = scope.$parent.newMasterListAddition
               console.log(data)

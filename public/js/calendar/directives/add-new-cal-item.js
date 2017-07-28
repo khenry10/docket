@@ -97,14 +97,22 @@
         };
 
         if($scope.data.editView){
-          console.log($scope.dateList)
-          console.log($scope)
+          console.log($scope.data)
+          console.log($scope.data.dateList)
           $scope.name = $scope.data.list_name;
           $scope.routine = $scope.data.routine;
-          $scope.$parent.firstDay = $scope.data.dateList.date;
-          $scope.firstDay = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
+          var date = $scope.data.dateList.date.split("-")
+          const month = date[1] - 1
+          $scope.firstDay = new Date(date[0], month, date[2])
           $scope.startTime = $scope.data.dateList.start_time;
           $scope.endTime = $scope.data.dateList.end_time;
+          $scope.listType = $scope.data.list_type;
+          $scope.category = $scope.data.category;
+          $scope.repeatInterval = $scope.data.list_reocurring;
+          $scope.reoccurEnds = $scope.data.list_recur_end;
+          if($scope.listType === 'shopping'){
+            $scope.newEntry.budget = $scope.data.budget;
+          }
         }
 
         $scope.create = function(){

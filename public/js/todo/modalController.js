@@ -60,8 +60,7 @@ function modalController(Todo, $scope, data, times, date, allTasks, parseAllTask
       templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
       controller: "newCalItemModalController",
       inputs: {
-        data: data,
-        dateList: times
+        data: data
       }
     }).then(function(modal) {
       //it's a bootstrap element, use 'modal' to show it
