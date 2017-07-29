@@ -15,9 +15,34 @@
       </div>
 
     </h4>
-    <md-button class="md-raised md-warn" id="list-delete-button"
+
+
+    <md-menu>
+      <md-button aria-label="additional options" class="md-icon-button" ng-click="openMenu($mdOpenMenu, $event)" style="margin-top: -7px;">
+        <i class="fa fa-cog fa-lg" aria-hidden="true"></i>
+      </md-button>
+      <md-menu-content width="2">
+       <md-menu-item>
+         <md-button ng-click="edit(list, $event)" >
+           <i class="fa fa-pencil" aria-hidden="true"></i>
+           Edit
+         </md-button>
+       </md-menu-item>
+       <md-menu-item>
+         <md-button ng-click="deleteList(list)">
+           <i class="fa fa-trash" aria-hidden="true"></i>
+           Delete
+         </md-button>
+      </md-menu-item>
+
+     </md-menu-content>
+
+    </md-menu>
+
+
+    <!-- <md-button class="md-raised md-warn" id="list-delete-button"
                style="min-width: 1px; margin-top: -5px"
-               ng-click="deleteList(list)">X</md-button>
+               ng-click="deleteList(list)">X</md-button> -->
     </div>
     <div id="collapseTask{{ listType }}{{$index}}" class="panel-collapse collapse"
     style="margin-left: 5%;background-color: rgb(107, 110, 122);

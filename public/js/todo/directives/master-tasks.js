@@ -1,9 +1,9 @@
 "use strict";
 
 (function(){
-  angular.module("app").directive("todoMaster", ["Todo", "DateService", masterTasks])
+  angular.module("app").directive("todoMaster", ["Todo", "DateService", "$mdDialog", "ModalService", masterTasks])
 
-  function masterTasks(Todo, DateService){
+  function masterTasks(Todo, DateService, $mdDialog, ModalService){
     return {
       templateUrl: "/assets/html/todo/directives/master-tasks.html",
       scope: {
@@ -98,6 +98,39 @@
           })
 
         }
+
+        $scope.edit = function(list, event){
+          console.log(list)
+          console.log(event)
+
+          var data = list;
+          data.date = new Date()
+          data.editView = true;
+          // data.dateList = times;
+          // console.log(times)
+
+          ModalService.showModal({
+            templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
+            controller: "newCalItemModalController",
+            inputs: {
+              data: data
+            }
+          }).then(function(modal) {
+            //it's a bootstrap element, use 'modal' to show it
+            modal.element.modal();
+            modal.close.then(function(result) {
+            });
+          });
+
+        };
+
+        var originatorEv;
+        $scope.openMenu = function($mdOpenMenu, ev) {
+          console.log($mdOpenMenu)
+          originatorEv = ev;
+          $mdOpenMenu(ev);
+        };
+
 
       }
     }

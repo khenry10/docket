@@ -98,20 +98,26 @@
 
         if($scope.data.editView){
           console.log($scope.data)
-          console.log($scope.data.dateList)
-          $scope.name = $scope.data.list_name;
-          $scope.routine = $scope.data.routine;
-          var date = $scope.data.dateList.date.split("-")
-          const month = date[1] - 1
-          $scope.firstDay = new Date(date[0], month, date[2])
-          $scope.startTime = $scope.data.dateList.start_time;
-          $scope.endTime = $scope.data.dateList.end_time;
-          $scope.listType = $scope.data.list_type;
-          $scope.category = $scope.data.category;
-          $scope.repeatInterval = $scope.data.list_reocurring;
-          $scope.reoccurEnds = $scope.data.list_recur_end;
-          if($scope.listType === 'shopping'){
-            $scope.newEntry.budget = $scope.data.budget;
+          var calendarEntry = $scope.data.todo;
+          console.log(calendarEntry.repeatDays)
+          $scope.daysInRepeatWeekly = calendarEntry.repeatDays;
+          $scope.modalTitle = "Edit";
+          $scope.name = calendarEntry.list_name;
+          $scope.routine = calendarEntry.routine;
+          $scope.firstDay = DateService.fullDateWithTimeSplit(calendarEntry.first_day);
+          $scope.startTime = calendarEntry.start_time;
+          $scope.endTime = calendarEntry.end_time;
+          $scope.listType = calendarEntry.list_type;
+          $scope.category = calendarEntry.category;
+          $scope.repeatInterval = calendarEntry.list_reocurring;
+          if(calendarEntry.list_recur_end && calendarEntry.list_recur_end != 'Never'){
+            $scope.reoccurEnds = 'SelectDate';
+            $scope.reoccurEndsDate = DateService.fullDateWithTimeSplit(calendarEntry.list_recur_end)
+          } else {
+            $scope.reoccurEnds = 'Never';
+          }
+          if(calendarEntry.listType === 'shopping'){
+            $scope.newEntry.budget = calendarEntry.budget;
           }
         }
 

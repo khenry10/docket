@@ -1,13 +1,18 @@
 <form style="color: black">
   <ul class="create-new-panel">
-    <li style="margin-left: 0%">
+    <li style="margin: 10px 0px 0px 0px">
       <md-input-container>
         <input type="text"
                class="create-new-text-input"
-               style="border-bottom-color: white; color: white"
+               style="border-bottom-color: white; color: white; margin: 0px"
                data-ng-model="name"
                placeholder="Name"/>
       </md-input-container>
+
+      <span ng-if='!data.view && !$parent.firstDay '>
+        <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder=" {{ $parent.firstDay? $parent.firstDay : 'Date' }}"/></md-datepicker>
+      </span>
+
     </li>
     <li style="color: white; outline: 1px solid white; ">
       <h5>Monthly Item or Regular Routine</h5>
@@ -17,20 +22,15 @@
         <md-radio-button value="weekly-routine">Weekly Routine</md-radio-button>
       </md-radio-group>
     </li>
-    <li style="margin-left: -20px;" ng-if='!data.view && !$parent.firstDay '>
-      K
-      <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder=" {{ $parent.firstDay? $parent.firstDay : 'Date' }}"/></md-datepicker>
-    </li>
 
     <li style="margin-left: -20px;" ng-if='!data.view && $parent.firstDay '>
-      P
       <md-datepicker date-input type="date" ng-model="firstDay" /></md-datepicker>
     </li>
 
     <li style="display: inline-flex; justify-content: space-between; ">
       <!-- start time -->
       <md-input-container ng-hide="data.view && data.date.startTime">
-        <label ng-if="!startTime"> Start Time </label>
+        <label> Start Time </label>
         <md-select  ng-model="startTime"
                     aria-label="select reocurring"
                     style="color:white"
@@ -43,7 +43,7 @@
 
       <!-- end time -->
       <md-input-container >
-        <label ng-if="!endTime"> End Time </label>
+        <label > End Time </label>
 
         <md-select ng-model="endTime"
                    aria-label="select reocurring">
@@ -71,6 +71,14 @@
         </md-select>
       </md-input-container>
 
+      <md-input-container style="margin: 0px">
+        <label >Category</label>
+
+        <md-select ng-model="category" aria-label="select reocurring">
+          <md-option ng-value="category" ng-repeat="category in categories"> {{ category }}</option>
+        </md-select>
+      </md-input-container>
+
     </li>
 
     <li ng-if="listType === 'shopping' ">
@@ -89,9 +97,9 @@
       </md-input-container>
     </li>
 
-    <li ng-show="name">
+    <li ng-show="name" style="display: flex; margin-left: 20%">
       <md-input-container style="">
-        <label ng-if="!repeatInterval">Repeat</label>
+        <label>Repeat</label>
         <md-select ng-model="repeatInterval" aria-label="select reocurring">
           <md-option ng-value="reoccur" ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
         </md-select>
@@ -120,19 +128,24 @@
         </table>
       </div>
 
+
+    </li>
+
+    <li style="color: white; width: 50%; margin-left: 20%">
+      <label>Recur End</label>
       <md-radio-group ng-model="reoccurEnds"
         ng-show=" repeatInterval.length && repeatInterval != 'None' "
-        style="display: flex; justify-content: space-between; margin-top: 4%; color: white; border-color: white">
+        style="display: flex; justify-content: space-between; margin-top: 4%; border-color: white">
           <md-radio-button value="Never">Never</md-radio-button>
           <md-radio-button value="SelectDate">Select Date</md-radio-button>
       </md-radio-group>
 
       <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
-
         ng-model="reoccurEndsDate">
       </md-datepicker>
     </li>
-    <li ng-show="name">
+
+    <!-- <li ng-show="name">
       <md-input-container style="margin: 0px">
         <label ng-if="!repeatInterval">Category</label>
 
@@ -140,7 +153,7 @@
           <md-option ng-value="category" ng-repeat="category in categories"> {{ category }}</option>
         </md-select>
       </md-input-container>
-    </li>
+    </li> -->
     <li>
       <md-button class="md-raised" ng-click="create()" > Add </md-button>
     </li>

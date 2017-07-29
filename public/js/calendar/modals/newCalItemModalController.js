@@ -13,12 +13,19 @@ function newCalItemModalController($scope, data, DateService, close, $element){
   console.log("modal controller (newCalItemModalController)")
   console.log(data)
   $scope.data = data;
-  var date = new Date(data.date.year, data.date.month-1, data.date.date)
+
+  if($scope.data.editView){
+    $scope.modalTitle = "Edit"
+  } else {
+    $scope.modalTitle = "Add New"
+    var date = new Date(data.date.year, data.date.month-1, data.date.date)
+    $scope.date = DateService.getNiceDate(date)
+  }
+
 
   if($scope.data.date.startTime){
     $scope.startTime = $scope.data.date.startTime
   }
-  $scope.date = DateService.getNiceDate(date)
   $scope.$watch("saved", function(newV, oldV){
     if($scope.saved){
       console.log($('#add-new-modal'))
