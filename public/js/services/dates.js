@@ -136,11 +136,8 @@ angular.module('app').service('DateService', [ function () {
 
   this.fullDateWithTimeSplit = function(date){
     var dateSplit = date.split("-");
-    console.log(dateSplit)
     var month = parseInt(dateSplit[1]) - 1
-    console.log(month)
     var date = dateSplit[2].split("T")[0]
-    console.log(date)
     return new Date(dateSplit[0], month , date)
   }
 

@@ -40,6 +40,10 @@
           sat: false,
         };
 
+        $scope.event = {};
+
+        $scope.needToModifyDateList = false;
+
         $scope.changeEndTimeArray = function(){
           console.log("changeEndTimeArray envoked")
           if($scope.startTime){
@@ -100,26 +104,44 @@
           console.log($scope.data)
           var calendarEntry = $scope.data.todo;
           console.log(calendarEntry.repeatDays)
-          $scope.daysInRepeatWeekly = calendarEntry.repeatDays;
+          $scope.event.daysInRepeatWeekly = calendarEntry.repeatDays;
           $scope.modalTitle = "Edit";
-          $scope.name = calendarEntry.list_name;
-          $scope.routine = calendarEntry.routine;
-          $scope.firstDay = DateService.fullDateWithTimeSplit(calendarEntry.first_day);
-          $scope.startTime = calendarEntry.start_time;
-          $scope.endTime = calendarEntry.end_time;
-          $scope.listType = calendarEntry.list_type;
-          $scope.category = calendarEntry.category;
-          $scope.repeatInterval = calendarEntry.list_reocurring;
+          $scope.event.name = calendarEntry.list_name;
+          $scope.event.routine = calendarEntry.routine;
+          $scope.event.firstDay = DateService.fullDateWithTimeSplit(calendarEntry.first_day);
+          $scope.event.startTime = calendarEntry.start_time;
+          $scope.event.endTime = calendarEntry.end_time;
+          $scope.event.listType = calendarEntry.list_type;
+          $scope.event.category = calendarEntry.category;
+          $scope.event.repeatInterval = calendarEntry.list_reocurring;
           if(calendarEntry.list_recur_end && calendarEntry.list_recur_end != 'Never'){
-            $scope.reoccurEnds = 'SelectDate';
-            $scope.reoccurEndsDate = DateService.fullDateWithTimeSplit(calendarEntry.list_recur_end)
+            $scope.event.reoccurEnds = 'SelectDate';
+            $scope.event.reoccurEndsDate = DateService.fullDateWithTimeSplit(calendarEntry.list_recur_end)
           } else {
-            $scope.reoccurEnds = 'Never';
+            $scope.event.reoccurEnds = 'Never';
           }
           if(calendarEntry.listType === 'shopping'){
             $scope.newEntry.budget = calendarEntry.budget;
           }
-        }
+        };
+
+        $scope.updateChangeLog = function(eventValueChanged, isADateMetric){
+            $scope.needToModifyDateList = true;
+            console.log("eventValueChanged = " + eventValueChanged + "; isADateMetric = " + isADateMetric)
+            console.log($scope.event[eventValueChanged])
+        };
+
+        $scope.update = function(updateMethod){
+          console.log(updateMethod)
+          console.log($scope.data)
+          console.log($scope.event)
+
+          if($scope.needToModifyDateList){
+              console.log("need to modify the dateLists")
+          } else {
+            console.log("dont need to change the dataLists")
+          }
+        };
 
         $scope.create = function(){
           console.log("create")
