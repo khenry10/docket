@@ -185,7 +185,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
   var countMe = 0;
   var evaluateDateListsForWeekCal = function(fullListDate, dateList, list){
-  
+
     var dateArrayLength = $scope.changeDate.dayCount.length;
     var firstWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-7];
     var lastWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-1];
@@ -300,7 +300,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       // loop checks to see if the date already exists within the list, in which case, we don't send to checkLastList which doesn't send to listClone
       for(var l = 0 ; l < list.lists.length; l++){
         var fullListDate = DateService.stringDateSplit(list.lists[l].date);
-        var listsInMonths = list.listsInMonths[$scope.changeDate.monthCount-1];
+        
         if($scope.viewType === 'week'){
           var weeklyDate = evaluateDateListsForWeekCal(fullListDate, list.lists[l], list)
           if(weeklyDate){

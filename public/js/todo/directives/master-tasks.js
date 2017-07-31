@@ -119,6 +119,11 @@
             //it's a bootstrap element, use 'modal' to show it
             modal.element.modal();
             modal.close.then(function(result) {
+              console.log("CLOSEEEEEEEE")
+              close()
+              // $('#add-new-modal').modal('hide');
+              $('body').removeClass('modal-open');
+              $('.modal-backdrop').remove();
             });
           });
 
