@@ -300,7 +300,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       // loop checks to see if the date already exists within the list, in which case, we don't send to checkLastList which doesn't send to listClone
       for(var l = 0 ; l < list.lists.length; l++){
         var fullListDate = DateService.stringDateSplit(list.lists[l].date);
-        
+
         if($scope.viewType === 'week'){
           var weeklyDate = evaluateDateListsForWeekCal(fullListDate, list.lists[l], list)
           if(weeklyDate){

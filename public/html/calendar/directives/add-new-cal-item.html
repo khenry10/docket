@@ -34,12 +34,12 @@
 
     <li style="display: inline-flex; justify-content: space-between; ">
       <!-- start time -->
-      <md-input-container ng-hide="data.view && data.date.startTime">
+      <md-input-container ng-hide="data.view && data.date.start_time">
         <label> Start Time </label>
-        <md-select  ng-model="event.startTime"
+        <md-select  ng-model="event.start_time"
                     aria-label="select reocurring"
                     style="color:white"
-                    ng-change="changeEndTimeArray(); updateChangeLog('startTime', true)">
+                    ng-change="changeEndTimeArray(); updateChangeLog('start_time', true)">
           <md-option ng-value="time"
                      ng-repeat="time in times"> {{ time }} </md-option>
         </md-select>
@@ -50,8 +50,8 @@
       <md-input-container >
         <label > End Time </label>
 
-        <md-select ng-model="event.endTime"
-                   ng-change="updateChangeLog('endTime', true)"
+        <md-select ng-model="event.end_time"
+                   ng-change="updateChangeLog('end_time', true)"
                    aria-label="select reocurring">
           <md-option ng-value="time" ng-repeat="time in newTimes"> {{ time }}</md-option>
         </md-select>
@@ -103,19 +103,19 @@
       <md-input-container style="margin: 0px; width: 100%">
         <input style="border-bottom-color: white; color: white"
                input="text"
-               ng-model="newEntry.tracker" placeholder="What do you want to track?"/>
+               ng-model="event.tracker" placeholder="What do you want to track?"/>
       </md-input-container>
     </li>
 
     <li style="display: flex; margin-left: 20%">
       <md-input-container style="">
         <label>Repeat</label>
-        <md-select ng-model="event.repeatInterval" aria-label="select reocurring" ng-change="updateChangeLog('repeatInterval', true)">
+        <md-select ng-model="event.list_reocurring" aria-label="select reocurring" ng-change="updateChangeLog('list_reocurring', true)">
           <md-option ng-value="reoccur" ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
         </md-select>
       </md-input-container>
 
-      <div ng-if="event.repeatInterval === 'Weekly' ">
+      <div ng-if="event.list_reocurring === 'Weekly' ">
         <table style="margin-left: -5px">
           <tr>
             <th style="padding: 4px; color: white"> Sun </th>
@@ -161,18 +161,17 @@
 
     </li>
 
-    <li style="color: white; width: 50%; margin-left: 20%">
+    <li style="color: white; width: 50%; margin-left: 20%" ng-show=" event.list_reocurring.length && event.list_reocurring != 'None' ">
       <label>Recur End</label>
-      <md-radio-group ng-model="event.reoccurEnds"
-        ng-show=" event.repeatInterval.length && event.repeatInterval != 'None' "
-        ng-change="updateChangeLog('event.reoccurEnds', true)"
+      <md-radio-group ng-model="event.list_recur_end"
+        ng-change="updateChangeLog('list_recur_end', true)"
         style="display: flex; justify-content: space-between; margin-top: 4%; border-color: white">
           <md-radio-button value="Never">Never</md-radio-button>
           <md-radio-button value="SelectDate">Select Date</md-radio-button>
       </md-radio-group>
 
-      <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
-                     ng-change="updateChangeLog('event.reoccurEndsDate', true)"
+      <md-datepicker ng-show="event.list_recur_end === 'SelectDate' " md-placeholder="Choose End Date"
+                     ng-change="updateChangeLog('reoccurEndsDate', true)"
                      ng-model="event.reoccurEndsDate">
       </md-datepicker>
     </li>
