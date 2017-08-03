@@ -24,7 +24,7 @@
         console.log($scope.saved)
 
         $scope.event = {};
-        var createListOfLists = []
+        var createListOfLists = [];
         $scope.needToModifyDateList = false;
         $scope.reoccurs = ['None','Daily', 'Weekly', 'Monthly', 'Yearly'];
         $scope.categories = ["Health", "Work", "Finance", "Household", "Personal Project", "Social" ];
@@ -77,19 +77,13 @@
             $scope.newTodoList.duration = timeDifference
           }
 
-        var repeatAdditionalDays = function(count, incrementor, lastDay, year, month, list, startTime, endTime, tracker){
+        var repeatAdditionalDays = function(count, incrementor, lastDay, year, month){
           while(count+incrementor <= lastDay){
-            count = count + 7
+            console.log("count = " + count)
+            console.log("incrementor = " + incrementor)
+            count = count + incrementor
             var list = year+"-"+month+"-"+count;
-            createListOfLists.push( {
-              date: list,
-              name: $scope.name,
-              duration: $scope.newTodoList.duration,
-              start_time: $scope.newTodoList.start_time,
-              end_time: $scope.newTodoList.end_time,
-              tasks: [],
-              tracker: tracker} )
-            //  var date = $scope.firstDay
+            createListOfLists.push( new $scope.dateList(list)  )
           }
         };
 
@@ -146,62 +140,55 @@
         $scope.create = function(){
           console.log("create")
           console.log($scope.event)
-
           console.log($scope.data)
+
           if($scope.data){
-            console.log($scope.data.date)
             $scope.event.first_day = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
           }
-          console.log("$scope.event.first_day below: ")
-          console.log($scope.event.first_day)
 
           $scope.newTodoList = new Todo($scope.event);
-          console.log($scope.newTodoList)
 
           var year = $scope.event.first_day.getFullYear();
           var month = $scope.event.first_day.getMonth()+1;
           var date = $scope.event.first_day.getDate();
           var numberOfDaysInMonth = new Date(year, month, 0).getDate()
           var tracker = {tracking: $scope.event.tracker, quantity: ""};
-          console.log(tracker)
+          var date = $scope.event.first_day;
+          var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
+          var count = date.getDate();
+          var lastDay = numberOfDaysInMonth
+
+          if($scope.event.first_day && $scope.event.endTime){
+            getHours()
+          }
+
+          $scope.dateList = function(newDate){
+            console.log(newDate)
+            this.date = newDate,
+            this.name = $scope.event.name,
+            this.duration = $scope.newTodoList.duration,
+            this.start_time = $scope.newTodoList.start_time,
+            this.end_time = $scope.newTodoList.end_time,
+            this.tasks = [],
+            this.tracker = tracker
+          }
 
             if($scope.event.list_name && $scope.event.first_day || $scope.view === 'modal'){
                 console.log("is you getting in here?")
-                console.log($scope.event)
                 $scope.newTodoList.list_created_on = new Date()
+
                 if($scope.data && $scope.data.date.startTime){
                   $scope.newTodoList.start_time = $scope.data.date.startTime
                 }
-                if($scope.event.first_day && $scope.event.endTime){
-                  getHours()
-                }
-                console.log($scope.event.list_recur_end)
+
                 if($scope.event.list_reocurring){
-                    // $scope.newTodoList.list_reocurring = $scope.repeatInterval
                     $scope.newTodoList.list_recur_end = $scope.event.list_recur_end === 'Never'? 'Never':$scope.reoccurEndsDate;
                 }
-                var date = $scope.event.first_day;
-                var newDate = date.getFullYear()+"-"+month+"-"+date.getDate()
-                if($scope.event.list_reocurring !== 'Weekly'){
-                  createListOfLists.push( {
-                    date: newDate,
-                    name: $scope.event.name,
-                    duration: $scope.newTodoList.duration,
-                    start_time: $scope.newTodoList.start_time,
-                    end_time: $scope.newTodoList.end_time,
-                    tasks: [],
-                    tracker: tracker
-                  } )
-                }
-                var count = date.getDate();
 
-                var lastDay = numberOfDaysInMonth
 
                 if($scope.event.list_recur_end){
                   if($scope.event.list_recur_end === "SelectDate"){
-
                     var calendar = $scope.dateTracker? $scope.dateTracker : $scope.data.dateTracker
-
                     var endDateMonth = $scope.event.reoccurEndsDate.getMonth()+1
                     var endDateYear = $scope.event.reoccurEndsDate.getFullYear()
 
@@ -214,23 +201,18 @@
                   }
                 }
 
-                if($scope.event.list_reocurring === 'Daily'){
-                  // createRepeater(year, month, count, lastDay, 1)
+                if($scope.event.list_reocurring !== 'Weekly'){
+                  var list = year+"-"+month+"-"+count;
+                  createListOfLists.push( new $scope.dateList(list) )
+                }
 
-                  while(count < lastDay){
-                    count = count + 1
-                    var list = year+"-"+month+"-"+count
-                    createListOfLists.push(
-                      { date: list,
-                        name: $scope.event.name,
-                        duration: $scope.newTodoList.duration,
-                        start_time: $scope.newTodoList.start_time,
-                        end_time: $scope.newTodoList.end_time,
-                        tasks: [],
-                        tracker: tracker
-                      })
-                     var date = $scope.event.first_day
-                  }
+                if($scope.event.list_reocurring === 'Daily'){
+                  repeatAdditionalDays(count, 1, lastDay, year, month)
+                  // while(count < lastDay){
+                  //   count = count + 1
+                  //   var list = year+"-"+month+"-"+count
+                  //   createListOfLists.push( new $scope.dateList(list) )
+                  // }
                 }
 
                 if($scope.event.list_reocurring === 'Weekly'){
@@ -246,39 +228,27 @@
                         index = index +1;
                     }
                   }
-
+                  console.log(additionalDays)
                   if(additionalDays.length){
                     additionalDays.forEach(function(day){
                       var count = date.getDate();
+                      console.log("day = " + day)
+                      console.log("dayOfFirstDay = " + dayOfFirstDay)
                       var adjuster = day - dayOfFirstDay;
+                      console.log("adjuster = " + adjuster)
                       count = count + adjuster;
                       var list = year+"-"+month+"-"+count;
+                      console.log(list)
                       // pushed a date list here because repeats in the first week weren't being added
-                      createListOfLists.push( {
-                        date: list,
-                        name: $scope.event.name,
-                        duration: $scope.newTodoList.duration,
-                        start_time: $scope.newTodoList.start_time,
-                        end_time: $scope.newTodoList.end_time,
-                        tasks: [],
-                        tracker: tracker
-                      })
-                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time, tracker)
+                      createListOfLists.push( new $scope.dateList(list) )
+                      repeatAdditionalDays(count, 7, lastDay, year, month)
                     })
+                    console.log(createListOfLists)
                   } else {
                       var list = year+"-"+month+"-"+count;
-                      createListOfLists.push( {
-                        date: list,
-                        name: $scope.event.name,
-                        duration: $scope.newTodoList.duration,
-                        start_time: $scope.newTodoList.start_time,
-                        end_time: $scope.newTodoList.end_time,
-                        tasks: [],
-                        tracker: tracker
-                      })
-                      repeatAdditionalDays(count, 7, lastDay, year, month, list, $scope.newTodoList.start_time, $scope.newTodoList.end_time, tracker)
-                      // count = count + 7;
-                    // }
+                      createListOfLists.push( new $scope.dateList(list) )
+                      repeatAdditionalDays(count, 7, lastDay, year, month)
+
                   }
                 }//end of weekly conditional
 
@@ -286,68 +256,10 @@
                   while(month < 12){
                     month = month+1
                     var list = year+"-"+month+"-"+count
-                    createListOfLists.push( {
-                      date: list,
-                      name: $scope.event.name,
-                      duration: $scope.newTodoList.duration,
-                      start_time: $scope.newTodoList.start_time,
-                      end_time: $scope.newTodoList.end_time,
-                      tasks: [],
-                      tracker: tracker } )
+                    createListOfLists.push( new $scope.dateList(list) )
                   }
                 }
 
-                console.log("--- $scope.event ---")
-                console.log($scope.event)
-
-                // --------> created the below to try and create a more accurate system to inform the FE on how how many lists should be in   each month but it got complicated and wasn't working as desigend so I scrapped it, but don't want to delete forever
-
-                // $scope.newCalTodoLists[0].listsInMonths = [];
-                // var monthNames = DateService.monthNames;
-                // if($scope.newTodoList.list_reocurring === "Daily"){
-                //   var expectedNumOfList = 30;
-                // } else if ($scope.newTodoList.list_reocurring === "Monthly"){
-                //   var expectedNumOfList = 1;
-                // } else if($scope.newTodoList.list_reocurring === "Weekly"){
-                //   var expectedNumOfList = 4;
-                // }
-                //
-                // for(var m = 1; m < monthNames.length; m++){
-                //   if(m === month){
-                //     $scope.newCalTodoLists[0].listsInMonths.push(
-                //       { month: monthNames[m],
-                //         monthNumber: m,
-                //         year: year,
-                //         numberOfLists: createListOfLists.length,
-                //         expectedNumOfList: expectedNumOfList
-                //       })
-                //   } else if (m > month) {
-                //     $scope.newCalTodoLists[0].listsInMonths.push(
-                //       { monthName: monthNames[m],
-                //         monthNumber: m,
-                //         year: year,
-                //         numberOfLists: 0,
-                //         expectedNumOfList: expectedNumOfList
-                //       })
-                //   } else if (m < month){
-                //     $scope.newCalTodoLists[0].listsInMonths.push(
-                //       { monthName: monthNames[m],
-                //         monthNumber: m,
-                //         year: year,
-                //         numberOfLists: 0,
-                //         expectedNumOfList: 0
-                //       })
-                //   }
-                // }
-                // --------> created the above to try and create a more accurate system to inform the FE on how how many lists should be in   each month but it got complicated and wasn't working as desigend so I scrapped it, but don't want to delete forever
-
-
-                // $scope.newTodoList instantiates todo above (aka $scope.newTodoList = new Todo() )
-
-                // newCal is scoped to newCalTodoLists, which is $watched in calendar directive.  Has to be sent in array because that is what is expected in calednar directive
-
-                console.log($scope.newTodoList)
-                console.log($scope.newTodoList.lists)
                 $scope.newTodoList.lists = createListOfLists;
                 $scope.event.lists = createListOfLists;
                 console.log($scope.event)
@@ -355,6 +267,7 @@
                 $scope.newTodoList.$save().then(function(res){
                   console.log("$scope.newTodoList.$save success")
                   if($scope.data){
+                    // saved is a dependency which closes the add-new-modal
                     $scope.saved = true
                   }
                 })
@@ -382,8 +295,6 @@
                 // clears the input fields for new additions
                   $scope.event = {}
 
-
-              // } this is needed when the conditional is in place to see if it's a List or Event (event deprecated on 3/19)
             }
           }
           // end of create()

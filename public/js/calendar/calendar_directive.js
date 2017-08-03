@@ -437,7 +437,7 @@
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
           var exists = document.getElementById(list._id+"&"+date+"&"+times.start_time)
-
+          console.log(exists)
           if(   list.routine === 'monthly' && scope.newView === 'month'
              || list.routine === 'weekly-routine' && scope.newView === 'week'){
                var go = true;
