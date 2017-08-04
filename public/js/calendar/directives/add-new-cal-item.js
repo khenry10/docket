@@ -31,7 +31,7 @@
         $scope.times = ["1:00am", "2:00am", "3:00am", "4:00am", "5:00am", "6:00am", "7:00am",
         "8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", "1:00pm", "2:00pm", "3:00pm", "4:00pm",
         "5:00pm", "6:00pm", "7:00pm", "8:00pm", "9:00pm", "10:00pm", "11:00pm", "12:00am"];
-        $scope.daysInRepeatWeekly = {
+        $scope.event.daysInRepeatWeekly = {
           sun: false,
           mon: false,
           tues: false,
@@ -58,14 +58,20 @@
         if($scope.data){
           $scope.changeEndTimeArray()
         }
-          var getHours = function(){
-            if($scope.newTodoList.start_time){
-              $scope.start_time = $scope.newTodoList.start_time
-            }
+         var getHours = function(){
+            console.log("getHours")
+            console.log($scope.newTodoList)
+            console.log($scope.event)
+            // if($scope.newTodoList.start_time){
+            //   $scope.start_time = $scope.newTodoList.start_time
+            // }
+            // console.log($scope.newTodoList.start_time)
             var startTime = $scope.event.start_time.split(":")
             var startTimeAmOrPm = startTime[1].substr(2,4)
             var startTime = startTime[0]
             var endTime = $scope.event.end_time.split(":")
+            console.log(startTime)
+            console.log(endTime)
             var endTimeAmOrPm = endTime[1].substr(2,4)
             var endTime = endTime[0]
             var timeDifference = parseInt(endTime) - parseInt(startTime)
@@ -74,7 +80,8 @@
               var time = 12 - startTime
               var timeDifference = parseInt(time) + parseInt(endTime)
             }
-            $scope.newTodoList.duration = timeDifference
+            $scope.event.duration = timeDifference
+            console.log($scope.event.duration)
           }
 
         var repeatAdditionalDays = function(count, incrementor, lastDay, year, month){
@@ -139,15 +146,18 @@
 
         $scope.create = function(){
           console.log("create")
-          console.log($scope.event)
-          console.log($scope.data)
 
           if($scope.data){
             $scope.event.first_day = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
           }
-
+          console.log($scope.event.first_day && $scope.event.endTime)
+          console.log($scope.event.first_day)
+          console.log($scope.event.end_time)
+          if($scope.event.first_day && $scope.event.end_time){
+            console.log("getHours")
+            getHours()
+          }
           $scope.newTodoList = new Todo($scope.event);
-
           var year = $scope.event.first_day.getFullYear();
           var month = $scope.event.first_day.getMonth()+1;
           var date = $scope.event.first_day.getDate();
@@ -158,15 +168,12 @@
           var count = date.getDate();
           var lastDay = numberOfDaysInMonth
 
-          if($scope.event.first_day && $scope.event.endTime){
-            getHours()
-          }
-
+          console.log($scope.event.duration)
           $scope.dateList = function(newDate){
             console.log(newDate)
             this.date = newDate,
             this.name = $scope.event.name,
-            this.duration = $scope.newTodoList.duration,
+            this.duration = $scope.event.duration,
             this.start_time = $scope.newTodoList.start_time,
             this.end_time = $scope.newTodoList.end_time,
             this.tasks = [],
@@ -208,11 +215,6 @@
 
                 if($scope.event.list_reocurring === 'Daily'){
                   repeatAdditionalDays(count, 1, lastDay, year, month)
-                  // while(count < lastDay){
-                  //   count = count + 1
-                  //   var list = year+"-"+month+"-"+count
-                  //   createListOfLists.push( new $scope.dateList(list) )
-                  // }
                 }
 
                 if($scope.event.list_reocurring === 'Weekly'){
@@ -228,22 +230,17 @@
                         index = index +1;
                     }
                   }
-                  console.log(additionalDays)
+
                   if(additionalDays.length){
                     additionalDays.forEach(function(day){
                       var count = date.getDate();
-                      console.log("day = " + day)
-                      console.log("dayOfFirstDay = " + dayOfFirstDay)
                       var adjuster = day - dayOfFirstDay;
-                      console.log("adjuster = " + adjuster)
                       count = count + adjuster;
                       var list = year+"-"+month+"-"+count;
-                      console.log(list)
                       // pushed a date list here because repeats in the first week weren't being added
                       createListOfLists.push( new $scope.dateList(list) )
                       repeatAdditionalDays(count, 7, lastDay, year, month)
                     })
-                    console.log(createListOfLists)
                   } else {
                       var list = year+"-"+month+"-"+count;
                       createListOfLists.push( new $scope.dateList(list) )
