@@ -128,31 +128,32 @@
           </tr>
           <tr>
             <td>
-              <input type="checkbox" ng-model="event.daysInRepeatWeekly.sun" label="Sunday"
-                     ng-change="updateChangeLog('daysInRepeatWeekly', true)" />
+              <input type="checkbox" ng-model="event.repeatDays.sun" label="Sunday"
+                     ng-change="updateChangeLog('repeatDays', true)" />
             </td>
             <td>
-              <input type="checkbox" ng-model="event.daysInRepeatWeekly.mon" label="Monday"
-                     ng-change="updateChangeLog('daysInRepeatWeekly', true)" />
+              <input type="checkbox" ng-model="event.repeatDays.mon" label="Monday"
+                     ng-change="updateChangeLog('repeatDays', true)" />
             </td>
             <td>
-            <input type="checkbox" ng-model="event.daysInRepeatWeekly.tues" label="Tuesday"
-                   ng-change="updateChangeLog('daysInRepeatWeekly', true)" />
+            <input type="checkbox" ng-model="event.repeatDays.tues" label="Tuesday"
+                   ng-change="updateChangeLog('repeatDays', true)" />
             </td>
             <td>
-            <input type="checkbox" ng-model="event.daysInRepeatWeekly.wed" label="Wednesday"
-                   ng-change="updateChangeLog('daysInRepeatWeekly', true)"/>
+            <input type="checkbox" ng-model="event.repeatDays.wed" label="Wednesday"
+                   ng-change="updateChangeLog('repeatDays', true)"/>
             </td>
             <td>
-              <input type="checkbox" ng-model="event.daysInRepeatWeekly.thurs" label="Thursday"     ng-change="updateChangeLog('daysInRepeatWeekly', true)" />
+              <input type="checkbox" ng-model="event.repeatDays.thurs" label="Thursday"
+                     ng-change="updateChangeLog('repeatDays', true)" />
             </td>
             <td>
-              <input type="checkbox" ng-model="event.daysInRepeatWeekly.fri" label="Friday"
-                     ng-change="updateChangeLog('daysInRepeatWeekly', true)" />
+              <input type="checkbox" ng-model="event.repeatDays.fri" label="Friday"
+                     ng-change="updateChangeLog('repeatDays', true)" />
             </td>
             <td>
-              <input type="checkbox" ng-model="event.daysInRepeatWeekly.sat" label="Saturday"
-                     ng-change="updateChangeLog('daysInRepeatWeekly', true)"/>
+              <input type="checkbox" ng-model="event.repeatDays.sat" label="Saturday"
+                     ng-change="updateChangeLog('repeatDays', true)"/>
             </td>
           </tr>
         </table>
@@ -187,7 +188,7 @@
     </li> -->
     <li>
       <md-button class="md-raised" ng-click="create()" ng-if="!data.editView" > Add </md-button>
-      <md-button class="md-raised" ng-click="update('future')" ng-if="data.editView" > Update Future Events Only </md-button>
+      <!-- <md-button class="md-raised" ng-click="update('future')" ng-if="data.editView" > Update Future Events Only </md-button> -->
       <md-button class="md-raised" ng-click="update('all')" ng-if="data.editView" > Update All Events </md-button>
     </li>
 
