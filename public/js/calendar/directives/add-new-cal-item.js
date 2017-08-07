@@ -6,10 +6,12 @@
   .directive("addNewCalItem", [
     "Todo",
     "DateService",
+    "$window",
+    "$location",
     createNewCalItem
   ])
 
-  function createNewCalItem(Todo, DateService){
+  function createNewCalItem(Todo, DateService, $window, $location){
     return {
       templateUrl: "/assets/html/calendar/directives/add-new-cal-item.html",
       scope: {
@@ -60,18 +62,10 @@
         }
          var getHours = function(){
             console.log("getHours")
-            console.log($scope.newTodoList)
-            console.log($scope.event)
-            // if($scope.newTodoList.start_time){
-            //   $scope.start_time = $scope.newTodoList.start_time
-            // }
-            // console.log($scope.newTodoList.start_time)
             var startTime = $scope.event.start_time.split(":")
             var startTimeAmOrPm = startTime[1].substr(2,4)
             var startTime = startTime[0]
             var endTime = $scope.event.end_time.split(":")
-            console.log(startTime)
-            console.log(endTime)
             var endTimeAmOrPm = endTime[1].substr(2,4)
             var endTime = endTime[0]
             var timeDifference = parseInt(endTime) - parseInt(startTime)
@@ -81,7 +75,6 @@
               var timeDifference = parseInt(time) + parseInt(endTime)
             }
             $scope.event.duration = timeDifference
-            console.log($scope.event.duration)
           }
 
         var repeatAdditionalDays = function(count, incrementor, lastDay, year, month){
@@ -120,48 +113,39 @@
               if(isADateMetric){
                 $scope.needToModifyDateList = isADateMetric;
               }
-              console.log("eventValueChanged = " + eventValueChanged + "; isADateMetric = " + isADateMetric)
-              console.log($scope.event[eventValueChanged])
               $scope.data.todo[eventValueChanged] = $scope.event[eventValueChanged]
-              console.log($scope.data.todo)
             }
         };
 
         $scope.update = function(updateMethod){
           console.log(updateMethod)
-          console.log($scope.data)
-          console.log($scope.event)
-
           if($scope.needToModifyDateList){
-              console.log("need to modify the dateLists")
               $scope.create('update')
           } else {
-            console.log("dont need to change the dataLists")
             if(updateMethod === 'all'){
               Todo.update({list_name: $scope.data.todo.list_name}, {todo: $scope.data.todo})
             }
-            console.log($scope.data.todo)
           }
-          // $scope.saved is a dependency injected from newCalItemModalController and is used to close remove the update modal
+          // $scope.saved is a dependency injected from newCalItemModalController and is used to close & remove the update modal
           $scope.saved = true;
         };
 
         $scope.create = function(createNewOrUpdate){
           console.log("create")
-          console.log(createNewOrUpdate)
+
           if($scope.data  && createNewOrUpdate != 'update'){
             $scope.event.first_day = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
           }
-          console.log($scope.event.first_day && $scope.event.endTime)
-          console.log($scope.event.first_day)
-          console.log($scope.event.end_time)
+
           if($scope.event.first_day && $scope.event.end_time){
-            console.log("getHours")
             getHours()
           }
+
           if(createNewOrUpdate != 'update' ){
             $scope.newTodoList = new Todo($scope.event);
           }
+
+          // creates new var names for readability
           var year = $scope.event.first_day.getFullYear();
           var month = $scope.event.first_day.getMonth()+1;
           var date = $scope.event.first_day.getDate();
@@ -173,8 +157,8 @@
           var lastDay = numberOfDaysInMonth
 
           console.log($scope.event.duration)
+          // created a constructor here because I was originally overwriting the same object and it was only saving 1
           $scope.dateList = function(newDate){
-            console.log(newDate)
             this.date = newDate,
             this.name = $scope.event.name,
             this.duration = $scope.event.duration,
@@ -187,19 +171,18 @@
             if($scope.event.list_name && $scope.event.first_day || $scope.view === 'modal'){
                 console.log("is you getting in here?")
 
+                // create only logic
                 if(createNewOrUpdate != 'update'){
                   $scope.newTodoList.list_created_on = new Date()
-
                   if($scope.data && $scope.data.date.startTime){
                     $scope.newTodoList.start_time = $scope.data.date.startTime
                   }
-
                   if($scope.event.list_reocurring){
                     $scope.newTodoList.list_recur_end = $scope.event.list_recur_end === 'Never'? 'Never':$scope.reoccurEndsDate;
                   }
                 }
 
-
+                // logic if there is a stopping date
                 if($scope.event.list_recur_end){
                   if($scope.event.list_recur_end === "SelectDate"){
                     var calendar = $scope.dateTracker? $scope.dateTracker : $scope.data.dateTracker
@@ -263,10 +246,8 @@
                   }
                 }//end of weekly conditional
 
-                console.log($scope.event)
-
+                $scope.event.lists = createListOfLists;
                 if(createNewOrUpdate === 'update'){
-                  $scope.event.lists = createListOfLists;
                   Todo.update({list_name: $scope.event.list_name}, {todo: $scope.event})
                 } else {
                   $scope.newTodoList.lists = createListOfLists;
@@ -282,7 +263,7 @@
                 var pushNew = {
                   origin: 'add-new-call-item-directive',
                   todo: $scope.event,
-                  modifiedDateList: $scope.event.lists
+                  modifiedDateList: createListOfLists
                 };
 
                 // $scope.data is only passed in when the add new MODAL is being used, comes from the calendar directive
@@ -292,11 +273,13 @@
                     // console.log($scope.newCalTodoLists)
                   $scope.data.scope.$parent.verifyCloneList($scope.event);
 
-                } else {
+                } else if (createNewOrUpdate != 'update') {
                   // new events from side rail use isolated directive scope
                   $scope.newCal = [$scope.event]
                   $scope.$parent.listForCal.push(pushNew)
 
+                } else if(createNewOrUpdate != 'update' && $scope.needToModifyDateList) {
+                    $window.location.reload()
                 }
 
                 // clears the input fields for new additions

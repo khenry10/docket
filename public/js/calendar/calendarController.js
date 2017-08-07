@@ -295,48 +295,56 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     }
     console.log($scope.allTodoLists)
     $scope.allTodoLists.forEach(function(list, index){
-      var lastDateList = list.lists[list.lists.length-1];
-      var dateListsInCurrentMonth = [];
-      $scope.exists = false;
-      // loop checks to see if the date already exists within the list, in which case, we don't send to checkLastList which doesn't send to listClone
-      for(var l = 0 ; l < list.lists.length; l++){
-        var fullListDate = DateService.stringDateSplit(list.lists[l].date);
+      console.log(list)
+      console.log($scope.changeDate)
+      console.log(list.first_day)
+      console.log(DateService.stringDateSplit(list.first_day))
+      var firstListDate = DateService.stringDateSplit(list.first_day)
+      console.log($scope.changeDate.monthCount >= firstListDate.month && $scope.changeDate.year >= firstListDate.year)
+      if($scope.changeDate.monthCount >= firstListDate.month && $scope.changeDate.year >= firstListDate.year){
+        var lastDateList = list.lists[list.lists.length-1];
+        var dateListsInCurrentMonth = [];
+        $scope.exists = false;
+        // loop checks to see if the date already exists within the list, in which case, we don't send to checkLastList which doesn't send to listClone
+        for(var l = 0 ; l < list.lists.length; l++){
+          var fullListDate = DateService.stringDateSplit(list.lists[l].date);
 
-        if($scope.viewType === 'week'){
-          var weeklyDate = evaluateDateListsForWeekCal(fullListDate, list.lists[l], list)
-          if(weeklyDate){
-            dateListsInCurrentMonth.push(weeklyDate)
-          }
-          if(fullListDate.year == $scope.changeDate.year && fullListDate.month > $scope.changeDate.monthCount || fullListDate.month > $scope.changeDate.monthCount+1){
-            var l = list.lists.length;
-          }
-        } else if($scope.viewType === 'month'){
-          if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
-                addActivityTime(list.list_name, list.lists[l].duration)
-                dateListsInCurrentMonth.push(list.lists[l])
-                if(list.lists[l].tasks.length && list.list_type == 'todo'){
-                  $scope.parseAllTasks(list.lists[l], list)
-                }
+          if($scope.viewType === 'week'){
+            var weeklyDate = evaluateDateListsForWeekCal(fullListDate, list.lists[l], list)
+            if(weeklyDate){
+              dateListsInCurrentMonth.push(weeklyDate)
+            }
+            if(fullListDate.year == $scope.changeDate.year && fullListDate.month > $scope.changeDate.monthCount || fullListDate.month > $scope.changeDate.monthCount+1){
+              var l = list.lists.length;
+            }
+          } else if($scope.viewType === 'month'){
+            if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
+              addActivityTime(list.list_name, list.lists[l].duration)
+              dateListsInCurrentMonth.push(list.lists[l])
+              if(list.lists[l].tasks.length && list.list_type == 'todo'){
+                $scope.parseAllTasks(list.lists[l], list)
+              }
               $scope.exists = true;
 
-          }
-          if(fullListDate.year == $scope.changeDate.year && fullListDate.month > $scope.changeDate.monthCount){
-            var l = list.lists.length;
-          };
-        } // end of month else if
-      }; //end of for loop
+            }
+            if(fullListDate.year == $scope.changeDate.year && fullListDate.month > $scope.changeDate.monthCount){
+              var l = list.lists.length;
+            };
+          } // end of month else if
+        }; //end of for loop
 
-      if(!$scope.exists){
-        checkLastList(lastDateList, list, index)
-      } else {
-        if($scope.viewType == 'month'){
-          listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
-        } else if ($scope.viewType == 'week'){
-          // I don't know why I added the below listForCal[index], it was creating multiple todo lists in left rail so I commented out
-          // listForCal[index] = {origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth}
-          listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
+        if(!$scope.exists){
+          checkLastList(lastDateList, list, index)
+        } else {
+          if($scope.viewType == 'month'){
+            listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
+          } else if ($scope.viewType == 'week'){
+            // I don't know why I added the below listForCal[index], it was creating multiple todo lists in left rail so I commented out
+            // listForCal[index] = {origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth}
+            listForCal.push({origin: 'database' , todo: list, modifiedDateList: dateListsInCurrentMonth})
+          }
+          noLoopListCounter(list, dateListsInCurrentMonth)
         }
-        noLoopListCounter(list, dateListsInCurrentMonth)
       }
     }) // end of $scope.allTodoLists forEach
     if(!listForCal.length){
@@ -531,20 +539,22 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         console.log($scope.changeDate)
         console.log($scope.changeDate.months.thisMonth.days)
         date = $scope.changeDate.months.thisMonth.days + date ;
-        $scope.changeDate.monthCount--;
+        // $scope.changeDate.monthCount--;
       }
       console.log("date = " + date)
       for(var e = 7; e >= 1; e--){
         $scope.changeDate.lastMove = "decrement";
         var date = date + 1;
         if(date <= 0){
-          $scope.changeDate.monthCount--
+          console.log("monthCount -- 1")
+          // $scope.changeDate.monthCount--
           var date = $scope.changeDate.months.previousMonth.days
           if(date > $scope.changeDate.months.thisMonth.count-7 || date < 7) {
             $scope.changeDate.twoMonthsWeekly = true;
           }
         } else if (date > $scope.changeDate.months.previousMonth.days){
-          $scope.changeDate.monthCount--;
+          console.log("monthCount -- 2")
+          // $scope.changeDate.monthCount--;
           $scope.changeDate.twoMonthsWeekly = true;
           date = 1;
         }
@@ -605,7 +615,10 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         $scope.intializeDayCount()
       }
       if($scope.viewType === 'week'){
-        $scope.changeDate.twoMonthsWeekly = false;
+        if($scope.changeDate.twoMonthsWeekly){
+          this.monthCount--
+          $scope.changeDate.twoMonthsWeekly = false;
+        }
         weeklyMove('decrement')
       } else if($scope.viewType === 'month') {
         if(this.monthCount <= 1) {
@@ -676,7 +689,9 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     var appsCurrentMonth = $scope.changeDate.monthCount-1;
     var appsCurrentYear = $scope.changeYear.year;
     var firstListDate = DateService.stringDateSplit(masterList.first_day);
+    console.log("masterList.first_day = " + masterList.first_day)
     var firstListDay = DateService.stringToDate(masterList.first_day, 'regMonth').getDay();
+    console.log("firstListDay = " + firstListDay)
     var firstDateOfMonth = new Date(appsCurrentYear, $scope.changeDate.monthCount-1, 1)
     var firstDayOfMonth = firstDateOfMonth.getDay();
     var repeatInterval = masterList.list_reocurring;
@@ -706,13 +721,13 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     }
 
     if(repeatInterval === 'Weekly'){
+      console.log("Weekly repeater")
       var repeater = 7
       var index = 0;
       for(var property in masterList.repeatDays) {
         if (masterList.repeatDays.hasOwnProperty(property)) {
             if(masterList.repeatDays[property]){
               additionalDays.push(index)
-
             }
             index = index +1;
         }
@@ -726,8 +741,16 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         count = 1
       }
     } else {
+      console.log("firstListDay = "  + firstListDay)
+      console.log("firstDayOfMonth = " + firstDayOfMonth)
+      console.log("count = " + count)
       count = firstListDay - firstDayOfMonth + 1
-      var count = parseInt(firstListDate.date) + repeater;
+      console.log("repater = " + repeater)
+      if(repeatInterval === 'Monthly'){
+        var count = parseInt(firstListDate.date) + repeater;
+        console.log("parseInt(firstListDate.date) = " + parseInt(firstListDate.date))
+      }
+      console.log("count = " + count)
     }
 
     var newlyCreatedDateLists = [];
@@ -742,7 +765,9 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         if(count > 0){
           if(count <= last){
             count = count.length === 1? "0"+count: count
+            console.log("count = " + count)
             var listDate = $scope.changeYear.year+"-"+$scope.changeDate.monthCount+"-"+count
+            console.log("count = " + count)
             var masterTasksToAdd = [];
 
             if(masterList.master_tasks){
@@ -795,6 +820,13 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     $scope.niceMonth = DateService.monthNames[monthCount]
   }
   document.title = "Docket: " + $scope.changeDate.today.dayName + " " + $scope.changeDate.today.monthNames + " " + $scope.changeDate.today.date + ", " + $scope.changeDate.today.year;
+
+  var originatorEv;
+  $scope.openMenu = function($mdOpenMenu, ev) {
+    console.log($mdOpenMenu)
+    originatorEv = ev;
+    $mdOpenMenu(ev);
+  };
 
   // this can almost assuredly be deleted, going to save until I get to delete/update for lists -- 4/12
     // $scope.delete = function(eventName){
