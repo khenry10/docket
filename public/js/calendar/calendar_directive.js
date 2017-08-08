@@ -86,7 +86,6 @@
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
           // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
           var bigTdContainer = document.getElementsByClassName(time)
-          // console.log(bigTdContainer)
           var pForBigTd = document.createElement('p')
           pForBigTd.setAttribute("draggable", true)
 
@@ -442,7 +441,7 @@
                var go = false;
              }
 
-          if(!exists && go){
+          if( (!exists || exists == null) && go){
             var li = document.createElement("li")
             li.setAttribute("draggable", true)
             var dragSrcEl = null;
@@ -526,8 +525,6 @@
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
-              // var elementsOriginalId = scope.dragSrcEl[0].element.id
-              // console.log(elementsOriginalId)
               var elementsOldDate = scope.dragSrcEl[0].date;
 
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
@@ -584,7 +581,6 @@
             li.setAttribute("class",category)
             li.setAttribute("id", list._id+"&"+date+"&"+times.start_time)
             var url = document.createElement("a")
-            console.log(times)
             if(times.name && times.name !== list.list_name){
               url.innerHTML = times.name + " (" + list.list_name + ")";
             } else if(times.tracker && times.tracker.tracking){
@@ -662,10 +658,10 @@
                   var date = {date: ulDate, month: month, year: year}
               }
 
-              var data = {view: 'modal', date: date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope}
+              var data = {view: 'modal', date: date, newCal: scope.newtodoLists, dateTracker: scope.date, listForCal: scope.listForCal, scope: scope, editView: false}
+
               data.checkLists = scope.checkLists
               data.newMaster = scope.$parent.newMasterListAddition
-
               ModalService.showModal({
                 templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
                 controller: "newCalItemModalController",

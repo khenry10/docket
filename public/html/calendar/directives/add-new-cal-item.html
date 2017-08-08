@@ -1,33 +1,45 @@
 <form style="color: black">
   <ul class="create-new-panel">
-    <li style="margin-left: 0%">
+    <li style="margin: 10px 0px 0px 0px">
       <md-input-container>
         <input type="text"
                class="create-new-text-input"
-               style="border-bottom-color: white; color: white"
-               data-ng-model="name"
+               style="border-bottom-color: white; color: white; margin: 0px"
+               data-ng-model="event.list_name"
+               ng-change="updateChangeLog('list_name', false)"
                placeholder="Name"/>
       </md-input-container>
+
+      <span ng-if='!data.view && $parent.first_day '>
+        K <md-datepicker date-input type="date" ng-model="$parent.first_day"
+                          ng-change="updateChangeLog($parent.first_day, true)"
+                          md-placeholder=" {{ $parent.first_day? $parent.first_day : 'Date' }}"/></md-datepicker>
+      </span>
+
+      <span style="margin-left: -20px;" ng-if='!data.view && !$parent.first_day '>
+        P <md-datepicker date-input type="date" ng-model="event.first_day" ng-change="updateChangeLog('first_day', true)" /></md-datepicker>
+      </span>
+
     </li>
     <li style="color: white; outline: 1px solid white; ">
       <h5>Monthly Item or Regular Routine</h5>
-      <md-radio-group ng-model="routine"
+      <md-radio-group ng-model="event.routine"
+        ng-change="updateChangeLog('routine', false)"
         style="display: flex; justify-content: space-around; border-color: white">
         <md-radio-button style="padding-left: 2%;border-color: white" value="monthly"> Monthly </md-radio-button>
         <md-radio-button value="weekly-routine">Weekly Routine</md-radio-button>
       </md-radio-group>
     </li>
-    <li style="margin-left: -20px;" ng-if='!data.view'>
-      <md-datepicker date-input type="date" ng-model="$parent.firstDay" md-placeholder="Date"/></md-datepicker>
-    </li>
+
+
     <li style="display: inline-flex; justify-content: space-between; ">
       <!-- start time -->
-      <md-input-container ng-hide="data.view && data.date.startTime">
-        <label ng-if="!startTime"> Start Time </label>
-        <md-select  ng-model="startTime"
+      <md-input-container ng-hide="data.view && data.date.start_time">
+        <label> Start Time </label>
+        <md-select  ng-model="event.start_time"
                     aria-label="select reocurring"
                     style="color:white"
-                    ng-change="changeEndTimeArray()">
+                    ng-change="changeEndTimeArray(); updateChangeLog('start_time', true)">
           <md-option ng-value="time"
                      ng-repeat="time in times"> {{ time }} </md-option>
         </md-select>
@@ -36,9 +48,10 @@
 
       <!-- end time -->
       <md-input-container >
-        <label ng-if="!endTime"> End Time </label>
+        <label > End Time </label>
 
-        <md-select ng-model="endTime"
+        <md-select ng-model="event.end_time"
+                   ng-change="updateChangeLog('end_time', true)"
                    aria-label="select reocurring">
           <md-option ng-value="time" ng-repeat="time in newTimes"> {{ time }}</md-option>
         </md-select>
@@ -54,8 +67,9 @@
 
       <md-input-container >
         <label>  Entry Type </label>
-        <md-select  ng-model="listType"
+        <md-select  ng-model="event.list_type"
                     aria-label="navigate"
+                    ng-change="updateChangeLog('list_type', false)"
                     style="color:white">
           <md-option value="todo">Todo List </md-option>
           <md-option value="shopping">Shopping List </md-option>
@@ -64,13 +78,24 @@
         </md-select>
       </md-input-container>
 
+      <md-input-container style="margin: 0px">
+        <label >Category</label>
+
+        <md-select ng-model="event.category"
+                   ng-change="updateChangeLog('category', false)"
+                   aria-label="select reocurring" >
+          <md-option ng-value="category" ng-repeat="category in categories"> {{ category }}</option>
+        </md-select>
+      </md-input-container>
+
     </li>
 
-    <li ng-if="listType === 'shopping' ">
+    <li ng-if="event.list_type === 'shopping' ">
       <md-input-container style="margin: 0px">
         <input style="border-bottom-color: white; color: white"
                input="number"
-               ng-model="newEntry.budget" placeholder="Budget"/>
+               ng-change="updateChangeLog('event.budget', false)"
+               ng-model="event.budget" placeholder="Budget"/>
       </md-input-container>
     </li>
 
@@ -78,19 +103,19 @@
       <md-input-container style="margin: 0px; width: 100%">
         <input style="border-bottom-color: white; color: white"
                input="text"
-               ng-model="newEntry.tracker" placeholder="What do you want to track?"/>
+               ng-model="event.tracker" placeholder="What do you want to track?"/>
       </md-input-container>
     </li>
 
-    <li ng-show="name">
+    <li style="display: flex; margin-left: 20%">
       <md-input-container style="">
-        <label ng-if="!repeatInterval">Repeat</label>
-        <md-select ng-model="repeatInterval" aria-label="select reocurring">
+        <label>Repeat</label>
+        <md-select ng-model="event.list_reocurring" aria-label="select reocurring" ng-change="updateChangeLog('list_reocurring', true)">
           <md-option ng-value="reoccur" ng-repeat="reoccur in reoccurs"> {{ reoccur }}</option>
         </md-select>
       </md-input-container>
 
-      <div ng-if="repeatInterval === 'Weekly' ">
+      <div ng-if="event.list_reocurring === 'Weekly' ">
         <table style="margin-left: -5px">
           <tr>
             <th style="padding: 4px; color: white"> Sun </th>
@@ -102,30 +127,57 @@
             <th style="padding: 4px; color: white"> Sat </th>
           </tr>
           <tr>
-            <td><input type="checkbox" ng-model="daysInRepeatWeekly.sun" label="Sunday"/></td>
-            <td><input type="checkbox" ng-model="daysInRepeatWeekly.mon" label="Monday"/></td>
-            <td><input type="checkbox" ng-model="daysInRepeatWeekly.tues" label="Tuesday"/></td>
-            <td><input type="checkbox" ng-model="daysInRepeatWeekly.wed" label="Wednesday"/></td>
-            <td><input type="checkbox" ng-model="daysInRepeatWeekly.thurs" label="Thursday"/></td>
-            <td><input type="checkbox" ng-model="daysInRepeatWeekly.fri" label="Friday"/></td>
-            <td><input type="checkbox" ng-model="daysInRepeatWeekly.sat" label="Saturday"/></td>
+            <td>
+              <input type="checkbox" ng-model="event.repeatDays.sun" label="Sunday"
+                     ng-change="updateChangeLog('repeatDays', true)" />
+            </td>
+            <td>
+              <input type="checkbox" ng-model="event.repeatDays.mon" label="Monday"
+                     ng-change="updateChangeLog('repeatDays', true)" />
+            </td>
+            <td>
+            <input type="checkbox" ng-model="event.repeatDays.tues" label="Tuesday"
+                   ng-change="updateChangeLog('repeatDays', true)" />
+            </td>
+            <td>
+            <input type="checkbox" ng-model="event.repeatDays.wed" label="Wednesday"
+                   ng-change="updateChangeLog('repeatDays', true)"/>
+            </td>
+            <td>
+              <input type="checkbox" ng-model="event.repeatDays.thurs" label="Thursday"
+                     ng-change="updateChangeLog('repeatDays', true)" />
+            </td>
+            <td>
+              <input type="checkbox" ng-model="event.repeatDays.fri" label="Friday"
+                     ng-change="updateChangeLog('repeatDays', true)" />
+            </td>
+            <td>
+              <input type="checkbox" ng-model="event.repeatDays.sat" label="Saturday"
+                     ng-change="updateChangeLog('repeatDays', true)"/>
+            </td>
           </tr>
         </table>
       </div>
 
-      <md-radio-group ng-model="reoccurEnds"
-        ng-show=" repeatInterval.length && repeatInterval != 'None' "
-        style="display: flex; justify-content: space-between; margin-top: 4%; color: white; border-color: white">
+
+    </li>
+
+    <li style="color: white; width: 50%; margin-left: 20%" ng-show=" event.list_reocurring.length && event.list_reocurring != 'None' ">
+      <label>Recur End</label>
+      <md-radio-group ng-model="event.list_recur_end"
+        ng-change="updateChangeLog('list_recur_end', true)"
+        style="display: flex; justify-content: space-between; margin-top: 4%; border-color: white">
           <md-radio-button value="Never">Never</md-radio-button>
           <md-radio-button value="SelectDate">Select Date</md-radio-button>
       </md-radio-group>
 
-      <md-datepicker ng-show="reoccurEnds === 'SelectDate' " md-placeholder="Choose End Date"
-
-        ng-model="reoccurEndsDate">
+      <md-datepicker ng-show="event.list_recur_end === 'SelectDate' " md-placeholder="Choose End Date"
+                     ng-change="updateChangeLog('reoccurEndsDate', true)"
+                     ng-model="event.reoccurEndsDate">
       </md-datepicker>
     </li>
-    <li ng-show="name">
+
+    <!-- <li ng-show="name">
       <md-input-container style="margin: 0px">
         <label ng-if="!repeatInterval">Category</label>
 
@@ -133,9 +185,12 @@
           <md-option ng-value="category" ng-repeat="category in categories"> {{ category }}</option>
         </md-select>
       </md-input-container>
-    </li>
+    </li> -->
     <li>
-      <md-button class="md-raised" ng-click="create()" > Add </md-button>
+      <md-button class="md-raised" ng-click="create()" ng-if="!data.editView" > Add </md-button>
+      <!-- <md-button class="md-raised" ng-click="update('future')" ng-if="data.editView" > Update Future Events Only </md-button> -->
+      <md-button class="md-raised" ng-click="update('all')" ng-if="data.editView" > Update All Events </md-button>
     </li>
+
   </ul>
 </form>
