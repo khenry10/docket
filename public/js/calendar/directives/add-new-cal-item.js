@@ -22,8 +22,6 @@
       },
       link: function($scope){
         console.log("this is addNewCalItem directive")
-        console.log($scope.data)
-        console.log($scope.saved)
 
         $scope.event = {};
         var createListOfLists = [];
@@ -79,8 +77,6 @@
 
         var repeatAdditionalDays = function(count, incrementor, lastDay, year, month){
           while(count+incrementor <= lastDay){
-            console.log("count = " + count)
-            console.log("incrementor = " + incrementor)
             count = count + incrementor
             var list = year+"-"+month+"-"+count;
             createListOfLists.push( new $scope.dateList(list)  )
@@ -88,17 +84,13 @@
         };
 
         if($scope.data && $scope.data.editView){
-          console.log($scope.data)
           $scope.modalTitle = "Edit";
           $scope.event = $scope.data.todo;
-          console.log($scope.event)
           var calendarEntry = $scope.data.todo;
-          console.log(calendarEntry.first_day)
           $scope.event.first_day = DateService.fullDateWithTimeSplit(calendarEntry.first_day);
 
           if(calendarEntry.list_recur_end && calendarEntry.list_recur_end != 'Never'){
             $scope.event.reoccurEnds = 'SelectDate';
-            console.log(calendarEntry.list_recur_end)
             $scope.event.reoccurEndsDate = DateService.fullDateWithTimeSplit(calendarEntry.list_recur_end)
           } else {
             $scope.event.reoccurEnds = 'Never';
@@ -118,7 +110,6 @@
         };
 
         $scope.update = function(updateMethod){
-          console.log(updateMethod)
           if($scope.needToModifyDateList){
               $scope.create('update')
           } else {
@@ -131,7 +122,7 @@
         };
 
         $scope.create = function(createNewOrUpdate){
-          console.log("create")
+          console.log("create function")
 
           if($scope.data  && createNewOrUpdate != 'update'){
             $scope.event.first_day = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
@@ -156,7 +147,6 @@
           var count = date.getDate();
           var lastDay = numberOfDaysInMonth
 
-          console.log($scope.event.duration)
           // created a constructor here because I was originally overwriting the same object and it was only saving 1
           $scope.dateList = function(newDate){
             this.date = newDate,
@@ -169,7 +159,6 @@
           }
 
             if($scope.event.list_name && $scope.event.first_day || $scope.view === 'modal'){
-                console.log("is you getting in here?")
 
                 // create only logic
                 if(createNewOrUpdate != 'update'){
@@ -216,7 +205,6 @@
                 }
 
                 if($scope.event.list_reocurring === 'Weekly'){
-                  console.log("WEEKLY!!!!!!!!!!!!!!!!!")
                   var dayOfFirstDay = $scope.event.first_day.getDay();
                   var index = 0;
                   var additionalDays = [];

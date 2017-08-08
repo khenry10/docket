@@ -31,14 +31,11 @@
                 if(todoForLeftRail.todo.list_type === $scope.listType && todoForLeftRail.modifiedDateList.length){
                   if($scope.listType === 'appointment'){
                     todoForLeftRail.modifiedDateList.forEach(function(dateList){
-                      console.log(dateList)
                       var niceDate = dateList.date.split("-")
                       var month = parseInt(niceDate[1]) - 1
                       var fullDate = new Date(niceDate[0], month, niceDate[2])
                       var day = DateService.daysOfWeek[fullDate.getDay()]
                       var monthName = DateService.monthNames[parseInt(niceDate[1])]
-                      console.log(fullDate)
-                      console.log(day + " " + monthName + " " + niceDate[2] + " at " + dateList.start_time)
                       $scope.listss.push({
                         name: dateList.name,
                         date: day + " " + monthName + " " + niceDate[2] + " at " + dateList.start_time,
@@ -100,14 +97,9 @@
         }
 
         $scope.edit = function(list, event){
-          console.log(list)
-          console.log(event)
-
           var data = list;
           data.date = new Date()
           data.editView = true;
-          // data.dateList = times;
-          // console.log(times)
 
           ModalService.showModal({
             templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
@@ -119,7 +111,6 @@
             //it's a bootstrap element, use 'modal' to show it
             modal.element.modal();
             modal.close.then(function(result) {
-              console.log("CLOSEEEEEEEE")
               close()
               // $('#add-new-modal').modal('hide');
               $('body').removeClass('modal-open');
@@ -131,7 +122,6 @@
 
         var originatorEv;
         $scope.openMenu = function($mdOpenMenu, ev) {
-          console.log($mdOpenMenu)
           originatorEv = ev;
           $mdOpenMenu(ev);
         };

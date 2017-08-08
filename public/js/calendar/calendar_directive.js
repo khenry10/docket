@@ -31,7 +31,6 @@
             monthSelector(scope.date.monthCount)
             if(todosForCal.length){
               todosForCal.forEach(function(todoForCal){
-                console.log(todoForCal)
                 if(todoForCal.todo && todoForCal.todo.lists || todoForCal.modifiedDateList ){
                   todoForCal.modifiedDateList.forEach(function(dateList){
                     var name = dateList.name? dateList.name : undefined
@@ -55,7 +54,6 @@
 
       scope.calendarItemModal = function (list, date, times){
         console.log("scope.calendarItemModal envoked")
-        console.log(times)
         ModalService.showModal({
           templateUrl: "/assets/html/todo/cal-entry-modal.html",
           controller: "modalController",
@@ -88,7 +86,6 @@
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
           // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
           var bigTdContainer = document.getElementsByClassName(time)
-          // console.log(bigTdContainer)
           var pForBigTd = document.createElement('p')
           pForBigTd.setAttribute("draggable", true)
 
@@ -437,7 +434,6 @@
 
         var appendToCalendar = function(listDay, date, list, realListDate, ul, times){
           var exists = document.getElementById(list._id+"&"+date+"&"+times.start_time)
-          console.log(exists)
           if(   list.routine === 'monthly' && scope.newView === 'month'
              || list.routine === 'weekly-routine' && scope.newView === 'week'){
                var go = true;
@@ -529,8 +525,6 @@
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
               var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
-              // var elementsOriginalId = scope.dragSrcEl[0].element.id
-              // console.log(elementsOriginalId)
               var elementsOldDate = scope.dragSrcEl[0].date;
 
               scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
@@ -587,7 +581,6 @@
             li.setAttribute("class",category)
             li.setAttribute("id", list._id+"&"+date+"&"+times.start_time)
             var url = document.createElement("a")
-            console.log(times)
             if(times.name && times.name !== list.list_name){
               url.innerHTML = times.name + " (" + list.list_name + ")";
             } else if(times.tracker && times.tracker.tracking){
@@ -669,7 +662,6 @@
 
               data.checkLists = scope.checkLists
               data.newMaster = scope.$parent.newMasterListAddition
-              console.log(data)
               ModalService.showModal({
                 templateUrl: "/assets/html/calendar/modals/add-new-modal.html",
                 controller: "newCalItemModalController",

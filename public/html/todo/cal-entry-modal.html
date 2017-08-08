@@ -3,7 +3,6 @@
     <div class="modal-content" >
       <div class="modal-header" style="padding: 10px">
         <button type="button" class="close" ng-click="close(false)" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4> modalController </h4>
         <h3 class="modal-title" ng-click="edit()" ng-if="!showEdit"> {{ editalbeTitle }} </h3>
         <h3 class="modal-title" ng-if="showEdit">
           <i class="fa fa-check"
@@ -21,7 +20,7 @@
                       all-tasks="allTasks" parse-all-tasks="parseAllTasks"></dd-checklist>
       </div>
       <div class="modal-footer" style="padding: 0;">
-        <md-button class="md-raised" id="list-delete-button" ng-click="editList()">Edit</md-button>
+        <!-- <md-button class="md-raised" id="list-delete-button" ng-click="editList()">Edit</md-button> -->
         <md-button class="md-raised md-warn" id="list-delete-button" ng-click="deleteList()">Delete</md-button>
 
       </div>

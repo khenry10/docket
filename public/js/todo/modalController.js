@@ -20,7 +20,6 @@ function modalController(Todo, $scope, data, times, date, allTasks, parseAllTask
   $scope.list_type = data.list_type;
   $scope.listType = $scope.list_type;
   $scope.data = data;
-  console.log($scope.data)
   $scope.date = date;
   $scope.parseAllTasks = parseAllTasks;
   var splitDate = date.split("-");
