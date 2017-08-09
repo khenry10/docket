@@ -11,13 +11,13 @@
       </md-input-container>
 
       <span ng-if='!data.view && $parent.first_day '>
-        K <md-datepicker date-input type="date" ng-model="$parent.first_day"
+        <md-datepicker date-input type="date" ng-model="$parent.first_day"
                           ng-change="updateChangeLog($parent.first_day, true)"
                           md-placeholder=" {{ $parent.first_day? $parent.first_day : 'Date' }}"/></md-datepicker>
       </span>
 
       <span style="margin-left: -20px;" ng-if='!data.view && !$parent.first_day '>
-        P <md-datepicker date-input type="date" ng-model="event.first_day" ng-change="updateChangeLog('first_day', true)" /></md-datepicker>
+        <md-datepicker date-input type="date" ng-model="event.first_day" ng-change="updateChangeLog('first_day', true)" /></md-datepicker>
       </span>
 
     </li>

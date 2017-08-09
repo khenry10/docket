@@ -67,7 +67,7 @@ a:hover {
 }
 
 .events-panel {
-  background-color: rgb(48, 49, 56);
+  background-color: #535561;
   margin-top: 55px;
   color: white;
   position: fixed;
@@ -237,31 +237,48 @@ md-radio-button .md-off, md-radio-button .md-on {
 }
 
 li.PersonalProject {
-  background-color: #27f4cc
+  /*background-color: #27f4cc;*/
+  background-color: rgba(39, 244, 204, 0.40);
+  border: 2px solid #27f4cc;
+  margin-top: 2px;
 }
 
 li.Work {
-  background-color: #f4274f;
+  /*background-color: #f4274f;*/
+  background-color: rgba(244, 39, 79, 0.40);
+  border: 2px solid #f4274f;
+  margin-top: 2px;
 }
 
 li.Health {
-  background-color: #27b6f4;
+  background-color: rgba(39, 182, 244, 0.4);
+  border: 2px solid #27b6f4;
+  margin-top: 2px;
 }
 
 li.Finance {
-  background-color: #4FF427;
+  background-color: rgba(79, 244, 39, 0.4);
+  border: 2px solid #4FF427;
+  margin-top: 2px;
 }
 
 li.Household {
-  background-color: #cd27f4;
+  background-color: rgba(205, 39, 244, 0.4);
+  border: 2px solid #cd27f4;
+  margin-top: 2px;
 }
 
 li.Other {
-  background-color: #909487;
+  background-color: rgba(144, 148, 135, 0.4);
+  border: 2px solid #909487;
+  margin-top: 2px;
 }
 
 li.Social {
-  background-color: rgba(255,64,129,0.87);
+  background-color: rgba(244, 102, 39, 0.4);
+  border: 2px solid #f46627;
+  /*border: 2px solid rgba(255,64,129,0.87);*/
+  margin-top: 2px;
 }
 
 #PersonalProject {
@@ -345,12 +362,11 @@ div#time.endTimeTd {
   height: 55px;
   position: fixed;
   width: 100%;
-  /*background-color: white;*/
   z-index: 1000;
-  outline: 1px solid #4264fb;
+  outline: 4px solid #4264fb;
   display: flex;
   justify-content: space-between;
-  background-color: #4264fb;
+  background-color: #696c78;
   color: rgba(66, 100, 251, 0.85)
 }
 
@@ -424,7 +440,6 @@ li {
   width: 55%;
   /*margin: 1% 0% 1% 0%;*/
   padding: 1%;
-  background-color: rgba(66, 100, 251, 0.85);
 }
 
 .calendar-navigation button {
@@ -633,12 +648,12 @@ a {
 }
 
 .panel-group .panel {
-  background-color: rgb(48, 49, 56);
+  background-color: #535561;
   border: none;
 }
 
 .panel-group .panel .panel-heading {
-  background-color: rgb(69, 71, 79);
+  background-color: #696c78;
   color: white;
   margin-bottom: 10px;
   box-shadow: 1px 1px 1px grey;
@@ -665,7 +680,7 @@ a {
 }
 
 .create-new-panel {
-  background-color: rgb(189,189,189);
+  background-color: #91949f;
   margin-top: -7.5px;
   padding: 10px;
   border-radius: 2px;
@@ -768,19 +783,18 @@ input[type=text].new-todo-input {
   .header {
     position: fixed;
     width: 100%;
-    /*background-color: white;*/
     height: 75px;
     z-index: 1000;
     outline: 1px solid #4264fb;
     display: flex;
     justify-content: space-between;
-    background-color: #4264fb;
+    background-color: #696c78;
     color: rgba(66, 100, 251, 0.85)
   }
-  .events-panel {
+  /*.events-panel {
     position: relative;
     width: 100%;
-    background-color: rgb(48, 49, 56);
+    background-color: #535561;
     margin-top: 55px;
     color: white;
     float: left;
@@ -790,7 +804,7 @@ input[type=text].new-todo-input {
     box-shadow: 2.5px 0px 2.5px #888888;
     overflow-x: scroll;
     height: 700px;
-  }
+  }*/
   .calendar {
     margin-top: 65px;
     width: 100%;

@@ -216,7 +216,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     } else {
       if(fullListDate.date >= firstWeeklyDate && fullListDate.date <= lastWeeklyDate){
         if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
-          console.log("keith")
           addActivityTime(list.list_name, dateList.duration);
           $scope.parseAllTasks(dateList, list)
           $scope.exists = true;
