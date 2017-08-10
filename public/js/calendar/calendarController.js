@@ -192,7 +192,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     var lastWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-1];
 
     if($scope.changeDate.twoMonthsWeekly){
-      if(fullListDate.month == $scope.changeDate.twoMonthsWeeklyDate.newMonthDate.month){
+      if(fullListDate.monthNumber == $scope.changeDate.twoMonthsWeeklyDate.newMonthDate.month){
         $scope.changeDate.twoMonthsWeeklyDate.newMonthDate.date.forEach(function(newMD){
           if(newMD == fullListDate.date){
             addActivityTime(list.list_name, dateList.duration)
@@ -202,7 +202,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
           }
         })
-      } else if(fullListDate.month == $scope.changeDate.twoMonthsWeeklyDate.oldMonthDate.month){
+      } else if(fullListDate.monthNumber == $scope.changeDate.twoMonthsWeeklyDate.oldMonthDate.month){
         $scope.changeDate.twoMonthsWeeklyDate.oldMonthDate.date.forEach(function(oldMD){
           if(oldMD == fullListDate.date){
             addActivityTime(list.list_name, dateList.duration)
@@ -215,7 +215,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       }
     } else {
       if(fullListDate.date >= firstWeeklyDate && fullListDate.date <= lastWeeklyDate){
-        if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
+        if(fullListDate.monthNumber == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
           addActivityTime(list.list_name, dateList.duration);
           $scope.parseAllTasks(dateList, list)
           $scope.exists = true;
@@ -286,6 +286,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
   var called = 0;
   $scope.verifyCloneList = function(addNew){
+    console.log(addNew)
     called = called +1;
     $scope.exists = false;
     if(addNew){
@@ -294,8 +295,16 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     }
 
     $scope.allTodoLists.forEach(function(list, index){
+      console.log(list.list_name)
       var firstListDate = DateService.stringDateSplit(list.first_day)
-      if($scope.changeDate.monthCount >= firstListDate.month && $scope.changeDate.year >= firstListDate.year){
+      console.log(firstListDate)
+      console.log($scope.changeDate.monthCount >= firstListDate.monthNumber)
+      console.log($scope.changeDate.monthCount)
+      console.log(firstListDate.monthNumber)
+      console.log($scope.changeDate.year >= firstListDate.year)
+      console.log("firstListDate.year = " + firstListDate.year)
+      if($scope.changeDate.monthCount >= firstListDate.monthNumber && $scope.changeDate.year >= firstListDate.year){
+        console.log(list.list_name)
         var lastDateList = list.lists[list.lists.length-1];
         var dateListsInCurrentMonth = [];
         $scope.exists = false;
@@ -304,15 +313,16 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
           var fullListDate = DateService.stringDateSplit(list.lists[l].date);
 
           if($scope.viewType === 'week'){
+            console.log(list)
             var weeklyDate = evaluateDateListsForWeekCal(fullListDate, list.lists[l], list)
             if(weeklyDate){
               dateListsInCurrentMonth.push(weeklyDate)
             }
-            if(fullListDate.year == $scope.changeDate.year && fullListDate.month > $scope.changeDate.monthCount || fullListDate.month > $scope.changeDate.monthCount+1){
+            if(fullListDate.year == $scope.changeDate.year && fullListDate.monthNumber > $scope.changeDate.monthCount || fullListDate.monthNumber > $scope.changeDate.monthCount+1){
               var l = list.lists.length;
             }
           } else if($scope.viewType === 'month'){
-            if(fullListDate.month == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
+            if(fullListDate.monthNumber == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
               addActivityTime(list.list_name, list.lists[l].duration)
               dateListsInCurrentMonth.push(list.lists[l])
               if(list.lists[l].tasks.length && list.list_type == 'todo'){
@@ -321,7 +331,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
               $scope.exists = true;
 
             }
-            if(fullListDate.year == $scope.changeDate.year && fullListDate.month > $scope.changeDate.monthCount){
+            if(fullListDate.year == $scope.changeDate.year && fullListDate.monthNumber > $scope.changeDate.monthCount){
               var l = list.lists.length;
             };
           } // end of month else if

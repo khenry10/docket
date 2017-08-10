@@ -151,19 +151,26 @@
 
           // weekly calendar items color scheme
           if(list.category === "Health"){
-            pForBigTd.style.backgroundColor = "#27b6f4"
+            // pForBigTd.style.backgroundColor = "#27b6f4"
+            pForBigTd.style.backgroundColor = "rgba(39, 182, 244, 0.6)"
           } else if (list.category === "Personal Project"){
-            pForBigTd.style.backgroundColor = "#27f4cc"
+            // pForBigTd.style.backgroundColor = "#27f4cc"
+            pForBigTd.style.backgroundColor = "rgba(39, 244, 204, 0.60)"
           } else if(list.category === "Work"){
-            pForBigTd.style.backgroundColor = "#f4274f"
+            // pForBigTd.style.backgroundColor = "#f4274f"
+            pForBigTd.style.backgroundColor = "rgba(244, 39, 79, 0.60)"
           } else if(list.category === "Finance"){
-            pForBigTd.style.backgroundColor = "#4FF427"
+            // pForBigTd.style.backgroundColor = "#4FF427"
+            pForBigTd.style.backgroundColor = "rgba(79, 244, 39, 0.6)"
           }  else if(list.category === "Social" ){
-            pForBigTd.style.backgroundColor = "rgba(255,64,129,0.87)"
+            // pForBigTd.style.backgroundColor = "rgba(255,64,129,0.87)"
+            pForBigTd.style.backgroundColor = "rgba(244, 102, 39, 0.6)"
           } else if(list.category === "Household" ){
-            pForBigTd.style.backgroundColor = "#cd27f4"
+            // pForBigTd.style.backgroundColor = "#cd27f4"
+            pForBigTd.style.backgroundColor = "rgba(205, 39, 244, 0.6)"
           } else {
-            pForBigTd.style.backgroundColor = "#909487"
+            // pForBigTd.style.backgroundColor = "#909487"
+            pForBigTd.style.backgroundColor = "rgba(144, 148, 135, 0.6)"
           }
 
           if(bigTdContainer.childNodes.length){
@@ -323,6 +330,7 @@
             timeP.style.backgroundColor = pForBigTd.style.backgroundColor
             timeP.style.margin = "0px";
             timeP.style.fontSize = "10px";
+            timeP.style.height = "10px";
             bigTdContainer.style.flexDirection = "column";
           }
 

@@ -43,10 +43,17 @@
 
         $scope.changeEndTimeArray = function(){
           console.log("changeEndTimeArray envoked")
+          console.log($scope.data)
+          console.log($scope.event.start_time)
           if($scope.event.start_time){
+            console.log("1")
             var start = $scope.times.indexOf($scope.event.start_time)
           } else {
-            var start = $scope.times.indexOf($scope.data.date.start_time);
+            console.log("2")
+            console.log($scope.data.date.start_time)
+            console.log($scope.data.date)
+            $scope.event.start_time = $scope.data.date.startTime
+            var start = $scope.times.indexOf($scope.data.date.startTime);
           }
           $scope.event.end_time = $scope.times[start+1]
           $scope.newTimes = []
@@ -126,6 +133,7 @@
 
           if($scope.data  && createNewOrUpdate != 'update'){
             $scope.event.first_day = new Date($scope.data.date.year, $scope.data.date.month-1, $scope.data.date.date)
+            console.log("$scope.event.first_day = " + $scope.event.first_day)
           }
 
           if($scope.event.first_day && $scope.event.end_time){
