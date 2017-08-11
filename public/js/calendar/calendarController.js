@@ -46,6 +46,23 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       })
   }
 
+  $scope.jumpToDate = function(){
+    console.log($scope.jumpDate)
+    $scope.changeDate.monthCount = $scope.jumpDate.getMonth()+1
+    $scope.changeDate.year = $scope.jumpDate.getFullYear()
+    console.log($scope.changeDate)
+    $scope.listForCal.push({origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
+    todo: undefined,
+    modifiedDateList: []
+  })
+
+    // listForCal.push(
+    //   {origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
+    //   todo: list,
+    //   modifiedDateList: []
+    // })
+  }
+
   $scope.navigate = function(){
     if($scope.explore === 'tasks-grid'){
       window.location.href = "/list";

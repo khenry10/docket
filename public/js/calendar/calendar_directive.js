@@ -81,7 +81,7 @@
         var monthName = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         var date = new Date()
-        var year = date.getFullYear()
+        var year = scope.date.year
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
           // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
@@ -953,6 +953,7 @@
         };
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
+          console.log("year = " + year)
           if(screen.width < 1000){
             document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
           } else {
@@ -1033,8 +1034,8 @@
         var monthHistory = []
 
         var monthSelector = function(month){
-          var firstDayOfMonth = new Date(year, month-1, 1).getDay()
-          var numberOfDays = new Date(year, month, 0).getDate()
+          var firstDayOfMonth = new Date(scope.date.year, month-1, 1).getDay()
+          var numberOfDays = new Date(scope.date.year, month, 0).getDate()
           //since this function  creates a new calendar with a different month, we need to delete the original calendar HTML table first
           var calendar = document.getElementById("calendar-table")
             if(calendar){
@@ -1044,18 +1045,18 @@
             if(month === 12 && monthHistory.pop() === 1){
               // this condition builds the calendar with the month being december and decrements by 1 year
               month = 12
-              year--
+              scope.date.year--
               monthHistory.push(month)
               // need to determine the first day of the month so we know which day of the week is the first day of the month
-              makeCalendar(firstDayOfMonth, numberOfDays, month, year)
+              makeCalendar(firstDayOfMonth, numberOfDays, month, scope.date.year)
             } else if (month === 1 && monthHistory.pop() === 12) {
                 month = 1
-                year++
+                scope.date.year++
                 monthHistory.push(month)
-                makeCalendar(firstDayOfMonth, numberOfDays, month, year)
+                makeCalendar(firstDayOfMonth, numberOfDays, month, scope.date.year)
             } else {
               monthHistory.push(month)
-              makeCalendar(firstDayOfMonth, numberOfDays, month, year)
+              makeCalendar(firstDayOfMonth, numberOfDays, month, scope.date.year)
             }
         }; //end of monthSelector
       }
