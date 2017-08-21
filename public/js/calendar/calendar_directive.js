@@ -81,7 +81,7 @@
         var monthName = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         var daysOfWeek = ["","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         var date = new Date()
-        var year = date.getFullYear()
+        var year = scope.date.year
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
           // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
@@ -151,19 +151,26 @@
 
           // weekly calendar items color scheme
           if(list.category === "Health"){
-            pForBigTd.style.backgroundColor = "#27b6f4"
+            // pForBigTd.style.backgroundColor = "#27b6f4"
+            pForBigTd.style.backgroundColor = "rgba(39, 182, 244, 0.6)"
           } else if (list.category === "Personal Project"){
-            pForBigTd.style.backgroundColor = "#27f4cc"
+            // pForBigTd.style.backgroundColor = "#27f4cc"
+            pForBigTd.style.backgroundColor = "rgba(39, 244, 204, 0.60)"
           } else if(list.category === "Work"){
-            pForBigTd.style.backgroundColor = "#f4274f"
+            // pForBigTd.style.backgroundColor = "#f4274f"
+            pForBigTd.style.backgroundColor = "rgba(244, 39, 79, 0.60)"
           } else if(list.category === "Finance"){
-            pForBigTd.style.backgroundColor = "#4FF427"
+            // pForBigTd.style.backgroundColor = "#4FF427"
+            pForBigTd.style.backgroundColor = "rgba(79, 244, 39, 0.6)"
           }  else if(list.category === "Social" ){
-            pForBigTd.style.backgroundColor = "rgba(255,64,129,0.87)"
+            // pForBigTd.style.backgroundColor = "rgba(255,64,129,0.87)"
+            pForBigTd.style.backgroundColor = "rgba(244, 102, 39, 0.6)"
           } else if(list.category === "Household" ){
-            pForBigTd.style.backgroundColor = "#cd27f4"
+            // pForBigTd.style.backgroundColor = "#cd27f4"
+            pForBigTd.style.backgroundColor = "rgba(205, 39, 244, 0.6)"
           } else {
-            pForBigTd.style.backgroundColor = "#909487"
+            // pForBigTd.style.backgroundColor = "#909487"
+            pForBigTd.style.backgroundColor = "rgba(144, 148, 135, 0.6)"
           }
 
           if(bigTdContainer.childNodes.length){
@@ -323,6 +330,7 @@
             timeP.style.backgroundColor = pForBigTd.style.backgroundColor
             timeP.style.margin = "0px";
             timeP.style.fontSize = "10px";
+            timeP.style.height = "10px";
             bigTdContainer.style.flexDirection = "column";
           }
 
@@ -945,6 +953,7 @@
         };
 
         var makeCalendar = function(firstDayOfMonth, numberOfDays, month, year){
+          console.log("year = " + year)
           if(screen.width < 1000){
             document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
           } else {
@@ -1025,8 +1034,8 @@
         var monthHistory = []
 
         var monthSelector = function(month){
-          var firstDayOfMonth = new Date(year, month-1, 1).getDay()
-          var numberOfDays = new Date(year, month, 0).getDate()
+          var firstDayOfMonth = new Date(scope.date.year, month-1, 1).getDay()
+          var numberOfDays = new Date(scope.date.year, month, 0).getDate()
           //since this function  creates a new calendar with a different month, we need to delete the original calendar HTML table first
           var calendar = document.getElementById("calendar-table")
             if(calendar){
@@ -1036,18 +1045,18 @@
             if(month === 12 && monthHistory.pop() === 1){
               // this condition builds the calendar with the month being december and decrements by 1 year
               month = 12
-              year--
+              scope.date.year--
               monthHistory.push(month)
               // need to determine the first day of the month so we know which day of the week is the first day of the month
-              makeCalendar(firstDayOfMonth, numberOfDays, month, year)
+              makeCalendar(firstDayOfMonth, numberOfDays, month, scope.date.year)
             } else if (month === 1 && monthHistory.pop() === 12) {
                 month = 1
-                year++
+                scope.date.year++
                 monthHistory.push(month)
-                makeCalendar(firstDayOfMonth, numberOfDays, month, year)
+                makeCalendar(firstDayOfMonth, numberOfDays, month, scope.date.year)
             } else {
               monthHistory.push(month)
-              makeCalendar(firstDayOfMonth, numberOfDays, month, year)
+              makeCalendar(firstDayOfMonth, numberOfDays, month, scope.date.year)
             }
         }; //end of monthSelector
       }

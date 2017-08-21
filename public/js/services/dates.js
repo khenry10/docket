@@ -132,7 +132,7 @@ angular.module('app').service('DateService', [ function () {
 
       var fullDate = new Date(year, month-1, date)
 
-      return {year: year, month: month, monthName: monthName, date: date, day: fullDate.getDay(), fullDate: fullDate}
+      return {year: year, monthNumber: month, monthName: monthName, date: date, day: fullDate.getDay(), fullDate: fullDate}
     }
   };
 

@@ -1,4 +1,4 @@
-<div class="homepage-container" style="background-color: #F2F3F4;">
+<div class="homepage-container">
   <div class="header" >
     <div class="left-header">
       <h1>Docket</h1>
@@ -63,8 +63,12 @@
 
   <div class="events-panel">
     <div>
+      <md-datepicker ng-model="jumpDate" md-placeholder="Jump to Date"
+                      date-input type="date" md-current-view="year" ng-change="jumpToDate()"
+                      style="margin-bottom: 10px"
+      ></md-datepicker>
       <!-- bootstrap collapsible panel START -->
-      <div class="panel-group">
+      <div class="panel-group" style="margin-top: 10px">
         <div class="panel panel-default" style="border: none">
           <div class="panel-heading">
             <h4 class="panel-title" >
