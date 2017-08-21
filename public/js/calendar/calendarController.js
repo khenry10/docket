@@ -51,11 +51,14 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     $scope.changeDate.monthCount = $scope.jumpDate.getMonth()+1
     $scope.changeDate.year = $scope.jumpDate.getFullYear()
     console.log($scope.changeDate)
-    $scope.listForCal.push({origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
-    todo: undefined,
-    modifiedDateList: []
-  })
 
+  //   $scope.listForCal.push({origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
+  //   todo: undefined,
+  //   modifiedDateList: []
+  // })
+    resetDataForVerifyClone()
+    $scope.showTodayButton = true;
+    $scope.jumpDate = ''
     // listForCal.push(
     //   {origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
     //   todo: list,
@@ -573,9 +576,10 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     twoMonthsWeekly: false,
     currentMonth: function(){
       var today = new Date()
-      this.monthCount = today.getMonth()+1
+      this.monthCount = today.getMonth()+1;
+      this.year = today.getFullYear();
       resetDataForVerifyClone()
-      $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
+      $scope.showTodayButton = this.monthCount != $scope.calendarMonth+1 || this.year != $scope.calendarYear
     },
     thisWeek: function(){
       this.weekCount = 0;
@@ -599,7 +603,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         }
         resetDataForVerifyClone();
       }
-      $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
+      $scope.showTodayButton = this.monthCount != $scope.calendarMonth+1 || this.year != $scope.calendarYear;
+      console.log($scope.changeDate)
     },
     decrement: function(){
       if(!$scope.changeDate.dayCount.length){
@@ -620,7 +625,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         }
         resetDataForVerifyClone();
       }
-      $scope.showTodayButton = $scope.changeDate.monthCount != $scope.calendarMonth+1
+      $scope.showTodayButton = this.monthCount != $scope.calendarMonth+1 || this.year != $scope.calendarYear
+
     }
   };
 

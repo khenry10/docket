@@ -957,7 +957,7 @@
           if(screen.width < 1000){
             document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
           } else {
-            if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
+            if(scope.date.weekCount != 0 || (scope.date.monthCount != scope.date.today.monthNumber || scope.date.year != scope.date.today.year)){
               document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
             } else {
               document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;

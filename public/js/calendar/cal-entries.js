@@ -14,6 +14,12 @@ function calEntries(Todo, $scope, $http, DateService){
 
   $scope.lists = [];
   $scope.todos = [];
+  var today = new Date()
+  var year = today.getFullYear()
+  // $scope.minDate = new Date(year-1, today.getMonth(), today.getDate())
+  // $scope.maxDate = new Date(year+1, today.getMonth(), today.getDate())
+  // console.log($scope.minDate)
+  // console.log($scope.maxDate)
 
   Todo.all.$promise.then(function(todo){
     console.log(todo)

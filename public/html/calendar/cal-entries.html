@@ -11,7 +11,8 @@
         <input type="text"
                ng-model="list.newEntry.name"
                placeholder="Name"/>
-        <md-datepicker date-input type="date" md-current-view="year" ng-model="list.newEntry.date" md-placeholder="Date"/></md-datepicker>
+        <md-datepicker ng-model="list.newEntry.date" md-placeholder="Date"
+                       type="date" md-current-view="year" md-min-date="minDate" md-max-date="minDate"></md-datepicker>
         <md-button ng-click="addNew(list)"> Add </md-button>
     </div>
   </div>
