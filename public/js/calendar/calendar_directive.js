@@ -24,6 +24,10 @@
 
       scope.pastDragSrcEl = [];
       scope.monthlyDraggedItem = [];
+      var monthName = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+      var daysOfWeek = ["","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+      var date = new Date()
+      var year = scope.date.year
 
         scope.$watch('listForCal', function(todosForCal, oldList){
           console.log("scope.$watch")
@@ -78,10 +82,6 @@
         });
       };
 
-        var monthName = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        var daysOfWeek = ["","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-        var date = new Date()
-        var year = scope.date.year
 
         var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
           // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
@@ -662,7 +662,7 @@
                 var entryDate = date[2];
                 var date = {date: entryDate, month: month, year: year, startTime: e.srcElement.className};
               } else {
-                  var ulDate = e.srcElement.id.split("-")[2];
+                  var ulDate = e.srcElement.children[0].children[0].id.split("-")[2];
                   var date = {date: ulDate, month: month, year: year}
               }
 
@@ -843,7 +843,7 @@
 
         var createWeeklyDates = function(){
           scope.todayFullDate = new Date()
-
+          var year = scope.date.year;
           scope.todayFullDate = new Date(
             scope.todayFullDate.getFullYear(),
             scope.todayFullDate.getMonth(),
