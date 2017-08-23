@@ -14,6 +14,8 @@ function calEntries(Todo, $scope, $http, DateService){
 
   $scope.lists = [];
   $scope.todos = [];
+  var today = new Date()
+  var year = today.getFullYear()
 
   Todo.all.$promise.then(function(todo){
     console.log(todo)

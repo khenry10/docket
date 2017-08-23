@@ -36,11 +36,16 @@ function modalController(Todo, $scope, data, times, date, allTasks, parseAllTask
   $scope.edit = function(newTitle){
     $scope.showEdit = !$scope.showEdit;
     if(newTitle){
+      var index = $scope.data.lists.findIndex(function(datelist){
+        return datelist.date === $scope.date
+      })
       $scope.editalbeTitle = newTitle;
-        var newList = $scope.data;
-        newList.list_name = newTitle;
-        Todo.update({list_name: $scope.originalListName}, {todo: newList}, function(res){
-        })
+      var newList = $scope.data;
+      newList.lists[index].name = newTitle;
+      Todo.update({list_name: $scope.originalListName}, {todo: newList}, function(res){
+        $('.modal-backdrop').remove();
+        close(false)
+      })
     }
   }
 

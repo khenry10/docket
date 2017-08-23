@@ -24,33 +24,37 @@
 
       scope.pastDragSrcEl = [];
       scope.monthlyDraggedItem = [];
+      var monthName = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+      var daysOfWeek = ["","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+      var date = new Date()
+      var year = scope.date.year
 
-        scope.$watch('listForCal', function(todosForCal, oldList){
-          console.log("scope.$watch")
-          if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
-            monthSelector(scope.date.monthCount)
-            if(todosForCal.length){
-              todosForCal.forEach(function(todoForCal){
-                if(todoForCal.todo && todoForCal.todo.lists || todoForCal.modifiedDateList ){
-                  todoForCal.modifiedDateList.forEach(function(dateList){
-                    var name = dateList.name? dateList.name : undefined
-                    var date = dateList.date;
-                    var times = {
-                      date: dateList.date,
-                      start_time: dateList.start_time,
-                      end_time: dateList.end_time,
-                      duration: dateList.duration,
-                      name: name,
-                      tasks: dateList.tasks,
-                      tracker: dateList.tracker
-                    }
-                    scope.pickCorrectDateForCal(date, todoForCal.todo, times)
-                  })
-                }
-              })
-            }
+      scope.$watch('listForCal', function(todosForCal, oldList){
+        console.log("scope.$watch")
+        if(todosForCal && todosForCal[0] && todosForCal[0].origin != 'master-task'){
+          monthSelector(scope.date.monthCount)
+          if(todosForCal.length){
+            todosForCal.forEach(function(todoForCal){
+              if(todoForCal.todo && todoForCal.todo.lists || todoForCal.modifiedDateList ){
+                todoForCal.modifiedDateList.forEach(function(dateList){
+                  var name = dateList.name? dateList.name : undefined
+                  var date = dateList.date;
+                  var times = {
+                    date: dateList.date,
+                    start_time: dateList.start_time,
+                    end_time: dateList.end_time,
+                    duration: dateList.duration,
+                    name: name,
+                    tasks: dateList.tasks,
+                    tracker: dateList.tracker
+                  }
+                  scope.pickCorrectDateForCal(date, todoForCal.todo, times)
+                })
+              }
+            })
           }
-        }, true);
+        }
+      }, true);
 
       scope.calendarItemModal = function (list, date, times){
         console.log("scope.calendarItemModal envoked")
@@ -78,263 +82,260 @@
         });
       };
 
-        var monthName = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        var daysOfWeek = ["","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-        var date = new Date()
-        var year = scope.date.year
 
-        var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
-          // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
-          var bigTdContainer = document.getElementsByClassName(time)
-          var pForBigTd = document.createElement('p')
-          pForBigTd.setAttribute("draggable", true)
+      var createHourlyCalItem = function(list, time, date, realListDate, timeStructure, times){
+        // bigTdContainer is the row in the weekly row since we're grabbing all elementts by time (ex: 6am row)
+        var bigTdContainer = document.getElementsByClassName(time)
+        var pForBigTd = document.createElement('p')
+        pForBigTd.setAttribute("draggable", true)
 
-          scope.dragSrcEl = [];
-          var handleDragStart = function(e){
-            var thisElement = this;
+        scope.dragSrcEl = [];
+        var handleDragStart = function(e){
+          console.log("handleDragStart")
+          var thisElement = this;
 
-            e.srcElement.childNodes[0].parentElement.className = "time"
-            thisElement.className = "startTime"
-            $(thisElement).parent()[0].id = 'time'
-            var thisElsSplit = thisElement.id.split("&")
-            var thisElsDate = thisElsSplit[1]
-            var moveMeToo = document.getElementsByClassName("middleTime")
+          e.srcElement.childNodes[0].parentElement.className = "time"
+          thisElement.className = "startTime"
+          $(thisElement).parent()[0].id = 'time'
+          var thisElsSplit = thisElement.id.split("&")
+          var thisElsDate = thisElsSplit[1]
+          var moveMeToo = document.getElementsByClassName("middleTime")
 
-            // we loop through all the TD's that have middleTime as a class name and find ones that belong
-              //to the TD that has been clicked and is being moved to inform the number of middleTime TDs that should be moved
+          // we loop through all the TD's that have middleTime as a class name and find ones that belong
+            //to the TD that has been clicked and is being moved to inform the number of middleTime TDs that should be moved
 
-            for(var i = 0; i < moveMeToo.length; i++){
-              var middleTimeElementsSplit = moveMeToo[i].id.split("&")
-              if(middleTimeElementsSplit[0] == list._id && middleTimeElementsSplit[1] == thisElsDate
-              && middleTimeElementsSplit[2] == times.start_time){
-                scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
+          for(var i = 0; i < moveMeToo.length; i++){
+            var middleTimeElementsSplit = moveMeToo[i].id.split("&")
+            if(middleTimeElementsSplit[0] == list._id && middleTimeElementsSplit[1] == thisElsDate
+            && middleTimeElementsSplit[2] == times.start_time){
+              scope.dragSrcEl.push({element: moveMeToo[i], list: list, date: date})
 
-                // this codes takes away the div that contains "+" and "-" when the element is being moved
-                if($(moveMeToo[i]).children("div")){
-                  $(moveMeToo[i]).children("div").remove()
+              // this codes takes away the div that contains "+" and "-" when the element is being moved
+              if($(moveMeToo[i]).children("div")){
+                $(moveMeToo[i]).children("div").remove()
+              }
+
+            }
+          }
+          $(e.srcElement.childNodes).remove();
+          scope.listGrabbed = list;
+          scope.dragSrcEl.push({element: this, list: list, date: date});
+          e.dataTransfer.effectAllowed = 'move';
+        }; // end of dragstart
+
+        pForBigTd.addEventListener('dragstart', handleDragStart, false);
+        pForBigTd.setAttribute("id", list._id+"&"+date+"&"+times.start_time)
+        pForBigTd.setAttribute("class", list._id+date)
+        if(timeStructure === 'startTime'){
+          var start = times.start_time.split(":")
+          var startTimeAmOrPm = start[1].substr(start[1].length - 2, start[1].length)
+          var end = times.end_time.split(":")
+          var endTimeAmOrPm = end[1].substr(end[1].length - 2, end[1].length)
+          var timeP = document.createElement("p")
+          timeP.innerHTML = start[0] + startTimeAmOrPm +  "-" + end[0] + endTimeAmOrPm
+          // bigTdContainer.appendChild(timeP);
+          pForBigTd.innerHTML =  list.list_name + " (" + times.duration + "hrs)"
+        }
+        if(list.list_reocurring === 'Monthly'){
+          var fullDateObj = DateService.stringDateSplit(date)
+          var listDay = fullDateObj.day
+          bigTdContainer = bigTdContainer[listDay+1]
+        } else {
+          var findDate = DateService.stringDateSplit(date)
+          bigTdContainer = bigTdContainer[findDate.day+1];
+        }
+        bigTdContainer.addEventListener("click", function(e) {
+          scope.calendarItemModal(list, date, times)
+        })
+        bigTdContainer.setAttribute("id", "time-with-entry");
+        pForBigTd.setAttribute("class", timeStructure);
+
+        // weekly calendar items color scheme
+        if(list.category === "Health"){
+          // pForBigTd.style.backgroundColor = "#27b6f4"
+          pForBigTd.style.backgroundColor = "rgba(39, 182, 244, 0.6)"
+        } else if (list.category === "Personal Project"){
+          // pForBigTd.style.backgroundColor = "#27f4cc"
+          pForBigTd.style.backgroundColor = "rgba(39, 244, 204, 0.60)"
+        } else if(list.category === "Work"){
+          // pForBigTd.style.backgroundColor = "#f4274f"
+          pForBigTd.style.backgroundColor = "rgba(244, 39, 79, 0.60)"
+        } else if(list.category === "Finance"){
+          // pForBigTd.style.backgroundColor = "#4FF427"
+          pForBigTd.style.backgroundColor = "rgba(79, 244, 39, 0.6)"
+        }  else if(list.category === "Social" ){
+          // pForBigTd.style.backgroundColor = "rgba(255,64,129,0.87)"
+          pForBigTd.style.backgroundColor = "rgba(244, 102, 39, 0.6)"
+        } else if(list.category === "Household" ){
+          // pForBigTd.style.backgroundColor = "#cd27f4"
+          pForBigTd.style.backgroundColor = "rgba(205, 39, 244, 0.6)"
+        } else {
+          // pForBigTd.style.backgroundColor = "#909487"
+          pForBigTd.style.backgroundColor = "rgba(144, 148, 135, 0.6)"
+        }
+
+        if(bigTdContainer.childNodes.length){
+          bigTdContainer.style.display = "flex"
+        }
+
+        var realSplitEndTime = times.end_time.split(":")
+
+        if(realSplitEndTime[0] === '12'){
+          var realEndTime = realSplitEndTime[0] - 1
+          var amOrPm =  realSplitEndTime[1] === '00am'? ':00pm': ':00am'
+          realEndTime = realEndTime + amOrPm
+        } else if (realSplitEndTime[0] === '1'){
+          realEndTime = '12:' + realSplitEndTime[1]
+        } else {
+          realEndTime = realSplitEndTime[0]-1 + ":" + realSplitEndTime[1]
+        }
+
+        if(time === realEndTime){
+
+          var a = document.createElement('a');
+          var linkText = document.createTextNode("+");
+          a.style.color = 'white';
+          a.appendChild(linkText)
+
+          var a2 = document.createElement('a');
+          var linkText2 = document.createTextNode("-");
+          a2.style.color = 'white';
+          a2.appendChild(linkText2)
+
+          var clone = document.createElement('a');
+          var cloneLinkText = document.createTextNode("Clone");
+          clone.style.color = 'white'
+          clone.appendChild(cloneLinkText)
+
+          var passesTwelve = function(time, adjuster){
+            var timeSplit  = time.split(":")
+            var time = parseInt(timeSplit[0]) + adjuster
+            var amOrpm = timeSplit[1];
+            if(time > 12){
+              time = time - 12
+              var amOrpm = amOrpm == '00am'? '00am' : '00pm'
+              time = time + ":" + amOrpm
+            } else {
+              time = time + ":" + amOrpm
+            }
+            return time
+          }
+
+          var cloneMe = function(e){
+            var newStartTime = passesTwelve(times.end_time, 2)
+            var newEndTime = passesTwelve(newStartTime, times.duration)
+
+            times.start_time = newStartTime;
+            times.end_time = newEndTime;
+            list.lists.push(times)
+            Todo.update({list_name: list.list_name}, {todo: list}, function(){
+              scope.$parent.pullTodos('ajax')
+            })
+          }
+
+          var adjustCal = function(e, adjust){
+            e.target.closest('a').remove();
+
+            for(var i = 0; i < list.lists.length; i++){
+              var dateList = list.lists[i]
+              if(dateList.date === date && dateList.start_time === times.start_time){
+                var duration = 0;
+                var splitEndTime = list.lists[i].end_time.split(":")
+                var splitStartTime = list.lists[i].start_time.split(":")
+                var originalStartTime = splitEndTime[0];
+                var startTimeAmOrPm = splitStartTime[1];
+                if(adjust === 'add'){
+
+                  if(splitEndTime[0] === 12){
+                    newTime = 1
+                  } else {
+                    newTime = parseInt(splitEndTime[0]) + 1;
+                  }
+                } else if (adjust === 'minus'){
+                  if(splitEndTime[0] == 2){
+                    newTime = 1
+                  } else if (splitEndTime[0] == 1){
+                    newTime = 12
+                  } else {
+                    var newTime = parseInt(splitEndTime[0]) - 1;
+                  }
                 }
 
+                var endTimeAmOrPm = splitEndTime[1];
+
+                if(newTime === 11 && originalStartTime == 12){
+
+                  var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                } else if (newTime === 12){
+                  var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                } else if(newTime > 12){
+                  newTime = newTime === 13? 1:newTime - 12
+                  var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                  if(splitEndTime[0] === 12){
+                    var endTimeAmOrPm = endTimeAmOrPm;
+                  } else {
+                    var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
+                  }
+                } else {
+
+                }
+
+                if(startTimeAmOrPm === endTimeAmOrPm){
+                  var newDuration = newTime - parseInt(splitStartTime[0]);
+                  duration = duration + newDuration
+                } else {
+                  duration = 12 - parseInt(splitStartTime[0]) ;
+                  var morningDuration = 12 - parseInt(splitStartTime[0]) ;
+                  if(newTime === 12){
+                    var afternoonDuration = 0;
+                  } else {
+                    var afternoonDuration = newTime
+                  }
+                  duration = morningDuration + afternoonDuration
+                }
+                var newTimeBlock = newTime + ":"+ endTimeAmOrPm;
+                list.lists[i].duration = duration;
+                list.lists[i].end_time = newTimeBlock;
               }
             }
-            $(e.srcElement.childNodes).remove();
-            scope.listGrabbed = list;
-            scope.dragSrcEl.push({element: this, list: list, date: date});
-            e.dataTransfer.effectAllowed = 'move';
-          }; // end of dragstart
+            scope.adjustedList = list;
+            Todo.update({list_name: list.list_name}, {todo: list})
+          }
 
-          pForBigTd.addEventListener('dragstart', handleDragStart, false);
-          pForBigTd.setAttribute("id", list._id+"&"+date+"&"+times.start_time)
-          pForBigTd.setAttribute("class", list._id+date)
-          if(timeStructure === 'startTime'){
-            var start = times.start_time.split(":")
-            var startTimeAmOrPm = start[1].substr(start[1].length - 2, start[1].length)
-            var end = times.end_time.split(":")
-            var endTimeAmOrPm = end[1].substr(end[1].length - 2, end[1].length)
-            var timeP = document.createElement("p")
-            timeP.innerHTML = start[0] + startTimeAmOrPm +  "-" + end[0] + endTimeAmOrPm
-            // bigTdContainer.appendChild(timeP);
-            pForBigTd.innerHTML =  list.list_name + " (" + times.duration + "hrs)"
-          }
-          if(list.list_reocurring === 'Monthly'){
-            var fullDateObj = DateService.stringDateSplit(date)
-            var listDay = fullDateObj.day
-            bigTdContainer = bigTdContainer[listDay+1]
-          } else {
-            var findDate = DateService.stringDateSplit(date)
-            bigTdContainer = bigTdContainer[findDate.day+1];
-          }
-          bigTdContainer.addEventListener("click", function(e) {
-            scope.calendarItemModal(list, date, times)
+          a2.addEventListener("click", function(e){
+            e.stopPropagation();
+            adjustCal(e, "minus")
           })
-          bigTdContainer.setAttribute("id", "time-with-entry");
-          pForBigTd.setAttribute("class", timeStructure);
 
-          // weekly calendar items color scheme
-          if(list.category === "Health"){
-            // pForBigTd.style.backgroundColor = "#27b6f4"
-            pForBigTd.style.backgroundColor = "rgba(39, 182, 244, 0.6)"
-          } else if (list.category === "Personal Project"){
-            // pForBigTd.style.backgroundColor = "#27f4cc"
-            pForBigTd.style.backgroundColor = "rgba(39, 244, 204, 0.60)"
-          } else if(list.category === "Work"){
-            // pForBigTd.style.backgroundColor = "#f4274f"
-            pForBigTd.style.backgroundColor = "rgba(244, 39, 79, 0.60)"
-          } else if(list.category === "Finance"){
-            // pForBigTd.style.backgroundColor = "#4FF427"
-            pForBigTd.style.backgroundColor = "rgba(79, 244, 39, 0.6)"
-          }  else if(list.category === "Social" ){
-            // pForBigTd.style.backgroundColor = "rgba(255,64,129,0.87)"
-            pForBigTd.style.backgroundColor = "rgba(244, 102, 39, 0.6)"
-          } else if(list.category === "Household" ){
-            // pForBigTd.style.backgroundColor = "#cd27f4"
-            pForBigTd.style.backgroundColor = "rgba(205, 39, 244, 0.6)"
-          } else {
-            // pForBigTd.style.backgroundColor = "#909487"
-            pForBigTd.style.backgroundColor = "rgba(144, 148, 135, 0.6)"
-          }
+          a.addEventListener("click", function(e){
+            e.stopPropagation();
+            adjustCal(e, "add")
+          })
 
-          if(bigTdContainer.childNodes.length){
-            bigTdContainer.style.display = "flex"
-          }
+          clone.addEventListener("click", function(e){
+            e.stopPropagation();
+            cloneMe(e, "add")
+          })
 
-          var realSplitEndTime = times.end_time.split(":")
+          var adjustDiv = document.createElement("div")
+          adjustDiv.appendChild(a)
+          adjustDiv.appendChild(a2)
+          adjustDiv.appendChild(clone)
+          pForBigTd.appendChild(adjustDiv)
+        }
 
-          if(realSplitEndTime[0] === '12'){
-            var realEndTime = realSplitEndTime[0] - 1
-            var amOrPm =  realSplitEndTime[1] === '00am'? ':00pm': ':00am'
-            realEndTime = realEndTime + amOrPm
-          } else if (realSplitEndTime[0] === '1'){
-            realEndTime = '12:' + realSplitEndTime[1]
-          } else {
-            realEndTime = realSplitEndTime[0]-1 + ":" + realSplitEndTime[1]
-          }
+        bigTdContainer.appendChild(pForBigTd);
+        if(timeP){
+          bigTdContainer.appendChild(timeP);
+          bigTdContainer.style.display = "flex";
+          timeP.style.backgroundColor = pForBigTd.style.backgroundColor
+          timeP.style.margin = "0px";
+          timeP.style.fontSize = "10px";
+          timeP.style.height = "10px";
+          bigTdContainer.style.flexDirection = "column";
+        }
 
-          if(time === realEndTime){
-
-            var a = document.createElement('a');
-            var linkText = document.createTextNode("+");
-            a.style.color = 'white';
-            a.appendChild(linkText)
-
-            var a2 = document.createElement('a');
-            var linkText2 = document.createTextNode("-");
-            a2.style.color = 'white';
-            a2.appendChild(linkText2)
-
-            var clone = document.createElement('a');
-            var cloneLinkText = document.createTextNode("Clone");
-            clone.style.color = 'white'
-            clone.appendChild(cloneLinkText)
-
-            var passesTwelve = function(time, adjuster){
-              var timeSplit  = time.split(":")
-              var time = parseInt(timeSplit[0]) + adjuster
-              var amOrpm = timeSplit[1];
-              if(time > 12){
-                time = time - 12
-                var amOrpm = amOrpm == '00am'? '00am' : '00pm'
-                time = time + ":" + amOrpm
-              } else {
-                time = time + ":" + amOrpm
-              }
-              return time
-            }
-
-            var cloneMe = function(e){
-              var newStartTime = passesTwelve(times.end_time, 2)
-              var newEndTime = passesTwelve(newStartTime, times.duration)
-
-              times.start_time = newStartTime;
-              times.end_time = newEndTime;
-              list.lists.push(times)
-              Todo.update({list_name: list.list_name}, {todo: list}, function(){
-                scope.$parent.pullTodos('ajax')
-              })
-            }
-
-            var adjustCal = function(e, adjust){
-              e.target.closest('a').remove();
-
-              for(var i = 0; i < list.lists.length; i++){
-                var dateList = list.lists[i]
-                if(dateList.date === date && dateList.start_time === times.start_time){
-                  var duration = 0;
-                  var splitEndTime = list.lists[i].end_time.split(":")
-                  var splitStartTime = list.lists[i].start_time.split(":")
-                  var originalStartTime = splitEndTime[0];
-                  var startTimeAmOrPm = splitStartTime[1];
-                  if(adjust === 'add'){
-
-                    if(splitEndTime[0] === 12){
-                      newTime = 1
-                    } else {
-                      newTime = parseInt(splitEndTime[0]) + 1;
-                    }
-                  } else if (adjust === 'minus'){
-                    if(splitEndTime[0] == 2){
-                      newTime = 1
-                    } else if (splitEndTime[0] == 1){
-                      newTime = 12
-                    } else {
-                      var newTime = parseInt(splitEndTime[0]) - 1;
-                    }
-                  }
-
-                  var endTimeAmOrPm = splitEndTime[1];
-
-                  if(newTime === 11 && originalStartTime == 12){
-
-                    var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
-                  } else if (newTime === 12){
-                    var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
-                  } else if(newTime > 12){
-                    newTime = newTime === 13? 1:newTime - 12
-                    var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
-                    if(splitEndTime[0] === 12){
-                      var endTimeAmOrPm = endTimeAmOrPm;
-                    } else {
-                      var endTimeAmOrPm = endTimeAmOrPm === '00am'? "00pm":"00am";
-                    }
-                  } else {
-
-                  }
-
-                  if(startTimeAmOrPm === endTimeAmOrPm){
-                    var newDuration = newTime - parseInt(splitStartTime[0]);
-                    duration = duration + newDuration
-                  } else {
-                    duration = 12 - parseInt(splitStartTime[0]) ;
-                    var morningDuration = 12 - parseInt(splitStartTime[0]) ;
-                    if(newTime === 12){
-                      var afternoonDuration = 0;
-                    } else {
-                      var afternoonDuration = newTime
-                    }
-                    duration = morningDuration + afternoonDuration
-                  }
-                  var newTimeBlock = newTime + ":"+ endTimeAmOrPm;
-                  list.lists[i].duration = duration;
-                  list.lists[i].end_time = newTimeBlock;
-                }
-              }
-              scope.adjustedList = list;
-              Todo.update({list_name: list.list_name}, {todo: list})
-            }
-
-            a2.addEventListener("click", function(e){
-              e.stopPropagation();
-              adjustCal(e, "minus")
-            })
-
-            a.addEventListener("click", function(e){
-              e.stopPropagation();
-              adjustCal(e, "add")
-            })
-
-            clone.addEventListener("click", function(e){
-              e.stopPropagation();
-              cloneMe(e, "add")
-            })
-
-            var adjustDiv = document.createElement("div")
-            adjustDiv.appendChild(a)
-            adjustDiv.appendChild(a2)
-            adjustDiv.appendChild(clone)
-            pForBigTd.appendChild(adjustDiv)
-          }
-
-          bigTdContainer.appendChild(pForBigTd);
-          if(timeP){
-            bigTdContainer.appendChild(timeP);
-            bigTdContainer.style.display = "flex";
-            timeP.style.backgroundColor = pForBigTd.style.backgroundColor
-            timeP.style.margin = "0px";
-            timeP.style.fontSize = "10px";
-            timeP.style.height = "10px";
-            bigTdContainer.style.flexDirection = "column";
-          }
-
-        };
+      };
 
         var addMiddleTimeCalItems = function(startTime, endTime, amOrpm, list, date, realListDate, times){
           // addMiddleTimeCalItems function is to determine how many hours between start and end time need to be appended to the calendar for each item
@@ -420,6 +421,7 @@
         scope.drugOverElements = [];
 
         scope.handleDragOver = function(e) {
+          console.log("scope.handleDragOver")
           if(scope.dragSrcEl.length){
             if(scope.dragSrcEl[0].element.className == "middleTime"){
               for(var i = 0; i < scope.dragSrcEl.length; i++){
@@ -455,6 +457,7 @@
             var dragSrcEl = null;
 
             var handleDragStart = function(e){
+              console.log("handleDragStart")
               scope.listGrabbed = list;
               // scope.dragSrcEl is the element that has been clicked and is being dragged
               scope.dragSrcEl = this;
@@ -468,6 +471,7 @@
             };
 
             scope.handleDragLeave = function(e) {
+              console.log("scope.handleDragLeave")
               if(scope.dragSrcEl.length){
                 if(scope.dragSrcEl[0].className === 'time'){
                   for(var i = 0; i < scope.dragSrcEl.length; i++){
@@ -577,6 +581,7 @@
             if(scope.newView == 'month'){
               ul.addEventListener('dragover', scope.handleDragOver, false);
               ul.addEventListener('dragleave', scope.handleDragLeave, false);
+              console.log("scope.handleWeeklyDrop listener added")
               ul.addEventListener('drop', scope.handleWeeklyDrop, false);
             };
 
@@ -662,7 +667,7 @@
                 var entryDate = date[2];
                 var date = {date: entryDate, month: month, year: year, startTime: e.srcElement.className};
               } else {
-                  var ulDate = e.srcElement.id.split("-")[2];
+                  var ulDate = e.srcElement.children[0].children[0].id.split("-")[2];
                   var date = {date: ulDate, month: month, year: year}
               }
 
@@ -772,6 +777,7 @@
               var p = document.createElement("p")
               p.style.height = "100%"
               // p.style.outline = "1px solid black"
+              console.log(td.style)
               p.setAttribute("class",  "a"+scope.count)
               if(scope.newView === 'month'){
                 td.innerHTML = scope.count;
@@ -843,7 +849,7 @@
 
         var createWeeklyDates = function(){
           scope.todayFullDate = new Date()
-
+          var year = scope.date.year;
           scope.todayFullDate = new Date(
             scope.todayFullDate.getFullYear(),
             scope.todayFullDate.getMonth(),
@@ -957,7 +963,7 @@
           if(screen.width < 1000){
             document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
           } else {
-            if(scope.date.weekCount != 0 || scope.date.monthCount != scope.date.today.monthNumber){
+            if(scope.date.weekCount != 0 || (scope.date.monthCount != scope.date.today.monthNumber || scope.date.year != scope.date.today.year)){
               document.getElementById("calendar-month-year").innerHTML =  monthName[month] + " " + year;
             } else {
               document.getElementById("calendar-month-year").innerHTML = scope.date.today.dayName + " " + scope.date.today.monthNames + " " + scope.date.today.date + ", " + year;
