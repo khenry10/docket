@@ -47,23 +47,13 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   }
 
   $scope.jumpToDate = function(){
-    console.log($scope.jumpDate)
     $scope.changeDate.monthCount = $scope.jumpDate.getMonth()+1
     $scope.changeDate.year = $scope.jumpDate.getFullYear()
-    console.log($scope.changeDate)
 
-  //   $scope.listForCal.push({origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
-  //   todo: undefined,
-  //   modifiedDateList: []
-  // })
     resetDataForVerifyClone()
     $scope.showTodayButton = true;
     $scope.jumpDate = ''
-    // listForCal.push(
-    //   {origin: 'new-date-with-no-lists-'+$scope.changeDate.monthCount + $scope.changeDate.weekCount,
-    //   todo: list,
-    //   modifiedDateList: []
-    // })
+
   }
 
   $scope.navigate = function(){
@@ -315,16 +305,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
     }
 
     $scope.allTodoLists.forEach(function(list, index){
-      console.log(list.list_name)
       var firstListDate = DateService.stringDateSplit(list.first_day)
-      console.log(firstListDate)
-      console.log($scope.changeDate.monthCount >= firstListDate.monthNumber)
-      console.log($scope.changeDate.monthCount)
-      console.log(firstListDate.monthNumber)
-      console.log($scope.changeDate.year >= firstListDate.year)
-      console.log("firstListDate.year = " + firstListDate.year)
       if($scope.changeDate.monthCount >= firstListDate.monthNumber && $scope.changeDate.year >= firstListDate.year){
-        console.log(list.list_name)
         var lastDateList = list.lists[list.lists.length-1];
         var dateListsInCurrentMonth = [];
         $scope.exists = false;
@@ -333,7 +315,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
           var fullListDate = DateService.stringDateSplit(list.lists[l].date);
 
           if($scope.viewType === 'week'){
-            console.log(list)
             var weeklyDate = evaluateDateListsForWeekCal(fullListDate, list.lists[l], list)
             if(weeklyDate){
               dateListsInCurrentMonth.push(weeklyDate)

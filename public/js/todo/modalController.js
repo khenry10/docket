@@ -34,14 +34,6 @@ function modalController(Todo, $scope, data, times, date, allTasks, parseAllTask
   $scope.showEdit = false;
 
   $scope.edit = function(newTitle){
-    console.log(newTitle)
-    console.log($scope.data)
-    console.log($scope.date)
-
-    console.log($scope.data.lists.findIndex(function(datelist){
-      return datelist.date === $scope.date
-    }))
-
     $scope.showEdit = !$scope.showEdit;
     if(newTitle){
       var index = $scope.data.lists.findIndex(function(datelist){
