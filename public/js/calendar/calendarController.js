@@ -385,6 +385,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   };
 
   var splitTwoMonthsWeeklyIntoOldAndNew = function(){
+    console.log($scope.changeDate)
     var dateArrayLength = $scope.changeDate.dayCount.length;
     var firstWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-7]
     if($scope.changeDate.lastMove === 'increment'){
@@ -404,8 +405,15 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       var oldMonth = $scope.changeDate.monthCount;
       var newMonth = $scope.changeDate.monthCount+1
     } else {
-      var oldMonth = $scope.changeDate.months.previousMonth.count;
-      var newMonth = $scope.changeDate.months.thisMonth.count;
+      console.log("hereeeeeeeeeeee")
+      // this is the default logic when the calendar hasn't been incremented/decremented
+      if($scope.changeDate.today.date >= $scope.changeDate.months.thisMonth.days - 7){
+        var oldMonth = $scope.changeDate.months.thisMonth.count;
+        var newMonth = $scope.changeDate.months.nextMonth.count;
+      } else {
+        var oldMonth = $scope.changeDate.months.previousMonth.count;
+        var newMonth = $scope.changeDate.months.thisMonth.count;
+      }
     }
     var oldMonthDate = {month: oldMonth, date: []};
     var newMonthDate = {month: newMonth, date: []};
