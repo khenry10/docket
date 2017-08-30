@@ -470,8 +470,11 @@
               // e.dataTransfer.setData('text/html', this.innerHTML);
             };
 
+            var called = 0;
             scope.handleDragLeave = function(e) {
               console.log("scope.handleDragLeave")
+              console.log(called)
+              called++
               if(scope.dragSrcEl.length){
                 if(scope.dragSrcEl[0].className === 'time'){
                   for(var i = 0; i < scope.dragSrcEl.length; i++){
@@ -479,7 +482,15 @@
                   }
                 }
               }
-              this.style.backgroundColor = "#F2F3F4";  // this / e.target is previous target element.
+               // this / e.target is previous target element.
+
+              if(this.id === scope.dragSrcEl.id){
+                this.innerHTML = " "
+              }
+              this.style.outline = "";
+              this.style.color = "#F2F3F4";
+              this.style.backgroundColor = "#F2F3F4";
+              this.style.border = 'none';
             };
 
             scope.handleWeeklyDrop = function(e){
@@ -494,7 +505,11 @@
               var arrayOfTargets = [];
               var doubleEntries = false;
 
-              var originalStartTime = scope.dragSrcEl[0].element.id.split("&")[2]
+              console.log(scope.dragSrcEl)
+              console.log(scope.dragSrcEl[0])
+              if(scope.newView === 'week'){
+                var originalStartTime = scope.dragSrcEl[0].element.id.split("&")[2]
+              }
 
               for(var p = scope.dragSrcEl.length-1; p >= 0; p--){
                 if(p === scope.dragSrcEl.length-1 ){
@@ -536,12 +551,14 @@
 
               var thisTdsRow = $(this).closest('tr')
               var tdsHeadingIndex = parseInt(thisTdsRow[0].className) + 1;
-              var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
-              var elementsOldDate = scope.dragSrcEl[0].date;
+              if(scope.newView === 'week'){
+                var newElementsDate = document.getElementsByClassName("row-headings")[0].cells[tdsHeadingIndex].id;
+                var elementsOldDate = scope.dragSrcEl[0].date;
+                scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
+                scope.dragSrcEl = [];
+                var newStartTimeSplit = newStartTime.split(":")
+              }
 
-              scope.dragSrcEl.forEach(function(drug){scope.pastDragSrcEl.push(drug)})
-              scope.dragSrcEl = [];
-              var newStartTimeSplit = newStartTime.split(":")
 
               // loop looks for correct listDate in order to update time reflect the drap and drop
               for(var k = 0; k < list.lists.length; k++){
@@ -581,8 +598,7 @@
             if(scope.newView == 'month'){
               ul.addEventListener('dragover', scope.handleDragOver, false);
               ul.addEventListener('dragleave', scope.handleDragLeave, false);
-              console.log("scope.handleWeeklyDrop listener added")
-              ul.addEventListener('drop', scope.handleWeeklyDrop, false);
+              // ul.addEventListener('drop', scope.handleWeeklyDrop, false);
             };
 
             if(list.category){
@@ -775,9 +791,7 @@
               var td = document.createElement("td");
               td.setAttribute("class", scope.newView)
               var p = document.createElement("p")
-              p.style.height = "100%"
-              // p.style.outline = "1px solid black"
-              console.log(td.style)
+              p.style.height = "100%";
               p.setAttribute("class",  "a"+scope.count)
               if(scope.newView === 'month'){
                 td.innerHTML = scope.count;
@@ -791,9 +805,8 @@
               }
               ul.setAttribute("class", "u"+scope.count)
               ul.setAttribute("id", year+"-"+month+"-"+scope.count)
-              ul.style.height = "100%"
-              // p.style.outline = "1px solid red"
-              p.appendChild(ul)
+              ul.style.height = "100%";
+              p.appendChild(ul);
               td.appendChild(p);
               tr.appendChild(td);
               if(scope.count === date.getDate() && month === date.getMonth()+1 && year === date.getFullYear()){
@@ -1014,22 +1027,25 @@
           if(scope.newView === 'week'){
             dyanmicRowCreator(1, table, td, p, tr, numberOfDays, month, year)
           }
-                table.appendChild(tr);
-                var numberOfRows = table.rows.length-1;
-                var calHeight = $(".calendar").height();
 
-                for(var i = 0; i < numberOfRows-1; i++){
-                  if(i !== 0 ){
-                    var rowHeight = calHeight/numberOfRows;
-                    rowHeight = rowHeight + 100
-                    var rowHeight = rowHeight.toString() + "px";
-                    table.rows[i].style.height = rowHeight;
-                  }
-                }
+          table.appendChild(tr);
+          var numberOfRows = table.rows.length-1;
 
-                document.getElementById("calendar-dates").appendChild(table);
-                var p = document.createElement("p")
+          var calHeight = $(".calendar").height();
+          var rowHeight = calHeight/numberOfRows;
+          rowHeight = rowHeight + 100
+          var rowHeight = rowHeight.toString() + "px";
 
+          rowHeight = parseInt(rowHeight) * .18
+          table.rows[1].cells[2].height = rowHeight
+          for(var z = 1; z < table.rows.length; z ++){
+            for(var i = 0; i < table.rows[z].cells.length; i++ ){
+              table.rows[z].cells[i].height =  rowHeight + "px"
+            }
+          }
+
+          document.getElementById("calendar-dates").appendChild(table);
+          var p = document.createElement("p")
 
         }
         // end ---> of make_calendar function <------//

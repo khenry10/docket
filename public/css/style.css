@@ -178,7 +178,7 @@ md-radio-button .md-off, md-radio-button .md-on {
 .month {
   border: 2px solid white;
   width: 133px;
-  height: 18%;
+  /*height: 18%;*/
   align-content: center;
   border-radius: 4px;
   padding-top: 2px;
@@ -484,7 +484,6 @@ h2 {
   padding: 2px;
   border-radius: 3px;
   cursor:pointer;
-  outline: 1px solid white;
 }
 
 .today {
