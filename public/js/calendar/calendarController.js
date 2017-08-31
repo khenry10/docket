@@ -151,7 +151,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   };
 
   $scope.parseAllTasks = function(dateList, list, origin, other){
-    console.log("parseAllTasks")
     var taskObjsInDS = DateService.saveUpdatesFromLeftRail()
     var lastIndex = taskObjsInDS.length-1
 
@@ -196,7 +195,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
   var countMe = 0;
   var evaluateDateListsForWeekCal = function(fullListDate, dateList, list){
-    console.log("evaluateDateListsForWeekCal")
     var dateArrayLength = $scope.changeDate.dayCount.length;
     var firstWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-7];
     var lastWeeklyDate = $scope.changeDate.dayCount[dateArrayLength-1];
@@ -224,7 +222,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         })
       }
     } else {
-      console.log("else")
       if(fullListDate.date >= firstWeeklyDate && fullListDate.date <= lastWeeklyDate){
         if(fullListDate.monthNumber == $scope.changeDate.monthCount && fullListDate.year == $scope.changeDate.year){
           addActivityTime(list.list_name, dateList.duration);
@@ -351,7 +348,6 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         } else {
           $scope.exists = true;
         }
-        console.log("$scope.exists = " + $scope.exists)
         if(!$scope.exists){
           checkLastList(lastDateList, list, index)
         } else {
