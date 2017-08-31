@@ -422,6 +422,7 @@
 
         scope.handleDragOver = function(e) {
           console.log("scope.handleDragOver")
+          console.log(scope.dragSrcEl.length)
           if(scope.dragSrcEl.length){
             if(scope.dragSrcEl[0].element.className == "middleTime"){
               for(var i = 0; i < scope.dragSrcEl.length; i++){
@@ -429,9 +430,10 @@
               }
             }
           }
-
+          // console.log(this)
           if(scope.newView === 'week'){
             this.style.backgroundColor = "grey"
+            this.style.outline = "1px solid white"
           }
 
           if (e.preventDefault) {
@@ -473,8 +475,12 @@
             var called = 0;
             scope.handleDragLeave = function(e) {
               console.log("scope.handleDragLeave")
-              console.log(called)
-              called++
+
+              if(scope.newView === 'week'){
+                e.target.innerHTML = "";
+                e.target.style.backgroundColor = '#F2F3F4'
+              }
+
               if(scope.dragSrcEl.length){
                 if(scope.dragSrcEl[0].className === 'time'){
                   for(var i = 0; i < scope.dragSrcEl.length; i++){
@@ -485,11 +491,13 @@
                // this / e.target is previous target element.
 
               if(this.id === scope.dragSrcEl.id){
+                console.log("made it in here")
                 this.innerHTML = " "
               }
               this.style.outline = "";
               this.style.color = "#F2F3F4";
               this.style.backgroundColor = "#F2F3F4";
+              this.style.outline = "1px solid white";
               this.style.border = 'none';
             };
 
