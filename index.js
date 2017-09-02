@@ -202,7 +202,7 @@ app.delete("/api/todo/:name",function(req, res){
 })
 
 app.get('/api/budget', function(req, res){
-  console.log("Budget api called. 1")
+  console.log("Budget GET api called. 1")
   Budget.find().then(function(budget){
     console.log("budget")
     console.log(budget)
@@ -215,8 +215,10 @@ app.get('/api/budget', function(req, res){
 
 app.post('/api/budget', function(req, res){
   console.log("Budget post call = " + JSON.stringify(req.body))
+
+
   Budget.create(req.body).then(function(){
-    res.redirect("/")
+    res.json({ status: 'success', itemAdded: req.body })
   })
 })
 

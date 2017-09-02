@@ -1,20 +1,20 @@
-<div class="new-finance" ng-controller="budgetController as newVM">
+<div ng-controller="budgetController as newVM">
   <h1> {{budgetVM.year}} Budget </h1>
-    <input type="text" ng-model="newVM.newbudget.name" placeholder="Name"></input>
-    <input type="number" ng-model="newVM.newbudget.amount" placeholder="Amount"></input>
-    <input type="radio" name="type" ng-model="newVM.newbudget.type" value="expense"> Expense</input>
-    <input type="radio"  name="type" ng-model="newVM.newbudget.type" value="revenue"> Revenue</input>
-    <select ng-model="newVM.newbudget.recurring" ng-options="recurring for recurring in newVM.recurring" >
+    <input type="text" ng-model="newVM.newBudgetItem.name" placeholder="Name"></input>
+    <input type="number" ng-model="newVM.newBudgetItem.amount" placeholder="Amount"></input>
+    <input type="radio" name="type" ng-model="newVM.newBudgetItem.type" value="expense"> Expense</input>
+    <input type="radio"  name="type" ng-model="newVM.newBudgetItem.type" value="revenue"> Revenue</input>
+    <select ng-model="newVM.newBudgetItem.recurring" ng-options="recurring for recurring in newVM.recurring" >
         <option value='' disabled selected>Recurring </option>
     </select>
-    <input type="radio" name="expense" ng-model="newVM.newbudget.category" value="fixed"> Fixed</input>
-    <input type="radio"  name="expense" ng-model="newVM.newbudget.category" value="variable"> Variable</input>
-    <button ng-click="newVM.create()">New</button>
+    <input type="radio" name="expense" ng-model="newVM.newBudgetItem.category" value="fixed"> Fixed</input>
+    <input type="radio"  name="expense" ng-model="newVM.newBudgetItem.category" value="variable"> Variable</input>
+    <md-button ng-click="newVM.create()">New</md-button>
     <!-- {{newVM.newbudget}} -->
 
 
-    <button ng-click="budgetVM.getRemainingMonths()"> Remaining Months</button>
-    <button ng-click="budgetVM.fullYear()"> Full Year</button>
+    <md-button ng-click="budgetVM.getRemainingMonths()"> Remaining Months</md-button>
+    <md-button ng-click="budgetVM.fullYear()"> Full Year</md-button>
 
   <table class="finances">
     <tr>

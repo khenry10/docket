@@ -32,11 +32,10 @@
   };
 
   function Budget($resource){
-    console.log("Lists factory envoked")
-    var Lists = $resource("/api/budget", {}, {
-      update: {method: "PUT"}
-    })
-    Budget.all = Lists.query();
+    console.log("Budget factory envoked")
+    console.log($resource)
+    var Budget = $resource("/api/budget", {}, {update: {method: "PUT"}}, {save: {method: 'POST'}})
+    Budget.all = Budget.query();
     return Budget
   };
 

@@ -63,6 +63,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       window.location.href = "/calendar-entries";
     } else if ($scope.explore === 'logout'){
       $scope.logout()
+    } else if ($scope.explore === 'budget'){
+      window.location.href = "/budget";
     }
   }
 
@@ -423,6 +425,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
       } else {
         var oldMonth = $scope.changeDate.months.previousMonth.count;
         var newMonth = $scope.changeDate.months.thisMonth.count;
+        console.log("oldMonth = " + oldMonth)
+        console.log("newMonth = " + newMonth)
       }
     }
     var oldMonthDate = {month: oldMonth, date: []};
@@ -455,6 +459,8 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
             fullDates.push($scope.changeDate.year + "-" + newMonth + "-" + $scope.changeDate.dayCount[t])
           }
         } else {
+          console.log('$scope.changeDate.dayCount[t] = ' + $scope.changeDate.dayCount[t])
+          console.log('firstWeeklyDate = ' + firstWeeklyDate)
           if($scope.changeDate.dayCount[t] >= firstWeeklyDate){
             oldMonthDate.date.push($scope.changeDate.dayCount[t])
             fullDates.push($scope.changeDate.year + "-" + oldMonth + "-" + $scope.changeDate.dayCount[t])
@@ -591,8 +597,9 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
         $scope.intializeDayCount()
       }
       if($scope.viewType === 'week'){
+        console.log("this.twoMonthsWeekly = " + this.twoMonthsWeekly)
         if(this.twoMonthsWeekly){
-          this.monthCount++
+          // this.monthCount++
           this.twoMonthsWeekly = false;
         }
         weeklyMove("increment")
@@ -642,13 +649,19 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
 
     monthContext();
     if(date == 1){
-      var lastMonth = new Date ($scope.changeDate.year, $scope.changeDate.monthCount-1, 0)
+      var lastMonth = new Date ($scope.changeDate.year, $scope.changeDate.monthCount-1, 0);
       var lastDay = lastMonth.getDate();
       var date = lastDay-day
+    } else if (date < 7) {
+      var lastMonth = new Date ($scope.changeDate.year, $scope.changeDate.monthCount-1, 0);
+      var lastDay = lastMonth.getDate();
+      date = date-day
+      date = date-1
     } else {
       date = date-day
       date = date-1
       var lastDay = new Date($scope.changeDate.year, $scope.changeDate.monthCount, 0).getDate()
+      console.log("lastDay = " + lastDay)
     };
 
     for(var d = 1; d <= 7; d++ ){
