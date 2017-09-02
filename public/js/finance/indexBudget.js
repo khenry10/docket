@@ -13,6 +13,14 @@ function budgetController(Budget, $window){
   var variableExpenses = [];
   var fixedExpenses = [];
   var revenue = [];
+  var vm = this;
+  var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  var date = new Date();
+  var currentMonth = date.getMonth()+1
+  vm.year = date.getFullYear();
+  vm.months = [];
+  vm.budget = Budget.all;
+
   Budget.all.$promise.then(function(){
     Budget.all.forEach(function(budget){
       console.log(budget)
@@ -42,14 +50,6 @@ function budgetController(Budget, $window){
     })
   });
 
-  var vm = this
-  vm.budget = Budget.all
-
-  var month_name = ["no month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-  var date = new Date()
-  var currentMonth = date.getMonth()+1
-
-  vm.months = []
   vm.getRemainingMonths = function(){
     console.log("getRemainingMonths")
     vm.months = []
@@ -57,7 +57,6 @@ function budgetController(Budget, $window){
       vm.months.push(month_name[i])
     }
     console.log(vm.months)
-
   };
 
   vm.fullYear = function(){
@@ -72,8 +71,22 @@ function budgetController(Budget, $window){
   }
   vm.thisMonth()
 
-  function click(){
-    console.log("click")
+  vm.create = () => {
+    console.log("create")
+    console.log(vm.newBudgetItem)
+    // Budget.save({vm.newBudgetItem})
+    const newBudgetItem = new Budget(vm.newBudgetItem)
+    const successFunction = (res) => {
+      console.log("successFunction")
+      console.log(res)
+    }
+
+    const errorFunction = (res) => {
+      console.log("errorFunction")
+      console.log(res)
+    }
+    newBudgetItem.$save().then(successFunction, errorFunction);
   }
-  vm.year = date.getFullYear()
+
+
 };
