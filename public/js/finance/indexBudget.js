@@ -81,23 +81,18 @@ function budgetController(Budget, $window, Employment){
 
   vm.create = () => {
     console.log("create")
-    console.log(vm.newBudgetItem)
-    // Budget.save({vm.newBudgetItem})
-
-    const newPosition = new Employment({company: 'Goldman Sachs', salary: 400000})
 
     const newBudgetItem = new Budget(vm.newBudgetItem)
     const successFunction = (res) => {
       console.log("successFunction")
       console.log(res)
     }
-
     const errorFunction = (res) => {
       console.log("errorFunction")
       console.log(res)
     }
-    newPosition.$save().then(successFunction, errorFunction);
-    // newBudgetItem.$save().then(successFunction, errorFunction);
+
+    newBudgetItem.$save().then(successFunction, errorFunction);
   }
 
 
