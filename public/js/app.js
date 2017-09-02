@@ -5,6 +5,7 @@
   .module("app", ["ngResource", "ui.router", "ngMaterial", "xeditable", "dndLists", "angularModalService"])
   .factory("Budget", ["$resource",Budget])
   .factory("Todo", ["$resource", Todo])
+  .factory("Employment", ["$resource", Employment])
 
   function Todo($resource){
     console.log("Todo factory envoked")
@@ -37,6 +38,13 @@
     var Budget = $resource("/api/budget", {}, {update: {method: "PUT"}}, {save: {method: 'POST'}})
     Budget.all = Budget.query();
     return Budget
+  };
+
+  function Employment($resource){
+    console.log("Employment factory")
+    var Employment = $resource("/api/employment", {}, {save: {method: 'POST'}})
+    Employment.all = Employment.query();
+    return Employment
   };
 
   // function Events($resource){

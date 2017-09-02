@@ -14,6 +14,7 @@ var Events   = mongoose.model("Events");
 var Budget = mongoose.model("Budget");
 var Todo = mongoose.model("Todo");
 var Users = mongoose.model("Users");
+var Employment = mongoose.model("Employment");
 
 app.use("/assets", express.static("public"));
 app.set("port", process.env.PORT || 3002);
@@ -219,6 +220,20 @@ app.post('/api/budget', function(req, res){
 
   Budget.create(req.body).then(function(){
     res.json({ status: 'success', itemAdded: req.body })
+  })
+})
+
+app.get('/api/employment', function(req, res){
+  console.log("employment GET")
+  Employment.find().then(function(employment){
+    res.json(employment)
+  })
+});
+
+app.post('/api/employment', function(req, res){
+  console.log("employment POST")
+  Employment.create(req.body).then(function(position){
+    res.json({ status: 'success', positionAdded: position })
   })
 })
 

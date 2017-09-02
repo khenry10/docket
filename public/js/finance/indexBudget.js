@@ -3,11 +3,12 @@
 angular.module("app").controller("budgetController", [
   "Budget",
   "$window",
+  "Employment",
   "$scope",
   budgetController
 ])
 
-function budgetController(Budget, $window){
+function budgetController(Budget, $window, Employment){
   console.log("budgetController")
   var finances = [];
   var variableExpenses = [];
@@ -50,6 +51,13 @@ function budgetController(Budget, $window){
     })
   });
 
+  Employment.all.$promise.then(function(){
+    console.log(Employment.all)
+    Employment.all.forEach(function(position){
+      console.log(position)
+    })
+  })
+
   vm.getRemainingMonths = function(){
     console.log("getRemainingMonths")
     vm.months = []
@@ -75,6 +83,9 @@ function budgetController(Budget, $window){
     console.log("create")
     console.log(vm.newBudgetItem)
     // Budget.save({vm.newBudgetItem})
+
+    const newPosition = new Employment({company: 'Goldman Sachs', salary: 400000})
+
     const newBudgetItem = new Budget(vm.newBudgetItem)
     const successFunction = (res) => {
       console.log("successFunction")
@@ -85,7 +96,8 @@ function budgetController(Budget, $window){
       console.log("errorFunction")
       console.log(res)
     }
-    newBudgetItem.$save().then(successFunction, errorFunction);
+    newPosition.$save().then(successFunction, errorFunction);
+    // newBudgetItem.$save().then(successFunction, errorFunction);
   }
 
 

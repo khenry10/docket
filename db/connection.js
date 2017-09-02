@@ -29,6 +29,32 @@ var BudgetSchema = new mongoose.Schema({
 });
 mongoose.model("Budget", BudgetSchema);
 
+var RetirementSchema = new mongoose.Schema({
+  company: String,
+  start_date: Date,
+  end_date: Date,
+  employee_contribution: Number,
+  employer_contribution: Number
+})
+mongoose.model("Retirement", RetirementSchema);
+
+var EmploymentSchema = new mongoose.Schema({
+  company: String,
+  position: String,
+  current_position: Boolean,
+  start_date: Date,
+  end_date: Date,
+  salary: Number,
+  hourly_rate: Number,
+  payday: String,
+  paycheck_frequency: String,
+  bonus: Number,
+  healthcare_provider: String,
+  equity: Number,
+  strike_price: Number
+});
+mongoose.model("Employment", EmploymentSchema);
+
 var UserSchema = new mongoose.Schema({
   name: String,
   email: String,
