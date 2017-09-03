@@ -80,7 +80,7 @@ angular.module('app').service('DateService', [ function () {
       }
       totalDays = totalDays + daysInMonth
 
-      data.months.push({month: this.monthNames[i-1], days_in_month: daysInMonth, fridays: fridays})
+      data.months.push({month: this.monthNames[i], days_in_month: daysInMonth, fridays: fridays})
 
       if(month+1 > i){
         daysPassed = daysPassed + daysInMonth
@@ -143,5 +143,57 @@ angular.module('app').service('DateService', [ function () {
     return new Date(dateSplit[0], month , date)
   }
 
+  this.runThroughYear = function(){
+    let fridayCount = [];
+    for(var i = 0; i <= 11; i++){
+      var today = new Date()
+      var year = today.getFullYear()
+      var daysInMonth = new Date(year, i, 0)
+      daysInMonth = daysInMonth.getDate()
+      var firstFullDateOfMonth = new Date(year, i, 1)
+      console.log(firstFullDateOfMonth)
+      firstDayOfMonth = firstFullDateOfMonth.getDay();
+
+      console.log("firstDayOfMonth = " + firstDayOfMonth)
+      firstDateOfMonth = firstFullDateOfMonth.getDate();
+      console.log("firstDateOfMonth = " + firstDateOfMonth)
+
+      var firstFriday = 5 - firstDayOfMonth + 1;
+      if(firstFriday <= 0){
+        firstFriday =+ 7
+      }
+      const friday = new Date(year, i, firstFriday);
+      const lastFriday = fridayCount[fridayCount.length-1];
+
+      if(lastFriday < friday || lastFriday > friday || !fridayCount.length){
+        fridayCount.push(friday)
+      }
+      while(firstFriday < daysInMonth){
+        console.log("1 firstFriday " + firstFriday)
+        firstFriday += 7
+        console.log("2 firstFriday " + firstFriday)
+        console.log(new Date(year, i, firstFriday))
+        const newFriday = new Date(year, i, firstFriday);
+        console.log(fridayCount[fridayCount.length-1])
+        console.log("newFriday = " + newFriday)
+        if(firstFriday <= daysInMonth && fridayCount[fridayCount.length-1] != newFriday){
+          fridayCount.push(newFriday)
+        }
+        // firstDateOfMonth = firstDateOfMonth + 7
+      }
+    }
+    console.log(fridayCount)
+    const paychecks = fridayCount.filter(function(friday, index){
+      console.log(friday)
+      console.log(index)
+      return index % 2 != 0
+    })
+
+    console.log(paychecks)
+  }
+
+  this.biWeeklyFridays = function(){
+    this.runThroughYear()
+  }
 
 }]);
