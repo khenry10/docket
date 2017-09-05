@@ -71,6 +71,7 @@
           }
         }).then(function(modal) {
           //it's a bootstrap element, use 'modal' to show it
+          console.log(modal)
           modal.element.modal();
           modal.close.then(function(result) {
 
@@ -691,7 +692,16 @@
                 var entryDate = date[2];
                 var date = {date: entryDate, month: month, year: year, startTime: e.srcElement.className};
               } else {
-                  var ulDate = e.srcElement.children[0].children[0].id.split("-")[2];
+                  console.log(e)
+                  console.log(e.srcElement)
+                  console.log(e.srcElement.id)
+                  if(e.srcElement.id){
+                    var ulDate = e.srcElement.id.split("-")[2]
+                  } else {
+                    var ulDate = e.srcElement.children[0].children[0].id.split("-")[2];
+                  }
+                  console.log(e.srcElement.children)
+                  console.log("ulDate = " + ulDate)
                   var date = {date: ulDate, month: month, year: year}
               }
 

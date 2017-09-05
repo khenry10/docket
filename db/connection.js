@@ -51,7 +51,11 @@ var EmploymentSchema = new mongoose.Schema({
   bonus: Number,
   healthcare_provider: String,
   equity: Number,
-  strike_price: Number
+  strike_price: Number,
+  tax_rate: Number,
+  healthcare_premium: Number,
+  dental_premium: Number,
+  contribution_401k: Number
 });
 mongoose.model("Employment", EmploymentSchema);
 

@@ -11,7 +11,11 @@
     "bonus": 8,
     "healthcare_provider": "Cigna",
     "equity": "none",
-    "strike_price": 0
+    "strike_price": 0,
+    "tax_rate": 0.25,
+    "healthcare_premium": 98.22,
+    "dental_premium": 9.05,
+    "contribution_401k": 0.1
   },
   {
     "company": "Shady Grove Fertility",
@@ -26,6 +30,10 @@
     "bonus": 0,
     "healthcare_provider": "Cigna",
     "equity": "none",
-    "strike_price": 0
+    "strike_price": 0,
+    "tax_rate": 0.25,
+    "healthcare_premium": 12.75,
+    "dental_premium": 12.58,
+    "contribution_401k": 0.3
   }
 ]
