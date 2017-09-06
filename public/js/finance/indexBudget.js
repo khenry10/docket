@@ -26,38 +26,49 @@ function budgetController(Budget, $window, Employment, $scope, DateService){
   vm.grossRevenue = new Array();
   vm.totalGrossRev = 0;
   vm.totalDeductions = 0;
-
-  Budget.all.$promise.then(function(){
-    Budget.all.forEach(function(budget){
-      console.log(budget)
-      finances.push(budget)
-
-      if(budget.type === 'expense' && budget.category === "variable"){
-        variableExpenses.push(budget.amount)
-      }
-      if(budget.type === 'expense' && budget.category === "fixed"){
-        fixedExpenses.push(budget.amount)
-      }
-      if(budget.type === 'revenue'){
-        revenue.push(budget.amount)
-      }
-
-      vm.variableExpensesTotal = 0;
-      for(var i in variableExpenses){vm.variableExpensesTotal += variableExpenses[i];}
-
-      vm.fixedExpensesTotal = 0;
-      for(var i in fixedExpenses){vm.fixedExpensesTotal += fixedExpenses[i];}
-
-      vm.revenue = 0;
-      for(var i in revenue){vm.revenue += revenue[i];}
-
-      vm.expensesTotal = vm.fixedExpensesTotal + vm.variableExpensesTotal;
-      vm.revenueMinusExpenses = vm.revenue - vm.expensesTotal;
-    })
-  });
+  vm.taxedTotal = 0;
+  vm.netRevenue = 0;
 
   function round(num){
     return parseFloat(Math.round(num * 100) / 100).toFixed(2)
+  }
+
+  const aggregatePaychecks = () => {
+    console.log(vm.positions)
+  }
+
+  const runExpenses = () => {
+    Budget.all.$promise.then(function(){
+      Budget.all.forEach(function(budget){
+        console.log(budget)
+        console.log("~~~~~~~")
+        console.log(vm.netRevenue)
+        finances.push(budget)
+
+        if(budget.type === 'expense' && budget.category === "variable"){
+          variableExpenses.push(budget.amount)
+        }
+        if(budget.type === 'expense' && budget.category === "fixed"){
+          fixedExpenses.push(budget.amount)
+        }
+        if(budget.type === 'revenue'){
+          revenue.push(budget.amount)
+        }
+
+        vm.variableExpensesTotal = 0;
+        for(var i in variableExpenses){vm.variableExpensesTotal += variableExpenses[i];}
+
+        vm.fixedExpensesTotal = 0;
+        for(var i in fixedExpenses){vm.fixedExpensesTotal += fixedExpenses[i];}
+
+        vm.revenue = 0;
+        for(var i in revenue){vm.revenue += revenue[i];}
+
+        vm.expensesTotal = vm.fixedExpensesTotal + vm.variableExpensesTotal;
+        vm.revenueMinusExpenses = vm.netRevenue - vm.expensesTotal;
+      })
+    });
+
   }
 
   Employment.all.$promise.then(function(){
@@ -68,7 +79,8 @@ function budgetController(Budget, $window, Employment, $scope, DateService){
       let dentalPremium = 0;
       let total401k = 0;
       let totalDeductions = 0;
-
+      let taxedTotal = 0;
+      let netRevenue = 0;
       console.log(position)
 
       if(position.hourly_rate){
@@ -90,17 +102,37 @@ function budgetController(Budget, $window, Employment, $scope, DateService){
         position.paychecks.forEach(function(paycheck, $index){
 
           if(paycheck.getMonth()+1 == currentMonth){
+
+            const totaledDeductions = round(
+                                      parseFloat(position.healthcare_premium)
+                                      + parseFloat(position.dental_premium)
+                                      + parseFloat(position.paycheckAmount * position.contribution_401k)
+                                    );
+
+            const salaryMinusDeductions = position.paycheckAmount - totaledDeductions;
+            const taxedAmount = parseFloat(round(salaryMinusDeductions * position.tax_rate));
+            const netRev = round(salaryMinusDeductions - (salaryMinusDeductions * position.tax_rate));
+
+            grossRevenue += parseFloat(position.paycheckAmount);
+            healthcarePremium += parseFloat(position.healthcare_premium)
+            dentalPremium += parseFloat(position.dental_premium)
+            total401k += parseFloat(position.paycheckAmount * position.contribution_401k);
+            console.log("taxedAmount = " + taxedAmount)
+            taxedTotal += parseFloat(taxedAmount);
+            console.log("taxedTotal = " + taxedTotal)
+            netRevenue += parseFloat(netRev);
+
             paychecks.push({
               name: position.name,
               salary: position.paycheckAmount,
               healthcare_premium: position.healthcare_premium,
               dental_premium: position.dental_premium,
-              contribution_401k: position.paycheckAmount * position.contribution_401k
+              contribution_401k: position.paycheckAmount * position.contribution_401k,
+              totaledDeductions: totaledDeductions,
+              salaryMinusDeductions: salaryMinusDeductions,
+              taxedAmount: taxedAmount,
+              netRevenue: netRev
             })
-            grossRevenue += parseFloat(position.paycheckAmount);
-            healthcarePremium += parseFloat(position.healthcare_premium)
-            dentalPremium += parseFloat(position.dental_premium)
-            total401k += parseFloat(position.paycheckAmount * position.contribution_401k)
             totalDeductions += (healthcarePremium + dentalPremium + total401k)
             console.log("$index = " + $index)
             console.log("totalDeductions = " + totalDeductions)
@@ -109,23 +141,34 @@ function budgetController(Budget, $window, Employment, $scope, DateService){
             position.grossRevenue = round(grossRevenue);
             position.healthcarePremium = round(healthcarePremium);
             position.dentalPremium = round(dentalPremium);
-            position.total401k = round(total401k)
+            position.total401k = round(total401k);
+            position.taxedTotal = round(taxedTotal);
+            console.log("position.taxedTotal = " + position.taxedTotal)
+            position.netRevenue = netRevenue;
           }
         })
 
-      console.log(position)
       console.log("*******")
+      position.paystubs = paychecks;
       vm.totalGrossRev += parseFloat(position.grossRevenue);
-      console.log("vm.totalDeductions = " + vm.totalDeductions)
-      vm.totalDeductions += parseFloat(totalDeductions)
+      vm.taxedTotal += parseFloat(position.taxedTotal);
+      console.log("vm.taxedTotal = " + vm.taxedTotal)
+      vm.netRevenue += position.netRevenue;
+
       console.log(vm.totalGrossRev)
-      console.log("*******")
+
+      position.totalDeductions = paychecks.reduce(function(sum, value){
+        return parseFloat(sum) + parseFloat(value.totaledDeductions)
+      }, 0)
+      vm.totalDeductions += parseFloat(position.totalDeductions);
+
       return position
     })
-
+    aggregatePaychecks()
+    runExpenses()
+    console.log(vm.positions)
   })
 
-  console.log(vm.positions)
 
   vm.getRemainingMonths = function(){
     console.log("getRemainingMonths")
