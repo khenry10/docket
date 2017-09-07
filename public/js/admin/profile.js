@@ -23,7 +23,7 @@ angular.module('app').controller('profileController', ['Employment', 'DateServic
         }
         $scope.totalComp += parseInt(position.salary);
         if(position.paycheck_frequency === 'bi-weekly'){
-          position.paychecks = DateService.biWeeklyFridays();
+          position.paychecks = DateService.paychecks.biWeeklyFridays;
 
         }
         console.log(position)
