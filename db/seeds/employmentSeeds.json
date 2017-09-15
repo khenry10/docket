@@ -1,0 +1,39 @@
+[
+  {
+    "company": "Lab49",
+    "name": "Keith",
+    "position": "Web/UI Engineer",
+    "start_date": "Jul 17, 2017",
+    "end_date": "none",
+    "current_position": true,
+    "salary": 120000,
+    "paycheck_frequency": "Monthly",
+    "bonus": 8,
+    "healthcare_provider": "Cigna",
+    "equity": "none",
+    "strike_price": 0,
+    "tax_rate": 0.25,
+    "healthcare_premium": 98.22,
+    "dental_premium": 9.05,
+    "contribution_401k": 0.1
+  },
+  {
+    "company": "Shady Grove Fertility",
+    "name": "Sarah",
+    "position": "Fertility Nurse",
+    "start_date": "Feb 8, 2016",
+    "end_date": "none",
+    "current_position": true,
+    "hourly_rate": 33.43,
+    "paycheck_frequency": "bi-weekly",
+    "payday": "Friday",
+    "bonus": 0,
+    "healthcare_provider": "Cigna",
+    "equity": "none",
+    "strike_price": 0,
+    "tax_rate": 0.25,
+    "healthcare_premium": 12.75,
+    "dental_premium": 12.58,
+    "contribution_401k": 0.3
+  }
+]

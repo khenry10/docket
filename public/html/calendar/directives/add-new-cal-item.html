@@ -10,14 +10,54 @@
                placeholder="Name"/>
       </md-input-container>
 
-      <span ng-if='!data.view && $parent.first_day '>
-        <md-datepicker date-input type="date" ng-model="$parent.first_day"
-                          ng-change="updateChangeLog($parent.first_day, true)"
-                          md-placeholder=" {{ $parent.first_day? $parent.first_day : 'Date' }}"/></md-datepicker>
-      </span>
+      <div style="display: flex; align-items: center">
+        <span ng-if='!data.view && $parent.first_day '>
+          <md-datepicker date-input type="date" ng-model="$parent.first_day"
+                         ng-change="updateChangeLog($parent.first_day, true)"
+                         md-placeholder=" {{ $parent.first_day? $parent.first_day : 'Penis Date' }}"/>
+          </md-datepicker>
+        </span>
 
-      <span style="margin-left: -20px;" ng-if='!data.view && !$parent.first_day '>
-        <md-datepicker date-input type="date" ng-model="event.first_day" ng-change="updateChangeLog('first_day', true)" /></md-datepicker>
+        <span ng-if='!data.view && !$parent.first_day '>
+          <md-datepicker date-input type="date"
+                         ng-model="event.first_day"
+                         md-placeholder="Start Date"
+                         md-hide-icons="calendar"
+                         style="width: 90%"
+                         ng-change="updateChangeLog('first_day', true, true)" />
+          </md-datepicker>
+        </span>
+          <!-- start time -->
+          <md-input-container ng-hide="data.view && data.date.start_time" ng-style='data.view? { "margin-left": "30%" } : undefined'>
+            <label> Start Time </label>
+            <md-select  ng-model="event.start_time"
+                        aria-label="select reocurring"
+                        style="color:white"
+                        ng-change="changeEndTimeArray(); updateChangeLog('start_time', true)">
+              <md-option ng-value="time"
+                         ng-repeat="time in times"> {{ time }} </md-option>
+            </md-select>
+          </md-input-container>
+
+      </div>
+      
+      <span style="display: flex; align-items: center" ng-style='data.view? { "margin-left": "30%" } : undefined'>
+        <md-datepicker date-input type="date"
+                       ng-model="event.endDate"
+                       md-hide-icons="calendar"
+                       md-placeholder="End Date"
+                       ng-change="updateChangeLog('first_day', true)" />
+        </md-datepicker>
+        <!-- end time -->
+        <md-input-container >
+          <label > End Time </label>
+
+          <md-select ng-model="event.end_time"
+                     ng-change="updateChangeLog('end_time', true)"
+                     aria-label="select reocurring">
+            <md-option ng-value="time" ng-repeat="time in newTimes"> {{ time }}</md-option>
+          </md-select>
+        </md-input-container>
       </span>
 
     </li>
@@ -33,29 +73,6 @@
 
 
     <li style="display: inline-flex; justify-content: space-between; ">
-      <!-- start time -->
-      <md-input-container ng-hide="data.view && data.date.start_time">
-        <label> Start Time </label>
-        <md-select  ng-model="event.start_time"
-                    aria-label="select reocurring"
-                    style="color:white"
-                    ng-change="changeEndTimeArray(); updateChangeLog('start_time', true)">
-          <md-option ng-value="time"
-                     ng-repeat="time in times"> {{ time }} </md-option>
-        </md-select>
-
-      </md-input-container>
-
-      <!-- end time -->
-      <md-input-container >
-        <label > End Time </label>
-
-        <md-select ng-model="event.end_time"
-                   ng-change="updateChangeLog('end_time', true)"
-                   aria-label="select reocurring">
-          <md-option ng-value="time" ng-repeat="time in newTimes"> {{ time }}</md-option>
-        </md-select>
-      </md-input-container>
 
     </li>
     <li style="color: white">

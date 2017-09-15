@@ -80,7 +80,7 @@ angular.module('app').service('DateService', [ function () {
       }
       totalDays = totalDays + daysInMonth
 
-      data.months.push({month: this.monthNames[i-1], days_in_month: daysInMonth, fridays: fridays})
+      data.months.push({month: this.monthNames[i], days_in_month: daysInMonth, fridays: fridays})
 
       if(month+1 > i){
         daysPassed = daysPassed + daysInMonth
@@ -143,5 +143,50 @@ angular.module('app').service('DateService', [ function () {
     return new Date(dateSplit[0], month , date)
   }
 
+  this.runThroughYear = function(){
+    let fridayCount = [];
+    for(var i = 0; i <= 11; i++){
+      var today = new Date()
+      var year = today.getFullYear()
+      var daysInMonth = new Date(year, i, 0)
+      daysInMonth = daysInMonth.getDate()
+      var firstFullDateOfMonth = new Date(year, i, 1)
+      firstDayOfMonth = firstFullDateOfMonth.getDay();
+
+      firstDateOfMonth = firstFullDateOfMonth.getDate();
+
+      var firstFriday = 5 - firstDayOfMonth + 1;
+      if(firstFriday <= 0){
+        firstFriday =+ 7
+      }
+      const friday = new Date(year, i, firstFriday);
+      const lastFriday = fridayCount[fridayCount.length-1];
+
+      if(lastFriday < friday || lastFriday > friday || !fridayCount.length){
+        fridayCount.push(friday)
+      }
+      while(firstFriday < daysInMonth){
+        firstFriday += 7
+        const newFriday = new Date(year, i, firstFriday);
+        if(firstFriday <= daysInMonth && fridayCount[fridayCount.length-1] != newFriday){
+          fridayCount.push(newFriday)
+        }
+        // firstDateOfMonth = firstDateOfMonth + 7
+      }
+    }
+    console.log(fridayCount)
+    return fridayCount.filter(function(friday, index){
+      return index % 2 != 0
+    })
+
+    // console.log(paychecks)
+  }
+
+  this.paychecks = {
+    biWeeklyFridays: this.runThroughYear(),
+    monthly: function(){
+      return [new Date()]
+    }
+  }
 
 }]);

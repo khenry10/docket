@@ -1,0 +1,8 @@
+<h1> Profile </h1>
+
+<div ng-repeat="position in positions">
+  <h2>{{ position.name }} </h2>
+  <li style="list-style: none"> Company: {{ position.company }} Salary: {{ position.salary | currency }}</li>
+  <li> Healthcare:  {{ position.healthcare_premium | currency }}</li>
+</div>
+<h3> Annualized Compensation: {{ totalComp | currency }} </h3>

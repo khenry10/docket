@@ -107,12 +107,19 @@
           // }
         };
 
-        $scope.updateChangeLog = function(eventValueChanged, isADateMetric){
+        $scope.updateChangeLog = function(eventValueChanged, isADateMetric, isStartDate){
+            console.log("eventValueChanged = " + eventValueChanged)
+            console.log("isADateMetric = " + isADateMetric)
+            console.log("isStartDate = " + isStartDate)
+            console.log("$scope.event.endDate = "  + $scope.event.endDate)
             if($scope.data && $scope.data.editView){
               if(isADateMetric){
                 $scope.needToModifyDateList = isADateMetric;
               }
               $scope.data.todo[eventValueChanged] = $scope.event[eventValueChanged]
+            }
+            if(isStartDate && !$scope.event.endDate){
+              $scope.event.endDate = $scope.event.first_day
             }
         };
 
@@ -156,14 +163,16 @@
           var lastDay = numberOfDaysInMonth
 
           // created a constructor here because I was originally overwriting the same object and it was only saving 1
-          $scope.dateList = function(newDate){
+          $scope.dateList = function(newDate, multiDay){
+            console.log(multiDay)
             this.date = newDate,
             this.name = $scope.event.name,
             this.duration = $scope.event.duration,
             this.start_time = $scope.event.start_time,
             this.end_time = $scope.event.end_time,
             this.tasks = [],
-            this.tracker = tracker
+            this.tracker = tracker,
+            this.multiDay = multiDay
           }
 
             if($scope.event.list_name && $scope.event.first_day || $scope.view === 'modal'){
@@ -194,6 +203,23 @@
 
                   }
                 }
+
+                if($scope.event.first_day != $scope.event.endDate){
+                  const startDate = DateService.dateSplit($scope.event.first_day)
+                  const endDate = DateService.dateSplit($scope.event.endDate)
+                  console.log(startDate)
+                  console.log(endDate )
+                  if((startDate.monthNumber == endDate.monthNumber) && (startDate.year == endDate.year) ){
+                    let newDate = startDate.date;
+                    while(newDate < endDate.date){
+                      console.log('newDate = ' + newDate)
+                      newDate += 1
+                      const list = startDate.year+"-"+startDate.monthNumber+"-"+newDate
+                      createListOfLists.push( new $scope.dateList(list, true))
+                    }
+                  }
+                  console.log(createListOfLists)
+                };
 
                 if($scope.event.list_reocurring !== 'Weekly'){
                   var list = year+"-"+month+"-"+count;
@@ -247,6 +273,7 @@
                   Todo.update({list_name: $scope.event.list_name}, {todo: $scope.event})
                 } else {
                   $scope.newTodoList.lists = createListOfLists;
+                  console.log($scope.newTodoList)
                   $scope.newTodoList.$save().then(function(res){
                     console.log("$scope.newTodoList.$save success")
                     if($scope.data){

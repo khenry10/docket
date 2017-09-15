@@ -17,13 +17,55 @@
     <md-button ng-click="budgetVM.fullYear()"> Full Year</md-button>
 
   <table class="finances">
-    <tr>
-      <th><h2>Revenue</h2></th>
-      <th data-ng-repeat="month in budgetVM.months">{{month}}</th>
+    <tr class="finances-td">
+      <!-- <th><h2>Revenue</h2></th>
+      <th data-ng-repeat="month in budgetVM.months">{{month}}</th> -->
+      <td> Gross Revenue </td>
+      <td data-ng-repeat="month in budgetVM.months">{{month}}</td>
     </tr>
-    <tr data-ng-repeat="budget in budgetVM.budget" ng-if="budget.type === 'revenue'">
-      <td class="finances-td">{{budget.name}}</td>
-      <td class="finances-td" data-ng-repeat="month in budgetVM.months">{{budget.amount | currency}}</td>
+    <tr data-ng-repeat="position in budgetVM.positions" >
+      <td class="finances-td">{{position.name}}</td>
+      <td class="finances-td" data-ng-repeat="month in budgetVM.months">{{position.grossRevenue | currency}}</td>
+    </tr>
+    <tr>
+      <td> Total Gross Revenue </td>
+      <td> {{ budgetVM.totalGrossRev | currency }} </td>
+    </tr>
+    <tr class="finances-td">
+      <td> Tax Deductions </td>
+      <td> </td>
+    </tr>
+    <tr data-ng-repeat="position in budgetVM.positions" >
+      <td class="finances-td">{{position.name}} HealthCare Premium</td>
+      <td class="finances-td" data-ng-repeat="month in budgetVM.months">{{position.healthcarePremium | currency}}</td>
+    </tr>
+    <tr data-ng-repeat="position in budgetVM.positions" >
+      <td class="finances-td">{{position.name}} Dental Premium</td>
+      <td class="finances-td" data-ng-repeat="month in budgetVM.months">{{position.dentalPremium | currency}}</td>
+    </tr>
+    <tr data-ng-repeat="position in budgetVM.positions" >
+      <td class="finances-td">{{position.name}} 401k Contribution</td>
+      <td class="finances-td" data-ng-repeat="month in budgetVM.months">{{position.total401k | currency}}</td>
+    </tr>
+    <tr>
+      <td> Total Deductions </td>
+      <td> {{ budgetVM.totalDeductions | currency }} </td>
+    </tr>
+    <tr>
+      <td> Gross - Deductions </td>
+      <td> {{ budgetVM.totalGrossRev - budgetVM.totalDeductions | currency }} </td>
+    </tr>
+    <tr>
+      <td> Taxes </td>
+      <td> {{ budgetVM.taxedTotal | currency }} </td>
+    </tr>
+    <tr>
+      <td> Net Revenue </td>
+      <td> {{ budgetVM.netRevenue | currency }} </td>
+    </tr>
+    <tr class="finances-td">
+      <td> Fixed Expenses </td>
+      <td> </td>
     </tr>
     <tr data-ng-repeat="budget in budgetVM.budget" ng-if="budget.type === 'expense' && budget.category == 'fixed'">
       <td class="finances-td">{{budget.name}}</td>
@@ -31,22 +73,26 @@
     </tr>
     <tr>
       <th>Total Fixed Expenses</th>
-      <td class="finances-td">{{budgetVM.fixedExpensesTotal | currency }}</td>
+      <td >{{budgetVM.fixedExpensesTotal | currency }}</td>
+    </tr>
+    <tr class="finances-td">
+      <td> Variable Expenses </td>
+      <td> </td>
     </tr>
     <tr data-ng-repeat="budget in budgetVM.budget" ng-if="budget.type === 'expense' && budget.category == 'variable'">
       <td class="finances-td">{{budget.name}}</td>
       <td class="finances-td" data-ng-repeat="month in budgetVM.months">{{budget.amount | currency}}</td>
     <tr>
       <th>Total Variable Expenses</th>
-        <td class="finances-td"> {{budgetVM.variableExpensesTotal | currency}}</td>
+        <td> {{budgetVM.variableExpensesTotal | currency}}</td>
     </tr>
     <tr>
       <th>Total Expenses </th>
-        <td class="finances-td">{{budgetVM.expensesTotal | currency }}</td>
+        <td>{{budgetVM.expensesTotal | currency }}</td>
     </tr>
     <tr>
       <th> Revenue - Expenses </th>
-      <td class="finances-td"> {{budgetVM.revenueMinusExpenses | currency }}</td>
+      <td> {{budgetVM.revenueMinusExpenses | currency }}</td>
     </tr>
   </table>
 </div>

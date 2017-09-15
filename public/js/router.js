@@ -40,6 +40,11 @@ function router($stateProvider, $locationProvider){
     templateUrl: "/assets/html/list.html",
     controller: "listController"
   })
+  .state("profile", {
+    url: "/profile",
+    templateUrl: "/assets/html/admin/profile.html",
+    controller: "profileController"
+  })
   .state("calendar-entries", {
     url: "/calendar-entries",
     templateUrl: "/assets/html/calendar/cal-entries.html",

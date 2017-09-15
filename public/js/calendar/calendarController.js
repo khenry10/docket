@@ -29,6 +29,7 @@ function IndexController($scope, Todo, $window, ModalService, DateService, Clone
   $scope.niceDate = DateService.getNiceDate($scope.date);
   $scope.niceMonth = today.monthNames;
   $scope.yearStats = DateService.percentageOfYearPassed();
+  console.log($scope.yearStats)
   $scope.allTodoLists = [];
   var listForCal = [];
   $scope.allTasks = [];
