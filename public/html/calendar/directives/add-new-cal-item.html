@@ -28,7 +28,7 @@
           </md-datepicker>
         </span>
           <!-- start time -->
-          <md-input-container ng-hide="data.view && data.date.start_time">
+          <md-input-container ng-hide="data.view && data.date.start_time" ng-style='data.view? { "margin-left": "30%" } : undefined'>
             <label> Start Time </label>
             <md-select  ng-model="event.start_time"
                         aria-label="select reocurring"
@@ -40,8 +40,8 @@
           </md-input-container>
 
       </div>
-
-      <span style="display: flex; align-items: center" ng-if='!data.view && !$parent.first_day '>
+      
+      <span style="display: flex; align-items: center" ng-style='data.view? { "margin-left": "30%" } : undefined'>
         <md-datepicker date-input type="date"
                        ng-model="event.endDate"
                        md-hide-icons="calendar"
