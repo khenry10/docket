@@ -45,7 +45,7 @@
         <md-datepicker date-input type="date"
                        ng-model="event.endDate"
                        md-hide-icons="calendar"
-                       md-placeholder="End Date"
+                       md-placeholder="End Date KP"
                        ng-change="updateChangeLog('first_day', true)" />
         </md-datepicker>
         <!-- end time -->
@@ -115,7 +115,7 @@
                ng-model="event.budget" placeholder="Budget"/>
       </md-input-container>
     </li>
-    
+
     <li ng-if="event.list_type === 'tracker'">
       <md-input-container style="margin: 0px; width: 100%">
         <input style="border-bottom-color: white; color: white"

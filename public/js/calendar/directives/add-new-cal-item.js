@@ -62,8 +62,16 @@
           }
         }
 
+        console.log("************")
+        console.log($scope.data)
         if($scope.data){
           $scope.changeEndTimeArray()
+          if($scope.data.date){
+            const month  = $scope.data.date.month;
+            const year = $scope.data.date.year;
+            const date = $scope.data.date.date;
+            $scope.event.endDate = new Date (year, month, date)
+          }
         }
          var getHours = function(){
             console.log("getHours")
